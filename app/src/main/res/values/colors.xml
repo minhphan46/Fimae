@@ -1,10 +1,25 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
-    <color name="purple_200">#FFBB86FC</color>
-    <color name="purple_500">#FF6200EE</color>
-    <color name="purple_700">#FF3700B3</color>
-    <color name="teal_200">#FF03DAC5</color>
-    <color name="teal_700">#FF018786</color>
-    <color name="black">#FF000000</color>
-    <color name="white">#FFFFFFFF</color>
+    <color name="primary_1">#7D1CFF</color>
+    <color name="primary_2">#A667FE</color>
+    <color name="secondary_1">#FF68A3</color>
+    <color name="secondary_2">#92E4EF</color>
+    <color name="secondary_3">#FF5DE9</color>
+    <color name="secondary_4">#7CCFCD</color>
+    <color name="tertiary_1">#FFE6F3</color>
+    <color name="tertiary_2">#E3F2ED</color>
+    <color name="backround_button_1">#E3F2ED</color>
+    <color name="backround_button_2">#F9F9F9</color>
+    <color name="text_primary">#2B2C2E</color>
+    <color name="text_secondary">#939094</color>
+    <color name="text_tertiary">#DFDDE0</color>
+    <color name="text_white">#FFFFFF</color>
+    <color name="warning">#FF4D6D</color>
+    <color name="error">#B3261E</color>
+    <color name="backround">#FFFFFF</color>
+    <color name="backround_dark">#0C0D2B</color>
+    <color name="backround_button_dark_1_startColor">#0A061D</color>
+    <color name="backround_button_dark_1_endColor">#0C0F2E</color>
+    <color name="backround_button_dark_2">#8E6DEF</color>
+    <color name="backround_button_dark_3">#313251</color>
 </resources>
