@@ -1,0 +1,15 @@
+<?xml version="1.0" encoding="utf-8"?>
+<layer-list xmlns:android="http://schemas.android.com/apk/res/android">
+<item>
+    <shape android:shape="rectangle" android:padding="10dp">
+        <!-- you can use any color you want I used here gray color-->
+        <solid android:color="@color/text_secondary"/>
+        <corners android:radius="240dp"/>
+    </shape>
+</item>
+<item android:top="24dp"
+    android:bottom="24dp"
+    android:left="24dp"
+    android:right="24dp"
+    android:drawable="@drawable/ic_speaker_on"/>
+</layer-list>

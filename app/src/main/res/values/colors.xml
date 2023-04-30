@@ -22,4 +22,5 @@
     <color name="backround_button_dark_1_endColor">#0C0F2E</color>
     <color name="backround_button_dark_2">#8E6DEF</color>
     <color name="backround_button_dark_3">#313251</color>
+    <color name="green">#4CAF50</color>
 </resources>
