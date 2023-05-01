@@ -206,14 +206,14 @@ public class CallActivity extends AppCompatActivity {
     private void initCall(){
         if(isInComingCall){
             // cuoc goi den
-            call = MainActivity.callMap.get(callId);
+            call = ConnectActivity.callMap.get(callId);
             if( call == null){
                 finish();
                 return;
             }
         }else{
             // tao cuoc goi moi
-            call = new StringeeCall(MainActivity.client, MainActivity.client.getUserId(), to);
+            call = new StringeeCall(ConnectActivity.client, ConnectActivity.client.getUserId(), to);
         }
 
         // theo doi trang thai cuoc goi
