@@ -23,19 +23,35 @@
             tools:ignore="UselessParent">
 
 
+            <TextView
+                android:id="@+id/textView"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="Nhập tên người muốn gọi" />
+
             <EditText
                 android:id="@+id/et_to"
                 android:layout_width="match_parent"
                 android:layout_height="50dp"
-                android:layout_margin="20dp"/>
+                android:layout_margin="20dp" />
 
             <Button
                 android:id="@+id/btn_call"
                 android:layout_width="150dp"
                 android:layout_height="wrap_content"
                 android:text="Call"
-                app:iconTint="#CDDC39"
-                android:textColor="#ffffff"/>
+                android:textColor="#ffffff"
+                app:iconTint="#CDDC39" />
+
+            <Button
+                android:id="@+id/btn_call_video"
+                android:layout_width="150dp"
+                android:layout_height="wrap_content"
+                android:layout_margin="10dp"
+                android:text="Call Video"
+                android:textColor="#ffffff"
+                app:iconTint="#CDDC39" />
+
         </LinearLayout>
 
         <TextView

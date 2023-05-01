@@ -31,25 +31,21 @@ public class MainActivity extends AppCompatActivity {
     private String hao = "eyJjdHkiOiJzdHJpbmdlZS1hcGk7dj0xIiwidHlwIjoiSldUIiwiYWxnIjoiSFMyNTYifQ.eyJqdGkiOiJTSy4wLnM1OFRaMnBJbkIwMFdWMlZmTlQ1RXRmU2xLQ2g3cy0xNjgyODk0NzI5IiwiaXNzIjoiU0suMC5zNThUWjJwSW5CMDBXVjJWZk5UNUV0ZlNsS0NoN3MiLCJleHAiOjE2ODU0ODY3MjksInVzZXJJZCI6ImhhbyJ9.CANIGuM0lLjN3n1A0TtNEHLBWQven8VP_i0DUB0t-8k";
     private String anh = "eyJjdHkiOiJzdHJpbmdlZS1hcGk7dj0xIiwidHlwIjoiSldUIiwiYWxnIjoiSFMyNTYifQ.eyJqdGkiOiJTSy4wLnM1OFRaMnBJbkIwMFdWMlZmTlQ1RXRmU2xLQ2g3cy0xNjgyODk0NzUxIiwiaXNzIjoiU0suMC5zNThUWjJwSW5CMDBXVjJWZk5UNUV0ZlNsS0NoN3MiLCJleHAiOjE2ODU0ODY3NTEsInVzZXJJZCI6ImFuaCJ9.w-uJWfmXAmKn_y9nyTUGYrqwe6GoTyxEqvLsF4qvdGs";
     private String hien = "eyJjdHkiOiJzdHJpbmdlZS1hcGk7dj0xIiwidHlwIjoiSldUIiwiYWxnIjoiSFMyNTYifQ.eyJqdGkiOiJTSy4wLnM1OFRaMnBJbkIwMFdWMlZmTlQ1RXRmU2xLQ2g3cy0xNjgyODk0NzY3IiwiaXNzIjoiU0suMC5zNThUWjJwSW5CMDBXVjJWZk5UNUV0ZlNsS0NoN3MiLCJleHAiOjE2ODU0ODY3NjcsInVzZXJJZCI6ImhpZW4ifQ.OSSprxugshgZDhSux0vG3XOPa5ptsSP_r1qaf-DvtXk";
-    // bo token vao day roi cai app
+    // đổi tên token vào đây rồi cài app
     private String token = minh;
 
 
     private EditText etTo;
     private TextView tvStatus;
     private Button btnCall;
-
-    private String user1 = "eyJjdHkiOiJzdHJpbmdlZS1hcGk7dj0xIiwidHlwIjoiSldUIiwiYWxnIjoiSFMyNTYifQ.eyJqdGkiOiJTSy4wLnM1OFRaMnBJbkIwMFdWMlZmTlQ1RXRmU2xLQ2g3cy0xNjgyNzk5NzQ1IiwiaXNzIjoiU0suMC5zNThUWjJwSW5CMDBXVjJWZk5UNUV0ZlNsS0NoN3MiLCJleHAiOjE2ODUzOTE3NDUsInVzZXJJZCI6InVzZXIxIn0.w9gQx9SdVJojDfE3_sVeIaKVhUxrS4PBY2mVr07PJiU";
-    private String user2 = "eyJjdHkiOiJzdHJpbmdlZS1hcGk7dj0xIiwidHlwIjoiSldUIiwiYWxnIjoiSFMyNTYifQ.eyJqdGkiOiJTSy4wLnM1OFRaMnBJbkIwMFdWMlZmTlQ1RXRmU2xLQ2g3cy0xNjgyODkxMDU4IiwiaXNzIjoiU0suMC5zNThUWjJwSW5CMDBXVjJWZk5UNUV0ZlNsS0NoN3MiLCJleHAiOjE2ODU0ODMwNTgsInVzZXJJZCI6InVzZXIyIn0.SkOD6JFW5-UctnGO_8mBc6aVHGsu9aRBV2YHUjTssxM";
-
-
-
+    private Button btnCallVideo;
 
     public static StringeeClient client;
     // luu cuoc goi den = map
     // key = callID
     public static Map<String, StringeeCall> callMap = new HashMap<>();
-
+    // video
+    public static Map<String, StringeeCall2> call2Map = new HashMap<>();
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -58,6 +54,7 @@ public class MainActivity extends AppCompatActivity {
         etTo = findViewById(R.id.et_to);
         tvStatus = findViewById(R.id.tv_status);
         btnCall = findViewById(R.id.btn_call);
+        btnCallVideo = findViewById(R.id.btn_call_video);
 
         btnCall.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -72,9 +69,18 @@ public class MainActivity extends AppCompatActivity {
             }
         });
 
-//        ActivityMainBinding activityMainBinding = DataBindingUtil.setContentView(this, R.layout.activity_main);
-//        HomeViewModel homeViewModel = new HomeViewModel(this);
-//        activityMainBinding.setHomeViewModel(homeViewModel);
+        btnCallVideo.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                if(etTo.getText() == null || etTo.getText().toString().trim().length() == 0){
+                    return;
+                }
+                Intent intent = new Intent(view.getContext(), CallVideoActivity.class);
+                intent.putExtra("to", etTo.getText().toString().trim());
+                intent.putExtra("isIncomingCall", false);
+                startActivity(intent);
+            }
+        });
 
 
         initStringeeConnection();
@@ -99,7 +105,6 @@ public class MainActivity extends AppCompatActivity {
 
             @Override
             public void onIncomingCall(StringeeCall stringeeCall) {
-                // cuoc goi den
                 runOnUiThread(()->{
                     callMap.put(stringeeCall.getCallId(), stringeeCall);
                     Intent intent = new Intent(MainActivity.this, CallActivity.class);
@@ -111,7 +116,13 @@ public class MainActivity extends AppCompatActivity {
 
             @Override
             public void onIncomingCall2(StringeeCall2 stringeeCall2) {
-
+                runOnUiThread(()->{
+                    call2Map.put(stringeeCall2.getCallId(), stringeeCall2);
+                    Intent intent = new Intent(MainActivity.this, CallVideoActivity.class);
+                    intent.putExtra("callId", stringeeCall2.getCallId());
+                    intent.putExtra("isIncomingCall", true);
+                    startActivity(intent);
+                });
             }
 
             @Override
