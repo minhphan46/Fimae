@@ -71,7 +71,7 @@ public class CallActivity extends AppCompatActivity {
                     if(audioManager != null) {
                         audioManager.setSpeakerphoneOn(!isSpeaker);
                         isSpeaker = !isSpeaker;
-                        btnSpeaker.setBackgroundResource(isSpeaker? R.drawable.btn_speaker_on : R.drawable.btn_speaker_off);
+                        btnSpeaker.setBackgroundResource(isSpeaker? R.drawable.background_btn_speaker_on : R.drawable.background_btn_speaker_off);
                     }
                 });
             }
@@ -83,7 +83,7 @@ public class CallActivity extends AppCompatActivity {
                     if(call != null){
                         call.mute(isMicOn);
                         isMicOn = !isMicOn;
-                        btnMute.setBackgroundResource(isMicOn? R.drawable.btn_mic_on : R.drawable.btn_mic_off);
+                        btnMute.setBackgroundResource(isMicOn? R.drawable.background_btn_mic_on : R.drawable.background_btn_mic_off);
                     }
                 });
             }

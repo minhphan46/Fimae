@@ -3,42 +3,30 @@
   <component name="DesignSurface">
     <option name="filePathToZoomLevelMap">
       <map>
+        <entry key="..\:/development/projects_android/Fimae/app/src/main/res/drawable-v24/shape_rectangle_boder_radius_green.xml" value="0.1515" />
+        <entry key="..\:/development/projects_android/Fimae/app/src/main/res/drawable/backround_pink.xml" value="0.1515" />
         <entry key="..\:/development/projects_android/Fimae/app/src/main/res/drawable/btn_answer_call.xml" value="0.1515" />
         <entry key="..\:/development/projects_android/Fimae/app/src/main/res/drawable/btn_call.xml" value="0.1515" />
+        <entry key="..\:/development/projects_android/Fimae/app/src/main/res/drawable/btn_chat_home.xml" value="0.1515" />
         <entry key="..\:/development/projects_android/Fimae/app/src/main/res/drawable/btn_mic_off.xml" value="0.1515" />
         <entry key="..\:/development/projects_android/Fimae/app/src/main/res/drawable/btn_mic_on.xml" value="0.1515" />
-        <entry key="..\:/development/projects_android/Fimae/app/src/main/res/drawable/btn_speaker_off.xml" value="0.1515" />
         <entry key="..\:/development/projects_android/Fimae/app/src/main/res/drawable/btn_speaker_on.xml" value="0.1515" />
         <entry key="..\:/development/projects_android/Fimae/app/src/main/res/drawable/btn_videocam_off.xml" value="0.1515" />
         <entry key="..\:/development/projects_android/Fimae/app/src/main/res/drawable/btn_videocam_on.xml" value="0.1515" />
-        <entry key="..\:/development/projects_android/Fimae/app/src/main/res/drawable/circle_button.xml" value="0.183" />
-        <entry key="..\:/development/projects_android/Fimae/app/src/main/res/drawable/circle_green.xml" value="0.1515" />
-        <entry key="..\:/development/projects_android/Fimae/app/src/main/res/drawable/circle_grey.xml" value="0.1515" />
-        <entry key="..\:/development/projects_android/Fimae/app/src/main/res/drawable/circle_red.xml" value="0.183" />
         <entry key="..\:/development/projects_android/Fimae/app/src/main/res/drawable/ic_answer_call.xml" value="0.1515" />
         <entry key="..\:/development/projects_android/Fimae/app/src/main/res/drawable/ic_call.xml" value="0.1515" />
-        <entry key="..\:/development/projects_android/Fimae/app/src/main/res/drawable/ic_launcher_background.xml" value="0.139" />
-        <entry key="..\:/development/projects_android/Fimae/app/src/main/res/drawable/ic_mic_off.xml" value="0.183" />
-        <entry key="..\:/development/projects_android/Fimae/app/src/main/res/drawable/ic_mic_on.xml" value="0.183" />
-        <entry key="..\:/development/projects_android/Fimae/app/src/main/res/drawable/ic_speaker_off.xml" value="0.183" />
-        <entry key="..\:/development/projects_android/Fimae/app/src/main/res/drawable/ic_speaker_on.xml" value="0.1515" />
-        <entry key="..\:/development/projects_android/Fimae/app/src/main/res/drawable/ic_videocam_on.xml" value="0.1515" />
-        <entry key="..\:/development/projects_android/Fimae/app/src/main/res/layout/activity_call.xml" value="0.25" />
-        <entry key="..\:/development/projects_android/Fimae/app/src/main/res/layout/activity_call_video.xml" value="0.25" />
-        <entry key="..\:/development/projects_android/Fimae/app/src/main/res/layout/activity_connect.xml" value="0.25" />
-        <entry key="..\:/development/projects_android/Fimae/app/src/main/res/layout/activity_main.xml" value="0.20416666666666666" />
-        <entry key="..\:/development/projects_android/Fimae/app/src/main/res/layout/fragment_chat.xml" value="0.25" />
-        <entry key="..\:/development/projects_android/Fimae/app/src/main/res/layout/fragment_feed.xml" value="0.25" />
-        <entry key="..\:/development/projects_android/Fimae/app/src/main/res/layout/fragment_home.xml" value="0.25" />
-        <entry key="..\:/development/projects_android/Fimae/app/src/main/res/layout/fragment_profile.xml" value="0.25" />
-        <entry key="..\:/development/projects_android/Fimae/app/src/main/res/menu/menu_bottom_nav.xml" value="0.25" />
+        <entry key="..\:/development/projects_android/Fimae/app/src/main/res/drawable/shape_circle_green.xml" value="0.1515" />
+        <entry key="..\:/development/projects_android/Fimae/app/src/main/res/drawable/shape_rectangle_boder_radius_pink.xml" value="0.1515" />
+        <entry key="..\:/development/projects_android/Fimae/app/src/main/res/layout/activity_call.xml" value="0.23796296296296296" />
+        <entry key="..\:/development/projects_android/Fimae/app/src/main/res/layout/activity_call_video.xml" value="0.23796296296296296" />
+        <entry key="..\:/development/projects_android/Fimae/app/src/main/res/layout/activity_main.xml" value="0.25" />
+        <entry key="..\:/development/projects_android/Fimae/app/src/main/res/layout/appbar.xml" value="0.25" />
+        <entry key="..\:/development/projects_android/Fimae/app/src/main/res/layout/appbar_home.xml" value="0.25" />
+        <entry key="..\:/development/projects_android/Fimae/app/src/main/res/layout/btn_chat_home.xml" value="0.24895833333333334" />
+        <entry key="..\:/development/projects_android/Fimae/app/src/main/res/layout/fragment_home.xml" value="0.23796296296296296" />
       </map>
     </option>
   </component>
-  <component name="ProjectRootManager" version="2" languageLevel="JDK_11" default="true" project-jdk-name="Android Studio default JDK" project-jdk-type="JavaSDK">
-    <output url="file://$PROJECT_DIR$/build/classes" />
-  </component>
-  <component name="ProjectType">
-    <option name="id" value="Android" />
-  </component>
+  <component name="ExternalStorageConfigurationManager" enabled="true" />
+  <component name="ProjectRootManager" version="2" languageLevel="JDK_11" project-jdk-name="11" project-jdk-type="JavaSDK" />
 </project>

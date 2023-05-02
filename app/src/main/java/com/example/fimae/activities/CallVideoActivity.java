@@ -14,7 +14,6 @@ import android.widget.ImageButton;
 import android.widget.TextView;
 
 import com.example.fimae.R;
-import com.stringee.call.StringeeCall;
 import com.stringee.call.StringeeCall2;
 import com.stringee.common.StringeeAudioManager;
 import com.stringee.listener.StatusListener;
@@ -82,7 +81,7 @@ public class CallVideoActivity extends AppCompatActivity {
                     if(audioManager != null) {
                         audioManager.setSpeakerphoneOn(!isSpeaker);
                         isSpeaker = !isSpeaker;
-                        btnSpeaker.setBackgroundResource(isSpeaker? R.drawable.btn_speaker_on : R.drawable.btn_speaker_off);
+                        btnSpeaker.setBackgroundResource(isSpeaker? R.drawable.background_btn_speaker_on : R.drawable.background_btn_speaker_off);
                     }
                 });
             }
@@ -94,7 +93,7 @@ public class CallVideoActivity extends AppCompatActivity {
                     if(call != null){
                         call.mute(isMicOn);
                         isMicOn = !isMicOn;
-                        btnMute.setBackgroundResource(isMicOn? R.drawable.btn_mic_on : R.drawable.btn_mic_off);
+                        btnMute.setBackgroundResource(isMicOn? R.drawable.background_btn_mic_on : R.drawable.background_btn_mic_off);
                     }
                 });
             }
@@ -168,7 +167,7 @@ public class CallVideoActivity extends AppCompatActivity {
             public void onClick(View v) {
                 call.enableVideo(!isVideoOn);
                 isVideoOn = !isVideoOn;
-                btnVideo.setBackgroundResource(isVideoOn? R.drawable.btn_videocam_on : R.drawable.btn_videocam_off);
+                btnVideo.setBackgroundResource(isVideoOn? R.drawable.background_btn_videocam_on : R.drawable.background_btn_videocam_off);
             }
         });
 
