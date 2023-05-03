@@ -19,11 +19,13 @@
         <entry key="..\:/development/projects_android/Fimae/app/src/main/res/drawable/shape_rectangle_boder_radius_pink.xml" value="0.1515" />
         <entry key="..\:/development/projects_android/Fimae/app/src/main/res/layout/activity_call.xml" value="0.23796296296296296" />
         <entry key="..\:/development/projects_android/Fimae/app/src/main/res/layout/activity_call_video.xml" value="0.23796296296296296" />
+        <entry key="..\:/development/projects_android/Fimae/app/src/main/res/layout/activity_connect.xml" value="0.25" />
         <entry key="..\:/development/projects_android/Fimae/app/src/main/res/layout/activity_main.xml" value="0.25" />
         <entry key="..\:/development/projects_android/Fimae/app/src/main/res/layout/appbar.xml" value="0.25" />
         <entry key="..\:/development/projects_android/Fimae/app/src/main/res/layout/appbar_home.xml" value="0.25" />
         <entry key="..\:/development/projects_android/Fimae/app/src/main/res/layout/btn_chat_home.xml" value="0.24895833333333334" />
         <entry key="..\:/development/projects_android/Fimae/app/src/main/res/layout/fragment_home.xml" value="0.23796296296296296" />
+        <entry key="..\:/development/projects_android/Fimae/app/src/main/res/layout/item_user.xml" value="0.24895833333333334" />
       </map>
     </option>
   </component>
