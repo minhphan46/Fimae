@@ -1,9 +1,14 @@
-package com.example.fimae.fragments;
+package com.example.fimae.adapters;
 
 import androidx.annotation.NonNull;
 import androidx.fragment.app.Fragment;
 import androidx.fragment.app.FragmentManager;
 import androidx.fragment.app.FragmentPagerAdapter;
+
+import com.example.fimae.fragments.ChatFragment;
+import com.example.fimae.fragments.FeedFragment;
+import com.example.fimae.fragments.HomeFragment;
+import com.example.fimae.fragments.ProfileFragment;
 
 public class ViewPagerAdapter extends FragmentPagerAdapter {
 
