@@ -1,0 +1,16 @@
+<?xml version="1.0" encoding="utf-8"?>
+<menu xmlns:android="http://schemas.android.com/apk/res/android"
+      xmlns:app="http://schemas.android.com/apk/res-auto">
+    <item
+            android:id="@+id/action_call"
+            android:icon="@drawable/ic_call_in_chat"
+            app:showAsAction="ifRoom" android:title="Call"
+            android:tooltipText="Call"
+    />
+    <item
+            android:id="@+id/action_more"
+            android:icon="@drawable/ic_more_circle"
+            app:showAsAction="ifRoom" android:title="More"
+            android:tooltipText="More"
+    />
+</menu>

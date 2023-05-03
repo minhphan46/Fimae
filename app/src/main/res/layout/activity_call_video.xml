@@ -73,7 +73,7 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_margin="10dp"
-                android:background="@drawable/btn_speaker_off"
+                android:background="@drawable/background_btn_speaker_off"
                 android:padding="20dp"/>
             <Space
                 android:layout_width="40dp"
@@ -83,7 +83,7 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_margin="10dp"
-                android:background="@drawable/btn_videocam_on"
+                android:background="@drawable/background_btn_videocam_on"
                 android:padding="20dp"/>
 
             <Space
@@ -95,7 +95,7 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_margin="10dp"
-                android:background="@drawable/btn_mic_on"
+                android:background="@drawable/background_btn_mic_on"
                 android:padding="20dp" />
         </LinearLayout>
 
@@ -113,7 +113,7 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_margin="10dp"
-                android:background="@drawable/btn_call"
+                android:background="@drawable/background_btn_call"
                 android:padding="20dp" />
 
             <Space
@@ -125,14 +125,14 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_margin="10dp"
-                android:background="@drawable/btn_answer_call"
+                android:background="@drawable/background_btn_answer_call"
                 android:padding="20dp"/>
         </LinearLayout>
         <ImageButton
             android:id="@+id/btn_end_vid"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:background="@drawable/btn_call"
+            android:background="@drawable/background_btn_call"
             android:padding="20dp"/>
 
     </LinearLayout>
