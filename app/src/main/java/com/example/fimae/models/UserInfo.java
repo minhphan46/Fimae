@@ -38,6 +38,6 @@ public class UserInfo {
     public static UserInfo[] dummy = new UserInfo[]{
             new UserInfo("1","Hào", "https://picsum.photos/200/300?random=1", 25, true),
             new UserInfo("2", "Hào","https://picsum.photos/200/300?random=2", 30, false),
-            new UserInfo("3", "Hào","https://picsum.photos/200/300?random=3", 20, true)
+            new UserInfo("3", "Hào","https://picsum.photos/200/300?random=3", 20, true),
     };
 }

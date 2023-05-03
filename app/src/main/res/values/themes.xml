@@ -17,6 +17,6 @@
         <item name="windowActionBar">false</item>
         <item name="windowNoTitle">true</item>
     </style>
-    <style name="Theme.Fimae.AppBarOverlay" parent="ThemeOverlay.AppCompat.Dark.ActionBar"/>
+    <style name="Theme.Fimae.AppBarOverlay" parent="ThemeOverlay.AppCompat.ActionBar"/>
     <style name="Theme.Fimae.PopupOverlay" parent="ThemeOverlay.AppCompat.Light"/>
 </resources>

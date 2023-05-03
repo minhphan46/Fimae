@@ -7,7 +7,6 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ArrayAdapter;
 import android.widget.ImageView;
-import android.widget.LinearLayout;
 import android.widget.TextView;
 import com.example.fimae.R;
 import com.example.fimae.models.UserInfo;
@@ -35,14 +34,8 @@ public class UserAdapter extends ArrayAdapter<UserInfo> {
         TextView nameTextView = convertView.findViewById(R.id.name_text_view);
         TextView ageTextView = convertView.findViewById(R.id.age_text_view);
         Picasso.get().load(user.getAvatarUrl()).placeholder(R.drawable.ic_default_avatar).into(avatarImageView);
-
-        LinearLayout linearLayout = convertView.findViewById(R.id.gender_age_icon);
-        linearLayout.setBackgroundColor(R.color.green);
-//        linearLayout.setBackgroundTintList(ColorStateList.valueOf(R.color.green));
         nameTextView.setText(user.getName());
         ageTextView.setText(String.valueOf(user.getAge()));
-        //genderTextView.setText("Gender: " + (user.isMale() ? "Male" : "Female"));
-
         return convertView;
     }
 }
