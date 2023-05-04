@@ -6,12 +6,10 @@ import android.view.View;
 import android.view.ViewGroup;
 import androidx.annotation.NonNull;
 import androidx.fragment.app.Fragment;
-import com.example.fimae.R;
+import androidx.recyclerview.widget.LinearLayoutManager;
 import com.example.fimae.adapters.MessageAdapter;
 import com.example.fimae.databinding.FragmentSecondBinding;
 import com.example.fimae.models.Message;
-
-import java.util.Arrays;
 
 public class SecondFragment extends Fragment {
 
@@ -31,8 +29,10 @@ public class SecondFragment extends Fragment {
     public void onViewCreated(@NonNull View view, Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
 
-        MessageAdapter adapter = new MessageAdapter(this.getContext(), R.layout.fragment_second, Arrays.asList(Message.dummy));
+        MessageAdapter adapter = new MessageAdapter(this.getContext(), Message.dummy);
         binding.listMessages.setAdapter(adapter);
+        LinearLayoutManager layoutManager = new LinearLayoutManager(this.getContext());
+        binding.listMessages.setLayoutManager(layoutManager);
     }
 
     @Override

@@ -1,5 +1,6 @@
 package com.example.fimae.models;
 
+import java.util.ArrayList;
 import java.util.Date;
 
 public class Message {
@@ -37,30 +38,33 @@ public class Message {
         this.timestamp = timestamp;
     }
 
-    public static Message[] dummy = new Message[]{
-            new Message("John Doe", "Hello, how are you?", new Date()),
-            new Message("Jane Smith", "I'm good, thanks for asking. How about you?", new Date()),
-            new Message("John Doe", "I'm doing great, thanks. Are you free this weekend?", new Date()),
-            new Message("Jane Smith", "Yes, I am. What did you have in mind?", new Date()),
-            new Message("Jane Smith", "Yes, I am. What did you have in mind?", new Date()),
-            new Message("Jane Smith", "That sounds like a great idea! What time should we meet?", new Date()),
-            new Message("John Doe", "Hello, how are you?", new Date()),
-            new Message("Jane Smith", "I'm good, thanks for asking. How about you?", new Date()),
-            new Message("John Doe", "I'm doing great, thanks. Are you free this weekend?", new Date()),
-            new Message("Jane Smith", "Yes, I am. What did you have in mind?", new Date()),
-            new Message("Jane Smith", "Yes, I am. What did you have in mind?", new Date()),
-            new Message("Jane Smith", "That sounds like a great idea! What time should we meet?", new Date()),
-            new Message("John Doe", "Hello, how are you?", new Date()),
-            new Message("Jane Smith", "I'm good, thanks for asking. How about you?", new Date()),
-            new Message("John Doe", "I'm doing great, thanks. Are you free this weekend?", new Date()),
-            new Message("Jane Smith", "Yes, I am. What did you have in mind?", new Date()),
-            new Message("Jane Smith", "Yes, I am. What did you have in mind?", new Date()),
-            new Message("Jane Smith", "That sounds like a great idea! What time should we meet?", new Date()),
-            new Message("John Doe", "Hello, how are you?", new Date()),
-            new Message("Jane Smith", "I'm good, thanks for asking. How about you?", new Date()),
-            new Message("John Doe", "I'm doing great, thanks. Are you free this weekend?", new Date()),
-            new Message("Jane Smith", "Yes, I am. What did you have in mind?", new Date()),
-            new Message("Jane Smith", "Yes, I am. What did you have in mind?", new Date()),
-            new Message("Jane Smith", "That sounds like a great idea! What time should we meet?", new Date())
+    public static ArrayList<Message> dummy = new ArrayList<Message>(){
+        {
+            new Message("John Doe", "Hello, how are you?", new Date());
+                    new Message("Jane Smith", "I'm good, thanks for asking. How about you?", new Date());
+                    new Message("John Doe", "I'm doing great, thanks. Are you free this weekend?", new Date());
+                    new Message("Jane Smith", "Yes, I am. What did you have in mind?", new Date());
+                    new Message("Jane Smith", "Yes, I am. What did you have in mind?", new Date());
+                    new Message("Jane Smith", "That sounds like a great idea! What time should we meet?", new Date());
+                    new Message("John Doe", "Hello, how are you?", new Date());
+                    new Message("Jane Smith", "I'm good, thanks for asking. How about you?", new Date());
+                    new Message("John Doe", "I'm doing great, thanks. Are you free this weekend?", new Date());
+                    new Message("Jane Smith", "Yes, I am. What did you have in mind?", new Date());
+                    new Message("Jane Smith", "Yes, I am. What did you have in mind?", new Date());
+                    new Message("Jane Smith", "That sounds like a great idea! What time should we meet?", new Date());
+                    new Message("John Doe", "Hello, how are you?", new Date());
+                    new Message("Jane Smith", "I'm good, thanks for asking. How about you?", new Date());
+                    new Message("John Doe", "I'm doing great, thanks. Are you free this weekend?", new Date());
+                    new Message("Jane Smith", "Yes, I am. What did you have in mind?", new Date());
+                    new Message("Jane Smith", "Yes, I am. What did you have in mind?", new Date());
+                    new Message("Jane Smith", "That sounds like a great idea! What time should we meet?", new Date());
+                    new Message("John Doe", "Hello, how are you?", new Date());
+                    new Message("Jane Smith", "I'm good, thanks for asking. How about you?", new Date());
+                    new Message("John Doe", "I'm doing great, thanks. Are you free this weekend?", new Date());
+                    new Message("Jane Smith", "Yes, I am. What did you have in mind?", new Date());
+                    new Message("Jane Smith", "Yes, I am. What did you have in mind?", new Date());
+                    new Message("Jane Smith", "That sounds like a great idea! What time should we meet?", new Date());
+        }
+
     };
 }

@@ -4,6 +4,6 @@
         <item>@font/public_sans</item>
         <item>@font/public_sans_bold</item>
         <item>@font/public_sans_medium</item>
-        <item>@font/public_sans_semibold</item>
+        <item>@font/public_sans_semi_bold</item>
     </array>
 </resources>
