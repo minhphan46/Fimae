@@ -8,6 +8,7 @@
     <color name="secondary_4">#7CCFCD</color>
     <color name="tertiary_1">#FFE6F3</color>
     <color name="tertiary_2">#E3F2ED</color>
+    <color name="tertiary_3">#FAF7FE</color>
     <color name="backround_button_1">#E3F2ED</color>
     <color name="backround_button_2">#F9F9F9</color>
     <color name="text_primary">#2B2C2E</color>
@@ -25,4 +26,11 @@
     <color name="green">#4CAF50</color>
     <color name="black">#000000</color>
     <color name="white">#FFFFFF</color>
+    <color name="light_blue_400">#FF29B6F6</color>
+    <color name="light_blue_600">#FF039BE5</color>
+    <color name="gray_400">#FFBDBDBD</color>
+    <color name="gray_600">#FF757575</color>
+    <color name="light_blue_50">#FFE1F5FE</color>
+    <color name="light_blue_200">#FF81D4FA</color>
+    <color name="light_blue_900">#FF01579B</color>
 </resources>
