@@ -1,18 +1,271 @@
 <?xml version="1.0" encoding="utf-8"?>
 <androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent">
 
-    <TextView
+    <ImageView
+        android:id="@+id/backgroundImage"
         android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:text="Profile Fragment"
-        android:textColor="@color/primary_1"
-        android:textSize="30sp"
-        app:layout_constraintBottom_toBottomOf="parent"
+        android:layout_height="146dp"
+        android:scaleType="fitXY"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent" />
+        app:layout_constraintTop_toTopOf="parent"
+        app:srcCompat="@drawable/background" />
+
+    <ImageButton
+        android:id="@+id/changeBackImgBtn"
+        android:layout_width="48dp"
+        android:layout_height="48dp"
+        android:layout_marginTop="12dp"
+        android:layout_marginEnd="12dp"
+        android:background="@android:color/transparent"
+        android:padding="12dp"
+        android:scaleType="fitXY"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintTop_toTopOf="parent"
+        app:srcCompat="@drawable/ic_setting" />
+
+    <ImageButton
+        android:id="@+id/avatarBtn"
+        android:layout_width="95dp"
+        android:layout_height="95dp"
+        android:layout_marginStart="22dp"
+        android:layout_marginTop="95dp"
+        android:background="@drawable/circular"
+        android:clipToOutline="true"
+        android:scaleType="centerCrop"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent"
+        app:srcCompat="@drawable/avatar" />
+
+    <TextView
+        android:id="@+id/usernameTxt"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="22dp"
+        android:layout_marginTop="16dp"
+        android:text="minhphan46"
+        android:textColor="@color/black"
+        android:textSize="32sp"
+        android:textStyle="bold"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/avatarBtn" />
+
+    <com.google.android.material.chip.Chip
+        android:id="@+id/gender_age_chip"
+        android:layout_width="wrap_content"
+        android:layout_height="35dp"
+        android:layout_marginStart="16dp"
+        android:layout_marginTop="16dp"
+        android:background="@android:color/transparent"
+        android:enabled="false"
+        android:text="33"
+        android:textColor="#FFFFFF"
+        android:textSize="10dp"
+        app:chipBackgroundColor="#92E4EF"
+        app:chipIcon="@drawable/ic_male"
+        app:chipIconSize="10dp"
+        app:chipIconTint="@color/white"
+        app:layout_constraintStart_toEndOf="@+id/usernameTxt"
+        app:layout_constraintTop_toBottomOf="@+id/avatarBtn" />
+
+    <TextView
+        android:id="@+id/idTxt"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="22dp"
+        android:layout_marginTop="14dp"
+        android:text="Lit ID: 1234567890"
+        android:textColor="#939094"
+        android:textSize="14dp"
+        android:textStyle="bold"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/usernameTxt" />
+
+    <ImageButton
+        android:id="@+id/copyBtn"
+        android:layout_width="18dp"
+        android:layout_height="18dp"
+        android:layout_marginStart="10dp"
+        android:layout_marginTop="16dp"
+        android:background="@android:color/transparent"
+        android:scaleType="fitXY"
+        app:layout_constraintStart_toEndOf="@+id/idTxt"
+        app:layout_constraintTop_toBottomOf="@+id/usernameTxt"
+        app:srcCompat="@drawable/ic_copy" />
+
+    <TextView
+        android:id="@+id/bioTxt"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="22dp"
+        android:layout_marginTop="15dp"
+        android:text="Mô tả bản thân"
+        android:textColor="#000000"
+        android:textSize="16dp"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/idTxt" />
+
+    <ImageButton
+        android:id="@+id/editBioBtn"
+        android:layout_width="18dp"
+        android:layout_height="18dp"
+        android:layout_marginTop="17dp"
+        android:layout_marginLeft="11dp"
+        android:background="@android:color/transparent"
+        android:scaleType="fitXY"
+        app:layout_constraintStart_toEndOf="@+id/bioTxt"
+        app:layout_constraintTop_toBottomOf="@+id/idTxt"
+        app:srcCompat="@drawable/ic_edit" />
+
+    <ImageButton
+        android:id="@+id/editChipBtn"
+        android:layout_width="18dp"
+        android:layout_height="18dp"
+        android:layout_marginStart="7dp"
+        android:layout_marginTop="24dp"
+        android:background="@android:color/transparent"
+        android:scaleType="fitXY"
+        app:layout_constraintStart_toEndOf="@+id/chipGroup"
+        app:layout_constraintTop_toBottomOf="@+id/joinDateTxt"
+        app:srcCompat="@drawable/ic_edit" />
+
+    <ImageButton
+        android:id="@+id/joinDateIcon"
+        android:layout_width="18dp"
+        android:layout_height="18dp"
+        android:layout_marginTop="6dp"
+        android:layout_marginLeft="22dp"
+        android:background="@android:color/transparent"
+        android:scaleType="fitXY"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/bioTxt"
+        app:srcCompat="@drawable/ic_calendar" />
+
+    <TextView
+        android:id="@+id/joinDateTxt"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="7dp"
+        android:layout_marginTop="6dp"
+        android:text="Đã tham gia Tháng 6 2023"
+        android:textColor="@color/text_secondary"
+        app:layout_constraintStart_toEndOf="@+id/joinDateIcon"
+        app:layout_constraintTop_toBottomOf="@+id/bioTxt" />
+
+    <com.google.android.material.chip.ChipGroup
+        android:id="@+id/chipGroup"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="22dp"
+        android:layout_marginTop="12dp"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/joinDateIcon">
+
+        <com.google.android.material.chip.Chip
+            android:id="@+id/chip"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="Hài hước"
+            android:textColor="@color/text_secondary"
+            app:chipBackgroundColor="@color/white"
+            app:chipStrokeColor="@color/text_tertiary"
+            app:chipStrokeWidth="1dp"
+            tools:layout_editor_absoluteX="123dp"
+            tools:layout_editor_absoluteY="377dp" />
+
+        <com.google.android.material.chip.Chip
+            android:id="@+id/chip2"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="Đm lập trình"
+            android:textColor="@color/text_secondary"
+            app:chipBackgroundColor="@color/white"
+            app:chipStrokeColor="@color/text_tertiary"
+            app:chipStrokeWidth="1dp"
+            tools:layout_editor_absoluteX="123dp"
+            tools:layout_editor_absoluteY="377dp" />
+    </com.google.android.material.chip.ChipGroup>
+
+    <View
+        android:id="@+id/lineBreak"
+        android:layout_marginTop="8dp"
+        android:layout_width="match_parent"
+        android:layout_height="1dp"
+        android:background="@color/text_tertiary"
+        app:layout_constraintTop_toBottomOf="@+id/followingTxt"
+        tools:layout_editor_absoluteX="-16dp" />
+
+    <TextView
+        android:id="@+id/followingNum"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="22dp"
+        android:layout_marginTop="22dp"
+        android:textColor="@color/black"
+        android:textStyle="bold"
+        android:text="0"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/chipGroup" />
+
+    <TextView
+        android:id="@+id/followingTxt"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="6dp"
+        android:layout_marginTop="22dp"
+        android:textColor="@color/text_secondary"
+        android:text="Đang theo dõi"
+        app:layout_constraintStart_toEndOf="@id/followingNum"
+        app:layout_constraintTop_toBottomOf="@+id/chipGroup" />
+
+    <TextView
+        android:id="@+id/followerNum"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="13dp"
+        android:layout_marginTop="22dp"
+        android:textColor="@color/black"
+        android:textStyle="bold"
+        android:text="2"
+        app:layout_constraintStart_toEndOf="@id/followingTxt"
+        app:layout_constraintTop_toBottomOf="@+id/chipGroup" />
+
+    <TextView
+        android:id="@+id/followerTxt"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="6dp"
+        android:layout_marginTop="22dp"
+        android:textColor="@color/text_secondary"
+        android:text="Người theo dõi"
+        app:layout_constraintStart_toEndOf="@id/followerNum"
+        app:layout_constraintTop_toBottomOf="@+id/chipGroup" />
+
+    <TextView
+        android:id="@+id/visitorNum"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="13dp"
+        android:layout_marginTop="22dp"
+        android:textColor="@color/black"
+        android:textStyle="bold"
+        android:text="12"
+        app:layout_constraintStart_toEndOf="@id/followerTxt"
+        app:layout_constraintTop_toBottomOf="@+id/chipGroup" />
+
+    <TextView
+        android:id="@+id/visitorTxt"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="6dp"
+        android:layout_marginTop="22dp"
+        android:textColor="@color/text_secondary"
+        android:text="Ghé thăm"
+        app:layout_constraintStart_toEndOf="@id/visitorNum"
+        app:layout_constraintTop_toBottomOf="@+id/chipGroup" />
 
 </androidx.constraintlayout.widget.ConstraintLayout>
