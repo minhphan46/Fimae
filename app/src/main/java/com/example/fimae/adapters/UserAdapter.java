@@ -20,7 +20,6 @@ public class UserAdapter extends ArrayAdapter<UserInfo> {
         super(context, resource, users);
     }
 
-    @SuppressLint("ResourceAsColor")
     @Override
     public View getView(int position, View convertView, ViewGroup parent) {
         if (convertView == null) {

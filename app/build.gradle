@@ -8,7 +8,6 @@ android {
     dataBinding {
         enabled = true
     }
-
     defaultConfig {
         applicationId "com.example.fimae"
         minSdk 21
@@ -27,8 +26,8 @@ android {
     }
 
     buildFeatures {
-        dataBinding true
         viewBinding true
+        dataBinding true
     }
 
     compileOptions {
@@ -45,6 +44,8 @@ dependencies {
     implementation 'com.lokiy.databinding:databinding:0.1.4'
     implementation 'androidx.navigation:navigation-fragment:2.5.3'
     implementation 'de.hdodenhof:circleimageview:3.1.0'
+    implementation 'androidx.emoji2:emoji2:1.1.0'
+    implementation 'com.vanniktech:emoji:0.16.0'
 
     constraints {
         implementation("org.jetbrains.kotlin:kotlin-stdlib-jdk7:1.8.0") {
@@ -81,4 +82,7 @@ dependencies {
     testImplementation 'junit:junit:4.13.2'
     androidTestImplementation 'androidx.test.ext:junit:1.1.5'
     androidTestImplementation 'androidx.test.espresso:espresso-core:3.5.1'
+
+    implementation 'com.github.bumptech.glide:glide:4.10.0'
+    annotationProcessor 'com.github.bumptech.glide:compiler:4.10.0'
 }

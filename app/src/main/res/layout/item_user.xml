@@ -13,20 +13,22 @@
         android:id="@+id/item_user_layout_card"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
+        android:clickable="true"
         android:gravity="start|center"
+        android:minHeight="48dp"
         android:orientation="horizontal"
         app:layout_constraintTop_toTopOf="parent"
-        android:clickable="true">
+        tools:layout_editor_absoluteX="20dp">
 
         <de.hdodenhof.circleimageview.CircleImageView
             android:id="@+id/item_user_avatar_view"
             android:layout_width="44dp"
             android:layout_height="44dp"
-            android:src="@drawable/ic_default_avatar"
             android:layout_marginEnd="10dp"
+            android:src="@drawable/ic_default_avatar"
+            app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toTopOf="parent"
-            app:layout_constraintBottom_toBottomOf="parent" />
+            app:layout_constraintTop_toTopOf="parent" />
 
         <LinearLayout
             android:layout_width="match_parent"
