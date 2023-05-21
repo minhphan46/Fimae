@@ -4,10 +4,10 @@
         <shape
             android:shape="ring"
             android:innerRadiusRatio="2.5"
-            android:thicknessRatio="30.0"
+            android:thicknessRatio="10.0"
             android:useLevel="false">
             <solid
-                android:color="@color/material_dynamic_neutral70"/>
+                android:color="@color/text_primary"/>
         </shape>
     </item>
 </layer-list>

@@ -29,8 +29,8 @@
             android:orientation="vertical"
             android:paddingLeft="2dp"
             android:paddingRight="2dp"
-            android:paddingTop="15dp"
-            android:paddingBottom="15dp"
+            android:paddingTop="25dp"
+            android:paddingBottom="25dp"
             android:focusable="true">
             <ImageView
                 android:layout_width="35dp"
@@ -99,8 +99,8 @@
             android:orientation="vertical"
             android:paddingLeft="2dp"
             android:paddingRight="2dp"
-            android:paddingTop="15dp"
-            android:paddingBottom="15dp"
+            android:paddingTop="25dp"
+            android:paddingBottom="25dp"
             android:focusable="true">
 
             <ImageView
@@ -170,8 +170,8 @@
             android:orientation="vertical"
             android:paddingLeft="2dp"
             android:paddingRight="2dp"
-            android:paddingTop="15dp"
-            android:paddingBottom="15dp"
+            android:paddingTop="25dp"
+            android:paddingBottom="25dp"
             android:focusable="true">
 
             <ImageView

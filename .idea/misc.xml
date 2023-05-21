@@ -14,6 +14,7 @@
         <entry key="..\:/development/projects_android/Fimae/app/src/main/res/drawable/backgrounds/drawable/gray_processbar_background.xml" value="0.177" />
         <entry key="..\:/development/projects_android/Fimae/app/src/main/res/drawable/backround_gender_custom.xml" value="0.171" />
         <entry key="..\:/development/projects_android/Fimae/app/src/main/res/drawable/backround_pink.xml" value="0.1515" />
+        <entry key="..\:/development/projects_android/Fimae/app/src/main/res/drawable/blue_processbar_background.xml" value="0.177" />
         <entry key="..\:/development/projects_android/Fimae/app/src/main/res/drawable/blue_progressbar_background.xml" value="0.177" />
         <entry key="..\:/development/projects_android/Fimae/app/src/main/res/drawable/btn_answer_call.xml" value="0.1515" />
         <entry key="..\:/development/projects_android/Fimae/app/src/main/res/drawable/btn_call.xml" value="0.1515" />
@@ -84,6 +85,7 @@
         <entry key="..\:/development/projects_android/Fimae/app/src/main/res/layouts/home/drawable/items.xml" value="0.177" />
         <entry key="..\:/development/projects_android/Fimae/app/src/main/res/layouts/home/layout/activity_call.xml" value="0.25" />
         <entry key="..\:/development/projects_android/Fimae/app/src/main/res/layouts/home/layout/activity_waiting.xml" value="0.25" />
+        <entry key="..\:/development/projects_android/Fimae/app/src/main/res/layouts/home/layout/appbar_connect.xml" value="0.25" />
         <entry key="..\:/development/projects_android/Fimae/app/src/main/res/layouts/home/layout/appbar_waiting.xml" value="0.25" />
         <entry key="..\:/development/projects_android/Fimae/app/src/main/res/layouts/home/layout/fragment_home.xml" value="0.25" />
         <entry key="..\:/development/projects_android/Fimae/app/src/main/res/layouts/home/layout/item_user.xml" value="0.25" />
