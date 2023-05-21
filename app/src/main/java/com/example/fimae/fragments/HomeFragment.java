@@ -23,8 +23,10 @@ import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.example.fimae.R;
+import com.example.fimae.activities.CallActivity;
 import com.example.fimae.activities.ConnectActivity;
 import com.example.fimae.activities.MainActivity;
+import com.example.fimae.activities.WaitingActivity;
 import com.example.fimae.adapters.UserHomeViewAdapter;
 import com.example.fimae.models.UserInfo;
 
@@ -108,8 +110,12 @@ public class HomeFragment extends Fragment  {
         return mView;
     }
 
-    void navigateToCallScreen(Context context){
+    void navigateToConnectScreen(Context context){
         Intent intent = new Intent(context, ConnectActivity.class);
+        context.startActivity(intent);
+    }
+    void navigateToCallScreen(Context context){
+        Intent intent = new Intent(context, WaitingActivity.class);
         context.startActivity(intent);
     }
 }

@@ -1,0 +1,15 @@
+<?xml version="1.0" encoding="utf-8"?>
+<layer-list xmlns:android="http://schemas.android.com/apk/res/android">
+<item>
+    <shape android:shape="rectangle" android:padding="10dp">
+        <!-- you can use any color you want I used here gray color-->
+        <solid android:color="@color/warning"/>
+        <corners android:radius="240dp"/>
+    </shape>
+</item>
+<item android:top="20dp"
+    android:bottom="20dp"
+    android:left="20dp"
+    android:right="20dp"
+    android:drawable="@drawable/ic_favorite"/>
+</layer-list>

@@ -92,6 +92,4 @@ public class UserHomeViewAdapter extends  RecyclerView.Adapter<UserHomeViewAdapt
         }
         return 0;
     }
-
-
 }

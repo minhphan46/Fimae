@@ -129,7 +129,7 @@ public class ConnectActivity extends AppCompatActivity {
             }
         });
 
-        initStringeeConnection();
+        //initStringeeConnection();
     }
 
     private void initStringeeConnection(){
