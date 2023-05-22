@@ -49,7 +49,7 @@
         app:layout_constraintVertical_bias="0.737">
 
         <de.hdodenhof.circleimageview.CircleImageView
-            android:id="@+id/img_avatar1"
+            android:id="@+id/img_avatar_local"
             android:layout_width="90dp"
             android:layout_height="90dp"
             android:src="@drawable/ic_default_avatar" />
@@ -59,7 +59,7 @@
             android:layout_height="0dp" />
 
         <de.hdodenhof.circleimageview.CircleImageView
-            android:id="@+id/img_avatar2"
+            android:id="@+id/img_avatar_remote"
             android:layout_width="90dp"
             android:layout_height="90dp"
             android:src="@drawable/ic_default_avatar" />

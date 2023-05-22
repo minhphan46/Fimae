@@ -9,11 +9,19 @@ import android.Manifest;
 import android.content.pm.PackageManager;
 import android.os.Build;
 import android.os.Bundle;
+import android.os.CountDownTimer;
 import android.view.View;
+import android.widget.FrameLayout;
 import android.widget.ImageButton;
+import android.widget.LinearLayout;
+import android.widget.ProgressBar;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import com.example.fimae.R;
+import com.example.fimae.repository.ConnectRepo;
+import com.example.fimae.service.TimerService;
+import com.squareup.picasso.Picasso;
 import com.stringee.call.StringeeCall;
 import com.stringee.common.StringeeAudioManager;
 import com.stringee.listener.StatusListener;
@@ -23,9 +31,16 @@ import org.json.JSONObject;
 import java.util.ArrayList;
 import java.util.List;
 
+import de.hdodenhof.circleimageview.CircleImageView;
+
 public class CallActivity extends AppCompatActivity {
 
+    private CircleImageView mImageLocal;
+    private CircleImageView mImageRemote;
+
     private TextView tvStatus;
+    private TextView tvDescriptionCall;
+    private FrameLayout frmTextLike;
     private View vIncoming;
     private View vOption;
     private ImageButton btnSpeaker;
@@ -50,11 +65,27 @@ public class CallActivity extends AppCompatActivity {
     private boolean isSpeaker = false;
     private boolean isMicOn = true;
 
+    // like
+    private boolean isLiked = false;
+
+    // Appbar
+    private ImageButton btnClose;
+    private ImageButton btnReport;
+    private LinearLayout layoutTimer;
+    private TimerService timerService;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_call);
 
+        // set image users
+        mImageLocal = findViewById(R.id.img_avatar_local);
+        mImageRemote = findViewById(R.id.img_avatar_remote);
+
+        //Picasso.get().load(ConnectRepo.getInstance().getUserLocal().getAvatarUrl()).placeholder(R.drawable.ic_default_avatar).into(mImageLocal);
+        //Picasso.get().load(ConnectRepo.getInstance().getUserRemote().getAvatarUrl()).placeholder(R.drawable.ic_default_avatar).into(mImageRemote);
+        // ======================================
         tvStatus = findViewById(R.id.tv_status);
         vIncoming = findViewById(R.id.v_incoming);
         vOption = findViewById(R.id.v_option);
@@ -63,6 +94,8 @@ public class CallActivity extends AppCompatActivity {
         btnMute = findViewById(R.id.btn_mute);
         btnReject = findViewById(R.id.btn_reject);
         btnEnd = findViewById(R.id.btn_end);
+        tvDescriptionCall = findViewById(R.id.tv_des_call);
+        frmTextLike = findViewById(R.id.frame_text_like);
 
         btnSpeaker.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -102,6 +135,7 @@ public class CallActivity extends AppCompatActivity {
                         vIncoming.setVisibility(View.GONE);
                         vOption.setVisibility(View.VISIBLE);
                         btnEnd.setVisibility(View.VISIBLE);
+                        frmTextLike.setVisibility(View.VISIBLE);
                     }
                 });
             }
@@ -126,15 +160,16 @@ public class CallActivity extends AppCompatActivity {
         btnEnd.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                if(call != null){
-                    call.hangup(new StatusListener(){
-                        @Override
-                        public void onSuccess() {
-
-                        }
-                    });
-                    audioManager.stop();
-                    finish();
+                if(!isLiked) {
+                    // neu chua like
+                    onLiked();
+                    // delete timer
+                    timerService.onDestroy();
+                    layoutTimer.setVisibility(View.GONE);
+                }
+                else {
+                    // cup may
+                    onEndCall();
                 }
             }
         });
@@ -148,6 +183,7 @@ public class CallActivity extends AppCompatActivity {
 
         // kiem tra dang goi den
         vIncoming.setVisibility(isInComingCall? View.VISIBLE : View.GONE);
+        frmTextLike.setVisibility(isInComingCall? View.GONE : View.VISIBLE);
         vOption.setVisibility(isInComingCall? View.GONE: View.VISIBLE);
         btnEnd.setVisibility(isInComingCall? View.GONE: View.VISIBLE);
 
@@ -171,8 +207,65 @@ public class CallActivity extends AppCompatActivity {
             ActivityCompat.requestPermissions(this, permissions, 0);
             return;
         }
-
         initCall();
+
+        // timer ==================================================================
+        btnClose = findViewById(R.id.btn_close_appbar);
+        btnReport = findViewById(R.id.btn_report_appbar);
+        layoutTimer = findViewById(R.id.layout_timer);
+        btnClose.setBackgroundResource(R.drawable.ic_logout);
+
+        timerService = new TimerService(
+                1 * 10,
+                findViewById(R.id.pbTimer),
+                findViewById(R.id.tv_time_connect),
+                new TimerService.IOnTimeUp() {
+                    @Override
+                    public void onTimeUp() {
+                        if(!isLiked) {
+                            // neu chua like thi dung khi het thoi gian
+                            onEndCall();
+                            timerService.onDestroy();
+                        }
+                        else {
+                            // neu like roi thi an di
+                            layoutTimer.setVisibility(View.GONE);
+                        }
+                    }
+                }
+        );
+        timerService.setTimeInit();
+        timerService.startTimerSetUp();
+    }
+
+    @Override
+    protected void onDestroy() {
+        super.onDestroy();
+        timerService.onDestroy();
+    }
+
+    // call =======================================================================
+    private void onEndCall(){
+        if(call != null){
+            call.hangup(new StatusListener(){
+                @Override
+                public void onSuccess() {
+                }
+            });
+            audioManager.stop();
+            finish();
+        }
+    }
+
+    private void onLiked() {
+        // doi background button call
+        // an di frame_text_like
+        // doi text tv_des_call
+        // doi bien like
+        isLiked = true;
+        btnEnd.setBackgroundResource(R.drawable.background_btn_call);
+        frmTextLike.setVisibility(View.GONE);
+        tvDescriptionCall.setText("Bây giờ chúng ta là bạn, thưởng thức cuộc trò chuyện không giới hạn");
     }
 
     // lay token de thuc hien cuoc goi
@@ -206,14 +299,14 @@ public class CallActivity extends AppCompatActivity {
     private void initCall(){
         if(isInComingCall){
             // cuoc goi den
-            call = ConnectActivity.callMap.get(callId);
+            call = WaitingActivity.callMap.get(callId);
             if( call == null){
                 finish();
                 return;
             }
         }else{
             // tao cuoc goi moi
-            call = new StringeeCall(ConnectActivity.client, ConnectActivity.client.getUserId(), to);
+            call = new StringeeCall(WaitingActivity.client, WaitingActivity.client.getUserId(), to);
         }
 
         // theo doi trang thai cuoc goi
@@ -226,25 +319,25 @@ public class CallActivity extends AppCompatActivity {
                     mSignalingState = signalingState;
                     switch (signalingState) {
                         case CALLING:
-                            tvStatus.setText("Calling");
+                            tvStatus.setText("Đang gọi");
                             break;
                         case RINGING:
-                            tvStatus.setText("Ringing");
+                            tvStatus.setText("Đang đổ chuông");
                             break;
                         case ANSWERED:
-                            tvStatus.setText("Answered");
+                            tvStatus.setText("Đang trả lời");
                             // cuoc goi bat dau
                             if(mMediaState == StringeeCall.MediaState.CONNECTED){
-                                tvStatus.setText("Stated");
+                                tvStatus.setText("");
                             }
                             break;
                         case BUSY:
-                            tvStatus.setText("Busy");
+                            tvStatus.setText("Đang bận");
                             audioManager.stop();
                             finish();
                             break;
                         case ENDED:
-                            tvStatus.setText("Ended");
+                            tvStatus.setText("Kết thúc");
                             audioManager.stop();
                             finish();
                             break;
@@ -257,7 +350,7 @@ public class CallActivity extends AppCompatActivity {
             public void onError(StringeeCall stringeeCall, int i, String s) {
                 // cuoc goi bi loi
                 runOnUiThread(()->{
-                    tvStatus.setText("Error");
+                    tvStatus.setText("Lỗi đường truyền");
                     audioManager.stop();
                     finish();
                 });
@@ -275,11 +368,11 @@ public class CallActivity extends AppCompatActivity {
                     mMediaState = mediaState;
                     if(mediaState == StringeeCall.MediaState.CONNECTED){
                         if(mSignalingState == StringeeCall.SignalingState.ANSWERED){
-                            tvStatus.setText("Stated");
+                            tvStatus.setText("");
                         }
                     }else{
                         // mat ket noi
-                        tvStatus.setText("Retry to connect");
+                        tvStatus.setText("Đang kết nối lại");
                     }
                 });
             }

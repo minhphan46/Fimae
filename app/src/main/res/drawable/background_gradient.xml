@@ -4,5 +4,5 @@
     <gradient
         android:startColor="@color/backround_button_dark_1_startColor"
         android:endColor="@color/backround_button_dark_1_endColor"
-        android:angle="120" />
+        android:angle="270" />
 </shape>

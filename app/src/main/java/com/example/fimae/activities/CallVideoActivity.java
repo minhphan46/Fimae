@@ -242,14 +242,14 @@ public class CallVideoActivity extends AppCompatActivity {
     private void initCall(){
         if(isInComingCall){
             // cuoc goi den
-            call = ConnectActivity.call2Map.get(callId);
+            call = WaitingActivity.call2Map.get(callId);
             if( call == null){
                 finish();
                 return;
             }
         }else{
             // tao cuoc goi moi
-            call = new StringeeCall2(ConnectActivity.client, ConnectActivity.client.getUserId(), to);
+            call = new StringeeCall2(WaitingActivity.client, WaitingActivity.client.getUserId(), to);
             call.setVideoCall(true);
         }
 

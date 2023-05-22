@@ -29,6 +29,7 @@ import com.example.fimae.activities.MainActivity;
 import com.example.fimae.activities.WaitingActivity;
 import com.example.fimae.adapters.UserHomeViewAdapter;
 import com.example.fimae.models.UserInfo;
+import com.example.fimae.repository.ConnectRepo;
 
 import java.sql.Connection;
 import java.util.ArrayList;
@@ -36,6 +37,13 @@ import java.util.Arrays;
 import java.util.List;
 
 public class HomeFragment extends Fragment  {
+
+    // when click call button
+    // navigate to waiting screen ( with par to distinguish screen type)
+    // delay 5s
+    // if dont have user remote => wait
+    // if you have user
+    // navigate to call screen
 
     private View mView;
     private RecyclerView mRcvUsers;
@@ -57,22 +65,21 @@ public class HomeFragment extends Fragment  {
         mBtnChat.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                Toast toast = Toast.makeText(v.getContext(), "Chat", Toast.LENGTH_SHORT);
-                toast.show();
+                navigateToWaitingScreen(getContext(), "chat");
             }
         });
         mBtnCallVoice = (LinearLayout) mView.findViewById(R.id.btn_call_home);
         mBtnCallVoice.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                navigateToCallScreen(getContext());
+                navigateToWaitingScreen(getContext(), "voice");
             }
         });
         mBtnCallVideo = (LinearLayout) mView.findViewById(R.id.btn_call_video_home);
         mBtnCallVideo.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                navigateToCallScreen(getContext());
+                navigateToWaitingScreen(getContext(), "video");
             }
         });
         mBtnNoti = mView.findViewById(R.id.btn_noti_home);
@@ -103,19 +110,26 @@ public class HomeFragment extends Fragment  {
         userAdapter.setData(mUsers, new UserHomeViewAdapter.IClickCardUserListener() {
             @Override
             public void onClickUser(UserInfo user) {
-
+                ConnectRepo.getInstance().setUserLocal(user);
+                showToast("You are " + user.getName());
             }
         });
         mRcvUsers.setAdapter(userAdapter);
         return mView;
     }
 
-    void navigateToConnectScreen(Context context){
+    private void showToast(String value) {
+        Toast.makeText(this.getContext(), value, Toast.LENGTH_LONG).show();
+    }
+
+    private void navigateToConnectScreen(Context context){
         Intent intent = new Intent(context, ConnectActivity.class);
         context.startActivity(intent);
     }
-    void navigateToCallScreen(Context context){
+
+    private void navigateToWaitingScreen(Context context, String typeCall){
         Intent intent = new Intent(context, WaitingActivity.class);
+        intent.putExtra("type", typeCall);
         context.startActivity(intent);
     }
 }
