@@ -35,6 +35,8 @@ import de.hdodenhof.circleimageview.CircleImageView;
 
 public class CallActivity extends AppCompatActivity {
 
+    private int TIME_CALL = 60;
+
     private CircleImageView mImageLocal;
     private CircleImageView mImageRemote;
 
@@ -169,6 +171,7 @@ public class CallActivity extends AppCompatActivity {
                 }
                 else {
                     // cup may
+                    timerService.onDestroy();
                     onEndCall();
                 }
             }
@@ -208,15 +211,26 @@ public class CallActivity extends AppCompatActivity {
             return;
         }
         initCall();
-
-        // timer ==================================================================
+        // appbar ==================================================================
         btnClose = findViewById(R.id.btn_close_appbar);
         btnReport = findViewById(R.id.btn_report_appbar);
-        layoutTimer = findViewById(R.id.layout_timer);
         btnClose.setBackgroundResource(R.drawable.ic_logout);
 
+        btnClose.setOnClickListener(v -> {
+            // cup may
+            timerService.onDestroy();
+            onEndCall();
+        });
+
+        btnReport.setOnClickListener(v -> {
+            // report
+        });
+
+        // timer ==================================================================
+        layoutTimer = findViewById(R.id.layout_timer);
+
         timerService = new TimerService(
-                1 * 10,
+                TIME_CALL,
                 findViewById(R.id.pbTimer),
                 findViewById(R.id.tv_time_connect),
                 new TimerService.IOnTimeUp() {
@@ -244,7 +258,18 @@ public class CallActivity extends AppCompatActivity {
         timerService.onDestroy();
     }
 
+    private void onLiked() {
+        // doi background button call
+        // an di frame_text_like
+        // doi text tv_des_call
+        // doi bien like
+        isLiked = true;
+        btnEnd.setBackgroundResource(R.drawable.background_btn_call);
+        frmTextLike.setVisibility(View.GONE);
+        tvDescriptionCall.setText("Bây giờ chúng ta là bạn, thưởng thức cuộc trò chuyện không giới hạn");
+    }
     // call =======================================================================
+
     private void onEndCall(){
         if(call != null){
             call.hangup(new StatusListener(){
@@ -255,17 +280,6 @@ public class CallActivity extends AppCompatActivity {
             audioManager.stop();
             finish();
         }
-    }
-
-    private void onLiked() {
-        // doi background button call
-        // an di frame_text_like
-        // doi text tv_des_call
-        // doi bien like
-        isLiked = true;
-        btnEnd.setBackgroundResource(R.drawable.background_btn_call);
-        frmTextLike.setVisibility(View.GONE);
-        tvDescriptionCall.setText("Bây giờ chúng ta là bạn, thưởng thức cuộc trò chuyện không giới hạn");
     }
 
     // lay token de thuc hien cuoc goi
@@ -332,7 +346,7 @@ public class CallActivity extends AppCompatActivity {
                             }
                             break;
                         case BUSY:
-                            tvStatus.setText("Đang bận");
+                            tvStatus.setText("Máy bận");
                             audioManager.stop();
                             finish();
                             break;

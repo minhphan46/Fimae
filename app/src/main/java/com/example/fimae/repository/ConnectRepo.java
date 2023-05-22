@@ -41,11 +41,12 @@ public class ConnectRepo {
 
     public ArrayList<UserInfo> listUsersOnline = new ArrayList<>();
 
+    public static String table_chat_name = "USERS_CHAT_ONLINE";
     public static String table_call_voice_name = "USERS_CALL_ONLINE";
     public static String table_call_video_name = "USERS_VIDEO_ONLINE";
 
-    public void fetchData() {
-        databaseReference.child(table_call_voice_name).addValueEventListener(
+    public void fetchData(String tableName) {
+        databaseReference.child(tableName).addValueEventListener(
         new ValueEventListener(){
             @Override
             public void onDataChange(@NonNull DataSnapshot snapshot) {

@@ -45,6 +45,9 @@ import java.util.Map;
 
 public class WaitingActivity extends AppCompatActivity {
 
+    private String type; // type of connect
+    private String tableName;
+
     private FrameLayout mBtnSpeedUp;
     // appbar ======================================================
     private ImageButton mBtnZoomOut;
@@ -61,7 +64,6 @@ public class WaitingActivity extends AppCompatActivity {
     private TextView mTvStatusConnect;
     public static StringeeClient client;
     DatabaseReference databaseReference;
-    private String type; // type of call
     // luu cuoc goi den = map
     // key = callID
     public static Map<String, StringeeCall> callMap = new HashMap<>();
@@ -75,6 +77,15 @@ public class WaitingActivity extends AppCompatActivity {
         // receive data
         Intent intent = getIntent();
         type = intent.getStringExtra("type"); // two option: voice - video
+        if(type.equals("chat")){
+            tableName = ConnectRepo.table_chat_name;
+        }
+        else if(type.equals("voice")){
+            tableName = ConnectRepo.table_call_voice_name;
+        }
+        else if(type.equals("video")){
+            tableName = ConnectRepo.table_call_video_name;
+        }
         // appbar ========================================================
         mBtnZoomOut = findViewById(R.id.btn_zoom_out_waiting);
         mBtnZoomOut.setOnClickListener(v -> {
@@ -83,7 +94,7 @@ public class WaitingActivity extends AppCompatActivity {
 
         mBtnClose = findViewById(R.id.btn_close_waiting);
         mBtnClose.setOnClickListener(v -> {
-            finish();
+            closeScreen();
         });
 
         mTvTitle = findViewById(R.id.tv_title_waiting);
@@ -112,15 +123,7 @@ public class WaitingActivity extends AppCompatActivity {
         // call function: connect to user ======================================================
         mTvStatusConnect = findViewById(R.id.tv_status_connect);
         databaseReference = FirebaseDatabase.getInstance().getReference();
-        if(type.equals("chat")){
-
-        }
-        else if(type.equals("voice")){
-            fetchData(ConnectRepo.table_call_voice_name);
-        }
-        else if(type.equals("video")){
-            fetchData(ConnectRepo.table_call_video_name);
-        }
+        fetchData(tableName);
 
         if(ConnectRepo.getInstance().getUserLocal() != null){
             initStringeeConnection();
@@ -129,18 +132,28 @@ public class WaitingActivity extends AppCompatActivity {
         mBtnSpeedUp = findViewById(R.id.btn_speed_up);
         mBtnSpeedUp.setOnClickListener(v -> {
             if(remoteUserName != null){
-                if(type.equals("voice")){
-                    ConnectRepo.getInstance().deleteUserOnl(ConnectRepo.getInstance().getUserRemote(), ConnectRepo.table_call_voice_name);
+                ConnectRepo.getInstance().deleteUserOnl(ConnectRepo.getInstance().getUserRemote(), tableName);
+                if(type.equals("chat")){
+                    navigateToChatScreen();
+                }
+                else if(type.equals("voice")){
                     navigateToCallVoiceScreen();
                 }
-                else {
-                    ConnectRepo.getInstance().deleteUserOnl(ConnectRepo.getInstance().getUserRemote(),ConnectRepo.table_call_video_name);
+                else if(type.equals("video")){
                     navigateToCallVideoScreen();
                 }
             }
         });
     }
 
+    // close screen ==============================================================================
+    private void closeScreen() {
+        // delete user onl then finish
+        if(ConnectRepo.getInstance().getUserLocal() != null){
+            ConnectRepo.getInstance().deleteUserOnl(ConnectRepo.getInstance().getUserLocal(),tableName);
+        }
+        finish();
+    }
     // connect to ==============================================================================
     private void fetchData(String tableName) {
         databaseReference.child(tableName).addListenerForSingleValueEvent(
@@ -296,6 +309,12 @@ public class WaitingActivity extends AppCompatActivity {
             }
         });
         client.connect(ConnectRepo.getInstance().getUserLocal().getToken());
+    }
+
+    private void navigateToChatScreen() {
+        /*Intent intent = new Intent(this, ChatActivity.class);
+        intent.putExtra("to", remoteUserName);
+        startActivity(intent);*/
     }
 
     private void navigateToCallVoiceScreen() {

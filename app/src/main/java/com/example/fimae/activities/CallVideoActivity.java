@@ -11,9 +11,11 @@ import android.os.Bundle;
 import android.view.View;
 import android.widget.FrameLayout;
 import android.widget.ImageButton;
+import android.widget.LinearLayout;
 import android.widget.TextView;
 
 import com.example.fimae.R;
+import com.example.fimae.service.TimerService;
 import com.stringee.call.StringeeCall2;
 import com.stringee.common.StringeeAudioManager;
 import com.stringee.listener.StatusListener;
@@ -25,6 +27,8 @@ import java.util.ArrayList;
 import java.util.List;
 
 public class CallVideoActivity extends AppCompatActivity {
+
+    private int TIME_CALL = 30;
 
     private TextView tvStatus;
     private View vIncoming;
@@ -55,6 +59,15 @@ public class CallVideoActivity extends AppCompatActivity {
     private boolean isSpeaker = false;
     private boolean isMicOn = true;
     private boolean isVideoOn = true;
+
+    // like
+    private boolean isLiked = false;
+
+    // Appbar
+    private ImageButton btnClose;
+    private ImageButton btnReport;
+    private LinearLayout layoutTimer;
+    private TimerService timerService;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -136,15 +149,17 @@ public class CallVideoActivity extends AppCompatActivity {
         btnEnd.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                if(call != null){
-                    call.hangup(new StatusListener(){
-                        @Override
-                        public void onSuccess() {
-
-                        }
-                    });
-                    audioManager.stop();
-                    finish();
+                if(!isLiked) {
+                    // neu chua like
+                    onLiked();
+                    // delete timer
+                    timerService.onDestroy();
+                    layoutTimer.setVisibility(View.GONE);
+                }
+                else {
+                    // cup may
+                    timerService.onDestroy();
+                    onEndCall();
                 }
             }
         });
@@ -209,6 +224,75 @@ public class CallVideoActivity extends AppCompatActivity {
         }
 
         initCall();
+
+        // appbar ==================================================================
+        btnClose = findViewById(R.id.btn_close_appbar);
+        btnReport = findViewById(R.id.btn_report_appbar);
+        btnClose.setBackgroundResource(R.drawable.ic_logout);
+
+        btnClose.setOnClickListener(v -> {
+            // cup may
+            timerService.onDestroy();
+            onEndCall();
+        });
+
+        btnReport.setOnClickListener(v -> {
+            // report
+        });
+
+        // timer ==================================================================
+        layoutTimer = findViewById(R.id.layout_timer);
+
+        timerService = new TimerService(
+                TIME_CALL,
+                findViewById(R.id.pbTimer),
+                findViewById(R.id.tv_time_connect),
+                new TimerService.IOnTimeUp() {
+                    @Override
+                    public void onTimeUp() {
+                        if(!isLiked) {
+                            // neu chua like thi dung khi het thoi gian
+                            onEndCall();
+                            timerService.onDestroy();
+                        }
+                        else {
+                            // neu like roi thi an di
+                            layoutTimer.setVisibility(View.GONE);
+                        }
+                    }
+                }
+        );
+        timerService.setTimeInit();
+        timerService.startTimerSetUp();
+    }
+
+    @Override
+    protected void onDestroy() {
+        super.onDestroy();
+        timerService.onDestroy();
+    }
+
+    private void onLiked() {
+        // doi background button call
+        // an di frame_text_like
+        // doi text tv_des_call
+        // doi bien like
+        isLiked = true;
+        btnEnd.setBackgroundResource(R.drawable.background_btn_call);
+    }
+    // call =======================================================================
+
+    private void onEndCall(){
+        if(call != null){
+            call.hangup(new StatusListener(){
+                @Override
+                public void onSuccess() {
+
+                }
+            });
+            audioManager.stop();
+            finish();
+        }
     }
 
     // lay token de thuc hien cuoc goi
@@ -263,25 +347,25 @@ public class CallVideoActivity extends AppCompatActivity {
                     mSignalingState = signalingState;
                     switch (signalingState) {
                         case CALLING:
-                            tvStatus.setText("Calling");
+                            tvStatus.setText("Đang gọi");
                             break;
                         case RINGING:
-                            tvStatus.setText("Ringing");
+                            tvStatus.setText("Đang đổ chuông");
                             break;
                         case ANSWERED:
-                            tvStatus.setText("Answered");
+                            tvStatus.setText("Đang trả lời");
                             // cuoc goi bat dau
                             if(mMediaState == StringeeCall2.MediaState.CONNECTED){
-                                tvStatus.setText("Stated");
+                                tvStatus.setText("");
                             }
                             break;
                         case BUSY:
-                            tvStatus.setText("Busy");
+                            tvStatus.setText("Máy bận");
                             audioManager.stop();
                             finish();
                             break;
                         case ENDED:
-                            tvStatus.setText("Ended");
+                            tvStatus.setText("Kết thúc");
                             audioManager.stop();
                             finish();
                             break;
@@ -293,7 +377,7 @@ public class CallVideoActivity extends AppCompatActivity {
             public void onError(StringeeCall2 stringeeCall2, int i, String s) {
                 // cuoc goi bi loi
                 runOnUiThread(()->{
-                    tvStatus.setText("Error");
+                    tvStatus.setText("Lỗi đường truyền");
                     audioManager.stop();
                     finish();
                 });
@@ -311,11 +395,11 @@ public class CallVideoActivity extends AppCompatActivity {
                     mMediaState = mediaState;
                     if(mediaState == StringeeCall2.MediaState.CONNECTED){
                         if(mSignalingState == StringeeCall2.SignalingState.ANSWERED){
-                            tvStatus.setText("Stated");
+                            tvStatus.setText("");
                         }
                     }else{
                         // mat ket noi
-                        tvStatus.setText("Retry to connect");
+                        tvStatus.setText("Đang kết nối lại");
                     }
                 });
             }

@@ -70,7 +70,7 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_marginTop="30dp"
-        android:text="center"
+        android:text=""
         android:textColor="@color/text_white"
         android:textSize="16sp"
         app:layout_constraintEnd_toEndOf="parent"
