@@ -1,0 +1,45 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:orientation="horizontal"
+    android:gravity="center"
+    android:paddingLeft="16dp"
+    android:paddingRight="16dp"
+    android:paddingTop="8dp"
+    android:paddingBottom="8dp"
+    android:layout_height="wrap_content"
+    android:background="@color/backround_button_dark_1_startColor">
+
+    <ImageButton
+        android:id="@+id/btn_zoom_out"
+        android:layout_width="30dp"
+        android:layout_height="30dp"
+        android:background="@drawable/ic_compact"
+        android:padding="20dp"/>
+
+    <Space
+        android:layout_width="0dp"
+        android:layout_height="0dp"
+        android:layout_weight="1" />
+
+    <TextView
+        android:id="@+id/tv_title"
+        style="@style/bold_24"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="Nhắn tin"
+        android:textColor="@color/white"
+        android:gravity="center"/>
+    <Space
+        android:layout_width="0dp"
+        android:layout_height="0dp"
+        android:layout_weight="1" />
+
+    <ImageButton
+        android:id="@+id/btn_close"
+        android:layout_width="28dp"
+        android:layout_height="28dp"
+        android:background="@drawable/ic_close"
+        android:padding="20dp" />
+
+</LinearLayout>

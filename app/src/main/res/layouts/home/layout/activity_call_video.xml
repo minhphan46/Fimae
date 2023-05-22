@@ -4,20 +4,53 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:background="@color/backround_dark"
-    tools:context=".activities.CallActivity">
+    android:background="@drawable/background_gradient"
+    tools:context=".activities.CallVideoActivity">
 
-    <TextView
-        android:id="@+id/tv_status"
+    <include
+        android:id="@+id/appbar_layout"
+        layout="@layout/appbar_connect" />
+
+    <FrameLayout
+        android:id="@+id/v_remote"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent" />
+
+    <FrameLayout
+        android:id="@+id/v_local"
+        android:layout_width="80dp"
+        android:layout_height="120dp"
+        android:layout_margin="20dp"
+        android:layout_marginTop="20dp"
+        android:background="@color/black"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintTop_toBottomOf="@id/appbar_layout" />
+
+
+    <ImageButton
+        android:id="@+id/btn_switch"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
+        android:layout_margin="20dp"
+        android:background="@drawable/ic_flip_camera"
+        android:padding="20dp"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@id/appbar_layout" />
+
+    <TextView
+        android:id="@+id/tv_status_vid"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="center"
         android:layout_margin="10dp"
         android:layout_marginEnd="356dp"
         android:layout_marginBottom="699dp"
-        android:text="center"
         android:textColor="@color/text_white"
         android:textSize="16sp"
-        app:fontFamily="More Fonts..."
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
@@ -34,26 +67,37 @@
         app:layout_constraintStart_toStartOf="parent">
 
         <LinearLayout
-            android:id="@+id/v_option"
+            android:id="@+id/v_option_vid"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:gravity="center"
-            android:orientation="horizontal">
+            android:orientation="horizontal"
+            android:layout_marginBottom="10dp">
 
             <ImageButton
-                android:id="@+id/btn_speaker"
+                android:id="@+id/btn_speaker_vid"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_margin="10dp"
                 android:background="@drawable/background_btn_speaker_off"
                 android:padding="20dp"/>
+            <Space
+                android:layout_width="40dp"
+                android:layout_height="0dp"/>
+            <ImageButton
+                android:id="@+id/btn_video"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_margin="10dp"
+                android:background="@drawable/background_btn_videocam_on"
+                android:padding="20dp"/>
 
             <Space
-                android:layout_width="100dp"
+                android:layout_width="40dp"
                 android:layout_height="0dp"/>
 
             <ImageButton
-                android:id="@+id/btn_mute"
+                android:id="@+id/btn_mute_vid"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_margin="10dp"
@@ -62,7 +106,7 @@
         </LinearLayout>
 
         <LinearLayout
-            android:id="@+id/v_incoming"
+            android:id="@+id/v_incoming_vid"
             android:visibility="gone"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
@@ -71,7 +115,7 @@
             >
 
             <ImageButton
-                android:id="@+id/btn_reject"
+                android:id="@+id/btn_reject_vid"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_margin="10dp"
@@ -83,7 +127,7 @@
                 android:layout_height="0dp"/>
 
             <ImageButton
-                android:id="@+id/btn_answer"
+                android:id="@+id/btn_answer_vid"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_margin="10dp"
@@ -91,14 +135,12 @@
                 android:padding="20dp"/>
         </LinearLayout>
         <ImageButton
-            android:id="@+id/btn_end"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:background="@drawable/background_btn_call"
-            android:padding="20dp"/>
+            android:id="@+id/btn_end_vid"
+            android:layout_width="80dp"
+            android:layout_height="80dp"
+            android:background="@drawable/background_btn_love"
+            android:padding="0dp"/>
 
     </LinearLayout>
-
-
 
 </androidx.constraintlayout.widget.ConstraintLayout>
