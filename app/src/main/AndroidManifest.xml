@@ -12,7 +12,18 @@
     <uses-permission android:name="android.permission.CAMERA"/>
     <uses-permission android:name="android.permission.BLUETOOTH"/>
     <uses-permission android:name="android.permission.BLUETOOTH_CONNECT"/>
+    <uses-feature
+            android:name="android.hardware.camera"
+            android:required="false" />
+    <uses-feature
+            android:name="android.hardware.camera.autofocus"
+            android:required="false" />
+    <uses-feature
+            android:name="android.hardware.camera.flash"
+            android:required="false" />
 
+    <uses-permission android:name="android.permission.CAMERA" />
+    <uses-permission android:name="android.permission.READ_EXTERNAL_STORAGE"/>
     <application
             android:allowBackup="true"
             android:dataExtractionRules="@xml/data_extraction_rules"
@@ -38,11 +49,6 @@
                 android:resource="@array/preloaded_fonts"/>
 
         <activity
-                android:name=".activities.ChatActivity"
-                android:exported="false"
-                android:label="@string/title_activity_chat"
-                android:theme="@style/Theme.Fimae.NoActionBar"/>
-        <activity
                 android:name=".activities.ConnectActivity"
                 android:exported="false"/>
         <activity
@@ -56,7 +62,7 @@
                 android:exported="true">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN"/>
-
+                <action android:name="android.media.action.IMAGE_CAPTURE" />
                 <category android:name="android.intent.category.LAUNCHER"/>
             </intent-filter>
         </activity>

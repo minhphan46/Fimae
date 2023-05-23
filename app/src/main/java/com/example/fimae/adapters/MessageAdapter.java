@@ -1,6 +1,7 @@
 package com.example.fimae.adapters;
 
 import android.content.Context;
+import android.os.Build;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -11,11 +12,13 @@ import com.example.fimae.R;
 import com.example.fimae.models.Message;
 
 import java.util.ArrayList;
+import java.util.Collections;
+import java.util.Comparator;
 
 public class MessageAdapter extends RecyclerView.Adapter {
 
-    ArrayList<Message> msgData;
     Context context;
+    ArrayList<Message> msgData;
 
     final int SENDER_VIEW_HOLDER = 0;
     final int RECEIVER_VIEW_HOLDER = 1;
@@ -23,19 +26,14 @@ public class MessageAdapter extends RecyclerView.Adapter {
 
     public MessageAdapter(Context context, ArrayList<Message> msgData) {
 
+
         this.msgData = msgData;
         this.context = context;
-
     }
 
     @Override
     public int getItemViewType(int position) {
-
-        if (position % 2 == 0)
-            return SENDER_VIEW_HOLDER;
-        else
-            return RECEIVER_VIEW_HOLDER;
-
+        return (position % 2 == 0) ? SENDER_VIEW_HOLDER : RECEIVER_VIEW_HOLDER;
     }
 
     @NonNull
@@ -56,12 +54,10 @@ public class MessageAdapter extends RecyclerView.Adapter {
 
         if (holder.getClass() == OutgoingViewholder.class) {
             ((OutgoingViewholder) holder).outgoingMsg.setText(msgData.get(position).getContent());
-        } else {
 
+        } else {
             ((IncomingViewholder) holder).incomingMsg.setText(msgData.get(position).getContent());
         }
-
-
     }
 
     @Override
@@ -71,8 +67,6 @@ public class MessageAdapter extends RecyclerView.Adapter {
 
     public static class OutgoingViewholder extends RecyclerView.ViewHolder {
         TextView outgoingMsg;
-
-
         public OutgoingViewholder(@NonNull View itemView) {
             super(itemView);
             outgoingMsg = itemView.findViewById(R.id.outgoing_msg);
@@ -80,9 +74,7 @@ public class MessageAdapter extends RecyclerView.Adapter {
     }
 
     public static class IncomingViewholder extends RecyclerView.ViewHolder {
-
         TextView incomingMsg;
-
         public IncomingViewholder(@NonNull View itemView) {
             super(itemView);
             incomingMsg = itemView.findViewById(R.id.incoming_msg);
