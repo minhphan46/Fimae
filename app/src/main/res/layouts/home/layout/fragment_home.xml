@@ -24,13 +24,13 @@
             android:layout_width="0dp"
             android:layout_weight="0.5"
             android:layout_height="match_parent"
-            android:background="@drawable/shape_rectangle_boder_radius_pink"
+            android:background="@drawable/shape_rectangle_border_radius_pink"
             android:gravity="center"
             android:orientation="vertical"
             android:paddingLeft="2dp"
             android:paddingRight="2dp"
-            android:paddingTop="15dp"
-            android:paddingBottom="15dp"
+            android:paddingTop="25dp"
+            android:paddingBottom="25dp"
             android:focusable="true">
             <ImageView
                 android:layout_width="35dp"
@@ -94,13 +94,13 @@
             android:layout_width="0dp"
             android:layout_weight="0.5"
             android:layout_height="match_parent"
-            android:background="@drawable/shape_rectangle_boder_radius_green"
+            android:background="@drawable/shape_rectangle_border_radius_green"
             android:gravity="center"
             android:orientation="vertical"
             android:paddingLeft="2dp"
             android:paddingRight="2dp"
-            android:paddingTop="15dp"
-            android:paddingBottom="15dp"
+            android:paddingTop="25dp"
+            android:paddingBottom="25dp"
             android:focusable="true">
 
             <ImageView
@@ -165,13 +165,13 @@
             android:layout_width="0dp"
             android:layout_weight="0.5"
             android:layout_height="match_parent"
-            android:background="@drawable/shape_rectangle_boder_radius_purple"
+            android:background="@drawable/shape_rectangle_border_radius_purple"
             android:gravity="center"
             android:orientation="vertical"
             android:paddingLeft="2dp"
             android:paddingRight="2dp"
-            android:paddingTop="15dp"
-            android:paddingBottom="15dp"
+            android:paddingTop="25dp"
+            android:paddingBottom="25dp"
             android:focusable="true">
 
             <ImageView
