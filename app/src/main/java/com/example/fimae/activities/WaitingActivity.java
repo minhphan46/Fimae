@@ -167,10 +167,10 @@ public class WaitingActivity extends AppCompatActivity {
     }
 
     private void connectToRemoteUser() {
-        if(isCalled) return;
-        isCalled = true;
         if(remoteUserName != null){
             //ConnectRepo.getInstance().deleteUserOnl(ConnectRepo.getInstance().getUserRemote(), tableName);
+            if(isCalled) return;
+            isCalled = true;
             if(type.equals("chat")){
                 navigateToChatScreen();
             }
@@ -302,6 +302,7 @@ public class WaitingActivity extends AppCompatActivity {
                     remoteUserName = stringeeCall.getFrom();
                     ConnectRepo.getInstance().setUserRemoteByName(remoteUserName);
                     // navigate to call screen
+                    isCalled = true;
                     Intent intent = new Intent(WaitingActivity.this, CallActivity.class);
                     intent.putExtra("callId", stringeeCall.getCallId());
                     intent.putExtra("isIncomingCall", true);
@@ -317,6 +318,7 @@ public class WaitingActivity extends AppCompatActivity {
                     remoteUserName = stringeeCall2.getFrom();
                     ConnectRepo.getInstance().setUserRemoteByName(remoteUserName);
                     // navigate to call video screen
+                    isCalled = true;
                     Intent intent = new Intent(WaitingActivity.this, CallVideoActivity.class);
                     intent.putExtra("callId", stringeeCall2.getCallId());
                     intent.putExtra("isIncomingCall", true);
