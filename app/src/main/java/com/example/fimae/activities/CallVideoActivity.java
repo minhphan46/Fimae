@@ -144,8 +144,7 @@ public class CallVideoActivity extends AppCompatActivity {
 
                             }
                         });
-                        audioManager.stop();
-                        finish();
+                        onFinish();
                     }
                 });
             }
@@ -297,9 +296,14 @@ public class CallVideoActivity extends AppCompatActivity {
 
                 }
             });
-            audioManager.stop();
-            finish();
+            onFinish();
         }
+    }
+
+    private void onFinish() {
+        audioManager.stop();
+        WaitingActivity.isCalled = false;
+        finish();
     }
 
     // lay token de thuc hien cuoc goi
@@ -323,7 +327,7 @@ public class CallVideoActivity extends AppCompatActivity {
         // check nguoi dung cap quyen chua
         if(requestCode == 0){
             if(!isGranted){
-                finish();
+                onFinish();
             } else {
                 initCall();
             }
@@ -335,7 +339,7 @@ public class CallVideoActivity extends AppCompatActivity {
             // cuoc goi den
             call = WaitingActivity.call2Map.get(callId);
             if( call == null){
-                finish();
+                onFinish();
                 return;
             }
         }else{
@@ -368,13 +372,11 @@ public class CallVideoActivity extends AppCompatActivity {
                             break;
                         case BUSY:
                             tvStatus.setText("Máy bận");
-                            audioManager.stop();
-                            finish();
+                            onFinish();
                             break;
                         case ENDED:
                             tvStatus.setText("Kết thúc");
-                            audioManager.stop();
-                            finish();
+                            onFinish();
                             break;
                     }
                 });
@@ -385,8 +387,7 @@ public class CallVideoActivity extends AppCompatActivity {
                 // cuoc goi bi loi
                 runOnUiThread(()->{
                     tvStatus.setText("Lỗi đường truyền");
-                    audioManager.stop();
-                    finish();
+                    onFinish();
                 });
             }
 

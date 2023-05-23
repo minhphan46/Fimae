@@ -11,6 +11,7 @@ import android.content.Intent;
 import android.os.Bundle;
 import android.os.CountDownTimer;
 import android.os.Handler;
+import android.os.Looper;
 import android.util.Log;
 import android.view.View;
 import android.widget.Button;
@@ -47,6 +48,7 @@ public class WaitingActivity extends AppCompatActivity {
 
     private String type; // type of connect
     private String tableName;
+    private int timeDelayToConnect = 3000;
 
     private FrameLayout mBtnSpeedUp;
     // appbar ======================================================
@@ -57,9 +59,10 @@ public class WaitingActivity extends AppCompatActivity {
     private ViewPager2 viewPager2;
     private List<UserInfo> userInfos;
     private Handler sliderHandler = new Handler();
-    private int timeDelay = 2000;
+    private int timeDelaySlider = 2000;
 
     // goi dien ====================================================
+    public static boolean isCalled = false;
     private String remoteUserName;
     private TextView mTvStatusConnect;
     public static StringeeClient client;
@@ -116,7 +119,7 @@ public class WaitingActivity extends AppCompatActivity {
             public void onPageSelected(int position) {
                 super.onPageSelected(position);
                 sliderHandler.removeCallbacks(sliderRunable);
-                sliderHandler.postDelayed(sliderRunable, timeDelay); // slide duration 2 seconds
+                sliderHandler.postDelayed(sliderRunable, timeDelaySlider); // slide duration 2 seconds
             }
         });
 
@@ -131,18 +134,7 @@ public class WaitingActivity extends AppCompatActivity {
         // btn speed up ======================================================================================
         mBtnSpeedUp = findViewById(R.id.btn_speed_up);
         mBtnSpeedUp.setOnClickListener(v -> {
-            if(remoteUserName != null){
-                ConnectRepo.getInstance().deleteUserOnl(ConnectRepo.getInstance().getUserRemote(), tableName);
-                if(type.equals("chat")){
-                    navigateToChatScreen();
-                }
-                else if(type.equals("voice")){
-                    navigateToCallVoiceScreen();
-                }
-                else if(type.equals("video")){
-                    navigateToCallVideoScreen();
-                }
-            }
+            connectToRemoteUser();
         });
     }
 
@@ -153,10 +145,44 @@ public class WaitingActivity extends AppCompatActivity {
             ConnectRepo.getInstance().deleteUserOnl(ConnectRepo.getInstance().getUserLocal(),tableName);
         }
         ConnectRepo.getInstance().setUserRemote(null);
-        client = null;
+        if(client != null) {
+            client.disconnect();
+            client = null;
+        }
         finish();
     }
+
     // connect to ==============================================================================
+    private void handlerConnect() {
+        // delay 3s
+        // if remote user is not null => connect
+        final Handler handler = new Handler(Looper.getMainLooper());
+        handler.postDelayed(new Runnable() {
+            @Override
+            public void run() {
+                //Do something after 3s
+                connectToRemoteUser();
+            }
+        }, timeDelayToConnect);
+    }
+
+    private void connectToRemoteUser() {
+        if(isCalled) return;
+        isCalled = true;
+        if(remoteUserName != null){
+            //ConnectRepo.getInstance().deleteUserOnl(ConnectRepo.getInstance().getUserRemote(), tableName);
+            if(type.equals("chat")){
+                navigateToChatScreen();
+            }
+            else if(type.equals("voice")){
+                navigateToCallVoiceScreen();
+            }
+            else if(type.equals("video")){
+                navigateToCallVideoScreen();
+            }
+        }
+    }
+
     private void fetchData(String tableName) {
         databaseReference.child(tableName).addListenerForSingleValueEvent(
             new ValueEventListener(){
@@ -176,6 +202,8 @@ public class WaitingActivity extends AppCompatActivity {
                     ConnectRepo.getInstance().listUsersOnline = listUsersOnline;
                     ConnectRepo.getInstance().checkUser(tableName);
                     connectToCall();
+                    // if find a user => connect auto
+                    handlerConnect();
                 }
 
                 @Override
@@ -245,7 +273,7 @@ public class WaitingActivity extends AppCompatActivity {
     @Override
     protected void onResume() {
         super.onResume();
-        sliderHandler.postDelayed(sliderRunable, timeDelay);
+        sliderHandler.postDelayed(sliderRunable, timeDelaySlider);
     }
 
     // init call ==============================================================================

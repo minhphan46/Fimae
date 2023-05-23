@@ -47,6 +47,7 @@ public class ConnectRepo {
     public static String table_call_voice_name = "USERS_CALL_ONLINE";
     public static String table_call_video_name = "USERS_VIDEO_ONLINE";
 
+
     public void fetchData(String tableName) {
         databaseReference.child(tableName).addValueEventListener(
         new ValueEventListener(){
@@ -82,6 +83,7 @@ public class ConnectRepo {
             // if user remote != userLocal
             if(!getFirstUserOnl().getId().equals(userLocal.getId())){
                 userRemote = getFirstUserOnl();
+                deleteUserOnl(getUserRemote(), tableName);
             }
         } else {
             if(userLocal != null)
