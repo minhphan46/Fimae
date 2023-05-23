@@ -28,7 +28,9 @@ import java.util.List;
 
 public class CallVideoActivity extends AppCompatActivity {
 
-    private int TIME_CALL = 30;
+    private int TIME_CALL = 60;
+
+    private FrameLayout frmTextDes;
 
     private TextView tvStatus;
     private View vIncoming;
@@ -86,6 +88,7 @@ public class CallVideoActivity extends AppCompatActivity {
         btnEnd = findViewById(R.id.btn_end_vid);
         btnVideo = findViewById(R.id.btn_video);
         btnSwitch = findViewById(R.id.btn_switch);
+        frmTextDes = findViewById(R.id.frame_text_des);
 
         btnSpeaker.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -125,6 +128,7 @@ public class CallVideoActivity extends AppCompatActivity {
                         vIncoming.setVisibility(View.GONE);
                         vOption.setVisibility(View.VISIBLE);
                         btnEnd.setVisibility(View.VISIBLE);
+                        frmTextDes.setVisibility(View.VISIBLE);
                     }
                 });
             }
@@ -197,6 +201,7 @@ public class CallVideoActivity extends AppCompatActivity {
         vIncoming.setVisibility(isInComingCall? View.VISIBLE : View.GONE);
         vOption.setVisibility(isInComingCall? View.GONE: View.VISIBLE);
         btnEnd.setVisibility(isInComingCall? View.GONE: View.VISIBLE);
+        frmTextDes.setVisibility(isInComingCall? View.GONE: View.VISIBLE);
 
         // list permission
         List<String> listPermission = new ArrayList<>();
@@ -278,7 +283,9 @@ public class CallVideoActivity extends AppCompatActivity {
         // doi text tv_des_call
         // doi bien like
         isLiked = true;
+        frmTextDes.setVisibility(View.GONE);
         btnEnd.setBackgroundResource(R.drawable.background_btn_call);
+
     }
     // call =======================================================================
 

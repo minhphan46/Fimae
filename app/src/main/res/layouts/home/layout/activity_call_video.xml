@@ -56,7 +56,31 @@
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent" />
 
+    <FrameLayout
+        android:id="@+id/frame_text_des"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:layout_marginBottom="15dp"
+        android:layout_marginStart="30dp"
+        android:layout_marginEnd="30dp"
+        android:background="@drawable/shape_rectangle_border_radius_text"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintBottom_toTopOf="@+id/v_layout_buttons">
+
+        <TextView
+            android:id="@+id/tv_des_call"
+            style="@style/regular_14"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:gravity="center"
+            android:padding="12dp"
+            android:text="Trò chuyện 5 phút, thích nhau mở khóa trò chuyện không giới hạn"
+            android:textColor="@color/secondary_1" />
+    </FrameLayout>
+
     <LinearLayout
+        android:id="@+id/v_layout_buttons"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_marginBottom="50dp"

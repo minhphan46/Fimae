@@ -30,7 +30,7 @@
             android:layout_height="wrap_content"
             android:gravity="center"
             android:padding="12dp"
-            android:text="Trò chuyện 7 phút, thích nhau mở khóa trò chuyện không giới hạn"
+            android:text="Trò chuyện 5 phút, thích nhau mở khóa trò chuyện không giới hạn"
             android:textColor="@color/secondary_1" />
     </FrameLayout>
 

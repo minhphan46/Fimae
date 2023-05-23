@@ -85,8 +85,12 @@ public class CallActivity extends AppCompatActivity {
         mImageLocal = findViewById(R.id.img_avatar_local);
         mImageRemote = findViewById(R.id.img_avatar_remote);
 
-        //Picasso.get().load(ConnectRepo.getInstance().getUserLocal().getAvatarUrl()).placeholder(R.drawable.ic_default_avatar).into(mImageLocal);
-        //Picasso.get().load(ConnectRepo.getInstance().getUserRemote().getAvatarUrl()).placeholder(R.drawable.ic_default_avatar).into(mImageRemote);
+        if(ConnectRepo.getInstance().getUserLocal() != null){
+            Picasso.get().load(ConnectRepo.getInstance().getUserLocal().getAvatarUrl()).placeholder(R.drawable.ic_default_avatar).into(mImageLocal);
+        }
+        if(ConnectRepo.getInstance().getUserRemote() != null){
+            Picasso.get().load(ConnectRepo.getInstance().getUserRemote().getAvatarUrl()).placeholder(R.drawable.ic_default_avatar).into(mImageRemote);
+        }
         // ======================================
         tvStatus = findViewById(R.id.tv_status);
         vIncoming = findViewById(R.id.v_incoming);

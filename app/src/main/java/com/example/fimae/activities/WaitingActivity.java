@@ -152,6 +152,8 @@ public class WaitingActivity extends AppCompatActivity {
         if(ConnectRepo.getInstance().getUserLocal() != null){
             ConnectRepo.getInstance().deleteUserOnl(ConnectRepo.getInstance().getUserLocal(),tableName);
         }
+        ConnectRepo.getInstance().setUserRemote(null);
+        client = null;
         finish();
     }
     // connect to ==============================================================================
@@ -268,6 +270,10 @@ public class WaitingActivity extends AppCompatActivity {
             public void onIncomingCall(StringeeCall stringeeCall) {
                 runOnUiThread(()->{
                     callMap.put(stringeeCall.getCallId(), stringeeCall);
+                    // set user remote
+                    remoteUserName = stringeeCall.getFrom();
+                    ConnectRepo.getInstance().setUserRemoteByName(remoteUserName);
+                    // navigate to call screen
                     Intent intent = new Intent(WaitingActivity.this, CallActivity.class);
                     intent.putExtra("callId", stringeeCall.getCallId());
                     intent.putExtra("isIncomingCall", true);
@@ -279,6 +285,10 @@ public class WaitingActivity extends AppCompatActivity {
             public void onIncomingCall2(StringeeCall2 stringeeCall2) {
                 runOnUiThread(()->{
                     call2Map.put(stringeeCall2.getCallId(), stringeeCall2);
+                    // set user remote
+                    remoteUserName = stringeeCall2.getFrom();
+                    ConnectRepo.getInstance().setUserRemoteByName(remoteUserName);
+                    // navigate to call video screen
                     Intent intent = new Intent(WaitingActivity.this, CallVideoActivity.class);
                     intent.putExtra("callId", stringeeCall2.getCallId());
                     intent.putExtra("isIncomingCall", true);

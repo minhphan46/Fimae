@@ -16,6 +16,8 @@ import com.google.firebase.database.ValueEventListener;
 import com.stringee.messaging.User;
 
 import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.List;
 import java.util.concurrent.CompletableFuture;
 import java.util.concurrent.CountDownLatch;
 import java.util.concurrent.ExecutionException;
@@ -118,5 +120,15 @@ public class ConnectRepo {
 
     public void setUserRemote(UserInfo userRemote) {
         this.userRemote = userRemote;
+    }
+
+    public void setUserRemoteByName(String name) {
+        List<UserInfo> users = Arrays.asList(UserInfo.dummy);
+        for(UserInfo user : users){
+            if(user.getName().equals(name)){
+                setUserRemote(user);
+                return;
+            }
+        }
     }
 }
