@@ -1,27 +1,19 @@
 package com.example.fimae.repository;
 
-import android.annotation.SuppressLint;
-import android.os.Build;
 import android.util.Log;
 
 import androidx.annotation.NonNull;
-import androidx.annotation.RequiresApi;
 
-import com.example.fimae.models.UserInfo;
+import com.example.fimae.models.FimaeUser;
 import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.ValueEventListener;
-import com.stringee.messaging.User;
 
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
-import java.util.concurrent.CompletableFuture;
-import java.util.concurrent.CountDownLatch;
-import java.util.concurrent.ExecutionException;
-import java.util.concurrent.TimeUnit;
 
 public class ConnectRepo {
 
@@ -38,10 +30,10 @@ public class ConnectRepo {
 
     DatabaseReference databaseReference = FirebaseDatabase.getInstance().getReference();;
 
-    UserInfo userLocal;
-    UserInfo userRemote;
+    FimaeUser userLocal;
+    FimaeUser userRemote;
 
-    public ArrayList<UserInfo> listUsersOnline = new ArrayList<>();
+    public ArrayList<FimaeUser> listUsersOnline = new ArrayList<>();
 
     public static String table_chat_name = "USERS_CHAT_ONLINE";
     public static String table_call_voice_name = "USERS_CALL_ONLINE";
@@ -55,7 +47,7 @@ public class ConnectRepo {
             public void onDataChange(@NonNull DataSnapshot snapshot) {
                 if(!listUsersOnline.isEmpty()) listUsersOnline.clear();
                 for (DataSnapshot dataSnapshot : snapshot.getChildren()) {
-                    UserInfo user = dataSnapshot.getValue(UserInfo.class);
+                    FimaeUser user = dataSnapshot.getValue(FimaeUser.class);
                     if(user != null) {
                         Log.d("TAG", user.toString());
                         listUsersOnline.add(user);
@@ -91,42 +83,42 @@ public class ConnectRepo {
         }
     }
 
-    public void addUserOnl(UserInfo user, String tableName) {
+    public void addUserOnl(FimaeUser user, String tableName) {
         String id = "user" + user.getId();
         databaseReference.child(tableName).child(id).setValue(user);
         listUsersOnline.add(user);
     }
 
-    public void deleteUserOnl(UserInfo user, String tableName) {
+    public void deleteUserOnl(FimaeUser user, String tableName) {
         String id = "user" + user.getId();
         // delete user in list
         databaseReference.child(tableName).child(id).removeValue();
         listUsersOnline.remove(user);
     }
 
-    public UserInfo getFirstUserOnl() {
+    public FimaeUser getFirstUserOnl() {
         return listUsersOnline.get(0);
     }
 
-    public UserInfo getUserLocal() {
+    public FimaeUser getUserLocal() {
         return userLocal;
     }
 
-    public void setUserLocal(UserInfo userLocal) {
+    public void setUserLocal(FimaeUser userLocal) {
         this.userLocal = userLocal;
     }
 
-    public UserInfo getUserRemote() {
+    public FimaeUser getUserRemote() {
         return userRemote;
     }
 
-    public void setUserRemote(UserInfo userRemote) {
+    public void setUserRemote(FimaeUser userRemote) {
         this.userRemote = userRemote;
     }
 
     public void setUserRemoteByName(String name) {
-        List<UserInfo> users = Arrays.asList(UserInfo.dummy);
-        for(UserInfo user : users){
+        List<FimaeUser> users = Arrays.asList(FimaeUser.dummy);
+        for(FimaeUser user : users){
             if(user.getName().equals(name)){
                 setUserRemote(user);
                 return;

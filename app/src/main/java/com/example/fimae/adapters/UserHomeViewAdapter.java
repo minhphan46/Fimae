@@ -1,6 +1,5 @@
 package com.example.fimae.adapters;
 
-import android.content.Context;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -12,7 +11,7 @@ import androidx.annotation.NonNull;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.example.fimae.R;
-import com.example.fimae.models.UserInfo;
+import com.example.fimae.models.FimaeUser;
 import com.squareup.picasso.Picasso;
 import java.util.List;
 
@@ -20,14 +19,14 @@ import de.hdodenhof.circleimageview.CircleImageView;
 
 public class UserHomeViewAdapter extends  RecyclerView.Adapter<UserHomeViewAdapter.ViewHolder>{
 
-    private List<UserInfo> mUsers;
+    private List<FimaeUser> mUsers;
     private IClickCardUserListener iClickCardUserListener;
 
     public interface IClickCardUserListener {
-        void onClickUser(UserInfo user);
+        void onClickUser(FimaeUser user);
     }
 
-    public void setData( List<UserInfo> mUsers, IClickCardUserListener inIClickCardUserListener) {
+    public void setData(List<FimaeUser> mUsers, IClickCardUserListener inIClickCardUserListener) {
         this.mUsers = mUsers;
         this.iClickCardUserListener = inIClickCardUserListener;
         notifyDataSetChanged();
@@ -65,7 +64,7 @@ public class UserHomeViewAdapter extends  RecyclerView.Adapter<UserHomeViewAdapt
 
     @Override
     public void onBindViewHolder(@NonNull ViewHolder holder, int position) {
-        UserInfo user = mUsers.get(position);
+        FimaeUser user = mUsers.get(position);
         if(user == null){
             return;
         }

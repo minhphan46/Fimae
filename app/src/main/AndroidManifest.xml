@@ -12,18 +12,20 @@
     <uses-permission android:name="android.permission.CAMERA"/>
     <uses-permission android:name="android.permission.BLUETOOTH"/>
     <uses-permission android:name="android.permission.BLUETOOTH_CONNECT"/>
+
     <uses-feature
             android:name="android.hardware.camera"
-            android:required="false" />
+            android:required="false"/>
     <uses-feature
             android:name="android.hardware.camera.autofocus"
-            android:required="false" />
+            android:required="false"/>
     <uses-feature
             android:name="android.hardware.camera.flash"
-            android:required="false" />
+            android:required="false"/>
 
-    <uses-permission android:name="android.permission.CAMERA" />
+    <uses-permission android:name="android.permission.CAMERA"/>
     <uses-permission android:name="android.permission.READ_EXTERNAL_STORAGE"/>
+
     <application
             android:allowBackup="true"
             android:dataExtractionRules="@xml/data_extraction_rules"
@@ -34,6 +36,21 @@
             android:supportsRtl="true"
             android:theme="@style/Theme.Fimae"
             tools:targetApi="31">
+        <activity
+                android:name=".SplashActivity"
+                android:exported="true">
+            <intent-filter>
+                <action android:name="android.intent.action.MAIN"/>
+                <action android:name="android.media.action.IMAGE_CAPTURE"/>
+
+                <category android:name="android.intent.category.LAUNCHER"/>
+            </intent-filter>
+        </activity>
+        <activity
+                android:name=".activities.AuthenticationActivity"
+                android:exported="true">
+
+        </activity>
         <activity
                 android:name=".activities.OnChatActivity"
                 android:exported="false"/>
@@ -58,13 +75,8 @@
                 android:name=".activities.CallActivity"
                 android:exported="false"/>
         <activity
-                android:name=".activities.MainActivity"
+                android:name=".activities.HomeActivity"
                 android:exported="true">
-            <intent-filter>
-                <action android:name="android.intent.action.MAIN"/>
-                <action android:name="android.media.action.IMAGE_CAPTURE" />
-                <category android:name="android.intent.category.LAUNCHER"/>
-            </intent-filter>
         </activity>
     </application>
 

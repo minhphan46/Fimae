@@ -9,21 +9,18 @@ import androidx.viewpager2.widget.ViewPager2;
 
 import android.content.Intent;
 import android.os.Bundle;
-import android.os.CountDownTimer;
 import android.os.Handler;
 import android.os.Looper;
 import android.util.Log;
 import android.view.View;
-import android.widget.Button;
 import android.widget.FrameLayout;
 import android.widget.ImageButton;
-import android.widget.ProgressBar;
 import android.widget.TextView;
 import android.widget.Toast;
 
 import com.example.fimae.R;
 import com.example.fimae.adapters.SliderAdapter;
-import com.example.fimae.models.UserInfo;
+import com.example.fimae.models.FimaeUser;
 import com.example.fimae.repository.ConnectRepo;
 import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
@@ -57,7 +54,7 @@ public class WaitingActivity extends AppCompatActivity {
     private TextView mTvTitle;
     // slider ======================================================
     private ViewPager2 viewPager2;
-    private List<UserInfo> userInfos;
+    private List<FimaeUser> fimaeUsers;
     private Handler sliderHandler = new Handler();
     private int timeDelaySlider = 2000;
 
@@ -189,9 +186,9 @@ public class WaitingActivity extends AppCompatActivity {
                 @Override
                 public void onDataChange(@NonNull DataSnapshot snapshot) {
                     // get list all user onl
-                    ArrayList<UserInfo> listUsersOnline = new ArrayList<>();
+                    ArrayList<FimaeUser> listUsersOnline = new ArrayList<>();
                     for (DataSnapshot dataSnapshot : snapshot.getChildren()) {
-                        UserInfo user = dataSnapshot.getValue(UserInfo.class);
+                        FimaeUser user = dataSnapshot.getValue(FimaeUser.class);
                         if(user != null) {
                             Log.d("TAG", user.toString());
                             listUsersOnline.add(user);
@@ -232,8 +229,8 @@ public class WaitingActivity extends AppCompatActivity {
     private void initViewPager2(){
         viewPager2 = findViewById(R.id.view_image_slider);
 
-        userInfos = new ArrayList<UserInfo>(Arrays.asList(UserInfo.dummy));
-        viewPager2.setAdapter(new SliderAdapter(userInfos, viewPager2));
+        fimaeUsers = new ArrayList<FimaeUser>(Arrays.asList(FimaeUser.dummy));
+        viewPager2.setAdapter(new SliderAdapter(fimaeUsers, viewPager2));
 
         viewPager2.setClipToPadding(false);
         viewPager2.setClipChildren(false);

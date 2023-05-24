@@ -4,8 +4,6 @@ import android.os.CountDownTimer;
 import android.widget.ProgressBar;
 import android.widget.TextView;
 
-import com.example.fimae.models.UserInfo;
-
 public class TimerService {
     public ProgressBar mProcessBar;
     public TextView mTvTimer;

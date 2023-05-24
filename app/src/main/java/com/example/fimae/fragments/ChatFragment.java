@@ -16,7 +16,7 @@ import androidx.recyclerview.widget.RecyclerView;
 import com.example.fimae.R;
 import com.example.fimae.activities.OnChatActivity;
 import com.example.fimae.adapters.UserHomeViewAdapter;
-import com.example.fimae.models.UserInfo;
+import com.example.fimae.models.FimaeUser;
 
 import java.util.Arrays;
 
@@ -29,9 +29,9 @@ public class ChatFragment extends Fragment {
 
         RecyclerView recyclerView = view.findViewById(R.id.list_user);
         UserHomeViewAdapter userHomeViewAdapter = new UserHomeViewAdapter();
-        userHomeViewAdapter.setData(Arrays.asList(UserInfo.dummy), new UserHomeViewAdapter.IClickCardUserListener() {
+        userHomeViewAdapter.setData(Arrays.asList(FimaeUser.dummy), new UserHomeViewAdapter.IClickCardUserListener() {
             @Override
-            public void onClickUser(UserInfo user) {
+            public void onClickUser(FimaeUser user) {
                 Intent intent = new Intent(getContext(), OnChatActivity.class);
                 startActivity(intent);
             }
