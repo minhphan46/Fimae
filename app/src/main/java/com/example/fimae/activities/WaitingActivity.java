@@ -7,46 +7,110 @@ import androidx.viewpager2.widget.CompositePageTransformer;
 import androidx.viewpager2.widget.MarginPageTransformer;
 import androidx.viewpager2.widget.ViewPager2;
 
+import android.content.Intent;
 import android.os.Bundle;
 import android.os.CountDownTimer;
 import android.os.Handler;
+import android.os.Looper;
+import android.util.Log;
 import android.view.View;
+import android.widget.Button;
 import android.widget.FrameLayout;
+import android.widget.ImageButton;
 import android.widget.ProgressBar;
 import android.widget.TextView;
 import android.widget.Toast;
 
 import com.example.fimae.R;
 import com.example.fimae.adapters.SliderAdapter;
-import com.example.fimae.models.SliderItem;
 import com.example.fimae.models.UserInfo;
+import com.example.fimae.repository.ConnectRepo;
+import com.google.firebase.database.DataSnapshot;
+import com.google.firebase.database.DatabaseError;
+import com.google.firebase.database.DatabaseReference;
+import com.google.firebase.database.FirebaseDatabase;
+import com.google.firebase.database.ValueEventListener;
+import com.stringee.StringeeClient;
+import com.stringee.call.StringeeCall;
+import com.stringee.call.StringeeCall2;
+import com.stringee.exception.StringeeError;
+import com.stringee.listener.StringeeConnectionListener;
+
+import org.json.JSONObject;
 
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 public class WaitingActivity extends AppCompatActivity {
 
-    // slider
+    private String type; // type of connect
+    private String tableName;
+    private int timeDelayToConnect = 3000;
+
+    private FrameLayout mBtnSpeedUp;
+    // appbar ======================================================
+    private ImageButton mBtnZoomOut;
+    private ImageButton mBtnClose;
+    private TextView mTvTitle;
+    // slider ======================================================
     private ViewPager2 viewPager2;
     private List<UserInfo> userInfos;
     private Handler sliderHandler = new Handler();
-    private int timeDelay = 2000;
-    // timer
-    private int timeSelected = 0;
-    private CountDownTimer timeCountDown = null;
-    private int timeProgress = 0;
-    private long pauseOffSet = 0;
-    private boolean isStart = true;
+    private int timeDelaySlider = 2000;
 
-    private FrameLayout mBtnPlay;
-    private ProgressBar mProcessBar;
-    private TextView mTvTimer;
+    // goi dien ====================================================
+    public static boolean isCalled = false;
+    private String remoteUserName;
+    private TextView mTvStatusConnect;
+    public static StringeeClient client;
+    DatabaseReference databaseReference;
+    // luu cuoc goi den = map
+    // key = callID
+    public static Map<String, StringeeCall> callMap = new HashMap<>();
+    // video
+    public static Map<String, StringeeCall2> call2Map = new HashMap<>();
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_waiting);
+        // receive data
+        Intent intent = getIntent();
+        type = intent.getStringExtra("type"); // two option: voice - video
+        if(type.equals("chat")){
+            tableName = ConnectRepo.table_chat_name;
+        }
+        else if(type.equals("voice")){
+            tableName = ConnectRepo.table_call_voice_name;
+        }
+        else if(type.equals("video")){
+            tableName = ConnectRepo.table_call_video_name;
+        }
+        // appbar ========================================================
+        mBtnZoomOut = findViewById(R.id.btn_zoom_out_waiting);
+        mBtnZoomOut.setOnClickListener(v -> {
+            // zoom out
+        });
 
+        mBtnClose = findViewById(R.id.btn_close_waiting);
+        mBtnClose.setOnClickListener(v -> {
+            closeScreen();
+        });
+
+        mTvTitle = findViewById(R.id.tv_title_waiting);
+        if(type.equals("chat")){
+            mTvTitle.setText("Nhắn tin");
+        }
+        else if(type.equals("voice")){
+            mTvTitle.setText("Gọi điện");
+        }
+        else if(type.equals("video")){
+            mTvTitle.setText("Gọi video");
+        }
+        // Slider ================================================================
         initViewPager2();
         setTransformer();
 
@@ -55,102 +119,116 @@ public class WaitingActivity extends AppCompatActivity {
             public void onPageSelected(int position) {
                 super.onPageSelected(position);
                 sliderHandler.removeCallbacks(sliderRunable);
-                sliderHandler.postDelayed(sliderRunable, timeDelay); // slide duration 2 seconds
+                sliderHandler.postDelayed(sliderRunable, timeDelaySlider); // slide duration 2 seconds
             }
         });
-        // timer
-        mProcessBar = findViewById(R.id.pbTimer);
-        mTvTimer = findViewById(R.id.tv_time_connect);
-        mBtnPlay = findViewById(R.id.btn_play);
-        mBtnPlay.setOnClickListener(v -> {
-            startTimerSetUp();
+
+        // call function: connect to user ======================================================
+        mTvStatusConnect = findViewById(R.id.tv_status_connect);
+        databaseReference = FirebaseDatabase.getInstance().getReference();
+        fetchData(tableName);
+
+        if(ConnectRepo.getInstance().getUserLocal() != null){
+            initStringeeConnection();
+        }
+        // btn speed up ======================================================================================
+        mBtnSpeedUp = findViewById(R.id.btn_speed_up);
+        mBtnSpeedUp.setOnClickListener(v -> {
+            connectToRemoteUser();
         });
-        setTimeInit();
-        startTimerSetUp();
-    }
-    // timer
-    private void setTimeInit() {
-        timeSelected = 180; // 3 minutes
-        // set text timer
-        mTvTimer.setText(formatMinutes(timeSelected));
-        // set max processbar
-        mProcessBar.setMax(timeSelected);
     }
 
-    private void startTimerSetUp() {
-        if(isStart){
-            startTimer(pauseOffSet);
-            isStart = false;
+    // close screen ==============================================================================
+    private void closeScreen() {
+        // delete user onl then finish
+        if(ConnectRepo.getInstance().getUserLocal() != null){
+            ConnectRepo.getInstance().deleteUserOnl(ConnectRepo.getInstance().getUserLocal(),tableName);
+        }
+        ConnectRepo.getInstance().setUserRemote(null);
+        if(client != null) {
+            client.disconnect();
+            client = null;
+        }
+        finish();
+    }
+
+    // connect to ==============================================================================
+    private void handlerConnect() {
+        // delay 3s
+        // if remote user is not null => connect
+        final Handler handler = new Handler(Looper.getMainLooper());
+        handler.postDelayed(new Runnable() {
+            @Override
+            public void run() {
+                //Do something after 3s
+                connectToRemoteUser();
+            }
+        }, timeDelayToConnect);
+    }
+
+    private void connectToRemoteUser() {
+        if(remoteUserName != null){
+            //ConnectRepo.getInstance().deleteUserOnl(ConnectRepo.getInstance().getUserRemote(), tableName);
+            if(isCalled) return;
+            isCalled = true;
+            if(type.equals("chat")){
+                navigateToChatScreen();
+            }
+            else if(type.equals("voice")){
+                navigateToCallVoiceScreen();
+            }
+            else if(type.equals("video")){
+                navigateToCallVideoScreen();
+            }
+        }
+    }
+
+    private void fetchData(String tableName) {
+        databaseReference.child(tableName).addListenerForSingleValueEvent(
+            new ValueEventListener(){
+                @Override
+                public void onDataChange(@NonNull DataSnapshot snapshot) {
+                    // get list all user onl
+                    ArrayList<UserInfo> listUsersOnline = new ArrayList<>();
+                    for (DataSnapshot dataSnapshot : snapshot.getChildren()) {
+                        UserInfo user = dataSnapshot.getValue(UserInfo.class);
+                        if(user != null) {
+                            Log.d("TAG", user.toString());
+                            listUsersOnline.add(user);
+                        }
+                        else break;
+                    }
+                    // assign to list local
+                    ConnectRepo.getInstance().listUsersOnline = listUsersOnline;
+                    ConnectRepo.getInstance().checkUser(tableName);
+                    connectToCall();
+                    // if find a user => connect auto
+                    handlerConnect();
+                }
+
+                @Override
+                public void onCancelled(@NonNull DatabaseError error) {
+                    // handle error
+                }
+            }
+        );
+    }
+
+    private void connectToCall() {
+        if(ConnectRepo.getInstance().getUserRemote() == null){
+            showToast("Hàng đợi rỗng");
         }
         else {
-            isStart = true;
-            timePause();
+            remoteUserName = ConnectRepo.getInstance().getUserRemote().getName();
+            showToast("Remote user: " + remoteUserName);
         }
     }
 
-    private void startTimer(long pauseOffSetL){
-        mProcessBar.setProgress(timeProgress);
-        timeCountDown = new CountDownTimer((timeSelected* 1000L) - pauseOffSetL*1000, 1000) {
-            @Override
-            public void onTick(long p0) {
-                timeProgress++;
-                pauseOffSet = timeSelected- p0/1000;
-                mProcessBar.setProgress(timeSelected-timeProgress);
-                mTvTimer.setText(formatMinutes(timeSelected - timeProgress));
-            }
-
-            @Override
-            public void onFinish() {
-                resetTime();
-                onFinishTimer("Time up");
-            }
-        }.start();
+    private void showToast(String value) {
+        Toast.makeText(this, value, Toast.LENGTH_LONG).show();
     }
 
-    private void onFinishTimer(String value) {
-        Toast toast = Toast.makeText(this, value, Toast.LENGTH_LONG);
-        toast.show();
-    }
-
-    private void timePause() {
-        if(timeCountDown != null){
-            timeCountDown.cancel();
-        }
-    }
-
-    private void resetTime() {
-        if(timeCountDown != null) {
-            timeCountDown.cancel();
-            timeProgress = 0;
-            timeSelected = 0;
-            pauseOffSet = 0;
-            timeCountDown = null;
-            isStart = true;
-            mProcessBar.setProgress(0);
-            mTvTimer.setText("00:00");
-        }
-    }
-
-    private String formatMinutes(int minutes) {
-        int hours = minutes / 60;
-        int remainingMinutes = minutes % 60;
-
-        String formattedHours = String.format("%02d", hours);
-        String formattedMinutes = String.format("%02d", remainingMinutes);
-
-        return formattedHours + ":" + formattedMinutes;
-    }
-
-    @Override
-    protected void onDestroy() {
-        super.onDestroy();
-        if(timeCountDown != null){
-            timeCountDown.cancel();
-            timeProgress = 0;
-        }
-    }
-
-    // slider
+    // slider =====================================================================
     private void initViewPager2(){
         viewPager2 = findViewById(R.id.view_image_slider);
 
@@ -195,6 +273,101 @@ public class WaitingActivity extends AppCompatActivity {
     @Override
     protected void onResume() {
         super.onResume();
-        sliderHandler.postDelayed(sliderRunable, timeDelay);
+        sliderHandler.postDelayed(sliderRunable, timeDelaySlider);
+    }
+
+    // init call ==============================================================================
+    private void initStringeeConnection(){
+        client = new StringeeClient(this);
+        client.setConnectionListener(new StringeeConnectionListener() {
+            @Override
+            public void onConnectionConnected(StringeeClient stringeeClient, boolean b) {
+                runOnUiThread(()->{
+                    mTvStatusConnect.setText("Bạn là " + stringeeClient.getUserId());
+                });
+            }
+
+            @Override
+            public void onConnectionDisconnected(StringeeClient stringeeClient, boolean b) {
+                runOnUiThread(()->{
+                    mTvStatusConnect.setText("Mất kết nối");
+                });
+            }
+
+            @Override
+            public void onIncomingCall(StringeeCall stringeeCall) {
+                runOnUiThread(()->{
+                    callMap.put(stringeeCall.getCallId(), stringeeCall);
+                    // set user remote
+                    remoteUserName = stringeeCall.getFrom();
+                    ConnectRepo.getInstance().setUserRemoteByName(remoteUserName);
+                    // navigate to call screen
+                    isCalled = true;
+                    Intent intent = new Intent(WaitingActivity.this, CallActivity.class);
+                    intent.putExtra("callId", stringeeCall.getCallId());
+                    intent.putExtra("isIncomingCall", true);
+                    startActivity(intent);
+                });
+            }
+
+            @Override
+            public void onIncomingCall2(StringeeCall2 stringeeCall2) {
+                runOnUiThread(()->{
+                    call2Map.put(stringeeCall2.getCallId(), stringeeCall2);
+                    // set user remote
+                    remoteUserName = stringeeCall2.getFrom();
+                    ConnectRepo.getInstance().setUserRemoteByName(remoteUserName);
+                    // navigate to call video screen
+                    isCalled = true;
+                    Intent intent = new Intent(WaitingActivity.this, CallVideoActivity.class);
+                    intent.putExtra("callId", stringeeCall2.getCallId());
+                    intent.putExtra("isIncomingCall", true);
+                    startActivity(intent);
+                });
+            }
+
+            @Override
+            public void onConnectionError(StringeeClient stringeeClient, StringeeError stringeeError) {
+                runOnUiThread(()->{
+                    mTvStatusConnect.setText("Kết nối bị lỗi: " + stringeeError.getMessage());
+                });
+            }
+
+            @Override
+            public void onRequestNewToken(StringeeClient stringeeClient) {
+
+            }
+
+            @Override
+            public void onCustomMessage(String s, JSONObject jsonObject) {
+
+            }
+
+            @Override
+            public void onTopicMessage(String s, JSONObject jsonObject) {
+
+            }
+        });
+        client.connect(ConnectRepo.getInstance().getUserLocal().getToken());
+    }
+
+    private void navigateToChatScreen() {
+        /*Intent intent = new Intent(this, ChatActivity.class);
+        intent.putExtra("to", remoteUserName);
+        startActivity(intent);*/
+    }
+
+    private void navigateToCallVoiceScreen() {
+        Intent intent = new Intent(this, CallActivity.class);
+        intent.putExtra("to", remoteUserName);
+        intent.putExtra("isIncomingCall", false);
+        startActivity(intent);
+    }
+
+    private void navigateToCallVideoScreen() {
+        Intent intent = new Intent(this, CallVideoActivity.class);
+        intent.putExtra("to", remoteUserName);
+        intent.putExtra("isIncomingCall", false);
+        startActivity(intent);
     }
 }

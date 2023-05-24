@@ -1,21 +1,21 @@
 <?xml version="1.0" encoding="utf-8"?>
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
+    android:layout_height="55dp"
     android:orientation="horizontal"
     android:gravity="center"
     android:paddingLeft="16dp"
     android:paddingRight="16dp"
     android:paddingTop="10dp"
     android:paddingBottom="10dp"
-    android:layout_height="wrap_content"
     android:background="@color/backround_button_dark_1_startColor">
 
     <ImageButton
-        android:id="@+id/btn_setting_home"
-        android:layout_width="30dp"
-        android:layout_height="30dp"
-        android:background="@drawable/ic_flag"
-        android:padding="20dp"/>
+        android:id="@+id/btn_close_appbar"
+        android:layout_width="28dp"
+        android:layout_height="28dp"
+        android:background="@drawable/ic_close"
+        android:padding="20dp" />
 
     <Space
         android:layout_width="0dp"
@@ -30,6 +30,7 @@
         android:textColor="@color/white"
         android:gravity="center"/>-->
     <LinearLayout
+        android:id="@+id/layout_timer"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:orientation="horizontal"
@@ -62,10 +63,10 @@
         android:layout_weight="1" />
 
     <ImageButton
-        android:id="@+id/btn_noti_home"
+        android:id="@+id/btn_report_appbar"
         android:layout_width="28dp"
         android:layout_height="28dp"
-        android:background="@drawable/ic_close"
-        android:padding="20dp" />
+        android:background="@drawable/ic_flag"
+        android:padding="20dp"/>
 
 </LinearLayout>

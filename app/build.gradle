@@ -1,5 +1,6 @@
 plugins {
     id 'com.android.application'
+    id 'com.google.gms.google-services'
 }
 
 android {
@@ -11,7 +12,7 @@ android {
 
     defaultConfig {
         applicationId "com.example.fimae"
-        minSdk 21
+        minSdk 24
         targetSdk 33
         versionCode 1
         versionName "1.0"
@@ -49,6 +50,10 @@ android {
 }
 
 dependencies {
+    // firebase
+    implementation platform('com.google.firebase:firebase-bom:32.0.0')
+    implementation 'com.google.firebase:firebase-database:20.2.1'
+
     // stringee
     implementation 'com.stringee.sdk.android:stringee-android-sdk:2.0'
     implementation 'com.android.volley:volley:1.2.1'

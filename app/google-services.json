@@ -1,0 +1,40 @@
+{
+  "project_info": {
+    "project_number": "181485099618",
+    "firebase_url": "https://fimae-5dbba-default-rtdb.asia-southeast1.firebasedatabase.app",
+    "project_id": "fimae-5dbba",
+    "storage_bucket": "fimae-5dbba.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:181485099618:android:9b0efde97c2c03fde64f3b",
+        "android_client_info": {
+          "package_name": "com.example.fimae"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "181485099618-4j5pqf1egf2hehpr7cch9m6ka94mv820.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyBn86ObbLVRosBBFeKX8rVp7s_HfXqz7KY"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "181485099618-4j5pqf1egf2hehpr7cch9m6ka94mv820.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}

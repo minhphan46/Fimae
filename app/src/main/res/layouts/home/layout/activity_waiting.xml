@@ -8,7 +8,7 @@
     tools:context=".activities.WaitingActivity">
     <include
         android:id="@+id/appbar_waiting"
-        layout="@layout/appbar_connect" />
+        layout="@layout/appbar_waiting" />
 
     <androidx.viewpager2.widget.ViewPager2
         android:id="@+id/view_image_slider"
@@ -41,7 +41,7 @@
             style="@style/bold_24"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_marginBottom="10dp"
+            android:layout_marginBottom="12dp"
             android:text="Đang kết nối"
             android:textColor="@color/secondary_1" />
 
@@ -51,12 +51,12 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:gravity="center"
-            android:text="Bạn đang xếp thứ 10 ở hàng đợi, vui lòng đợi khoảng 3 phút."
+            android:text="Bạn đang ở hàng đợi, vui lòng đợi khoảng 3 phút."
             android:textColor="@color/text_white" />
     </LinearLayout>
 
     <FrameLayout
-        android:id="@+id/btn_play"
+        android:id="@+id/btn_speed_up"
         android:layout_width="150dp"
         android:layout_height="50dp"
         android:layout_marginTop="74dp"
