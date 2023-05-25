@@ -54,6 +54,10 @@ dependencies {
     implementation platform('com.google.firebase:firebase-bom:32.0.0')
     implementation 'com.google.firebase:firebase-database:20.2.1'
     implementation 'com.google.firebase:firebase-auth'
+    implementation 'com.google.android.gms:play-services-auth:20.5.0'
+    implementation 'com.google.firebase:firebase-firestore:22.0.1'
+
+
     // stringee
     implementation 'com.stringee.sdk.android:stringee-android-sdk:2.0'
     implementation 'com.android.volley:volley:1.2.1'

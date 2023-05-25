@@ -13,10 +13,10 @@
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent"
-        app:srcCompat="@drawable/background" />
+        app:srcCompat="@drawable/background_img" />
 
     <ImageButton
-        android:id="@+id/changeBackImgBtn"
+        android:id="@+id/editProfileBtn"
         android:layout_width="48dp"
         android:layout_height="48dp"
         android:layout_marginTop="12dp"
