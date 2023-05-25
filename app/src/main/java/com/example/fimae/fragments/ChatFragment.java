@@ -79,6 +79,7 @@ public class ChatFragment extends Fragment {
                         Conversation conversation = task.getResult().getDocuments().get(0).toObject(Conversation.class);
                         String id = task.getResult().getDocuments().get(0).getId();
                         Intent intent = new Intent(getContext(), OnChatActivity.class);
+                        System.out.println("=========" + id);
                         intent.putExtra("conversationId", id);
                         startActivity(intent);
                     } else {
@@ -92,6 +93,7 @@ public class ChatFragment extends Fragment {
                             @Override
                             public void onComplete(@NonNull @NotNull Task<Void> task) {
                                 Intent intent = new Intent(getContext(), OnChatActivity.class);
+                                System.out.println("!!!!!!=========" + newConver.getId());
                                 intent.putExtra("conversationId", newConver.getId());
                                 startActivity(intent);
                             }

@@ -10,10 +10,12 @@ import androidx.annotation.NonNull;
 import androidx.recyclerview.widget.RecyclerView;
 import com.example.fimae.R;
 import com.example.fimae.models.Message;
+import com.google.firebase.auth.FirebaseAuth;
 
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Comparator;
+import java.util.Objects;
 
 public class MessageAdapter extends RecyclerView.Adapter {
 
@@ -33,7 +35,10 @@ public class MessageAdapter extends RecyclerView.Adapter {
 
     @Override
     public int getItemViewType(int position) {
-        return (position % 2 == 0) ? SENDER_VIEW_HOLDER : RECEIVER_VIEW_HOLDER;
+
+
+
+        return (Objects.equals(msgData.get(position).getIdSender(), FirebaseAuth.getInstance().getUid())) ? SENDER_VIEW_HOLDER : RECEIVER_VIEW_HOLDER;
     }
 
     @NonNull

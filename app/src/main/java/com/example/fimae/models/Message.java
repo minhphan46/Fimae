@@ -10,6 +10,7 @@ public class Message {
     private String content; // nội dung tin nhắn
     private Date timeSent; // thời điểm gửi tin nhắn
 
+    public Message(){}
     public Message(String sender, String content, Date timeSent) {
         this.idSender = sender;
         this.content = content;

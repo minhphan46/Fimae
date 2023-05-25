@@ -29,10 +29,7 @@ import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.firestore.*;
 import org.jetbrains.annotations.NotNull;
 
-import java.util.ArrayList;
-import java.util.Date;
-import java.util.HashMap;
-import java.util.List;
+import java.util.*;
 
 public class OnChatActivity extends AppCompatActivity {
     List<BottomSheetItem> bottomSheetItemList = new ArrayList<BottomSheetItem>(){
@@ -58,7 +55,7 @@ public class OnChatActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         ArrayList<Message> messages = new ArrayList<>();
         setContentView(R.layout.activity_on_chat);
-        String conversationId = String.valueOf(getIntent().getIntExtra("conversationId", -1));
+        String conversationId = String.valueOf(getIntent().getStringExtra("conversationId"));
         messagesCol = FirebaseFirestore.getInstance().collection("conversations").document(conversationId).collection("messages");
         Toolbar toolbar = findViewById(R.id.toolbar);
         toolbar.inflateMenu(R.menu.chat_second_menu);
@@ -143,6 +140,7 @@ public class OnChatActivity extends AppCompatActivity {
                 Message message = document.toObject(Message.class);
                 messages.add(message);
             }
+            messages.sort(Comparator.comparing(Message::getTimeSent));
             messageAdapter.notifyDataSetChanged();
         });
     }
