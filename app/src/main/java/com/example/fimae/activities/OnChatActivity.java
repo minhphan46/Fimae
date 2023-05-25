@@ -9,7 +9,8 @@ import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
 import android.widget.*;
-import androidx.activity.result.ActivityResultLauncher;
+import androidx.annotation.NonNull;
+import androidx.annotation.Nullable;
 import androidx.appcompat.app.ActionBar;
 import androidx.appcompat.app.AppCompatActivity;
 import android.os.Bundle;
@@ -21,10 +22,16 @@ import com.example.fimae.adapters.BottomSheetItemAdapter;
 import com.example.fimae.adapters.MessageAdapter;
 import com.example.fimae.fragments.ChatBottomSheetFragment;
 import com.example.fimae.models.BottomSheetItem;
+import com.example.fimae.models.Fimaers;
 import com.example.fimae.models.Message;
+import com.google.android.gms.tasks.OnFailureListener;
+import com.google.firebase.auth.FirebaseAuth;
+import com.google.firebase.firestore.*;
+import org.jetbrains.annotations.NotNull;
 
 import java.util.ArrayList;
 import java.util.Date;
+import java.util.HashMap;
 import java.util.List;
 
 public class OnChatActivity extends AppCompatActivity {
@@ -45,11 +52,14 @@ public class OnChatActivity extends AppCompatActivity {
         getMenuInflater().inflate(R.menu.chat_second_menu, menu);
         return true;
     }
+    private CollectionReference messagesCol;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+        ArrayList<Message> messages = new ArrayList<>();
         setContentView(R.layout.activity_on_chat);
-
+        String conversationId = String.valueOf(getIntent().getIntExtra("conversationId", -1));
+        messagesCol = FirebaseFirestore.getInstance().collection("conversations").document(conversationId).collection("messages");
         Toolbar toolbar = findViewById(R.id.toolbar);
         toolbar.inflateMenu(R.menu.chat_second_menu);
         setSupportActionBar(toolbar);
@@ -60,7 +70,7 @@ public class OnChatActivity extends AppCompatActivity {
             actionBar.setTitle("");
         }
         RecyclerView recyclerView = findViewById(R.id.list_messages);
-        MessageAdapter messageAdapter = new MessageAdapter(this, Message.dummy);
+        MessageAdapter messageAdapter = new MessageAdapter(this, messages);
         System.out.println("Data goc la day: " + Message.dummy);
         LinearLayoutManager linearLayoutManager = new LinearLayoutManager(this);
         recyclerView.setAdapter(messageAdapter);
@@ -69,6 +79,7 @@ public class OnChatActivity extends AppCompatActivity {
         ImageView btnPlus = findViewById(R.id.btn_add);
         LinearLayout linearLayout = findViewById(R.id.input_media_layout);
         linearLayout.setVisibility(View.GONE);
+
         btnPlus.setOnClickListener(v -> {
             if(linearLayout.getVisibility() == View.GONE){
                 linearLayout.setVisibility(View.VISIBLE);
@@ -81,9 +92,25 @@ public class OnChatActivity extends AppCompatActivity {
         btnEmoji.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                Message.dummy.add(new Message("Hào Nguyễn", editText.getText().toString(), new Date()));
+                HashMap<String, Object> messReq = new HashMap<>();
+                DocumentReference documentReference = messagesCol.document();
+                messReq.put("conversationId", conversationId);
+                messReq.put("idSender", FirebaseAuth.getInstance().getUid());
+                messReq.put("content", editText.getText().toString());
+                messReq.put("timeSent", new Date());
+                Message message = new Message(documentReference.getId(), editText.getText().toString(), new Date());
+               messages.add(message);
                 messageAdapter.notifyItemInserted(Message.dummy.size() - 1);
                 recyclerView.scrollToPosition(messageAdapter.getItemCount() - 1);
+                messagesCol.document().set(messReq).addOnFailureListener(new OnFailureListener() {
+                    @Override
+                    public void onFailure(@NonNull @NotNull Exception e) {
+                        int i = messages.lastIndexOf(message);
+                        messageAdapter.notifyItemRemoved(i);
+                        recyclerView.scrollToPosition(messageAdapter.getItemCount() - 1);
+                    }
+                });
+
                 editText.setText("");
                 if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
                     editText.setFocusable(View.NOT_FOCUSABLE);
@@ -103,6 +130,20 @@ public class OnChatActivity extends AppCompatActivity {
             public void onClick(View v) {
                 dispatchPickImageFromGalleryIntent();
             }
+        });
+        messagesCol.addSnapshotListener((value, error) -> {
+            if (error != null) {
+                // Xử lý lỗi
+                return;
+            }
+            messages.clear();
+            // Lặp qua các tài liệu (tin nhắn) và thêm vào danh sách
+            for (QueryDocumentSnapshot document : value) {
+                System.out.println(document.toString());
+                Message message = document.toObject(Message.class);
+                messages.add(message);
+            }
+            messageAdapter.notifyDataSetChanged();
         });
     }
 
@@ -142,6 +183,10 @@ public class OnChatActivity extends AppCompatActivity {
                         }
                     });
             chatBottomSheetFragment.show(getSupportFragmentManager(),chatBottomSheetFragment.getTag());
+        } else if (id == R.id.option_call){
+            FirebaseAuth.getInstance().signOut();
+            System.out.println("Click success");
+            startActivity(new Intent(this, AuthenticationActivity.class));
         }
 
         return super.onOptionsItemSelected(item);

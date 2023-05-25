@@ -4,18 +4,20 @@ import java.util.ArrayList;
 import java.util.Date;
 
 public class Message {
-    private String sender; // người gửi tin nhắn
+    private String id;
+    private String conversationId;
+    private String idSender; // người gửi tin nhắn
     private String content; // nội dung tin nhắn
     private Date timeSent; // thời điểm gửi tin nhắn
 
     public Message(String sender, String content, Date timeSent) {
-        this.sender = sender;
+        this.idSender = sender;
         this.content = content;
         this.timeSent = timeSent;
     }
 
-    public String getSender() {
-        return sender;
+    public String getIdSender() {
+        return idSender;
     }
 
     public String getContent() {
@@ -26,8 +28,8 @@ public class Message {
         return timeSent;
     }
 
-    public void setSender(String sender) {
-        this.sender = sender;
+    public void setIdSender(String idSender) {
+        this.idSender = idSender;
     }
 
     public void setContent(String content) {

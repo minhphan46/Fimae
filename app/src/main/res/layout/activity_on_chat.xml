@@ -46,6 +46,7 @@
 
     </com.google.android.material.appbar.AppBarLayout>
     <androidx.recyclerview.widget.RecyclerView
+            app:layout_constraintVertical_weight="1"
             app:reverseLayout="false"
             android:id="@+id/list_messages"
             android:layout_width="match_parent"
