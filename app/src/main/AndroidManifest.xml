@@ -2,7 +2,6 @@
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
           xmlns:tools="http://schemas.android.com/tools"
           package="com.example.fimae">
-
     <!-- permission cho việc kết nối internet -->
     <uses-permission android:name="android.permission.INTERNET"/>
     <uses-permission android:name="android.permission.ACCESS_NETWORK_STATE"/>
@@ -14,6 +13,19 @@
     <uses-permission android:name="android.permission.BLUETOOTH"/>
     <uses-permission android:name="android.permission.BLUETOOTH_CONNECT"/>
 
+    <uses-feature
+            android:name="android.hardware.camera"
+            android:required="false"/>
+    <uses-feature
+            android:name="android.hardware.camera.autofocus"
+            android:required="false"/>
+    <uses-feature
+            android:name="android.hardware.camera.flash"
+            android:required="false"/>
+
+    <uses-permission android:name="android.permission.CAMERA"/>
+    <uses-permission android:name="android.permission.READ_EXTERNAL_STORAGE"/>
+
     <application
             android:allowBackup="true"
             android:dataExtractionRules="@xml/data_extraction_rules"
@@ -24,19 +36,35 @@
             android:supportsRtl="true"
             android:theme="@style/Theme.Fimae"
             tools:targetApi="31">
+        <activity
+                android:name=".SplashActivity"
+                android:exported="true">
+            <intent-filter>
+                <action android:name="android.intent.action.MAIN"/>
+                <action android:name="android.media.action.IMAGE_CAPTURE"/>
+
+                <category android:name="android.intent.category.LAUNCHER"/>
+            </intent-filter>
+        </activity>
+        <activity
+                android:name=".activities.AuthenticationActivity"
+                android:exported="true">
+
+        </activity>
+        <activity
+                android:name=".activities.OnChatActivity"
+                android:exported="false"/>
+        <activity
+                android:name=".activities.WaitingActivity"
+                android:exported="false"/>
 
         <meta-data
                 android:name="com.google.android.actions"
                 android:resource="@drawable/shape_gender_border_blue"/>
         <meta-data
-            android:name="preloaded_fonts"
-            android:resource="@array/preloaded_fonts" />
+                android:name="preloaded_fonts"
+                android:resource="@array/preloaded_fonts"/>
 
-        <activity
-                android:name=".activities.ChatActivity"
-                android:exported="false"
-                android:label="@string/title_activity_chat"
-                android:theme="@style/Theme.Fimae.NoActionBar"/>
         <activity
                 android:name=".activities.ConnectActivity"
                 android:exported="false"/>
@@ -47,13 +75,8 @@
                 android:name=".activities.CallActivity"
                 android:exported="false"/>
         <activity
-                android:name=".activities.MainActivity"
+                android:name=".activities.HomeActivity"
                 android:exported="true">
-            <intent-filter>
-                <action android:name="android.intent.action.MAIN"/>
-
-                <category android:name="android.intent.category.LAUNCHER"/>
-            </intent-filter>
         </activity>
     </application>
 

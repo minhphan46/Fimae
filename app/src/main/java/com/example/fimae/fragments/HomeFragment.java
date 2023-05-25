@@ -12,10 +12,6 @@ import android.widget.ImageButton;
 import android.widget.LinearLayout;
 import android.widget.Toast;
 
-import androidx.appcompat.app.ActionBar;
-import androidx.appcompat.app.AppCompatActivity;
-import androidx.appcompat.widget.Toolbar;
-
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.fragment.app.Fragment;
@@ -24,22 +20,29 @@ import androidx.recyclerview.widget.RecyclerView;
 
 import com.example.fimae.R;
 import com.example.fimae.activities.ConnectActivity;
-import com.example.fimae.activities.MainActivity;
+import com.example.fimae.activities.HomeActivity;
+import com.example.fimae.activities.WaitingActivity;
 import com.example.fimae.adapters.UserHomeViewAdapter;
-import com.example.fimae.models.UserInfo;
+import com.example.fimae.models.FimaeUser;
+import com.example.fimae.repository.ConnectRepo;
 
-import java.sql.Connection;
-import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 
 public class HomeFragment extends Fragment  {
 
+    // when click call button
+    // navigate to waiting screen ( with par to distinguish screen type)
+    // delay 5s
+    // if dont have user remote => wait
+    // if you have user
+    // navigate to call screen
+
     private View mView;
     private RecyclerView mRcvUsers;
-    private MainActivity mainActivity;
+    private HomeActivity homeActivity;
     private UserHomeViewAdapter userAdapter;
-    private List<UserInfo> mUsers;
+    private List<FimaeUser> mUsers;
 
     private LinearLayout mBtnChat;
     private LinearLayout mBtnCallVoice;
@@ -55,22 +58,21 @@ public class HomeFragment extends Fragment  {
         mBtnChat.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                Toast toast = Toast.makeText(v.getContext(), "Chat", Toast.LENGTH_SHORT);
-                toast.show();
+                navigateToWaitingScreen(getContext(), "chat");
             }
         });
         mBtnCallVoice = (LinearLayout) mView.findViewById(R.id.btn_call_home);
         mBtnCallVoice.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                navigateToCallScreen(getContext());
+                navigateToWaitingScreen(getContext(), "voice");
             }
         });
         mBtnCallVideo = (LinearLayout) mView.findViewById(R.id.btn_call_video_home);
         mBtnCallVideo.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                navigateToCallScreen(getContext());
+                navigateToWaitingScreen(getContext(), "video");
             }
         });
         mBtnNoti = mView.findViewById(R.id.btn_noti_home);
@@ -92,24 +94,35 @@ public class HomeFragment extends Fragment  {
 
         // recycleView: List users
         mRcvUsers = mView.findViewById(R.id.recycler_users);
-        mainActivity = (MainActivity) getActivity();
-        mUsers = Arrays.asList(UserInfo.dummy);
-        LinearLayoutManager linearLayoutManager = new LinearLayoutManager(mainActivity);
+        homeActivity = (HomeActivity) getActivity();
+        mUsers = Arrays.asList(FimaeUser.dummy);
+        LinearLayoutManager linearLayoutManager = new LinearLayoutManager(homeActivity);
         mRcvUsers.setLayoutManager(linearLayoutManager);
 
         userAdapter = new UserHomeViewAdapter();
         userAdapter.setData(mUsers, new UserHomeViewAdapter.IClickCardUserListener() {
             @Override
-            public void onClickUser(UserInfo user) {
-
+            public void onClickUser(FimaeUser user) {
+                ConnectRepo.getInstance().setUserLocal(user);
+                showToast("You are " + user.getName());
             }
         });
         mRcvUsers.setAdapter(userAdapter);
         return mView;
     }
 
-    void navigateToCallScreen(Context context){
+    private void showToast(String value) {
+        Toast.makeText(this.getContext(), value, Toast.LENGTH_LONG).show();
+    }
+
+    private void navigateToConnectScreen(Context context){
         Intent intent = new Intent(context, ConnectActivity.class);
+        context.startActivity(intent);
+    }
+
+    private void navigateToWaitingScreen(Context context, String typeCall){
+        Intent intent = new Intent(context, WaitingActivity.class);
+        intent.putExtra("type", typeCall);
         context.startActivity(intent);
     }
 }
