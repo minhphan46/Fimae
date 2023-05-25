@@ -26,6 +26,7 @@ import com.stringee.call.StringeeCall;
 import com.stringee.common.StringeeAudioManager;
 import com.stringee.listener.StatusListener;
 
+import org.json.JSONException;
 import org.json.JSONObject;
 
 import java.util.ArrayList;
@@ -270,6 +271,28 @@ public class CallActivity extends AppCompatActivity {
         btnEnd.setBackgroundResource(R.drawable.background_btn_call);
         frmTextLike.setVisibility(View.GONE);
         tvDescriptionCall.setText("Bây giờ chúng ta là bạn, thưởng thức cuộc trò chuyện không giới hạn");
+
+        // gửi tin nhắn qua bên kia là đã like
+        sendMessageToRemote("Bên kia đã like rồi nha");
+    }
+
+    private void sendMessageToRemote(String messageSend) {
+        // Tạo JSONObject chứa thông tin tin nhắn
+        JSONObject messageInfo = new JSONObject();
+        try {
+            messageInfo.put("type", "message");
+            messageInfo.put("from", call.getFrom());
+            messageInfo.put("content", messageSend);
+        } catch (JSONException e) {
+            e.printStackTrace();
+        }
+        // Gửi thông tin tin nhắn trong cuộc gọi
+        call.sendCallInfo(messageInfo, new StatusListener() {
+            @Override
+            public void onSuccess() {
+                // do something
+            }
+        });
     }
     // call =======================================================================
 
@@ -408,7 +431,20 @@ public class CallActivity extends AppCompatActivity {
 
             @Override
             public void onCallInfo(StringeeCall stringeeCall, JSONObject jsonObject) {
+                // Xử lý thông tin cuộc gọi, bao gồm cả tin nhắn
+                try {
+                    String callInfoType = jsonObject.getString("type");
 
+                    if (callInfoType.equals("message")) {
+                        String fromUserId = jsonObject.getString("from");
+                        String messageContent = jsonObject.getString("content");
+
+                        // Hiển thị tin nhắn
+                        showToast("Received message from " + fromUserId + ": " + messageContent);
+                    }
+                } catch (JSONException e) {
+                    e.printStackTrace();
+                }
             }
         });
 
@@ -436,5 +472,9 @@ public class CallActivity extends AppCompatActivity {
                 }
             });
         }
+    }
+
+    private void showToast(String value) {
+        Toast.makeText(this, value, Toast.LENGTH_LONG).show();
     }
 }
