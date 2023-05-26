@@ -58,10 +58,10 @@ public class MessageAdapter extends RecyclerView.Adapter {
     public void onBindViewHolder(@NonNull RecyclerView.ViewHolder holder, int position) {
 
         if (holder.getClass() == OutgoingViewholder.class) {
-            ((OutgoingViewholder) holder).outgoingMsg.setText(msgData.get(position).getContent());
+            ((OutgoingViewholder) holder).outgoingMsg.setText(msgData.get(position).getContent().toString());
 
         } else {
-            ((IncomingViewholder) holder).incomingMsg.setText(msgData.get(position).getContent());
+            ((IncomingViewholder) holder).incomingMsg.setText(msgData.get(position).getContent().toString());
         }
     }
 

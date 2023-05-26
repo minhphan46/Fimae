@@ -6,6 +6,7 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 
+import android.widget.Toast;
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.fragment.app.Fragment;
@@ -20,6 +21,7 @@ import com.example.fimae.models.Fimaers;
 import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.Task;
 import com.google.firebase.FirebaseApp;
+import com.google.firebase.Timestamp;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
 import com.google.firebase.firestore.*;
@@ -67,42 +69,60 @@ public class ChatFragment extends Fragment {
             userHomeViewAdapter.notifyDataSetChanged();
         });
         userHomeViewAdapter.setData(fimaers, user -> {
-            ArrayList<String> participants = new ArrayList<String>() {{
-                add(FirebaseAuth.getInstance().getCurrentUser().getUid());
+            System.out.println("***********AAAAAAAA het***********");
+            ArrayList<String> participants = new ArrayList<String>(){{
                 add(user.getUid());
+                add(FirebaseAuth.getInstance().getUid());
             }};
-            conversationRef.whereArrayContainsAny("memberIds", participants).get().addOnCompleteListener(new OnCompleteListener<QuerySnapshot>() {
+            participants.sort(Comparator.naturalOrder());
+            conversationRef.where(Filter.equalTo("participantIDs", participants)).limit(1).get().addOnCompleteListener(new OnCompleteListener<QuerySnapshot>() {
                 @Override
                 public void onComplete(@NonNull @NotNull Task<QuerySnapshot> task) {
-                    if (task.getResult().getDocuments().size() >= 1 && task.getResult().getDocuments().get(0).exists()) {
+                    Intent intent = new Intent(getContext(), OnChatActivity.class);
 
-                        Conversation conversation = task.getResult().getDocuments().get(0).toObject(Conversation.class);
-                        String id = task.getResult().getDocuments().get(0).getId();
-                        Intent intent = new Intent(getContext(), OnChatActivity.class);
-                        System.out.println("=========" + id);
-                        intent.putExtra("conversationId", id);
-                        startActivity(intent);
+                    if(task.isSuccessful()){
+                        System.out.println(task.getResult().getDocuments());
+                        if(!task.getResult().isEmpty()){
+                            Conversation conversation = new Conversation();
+                            conversation = task.getResult().getDocuments().get(0).toObject(Conversation.class);
+                            assert conversation != null;
+                            conversation.setId(task.getResult().getDocuments().get(0).getId());
+                            intent.putExtra("conversationID", conversation.getId());
+                            startActivity(intent);
+                        } else {
+                            System.out.println("***********NONE***********");
+                            Conversation conversation = new Conversation();
+                            conversation.setCreatedAt(Timestamp.now());
+                            conversation.setType(Conversation.FRIEND_CHAT);
+                            conversation.setParticipantIDs(participants);
+                            HashMap<String, Object> createConversation = new HashMap<>();
+                            createConversation.put("createdAt", conversation.getCreatedAt());
+                            createConversation.put("type", conversation.getType());
+                            createConversation.put("participantIDs", conversation.getParticipantIDs() );
+                            DocumentReference newConDoc = conversationRef.document();
+                            newConDoc.set(createConversation).addOnCompleteListener(new OnCompleteListener<Void>() {
+                                @Override
+                                public void onComplete(@NonNull @NotNull Task<Void> task) {
+                                    if(task.isSuccessful()){
+                                        conversation.setId(newConDoc.getId());
+                                        intent.putExtra("conversationID", conversation.getId());
+                                        startActivity(intent);
+                                    } else {
+                                        Toast.makeText(getContext(),"Lỗi: " + task.getException().getMessage(), Toast.LENGTH_SHORT).show();
+                                    }
+                                }
+                            });
+                        }
                     } else {
-                        HashMap<String, Object> conversationReq = new HashMap<>();
-                        conversationReq.put("created_at", new Date());
-                        conversationReq.put("type", Conversation.FRIEND_CHAT);
-                        conversationReq.put("name", "Chat");
-                        conversationReq.put("memberIds", participants);
-                        DocumentReference newConver = conversationRef.document();
-                        newConver.set(conversationReq).addOnCompleteListener(new OnCompleteListener<Void>() {
-                            @Override
-                            public void onComplete(@NonNull @NotNull Task<Void> task) {
-                                Intent intent = new Intent(getContext(), OnChatActivity.class);
-                                System.out.println("!!!!!!=========" + newConver.getId());
-                                intent.putExtra("conversationId", newConver.getId());
-                                startActivity(intent);
-                            }
-                        });
+                        Toast.makeText(getContext(),"Lỗi: " + task.getException().getMessage(), Toast.LENGTH_SHORT).show();
                     }
                 }
             });
+
+
         });
         return view;
+
     }
 
 

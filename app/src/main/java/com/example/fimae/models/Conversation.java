@@ -1,25 +1,24 @@
 package com.example.fimae.models;
 
+import android.content.Intent;
+import com.google.firebase.Timestamp;
+import com.google.type.DateTime;
+import org.apache.http.entity.SerializableEntity;
+
 import java.util.*;
 
 public class Conversation {
     public static final String FRIEND_CHAT = "friend-chat";
     public static final String GROUP_CHAT = "group-chat";
     String id;
-    Date created_at;
+    String isBlockedBy;
+    Timestamp createdAt;
     String type;
     String name;
-    ArrayList<String> memberIds;
+    String lastMessageId;
+    ArrayList<String> participantIDs;
+    public Conversation(){
 
-    public Conversation(){}
-
-    public Conversation(String id, Date created_at, String type, String name, ArrayList<String> memberIds) {
-        this.id = id;
-        this.created_at = created_at;
-        this.type = type;
-        assert (Objects.equals(type, FRIEND_CHAT) || Objects.equals(type, GROUP_CHAT));
-        this.name = name;
-        this.memberIds = memberIds;
     }
 
     public String getId() {
@@ -30,12 +29,20 @@ public class Conversation {
         this.id = id;
     }
 
-    public Date getCreated_at() {
-        return created_at;
+    public String getIsBlockedBy() {
+        return isBlockedBy;
     }
 
-    public void setCreated_at(Date created_at) {
-        this.created_at = created_at;
+    public void setIsBlockedBy(String isBlockedBy) {
+        this.isBlockedBy = isBlockedBy;
+    }
+
+    public Timestamp getCreatedAt() {
+        return createdAt;
+    }
+
+    public void setCreatedAt(Timestamp createdAt) {
+        this.createdAt = createdAt;
     }
 
     public String getType() {
@@ -54,11 +61,19 @@ public class Conversation {
         this.name = name;
     }
 
-    public ArrayList<String> getMemberIds() {
-        return memberIds;
+    public String getLastMessageId() {
+        return lastMessageId;
     }
 
-    public void setMemberIds(ArrayList<String> membersId) {
-        this.memberIds = membersId;
+    public void setLastMessageId(String lastMessageId) {
+        this.lastMessageId = lastMessageId;
+    }
+
+    public ArrayList<String> getParticipantIDs() {
+        return participantIDs;
+    }
+
+    public void setParticipantIDs(ArrayList<String> participantIDs) {
+        this.participantIDs = participantIDs;
     }
 }

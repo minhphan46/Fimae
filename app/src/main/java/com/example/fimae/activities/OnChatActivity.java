@@ -3,36 +3,38 @@ package com.example.fimae.activities;
 import android.content.Intent;
 import android.graphics.Bitmap;
 import android.net.Uri;
-import android.os.Build;
 import android.provider.MediaStore;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
 import android.widget.*;
 import androidx.annotation.NonNull;
-import androidx.annotation.Nullable;
 import androidx.appcompat.app.ActionBar;
 import androidx.appcompat.app.AppCompatActivity;
 import android.os.Bundle;
 import androidx.appcompat.widget.Toolbar;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
+import com.example.fimae.MediaListDialogFragment;
 import com.example.fimae.R;
 import com.example.fimae.adapters.BottomSheetItemAdapter;
 import com.example.fimae.adapters.MessageAdapter;
 import com.example.fimae.fragments.ChatBottomSheetFragment;
 import com.example.fimae.models.BottomSheetItem;
-import com.example.fimae.models.Fimaers;
 import com.example.fimae.models.Message;
+import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.OnFailureListener;
+import com.google.android.gms.tasks.Task;
+import com.google.firebase.Timestamp;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.firestore.*;
+import com.google.firebase.storage.FirebaseStorage;
 import org.jetbrains.annotations.NotNull;
 
 import java.util.*;
 
 public class OnChatActivity extends AppCompatActivity {
-    List<BottomSheetItem> bottomSheetItemList = new ArrayList<BottomSheetItem>(){
+    List<BottomSheetItem> bottomSheetItemList = new ArrayList<BottomSheetItem>() {
         {
             add(new BottomSheetItem(R.drawable.ic_share, "Chia sẽ liên hệ"));
             add(new BottomSheetItem(R.drawable.ic_gallery, "Tất cả ảnh"));
@@ -44,32 +46,40 @@ public class OnChatActivity extends AppCompatActivity {
     };
     private static final int REQUEST_IMAGE_CAPTURE = 1;
     private static final int REQUEST_IMAGE_GALLERY = 2;
+
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
         getMenuInflater().inflate(R.menu.chat_second_menu, menu);
         return true;
     }
+
     private CollectionReference messagesCol;
+    private String conversationId;
+    EditText textInput;
+    RecyclerView recyclerView;
+    MessageAdapter messageAdapter;
+    LinearLayoutManager linearLayoutManager;
+    ArrayList<Message> messages;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        ArrayList<Message> messages = new ArrayList<>();
+        messages = new ArrayList<>();
         setContentView(R.layout.activity_on_chat);
-        String conversationId = String.valueOf(getIntent().getStringExtra("conversationId"));
+        conversationId = String.valueOf(getIntent().getStringExtra("conversationID"));
+        System.out.println("=============" + conversationId+"==================");
         messagesCol = FirebaseFirestore.getInstance().collection("conversations").document(conversationId).collection("messages");
         Toolbar toolbar = findViewById(R.id.toolbar);
         toolbar.inflateMenu(R.menu.chat_second_menu);
         setSupportActionBar(toolbar);
         ActionBar actionBar = getSupportActionBar();
-        if(actionBar != null){
+        if (actionBar != null) {
             actionBar.setDisplayHomeAsUpEnabled(true);
             actionBar.setDisplayShowHomeEnabled(true);
             actionBar.setTitle("");
         }
-        RecyclerView recyclerView = findViewById(R.id.list_messages);
-        MessageAdapter messageAdapter = new MessageAdapter(this, messages);
-        System.out.println("Data goc la day: " + Message.dummy);
-        LinearLayoutManager linearLayoutManager = new LinearLayoutManager(this);
+         recyclerView = findViewById(R.id.list_messages);
+         messageAdapter = new MessageAdapter(this, messages);
+         linearLayoutManager = new LinearLayoutManager(this);
         recyclerView.setAdapter(messageAdapter);
         recyclerView.setLayoutManager(linearLayoutManager);
         recyclerView.scrollToPosition(messageAdapter.getItemCount() - 1);
@@ -78,42 +88,15 @@ public class OnChatActivity extends AppCompatActivity {
         linearLayout.setVisibility(View.GONE);
 
         btnPlus.setOnClickListener(v -> {
-            if(linearLayout.getVisibility() == View.GONE){
+            if (linearLayout.getVisibility() == View.GONE) {
                 linearLayout.setVisibility(View.VISIBLE);
             } else {
                 linearLayout.setVisibility(View.GONE);
             }
         });
         ImageView btnEmoji = findViewById(R.id.btn_emoji);
-        EditText editText = findViewById(R.id.et_input);
-        btnEmoji.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                HashMap<String, Object> messReq = new HashMap<>();
-                DocumentReference documentReference = messagesCol.document();
-                messReq.put("conversationId", conversationId);
-                messReq.put("idSender", FirebaseAuth.getInstance().getUid());
-                messReq.put("content", editText.getText().toString());
-                messReq.put("timeSent", new Date());
-                Message message = new Message(documentReference.getId(), editText.getText().toString(), new Date());
-               messages.add(message);
-                messageAdapter.notifyItemInserted(Message.dummy.size() - 1);
-                recyclerView.scrollToPosition(messageAdapter.getItemCount() - 1);
-                messagesCol.document().set(messReq).addOnFailureListener(new OnFailureListener() {
-                    @Override
-                    public void onFailure(@NonNull @NotNull Exception e) {
-                        int i = messages.lastIndexOf(message);
-                        messageAdapter.notifyItemRemoved(i);
-                        recyclerView.scrollToPosition(messageAdapter.getItemCount() - 1);
-                    }
-                });
-
-                editText.setText("");
-                if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
-                    editText.setFocusable(View.NOT_FOCUSABLE);
-                }
-            }
-        });
+         textInput = findViewById(R.id.et_input);
+        btnEmoji.setOnClickListener(v -> sendTextMessage());
         ImageView btnCamera = findViewById(R.id.btn_camera);
         ImageView btnGallery = findViewById(R.id.btn_galllery);
         btnCamera.setOnClickListener(new View.OnClickListener() {
@@ -128,9 +111,10 @@ public class OnChatActivity extends AppCompatActivity {
                 dispatchPickImageFromGalleryIntent();
             }
         });
-        messagesCol.addSnapshotListener((value, error) -> {
+        messagesCol.orderBy("sentAt", Query.Direction.ASCENDING).addSnapshotListener((value, error) -> {
             if (error != null) {
-                // Xử lý lỗi
+                System.out.println(error.getMessage());
+                System.out.println(error.getCode());
                 return;
             }
             messages.clear();
@@ -140,24 +124,54 @@ public class OnChatActivity extends AppCompatActivity {
                 Message message = document.toObject(Message.class);
                 messages.add(message);
             }
-            messages.sort(Comparator.comparing(Message::getTimeSent));
             messageAdapter.notifyDataSetChanged();
+            recyclerView.scrollToPosition(messageAdapter.getItemCount() - 1);
+        });
+        ImageView btnMicro = findViewById(R.id.btn_micro);
+        btnMicro.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                new MediaListDialogFragment().show(getSupportFragmentManager(), "dialog");
+            }
         });
     }
-
+    private void sendTextMessage(){
+        DocumentReference messDoc = messagesCol.document();
+        Message message = new Message();
+        message.setId(messDoc.getId());
+        message.setType(Message.TEXT);
+        message.setSentAt(Timestamp.now());
+        message.setContent( textInput.getText().toString());
+        message.setIdSender(FirebaseAuth.getInstance().getUid());
+        messages.add(message);
+        messageAdapter.notifyItemInserted(messages.size() - 1);
+        recyclerView.scrollToPosition(messageAdapter.getItemCount() - 1);
+        messagesCol.document().set(message).addOnFailureListener(e -> {
+            int i = messages.lastIndexOf(message);
+            messageAdapter.notifyItemRemoved(i);
+            recyclerView.scrollToPosition(messageAdapter.getItemCount() - 1);
+        });
+        textInput.setText("");
+    }
     private void dispatchTakePictureIntent() {
         Intent takePictureIntent = new Intent(MediaStore.ACTION_IMAGE_CAPTURE);
         startActivity(takePictureIntent);
     }
+    private static final int REQUEST_IMAGE = 1;
+    private static final int REQUEST_VIDEO = 2;
     private void dispatchPickImageFromGalleryIntent() {
-        Intent pickImageIntent = new Intent(Intent.ACTION_PICK, android.provider.MediaStore.Images.Media.EXTERNAL_CONTENT_URI);
-        startActivityForResult(pickImageIntent, REQUEST_IMAGE_GALLERY);
+//        Intent pickImageIntent = new Intent(Intent.ACTION_PICK, android.provider.MediaStore.Images.Media.EXTERNAL_CONTENT_URI);
+//        startActivityForResult(pickImageIntent, REQUEST_IMAGE_GALLERY);
+
+
     }
+
     protected void onActivityResult(int requestCode, int resultCode, Intent data) {
         super.onActivityResult(requestCode, resultCode, data);
         if (requestCode == REQUEST_IMAGE_CAPTURE && resultCode == RESULT_OK) {
             Bundle extras = data.getExtras();
             Bitmap imageBitmap = (Bitmap) extras.get("data");
+            FirebaseStorage.getInstance().getReference("conversation-medias").child(conversationId);
             // Use the captured imageBitmap as needed
         }
         if (requestCode == REQUEST_IMAGE_GALLERY && resultCode == RESULT_OK) {
@@ -165,6 +179,7 @@ public class OnChatActivity extends AppCompatActivity {
             // Use the selected imageUri as needed
         }
     }
+
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
         int id = item.getItemId();
@@ -172,7 +187,7 @@ public class OnChatActivity extends AppCompatActivity {
         if (id == android.R.id.home) {
             onBackPressed();
             return true;
-        } else if(id == R.id.option_more) {
+        } else if (id == R.id.option_more) {
             ChatBottomSheetFragment chatBottomSheetFragment = new ChatBottomSheetFragment(bottomSheetItemList,
                     new BottomSheetItemAdapter.IClickBottomSheetItemListener() {
                         @Override
@@ -180,8 +195,8 @@ public class OnChatActivity extends AppCompatActivity {
                             Toast.makeText(getBaseContext(), bottomSheetItem.getTitle(), Toast.LENGTH_SHORT).show();
                         }
                     });
-            chatBottomSheetFragment.show(getSupportFragmentManager(),chatBottomSheetFragment.getTag());
-        } else if (id == R.id.option_call){
+            chatBottomSheetFragment.show(getSupportFragmentManager(), chatBottomSheetFragment.getTag());
+        } else if (id == R.id.option_call) {
             FirebaseAuth.getInstance().signOut();
             System.out.println("Click success");
             startActivity(new Intent(this, AuthenticationActivity.class));
