@@ -38,9 +38,8 @@ public class ChatFragment extends Fragment {
     @Override
     public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
         View view = inflater.inflate(R.layout.fragment_chat, container, false);
-        firestore = FirebaseFirestore.getInstance();
-        fimaeUserRef = firestore.collection("fimaers");
-        conversationRef = firestore.collection("conversations");
+
+        // recycler view =================================================================================
         RecyclerView recyclerView = view.findViewById(R.id.list_user);
         UserHomeViewAdapter userHomeViewAdapter = new UserHomeViewAdapter();
         ArrayList<Fimaers> fimaers = new ArrayList<Fimaers>();
@@ -51,6 +50,10 @@ public class ChatFragment extends Fragment {
         LinearLayoutManager linearLayoutManager = new LinearLayoutManager(this.getContext());
         recyclerView.setAdapter(userHomeViewAdapter);
         recyclerView.setLayoutManager(linearLayoutManager);
+        //=================================================================================
+        firestore = FirebaseFirestore.getInstance();
+        conversationRef = firestore.collection("conversations"); // list cuoc tro chuyen
+        fimaeUserRef = firestore.collection("fimaers"); // lay het thu muc user ra
         fimaeUserRef.addSnapshotListener((value, error) -> {
             if (error != null) {
                 // Xử lý lỗi
@@ -68,6 +71,7 @@ public class ChatFragment extends Fragment {
             // Cập nhật giao diện người dùng (RecyclerView)
             userHomeViewAdapter.notifyDataSetChanged();
         });
+
         userHomeViewAdapter.setData(fimaers, user -> {
             System.out.println("***********AAAAAAAA het***********");
             ArrayList<String> participants = new ArrayList<String>(){{
