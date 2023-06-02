@@ -35,7 +35,7 @@ import de.hdodenhof.circleimageview.CircleImageView;
 
 public class CallActivity extends AppCompatActivity {
 
-    private int TIME_CALL = 60;
+    private int TIME_CALL = 5 * 60;
 
     private CircleImageView mImageLocal;
     private CircleImageView mImageRemote;

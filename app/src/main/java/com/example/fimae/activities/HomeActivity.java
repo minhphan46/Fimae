@@ -1,4 +1,5 @@
 package com.example.fimae.activities;
+import android.content.Intent;
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.core.provider.FontRequest;
@@ -6,23 +7,30 @@ import androidx.emoji2.text.EmojiCompat;
 import androidx.emoji2.text.FontRequestEmojiCompatConfig;
 import androidx.fragment.app.FragmentPagerAdapter;
 import androidx.viewpager.widget.ViewPager;
+
 import android.os.Bundle;
 import android.view.MenuItem;
+
 import com.example.fimae.R;
 import com.example.fimae.adapters.ViewPagerAdapter;
 import com.example.fimae.databinding.ActivityMainBinding;
 import com.google.android.material.bottomnavigation.BottomNavigationView;
 import com.google.android.material.navigation.NavigationBarView;
+import com.google.firebase.auth.FirebaseAuth;
+import com.google.firebase.auth.FirebaseUser;
 
 import java.security.cert.Certificate;
 
 public class MainActivity extends AppCompatActivity {
+
     private BottomNavigationView mNavigationView;
     private ViewPager mViewPager;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+        setContentView(R.layout.activity_home);
+
         setContentView(R.layout.activity_main);
         mNavigationView = findViewById(R.id.bottom_nav);
         mViewPager = findViewById(R.id.view_paper);
@@ -83,4 +91,6 @@ public class MainActivity extends AppCompatActivity {
             }
         });
     }
+
+
 }

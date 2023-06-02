@@ -4,33 +4,34 @@
         xmlns:app="http://schemas.android.com/apk/res-auto"
         xmlns:tools="http://schemas.android.com/tools"
         android:layout_width="match_parent"
-        android:layout_height="match_parent"
-        tools:context=".fragments.FirstFragment">
+        android:layout_height="match_parent">
     <com.google.android.material.appbar.AppBarLayout
             android:id="@+id/appbar"
-            app:layout_constraintTop_toTopOf="parent"
+            android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_width="match_parent"
             app:elevation="0dp"
-            android:theme="@style/Theme.Fimae.AppBarOverlay">
-
+            android:theme="@style/Theme.Fimae.NoActionBar"
+            app:layout_constraintTop_toTopOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintEnd_toEndOf="parent">
         <androidx.appcompat.widget.Toolbar
-            android:id="@+id/toolbar"
-            android:layout_width="match_parent"
-            android:layout_height="?attr/actionBarSize"
-            android:background="@color/text_white"
-            app:menu="@menu/chat_menu"
-            app:popupTheme="@style/Theme.Fimae.PopupOverlay"
-            app:titleTextColor="@color/text_white">
+                android:id="@+id/toolbar"
+                android:layout_width="match_parent"
+                android:layout_height="?attr/actionBarSize"
+                android:background="@color/text_white"
+                app:menu="@menu/chat_menu"
+                app:popupTheme="@style/Theme.Fimae.PopupOverlay"
+                app:titleTextColor="@color/text_white">
 
             <TextView
-                android:id="@+id/toolbar_title"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_gravity="center"
-                android:text="@string/app_name"
-                android:textColor="@color/primary_1"
-                style="@style/bold_24" />
+                    android:id="@+id/toolbar_title"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_gravity="center"
+                    android:text="@string/app_name"
+                    android:textColor="@color/primary_1"
+
+            />
 
         </androidx.appcompat.widget.Toolbar>
 
@@ -51,22 +52,22 @@
             android:gravity="center_vertical"
     >
         <ImageView
-            android:id="@+id/imageView"
-            android:layout_width="24dp"
-            android:layout_height="24dp"
-            android:src="@drawable/ic_search"
-            android:layout_marginEnd="12dp"
+                android:id="@+id/imageView"
+                android:layout_width="24dp"
+                android:layout_height="24dp"
+                android:src="@drawable/ic_search"
+                android:layout_marginEnd="12dp"
         />
         <TextView
-            android:layout_width="wrap_content"
-            style="@style/regular_14"
-            android:textColor="@color/text_secondary"
-            android:layout_height="wrap_content"
-            android:text="Tìm kiếm lịch sử cuộc trò chuyện"
+                android:id="@+id/search_title"
+                android:layout_width="wrap_content"
+                android:textColor="@color/text_secondary"
+                android:layout_height="wrap_content"
+                android:text="Tìm kiếm lịch sử cuộc trò chuyện"
         />
     </LinearLayout>
-    <ListView
-            android:id="@+id/list_view"
+    <androidx.recyclerview.widget.RecyclerView
+            android:id="@+id/list_user"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             app:layout_constraintTop_toBottomOf="@+id/search_bar"

@@ -12,10 +12,6 @@ import android.widget.ImageButton;
 import android.widget.LinearLayout;
 import android.widget.Toast;
 
-import androidx.appcompat.app.ActionBar;
-import androidx.appcompat.app.AppCompatActivity;
-import androidx.appcompat.widget.Toolbar;
-
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.fragment.app.Fragment;
@@ -23,17 +19,13 @@ import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.example.fimae.R;
-import com.example.fimae.activities.CallActivity;
 import com.example.fimae.activities.ConnectActivity;
-import com.example.fimae.activities.MainActivity;
+import com.example.fimae.activities.HomeActivity;
 import com.example.fimae.activities.WaitingActivity;
 import com.example.fimae.adapters.UserHomeViewAdapter;
-import com.example.fimae.models.UserInfo;
+import com.example.fimae.models.Fimaers;
 import com.example.fimae.repository.ConnectRepo;
 
-import java.sql.Connection;
-import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.List;
 
 public class HomeFragment extends Fragment  {
@@ -47,9 +39,9 @@ public class HomeFragment extends Fragment  {
 
     private View mView;
     private RecyclerView mRcvUsers;
-    private MainActivity mainActivity;
+    private HomeActivity homeActivity;
     private UserHomeViewAdapter userAdapter;
-    private List<UserInfo> mUsers;
+    private List<Fimaers> mUsers;
 
     private LinearLayout mBtnChat;
     private LinearLayout mBtnCallVoice;
@@ -101,17 +93,17 @@ public class HomeFragment extends Fragment  {
 
         // recycleView: List users
         mRcvUsers = mView.findViewById(R.id.recycler_users);
-        mainActivity = (MainActivity) getActivity();
-        mUsers = Arrays.asList(UserInfo.dummy);
-        LinearLayoutManager linearLayoutManager = new LinearLayoutManager(mainActivity);
+        homeActivity = (HomeActivity) getActivity();
+        mUsers = Fimaers.dummy;
+        LinearLayoutManager linearLayoutManager = new LinearLayoutManager(homeActivity);
         mRcvUsers.setLayoutManager(linearLayoutManager);
 
         userAdapter = new UserHomeViewAdapter();
         userAdapter.setData(mUsers, new UserHomeViewAdapter.IClickCardUserListener() {
             @Override
-            public void onClickUser(UserInfo user) {
+            public void onClickUser(Fimaers user) {
                 ConnectRepo.getInstance().setUserLocal(user);
-                showToast("You are " + user.getName());
+                showToast("You are " + user.getFirstName());
             }
         });
         mRcvUsers.setAdapter(userAdapter);

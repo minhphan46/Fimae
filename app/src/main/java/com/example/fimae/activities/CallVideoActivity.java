@@ -28,7 +28,7 @@ import java.util.List;
 
 public class CallVideoActivity extends AppCompatActivity {
 
-    private int TIME_CALL = 60;
+    private int TIME_CALL = 5 * 60;
 
     private FrameLayout frmTextDes;
 
