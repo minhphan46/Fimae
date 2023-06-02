@@ -6,6 +6,7 @@
     android:layout_height="match_parent"
     tools:context=".activities.EditProfileActivity">
 
+
     <androidx.appcompat.widget.Toolbar
         android:id="@+id/editProfileToolBar"
         android:layout_width="409dp"
@@ -15,7 +16,8 @@
         android:theme="?attr/actionBarTheme"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent" >
+        app:layout_constraintTop_toTopOf="parent">
+
         <ImageButton
             android:id="@+id/backBtn"
             android:layout_width="28dp"
@@ -23,24 +25,195 @@
             android:background="@android:color/transparent"
             android:scaleType="fitXY"
             app:srcCompat="@drawable/ic_arrow_left" />
+
         <TextView
             android:id="@+id/editProfileTxt"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
+            android:layout_gravity="center"
             android:text="Chỉnh sửa hồ sơ"
             style="@style/bold_20"
-            android:layout_gravity="center"
             android:textColor="@color/black" />
+
         <ImageButton
             android:id="@+id/confirmBtn"
             android:layout_width="28dp"
             android:layout_height="28dp"
-            android:background="@android:color/transparent"
-            android:scaleType="fitXY"
             android:layout_gravity="right"
             android:layout_marginRight="20dp"
+            android:background="@android:color/transparent"
+            android:scaleType="fitXY"
             app:srcCompat="@drawable/ic_check" />
 
     </androidx.appcompat.widget.Toolbar>
 
+    <RelativeLayout
+        android:id="@+id/relativeName"
+        android:layout_width="409dp"
+        android:layout_height="48dp"
+        android:layout_marginTop="1dp"
+        android:background="@drawable/item_color_grey"
+        android:clickable="true"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/editProfileToolBar">
+
+        <ImageView
+            android:id="@+id/imageView2"
+            android:layout_width="18dp"
+            android:layout_height="18dp"
+            android:layout_marginRight="10dp"
+            android:layout_alignParentEnd="true"
+            android:layout_centerVertical="true"
+            style="@style/regular_14"
+            app:srcCompat="@drawable/ic_chevron_right" />
+
+        <TextView
+            android:id="@+id/nameEditTxt"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_centerVertical="true"
+            android:layout_marginLeft="20dp"
+            android:text="Tên"
+            style="@style/semi_bold_18"
+            android:textColor="@color/black" />
+
+        <TextView
+            android:id="@+id/usernameTxt"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_toStartOf="@id/imageView2"
+            android:layout_centerVertical="true"
+            android:layout_marginRight="10dp"
+            style="@style/regular_14"
+            android:text="minhphan46"
+            android:textColor="@color/black" />
+
+    </RelativeLayout>
+
+    <RelativeLayout
+        android:id="@+id/relaviveLitId"
+        android:layout_width="409dp"
+        android:layout_height="48dp"
+        android:background="@drawable/item_color_grey"
+        android:clickable="true"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/relativeName">
+
+        <ImageView
+            android:id="@+id/copyImg"
+            android:layout_width="18dp"
+            android:layout_height="18dp"
+            android:layout_alignParentEnd="true"
+            android:layout_centerVertical="true"
+            android:layout_marginRight="10dp"
+            app:srcCompat="@drawable/ic_copy"
+            app:tint="@color/primary_2" />
+
+        <TextView
+            android:id="@+id/litId"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_centerVertical="true"
+            android:layout_marginLeft="20dp"
+            android:text="Lit ID"
+            style="@style/semi_bold_18"
+            android:textColor="@color/black" />
+
+        <TextView
+            android:id="@+id/litIdTxt"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_toStartOf="@id/copyImg"
+            android:layout_centerVertical="true"
+            android:layout_marginRight="10dp"
+            android:text="413212312312"
+            style="@style/regular_14"
+            android:textColor="@color/black" />
+
+    </RelativeLayout>
+
+    <RelativeLayout
+        android:id="@+id/relativeDOB"
+        android:layout_width="409dp"
+        android:layout_height="48dp"
+        android:background="@drawable/item_color_grey"
+        android:clickable="true"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/relaviveLitId">
+
+        <ImageView
+            android:id="@+id/right_arrow"
+            android:layout_width="18dp"
+            android:layout_height="18dp"
+            android:layout_alignParentEnd="true"
+            android:layout_centerVertical="true"
+            android:layout_marginRight="10dp"
+            app:srcCompat="@drawable/ic_chevron_right" />
+
+        <TextView
+            android:id="@+id/dob"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_centerVertical="true"
+            android:layout_marginLeft="20dp"
+            android:text="Ngày sinh"
+            style="@style/semi_bold_18"
+            android:textColor="@color/black" />
+
+        <TextView
+            android:id="@+id/dobTxt"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_toStartOf="@id/right_arrow"
+            android:layout_centerVertical="true"
+            android:layout_marginRight="10dp"
+            android:text="01-01-2003" />
+
+    </RelativeLayout>
+
+    <RelativeLayout
+        android:layout_width="409dp"
+        android:layout_height="160dp"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/relativeDOB">
+        <TextView
+            android:id="@+id/bio"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="10dp"
+            android:layout_marginLeft="20dp"
+            style="@style/semi_bold_18"
+            android:text="Tiểu sử"
+            android:textColor="@color/black" />
+        <com.google.android.material.textfield.TextInputLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            app:counterEnabled="true"
+            app:counterMaxLength="200"
+            android:layout_marginLeft="15dp"
+            android:layout_marginRight="10dp"
+            app:counterOverflowTextAppearance="@style/TextAppearance.AppCompat.Small"
+            app:boxBackgroundMode="none"
+            android:paddingTop="0dp"
+            app:boxStrokeWidth="0dp">
+            <com.google.android.material.textfield.TextInputEditText
+                android:id="@+id/editText"
+                android:layout_width="match_parent"
+                android:layout_height="130dp"
+                android:inputType="textMultiLine"
+                android:paddingTop="15dp"
+                style="@style/regular_16"
+                android:maxLength="200"
+                android:background="@drawable/background"
+                android:imeOptions="actionDone"
+                android:gravity="top" />
+
+        </com.google.android.material.textfield.TextInputLayout>
+
+
+    </RelativeLayout>
 </androidx.constraintlayout.widget.ConstraintLayout>

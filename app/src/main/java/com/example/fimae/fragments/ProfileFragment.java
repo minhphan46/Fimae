@@ -17,19 +17,37 @@ import com.example.fimae.activities.EditProfileActivity;
 
 public class ProfileFragment extends Fragment {
 
-    ImageButton btnEditProfile;
+    ImageButton btnEditProfile, editBioBtn, editChipBtn;
     @Nullable
     @Override
     public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
         View view = inflater.inflate(R.layout.fragment_profile, container, false);
         btnEditProfile = view.findViewById(R.id.editProfileBtn);
+        editBioBtn = view.findViewById(R.id.editBioBtn);
+        editChipBtn = view.findViewById(R.id.editChipBtn);
+        editChipBtn.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                navToEditProfile();
+            }
+        });
+        editBioBtn.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                navToEditProfile();
+            }
+        });
         btnEditProfile.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                Intent intent = new Intent(getContext(), EditProfileActivity.class);
-                startActivity(intent);
+                navToEditProfile();
             }
         });
         return view;
+    }
+
+    private void navToEditProfile() {
+        Intent intent = new Intent(getContext(), EditProfileActivity.class);
+        startActivity(intent);
     }
 }

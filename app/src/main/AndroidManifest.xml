@@ -46,6 +46,9 @@
                     android:resource="@xml/provider_paths"/>
         </provider>
         <activity
+            android:name=".activities.EditProfileActivity"
+            android:exported="false"/>
+        <activity
                 android:name=".activities.UpdateProfileActivity"
                 android:exported="false"/>
         <activity
