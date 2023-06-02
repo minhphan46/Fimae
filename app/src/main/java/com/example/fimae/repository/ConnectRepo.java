@@ -1,27 +1,18 @@
 package com.example.fimae.repository;
 
-import android.annotation.SuppressLint;
-import android.os.Build;
 import android.util.Log;
 
 import androidx.annotation.NonNull;
-import androidx.annotation.RequiresApi;
 
-import com.example.fimae.models.UserInfo;
+import com.example.fimae.models.Fimaers;
 import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.ValueEventListener;
-import com.stringee.messaging.User;
 
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.List;
-import java.util.concurrent.CompletableFuture;
-import java.util.concurrent.CountDownLatch;
-import java.util.concurrent.ExecutionException;
-import java.util.concurrent.TimeUnit;
 
 public class ConnectRepo {
 
@@ -38,10 +29,10 @@ public class ConnectRepo {
 
     DatabaseReference databaseReference = FirebaseDatabase.getInstance().getReference();;
 
-    UserInfo userLocal;
-    UserInfo userRemote;
+    Fimaers userLocal;
+    Fimaers userRemote;
 
-    public ArrayList<UserInfo> listUsersOnline = new ArrayList<>();
+    public ArrayList<Fimaers> listUsersOnline = new ArrayList<>();
 
     public static String table_chat_name = "USERS_CHAT_ONLINE";
     public static String table_call_voice_name = "USERS_CALL_ONLINE";
@@ -55,7 +46,7 @@ public class ConnectRepo {
             public void onDataChange(@NonNull DataSnapshot snapshot) {
                 if(!listUsersOnline.isEmpty()) listUsersOnline.clear();
                 for (DataSnapshot dataSnapshot : snapshot.getChildren()) {
-                    UserInfo user = dataSnapshot.getValue(UserInfo.class);
+                    Fimaers user = dataSnapshot.getValue(Fimaers.class);
                     if(user != null) {
                         Log.d("TAG", user.toString());
                         listUsersOnline.add(user);
@@ -81,7 +72,7 @@ public class ConnectRepo {
         // return this user
         if(!listUsersOnline.isEmpty()){
             // if user remote != userLocal
-            if(!getFirstUserOnl().getId().equals(userLocal.getId())){
+            if(!getFirstUserOnl().getUid().equals(userLocal.getUid())){
                 userRemote = getFirstUserOnl();
                 deleteUserOnl(getUserRemote(), tableName);
             }
@@ -91,43 +82,43 @@ public class ConnectRepo {
         }
     }
 
-    public void addUserOnl(UserInfo user, String tableName) {
-        String id = "user" + user.getId();
+    public void addUserOnl(Fimaers user, String tableName) {
+        String id = "user" + user.getUid();
         databaseReference.child(tableName).child(id).setValue(user);
         listUsersOnline.add(user);
     }
 
-    public void deleteUserOnl(UserInfo user, String tableName) {
-        String id = "user" + user.getId();
+    public void deleteUserOnl(Fimaers user, String tableName) {
+        String id = "user" + user.getUid();
         // delete user in list
         databaseReference.child(tableName).child(id).removeValue();
         listUsersOnline.remove(user);
     }
 
-    public UserInfo getFirstUserOnl() {
+    public Fimaers getFirstUserOnl() {
         return listUsersOnline.get(0);
     }
 
-    public UserInfo getUserLocal() {
+    public Fimaers getUserLocal() {
         return userLocal;
     }
 
-    public void setUserLocal(UserInfo userLocal) {
+    public void setUserLocal(Fimaers userLocal) {
         this.userLocal = userLocal;
     }
 
-    public UserInfo getUserRemote() {
+    public Fimaers getUserRemote() {
         return userRemote;
     }
 
-    public void setUserRemote(UserInfo userRemote) {
+    public void setUserRemote(Fimaers userRemote) {
         this.userRemote = userRemote;
     }
 
     public void setUserRemoteByName(String name) {
-        List<UserInfo> users = Arrays.asList(UserInfo.dummy);
-        for(UserInfo user : users){
-            if(user.getName().equals(name)){
+        List<Fimaers> users = Fimaers.dummy;
+        for(Fimaers user : users){
+            if(user.getFirstName().equals(name)){
                 setUserRemote(user);
                 return;
             }

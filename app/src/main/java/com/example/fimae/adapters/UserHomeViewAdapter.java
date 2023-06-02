@@ -1,6 +1,5 @@
 package com.example.fimae.adapters;
 
-import android.content.Context;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -12,7 +11,7 @@ import androidx.annotation.NonNull;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.example.fimae.R;
-import com.example.fimae.models.UserInfo;
+import com.example.fimae.models.Fimaers;
 import com.squareup.picasso.Picasso;
 import java.util.List;
 
@@ -20,14 +19,14 @@ import de.hdodenhof.circleimageview.CircleImageView;
 
 public class UserHomeViewAdapter extends  RecyclerView.Adapter<UserHomeViewAdapter.ViewHolder>{
 
-    private List<UserInfo> mUsers;
+    private List<Fimaers> mUsers;
     private IClickCardUserListener iClickCardUserListener;
 
     public interface IClickCardUserListener {
-        void onClickUser(UserInfo user);
+        void onClickUser(Fimaers user);
     }
 
-    public void setData( List<UserInfo> mUsers, IClickCardUserListener inIClickCardUserListener) {
+    public void setData(List<Fimaers> mUsers, IClickCardUserListener inIClickCardUserListener) {
         this.mUsers = mUsers;
         this.iClickCardUserListener = inIClickCardUserListener;
         notifyDataSetChanged();
@@ -65,17 +64,17 @@ public class UserHomeViewAdapter extends  RecyclerView.Adapter<UserHomeViewAdapt
 
     @Override
     public void onBindViewHolder(@NonNull ViewHolder holder, int position) {
-        UserInfo user = mUsers.get(position);
+        Fimaers user = mUsers.get(position);
         if(user == null){
             return;
         }
 
         Picasso.get().load(user.getAvatarUrl()).placeholder(R.drawable.ic_default_avatar).into(holder.mAvatarView);
-        holder.mTextName.setText(user.getName());
-        holder.mTextDes.setText(user.getDescription());
-        holder.mTextAge.setText(String.valueOf(user.getAge()));
-        holder.mLayoutGenderAge.setBackgroundResource(user.isMale() ? R.drawable.shape_gender_border_blue : R.drawable.shape_gender_border_pink);
-        holder.mIconGender.setImageResource(user.isMale() ? R.drawable.ic_male : R.drawable.ic_female);
+        holder.mTextName.setText(user.getFirstName());
+        holder.mTextDes.setText(user.getBio());
+        holder.mTextAge.setText(String.valueOf(user.calculateAge()));
+        holder.mLayoutGenderAge.setBackgroundResource(user.isGender() ? R.drawable.shape_gender_border_blue : R.drawable.shape_gender_border_pink);
+        holder.mIconGender.setImageResource(user.isGender() ? R.drawable.ic_male : R.drawable.ic_female);
 
         holder.mLayoutCard.setOnClickListener(new View.OnClickListener() {
             @Override

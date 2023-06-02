@@ -9,8 +9,7 @@ import androidx.recyclerview.widget.RecyclerView;
 import androidx.viewpager2.widget.ViewPager2;
 
 import com.example.fimae.R;
-import com.example.fimae.models.SliderItem;
-import com.example.fimae.models.UserInfo;
+import com.example.fimae.models.Fimaers;
 import com.squareup.picasso.Picasso;
 
 import java.util.List;
@@ -19,10 +18,10 @@ import de.hdodenhof.circleimageview.CircleImageView;
 
 public class SliderAdapter extends RecyclerView.Adapter<SliderAdapter.SliderViewHolder>{
 
-    private List<UserInfo> sliderItems;
+    private List<Fimaers> sliderItems;
     private ViewPager2 viewPager2;
 
-    public SliderAdapter(List<UserInfo> sliderItemList, ViewPager2 viewPager2) {
+    public SliderAdapter(List<Fimaers> sliderItemList, ViewPager2 viewPager2) {
         this.sliderItems = sliderItemList;
         this.viewPager2 = viewPager2;
     }
@@ -41,7 +40,7 @@ public class SliderAdapter extends RecyclerView.Adapter<SliderAdapter.SliderView
 
     @Override
     public void onBindViewHolder(@NonNull SliderViewHolder holder, int position) {
-        UserInfo user = sliderItems.get(position);
+        Fimaers user = sliderItems.get(position);
         if(user == null){
             return;
         }
@@ -69,7 +68,7 @@ public class SliderAdapter extends RecyclerView.Adapter<SliderAdapter.SliderView
             imageView = itemView.findViewById(R.id.image_slide);
         }
 
-        void setImage(UserInfo user){
+        void setImage(Fimaers user){
             // set image picasso
             Picasso.get().load(user.getAvatarUrl()).placeholder(R.drawable.ic_default_avatar).into(imageView);
         }

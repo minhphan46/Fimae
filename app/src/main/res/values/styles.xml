@@ -43,27 +43,27 @@
     </style>
     <!-- Semi bold-->
     <style name="semi_bold_18">
-        <item name="fontFamily">@font/public_sans_semibold</item>
+        <item name="fontFamily">@font/public_sans_semi_bold</item>
         <item name="android:textSize">18sp</item>
     </style>
     <style name="semi_bold_16">
-        <item name="fontFamily">@font/public_sans_semibold</item>
+        <item name="fontFamily">@font/public_sans_semi_bold</item>
         <item name="android:textSize">16sp</item>
     </style>
     <style name="semi_bold_14">
-        <item name="fontFamily">@font/public_sans_semibold</item>
+        <item name="fontFamily">@font/public_sans_semi_bold</item>
         <item name="android:textSize">14sp</item>
     </style>
     <style name="semi_bold_12">
-        <item name="fontFamily">@font/public_sans_semibold</item>
+        <item name="fontFamily">@font/public_sans_semi_bold</item>
         <item name="android:textSize">12sp</item>
     </style>
     <style name="semi_bold_10">
-        <item name="fontFamily">@font/public_sans_semibold</item>
+        <item name="fontFamily">@font/public_sans_semi_bold</item>
         <item name="android:textSize">10sp</item>
     </style>
     <style name="semi_bold_8">
-        <item name="fontFamily">@font/public_sans_semibold</item>
+        <item name="fontFamily">@font/public_sans_semi_bold</item>
         <item name="android:textSize">8sp</item>
     </style>
     <!-- Medium -->
