@@ -23,10 +23,9 @@ import com.example.fimae.activities.ConnectActivity;
 import com.example.fimae.activities.HomeActivity;
 import com.example.fimae.activities.WaitingActivity;
 import com.example.fimae.adapters.UserHomeViewAdapter;
-import com.example.fimae.models.FimaeUser;
+import com.example.fimae.models.Fimaers;
 import com.example.fimae.repository.ConnectRepo;
 
-import java.util.Arrays;
 import java.util.List;
 
 public class HomeFragment extends Fragment  {
@@ -42,7 +41,7 @@ public class HomeFragment extends Fragment  {
     private RecyclerView mRcvUsers;
     private HomeActivity homeActivity;
     private UserHomeViewAdapter userAdapter;
-    private List<FimaeUser> mUsers;
+    private List<Fimaers> mUsers;
 
     private LinearLayout mBtnChat;
     private LinearLayout mBtnCallVoice;
@@ -95,16 +94,16 @@ public class HomeFragment extends Fragment  {
         // recycleView: List users
         mRcvUsers = mView.findViewById(R.id.recycler_users);
         homeActivity = (HomeActivity) getActivity();
-        mUsers = Arrays.asList(FimaeUser.dummy);
+        mUsers = Fimaers.dummy;
         LinearLayoutManager linearLayoutManager = new LinearLayoutManager(homeActivity);
         mRcvUsers.setLayoutManager(linearLayoutManager);
 
         userAdapter = new UserHomeViewAdapter();
         userAdapter.setData(mUsers, new UserHomeViewAdapter.IClickCardUserListener() {
             @Override
-            public void onClickUser(FimaeUser user) {
+            public void onClickUser(Fimaers user) {
                 ConnectRepo.getInstance().setUserLocal(user);
-                showToast("You are " + user.getName());
+                showToast("You are " + user.getFirstName());
             }
         });
         mRcvUsers.setAdapter(userAdapter);

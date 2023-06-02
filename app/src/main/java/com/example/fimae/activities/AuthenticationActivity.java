@@ -17,9 +17,14 @@ import com.google.android.gms.auth.api.signin.GoogleSignInAccount;
 import com.google.android.gms.auth.api.signin.GoogleSignInClient;
 import com.google.android.gms.auth.api.signin.GoogleSignInOptions;
 import com.google.android.gms.common.api.ApiException;
+import com.example.fimae.models.Fimaers;
 import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.Task;
 import com.google.firebase.auth.*;
+import com.google.firebase.firestore.FirebaseFirestore;
+import com.google.firebase.database.DatabaseReference;
+import com.google.firebase.database.FirebaseDatabase;
+import com.google.firebase.firestore.CollectionReference;
 import com.google.firebase.firestore.FirebaseFirestore;
 
 
@@ -32,13 +37,18 @@ public class AuthenticationActivity extends AppCompatActivity {
     GoogleSignInClient mGoogleSignInClient;
     ProgressDialog progressDialog;
 
+    Button btnSignIn, btnSignUp;
+    FirebaseAuth firebaseAuth = FirebaseAuth.getInstance();
+    FirebaseFirestore firestore = FirebaseFirestore.getInstance();
+    FirebaseDatabase database = FirebaseDatabase.getInstance();
+    CollectionReference fimaeUsersRefer = firestore.collection("fimae-users");
+    DatabaseReference usersRef = database.getReference("fimae-users");
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_authentication);
         editTextEmail = findViewById(R.id.editTextEmail);
         editTextPassword = findViewById(R.id.editTextPassword);
-        editTextUsername = findViewById(R.id.editUserName);
         btnSignUp = findViewById(R.id.buttonRegister);
         btnSignIn = findViewById(R.id.buttonLogin);
         btnGoogleSignIn = findViewById(R.id.buttonGoogle);
@@ -101,6 +111,7 @@ public class AuthenticationActivity extends AppCompatActivity {
                             if (task.isSuccessful()) {
                                 // Đăng nhập thành công
                                 FirebaseUser user = auth.getCurrentUser();
+                                FirebaseUser user = firebaseAuth.getCurrentUser();
                                 successAuthentication();
                                 // Tiến hành xử lý sau khi đăng nhập thành công
                             } else {
@@ -115,6 +126,8 @@ public class AuthenticationActivity extends AppCompatActivity {
     private void signUp() {
         String email = String.valueOf(editTextEmail.getText());
         String password = String.valueOf(editTextPassword.getText());
+        if (!(email.isEmpty() && password.isEmpty())) {
+            firebaseAuth.createUserWithEmailAndPassword(email, password)
         String username = String.valueOf(editTextUsername.getText());
         if (!(email.isEmpty() && password.isEmpty() && username.isEmpty())) {
             auth.createUserWithEmailAndPassword(email, password)
@@ -139,6 +152,9 @@ public class AuthenticationActivity extends AppCompatActivity {
 //                                    "eyJjdHkiOiJzdHJpbmdlZS1hcGk7dj0xIiwidHlwIjoiSldUIiwiYWxnIjoiSFMyNTYifQ.eyJqdGkiOiJTSy4wLnM1OFRaMnBJbkIwMFdWMlZmTlQ1RXRmU2xLQ2g3cy0xNjgyODk0NzE0IiwiaXNzIjoiU0suMC5zNThUWjJwSW5CMDBXVjJWZk5UNUV0ZlNsS0NoN3MiLCJleHAiOjE2ODU0ODY3MTQsInVzZXJJZCI6Im1pbmgifQ.rtlgkQhsZMhSUFnxfBk0zSeg0BPHRHHh4SQ54A1GTm8"
 //                            );
                             successAuthentication();
+                            Intent intent = new Intent(AuthenticationActivity.this, UpdateProfileActivity.class);
+                            intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TASK | Intent.FLAG_ACTIVITY_NEW_TASK);
+                            startActivity(intent);
                         } else {
                             // Đăng ký thất bại
                             Toast.makeText(getApplicationContext(), String.format("Đăng ký thất bại. Vì %s", task.getException() != null ? task.getException().getMessage() : "lỗi không xác định"),

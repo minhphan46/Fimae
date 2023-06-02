@@ -20,7 +20,7 @@ import android.widget.Toast;
 
 import com.example.fimae.R;
 import com.example.fimae.adapters.SliderAdapter;
-import com.example.fimae.models.FimaeUser;
+import com.example.fimae.models.Fimaers;
 import com.example.fimae.repository.ConnectRepo;
 import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
@@ -36,7 +36,6 @@ import com.stringee.listener.StringeeConnectionListener;
 import org.json.JSONObject;
 
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -54,7 +53,7 @@ public class WaitingActivity extends AppCompatActivity {
     private TextView mTvTitle;
     // slider ======================================================
     private ViewPager2 viewPager2;
-    private List<FimaeUser> fimaeUsers;
+    private List<Fimaers> fimaers;
     private Handler sliderHandler = new Handler();
     private int timeDelaySlider = 2000;
 
@@ -186,9 +185,9 @@ public class WaitingActivity extends AppCompatActivity {
                 @Override
                 public void onDataChange(@NonNull DataSnapshot snapshot) {
                     // get list all user onl
-                    ArrayList<FimaeUser> listUsersOnline = new ArrayList<>();
+                    ArrayList<Fimaers> listUsersOnline = new ArrayList<>();
                     for (DataSnapshot dataSnapshot : snapshot.getChildren()) {
-                        FimaeUser user = dataSnapshot.getValue(FimaeUser.class);
+                        Fimaers user = dataSnapshot.getValue(Fimaers.class);
                         if(user != null) {
                             Log.d("TAG", user.toString());
                             listUsersOnline.add(user);
@@ -216,7 +215,7 @@ public class WaitingActivity extends AppCompatActivity {
             showToast("Hàng đợi rỗng");
         }
         else {
-            remoteUserName = ConnectRepo.getInstance().getUserRemote().getName();
+            remoteUserName = ConnectRepo.getInstance().getUserRemote().getFirstName();
             showToast("Remote user: " + remoteUserName);
         }
     }
@@ -229,8 +228,8 @@ public class WaitingActivity extends AppCompatActivity {
     private void initViewPager2(){
         viewPager2 = findViewById(R.id.view_image_slider);
 
-        fimaeUsers = new ArrayList<FimaeUser>(Arrays.asList(FimaeUser.dummy));
-        viewPager2.setAdapter(new SliderAdapter(fimaeUsers, viewPager2));
+        fimaers = new ArrayList<Fimaers>(Fimaers.dummy);
+        viewPager2.setAdapter(new SliderAdapter(fimaers, viewPager2));
 
         viewPager2.setClipToPadding(false);
         viewPager2.setClipChildren(false);

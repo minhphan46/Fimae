@@ -1,4 +1,5 @@
 package com.example.fimae.activities;
+import android.content.Intent;
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.fragment.app.FragmentPagerAdapter;
@@ -11,6 +12,8 @@ import com.example.fimae.R;
 import com.example.fimae.adapters.ViewPagerAdapter;
 import com.google.android.material.bottomnavigation.BottomNavigationView;
 import com.google.android.material.navigation.NavigationBarView;
+import com.google.firebase.auth.FirebaseAuth;
+import com.google.firebase.auth.FirebaseUser;
 
 public class HomeActivity extends AppCompatActivity {
 
@@ -83,4 +86,6 @@ public class HomeActivity extends AppCompatActivity {
             }
         });
     }
+
+
 }

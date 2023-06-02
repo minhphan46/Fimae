@@ -1,62 +1,88 @@
 package com.example.fimae.models;
 
+import com.google.firebase.Timestamp;
+
 import java.util.ArrayList;
-import java.util.Date;
+import java.util.Objects;
 
 public class Message {
-    private String sender; // người gửi tin nhắn
-    private String content; // nội dung tin nhắn
-    private Date timeSent; // thời điểm gửi tin nhắn
+    static final public String TEXT = "TEXT";
+    static final public String MEDIA = "MEDIA";
+    static final public String AUDIO = "AUDIO";
+    static final public String CHANGE_NICKNAME = "CHANGE_NICKNAME";
+    static final public String LEAVE_CONVERSATION = "LEAVE_CONVERSATION";
+    private String id;
+    private String conversationID;
+    private String idSender; // người gửi tin nhắn
+    private String type; // nội dung tin nhắn
+    private Timestamp sentAt; // thời điểm gửi tin nhắn
+    private ArrayList<String> deleteFromUsers;
+    private boolean isHideForAllUsers;
+    private Object content;
+    public Message(){}
 
-    public Message(String sender, String content, Date timeSent) {
-        this.sender = sender;
-        this.content = content;
-        this.timeSent = timeSent;
+    public String getId() {
+        return id;
     }
 
-    public String getSender() {
-        return sender;
+    public void setId(String id) {
+        this.id = id;
     }
 
-    public String getContent() {
+    public String getConversationID() {
+        return conversationID;
+    }
+
+    public void setConversationID(String conversationID) {
+        this.conversationID = conversationID;
+    }
+
+    public String getIdSender() {
+        return idSender;
+    }
+
+    public void setIdSender(String idSender) {
+        this.idSender = idSender;
+    }
+
+    public String getType() {
+        return type;
+    }
+
+    public void setType(String type) {
+        assert Objects.equals(type, TEXT) || Objects.equals(type, MEDIA) || Objects.equals(type, AUDIO) || Objects.equals(type, CHANGE_NICKNAME) || Objects.equals(type, LEAVE_CONVERSATION);
+        this.type = type;
+    }
+
+    public Timestamp getSentAt() {
+        return sentAt;
+    }
+
+    public void setSentAt(Timestamp sentAt) {
+        this.sentAt = sentAt;
+    }
+
+    public ArrayList<String> getDeleteFromUsers() {
+        return deleteFromUsers;
+    }
+
+    public void setDeleteFromUsers(ArrayList<String> deleteFromUsers) {
+        this.deleteFromUsers = deleteFromUsers;
+    }
+
+    public boolean isHideForAllUsers() {
+        return isHideForAllUsers;
+    }
+
+    public void setHideForAllUsers(boolean hideForAllUsers) {
+        isHideForAllUsers = hideForAllUsers;
+    }
+
+    public Object getContent() {
         return content;
     }
 
-    public Date getTimeSent() {
-        return timeSent;
-    }
-
-    public void setSender(String sender) {
-        this.sender = sender;
-    }
-
-    public void setContent(String content) {
+    public void setContent(Object content) {
         this.content = content;
     }
-
-    public void setTimeSent(Date timeSent) {
-        this.timeSent = timeSent;
-    }
-
-    public static ArrayList<Message> dummy = new ArrayList<Message>() {
-        {
-            add(new Message("John Doe", "Hello, how are you?", new Date()));
-            add(new Message("Jane Smith", "I'm good, thanks for asking. How about you?", new Date()));
-            add(new Message("John Doe", "I'm doing great, thanks. Are you free this weekend?", new Date()));
-            add(new Message("Jane Smith", "Yes, I am. What did you have in mind?", new Date()));
-            add(new Message("Jane Smith", "That sounds like a great idea! What time should we meet?", new Date()));
-            // Thêm các mục tin nhắn khác vào danh sách ở đây
-            add(new Message("John Doe", "Hello, how are you?", new Date()));
-            add(new Message("Jane Smith", "I'm good, thanks for asking. How about you?", new Date()));
-            add(new Message("John Doe", "I'm doing great, thanks. Are you free this weekend?", new Date()));
-            add(new Message("Jane Smith", "Yes, I am. What did you have in mind?", new Date()));
-            add(new Message("Jane Smith", "That sounds like a great idea! What time should we meet?", new Date()));
-            add(new Message("John Doe", "Hello, how are you?", new Date()));
-            add(new Message("Jane Smith", "I'm good, thanks for asking. How about you?", new Date()));
-            add(new Message("John Doe", "I'm doing great, thanks. Are you free this weekend?", new Date()));
-            add(new Message("Jane Smith", "Yes, I am. What did you have in mind?", new Date()));
-            add(new Message("Jane Smith", "That sounds like a great idea! What time should we meet?", new Date()));
-        }
-    };
-
 }
