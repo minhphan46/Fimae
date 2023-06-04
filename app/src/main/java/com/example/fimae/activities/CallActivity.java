@@ -169,9 +169,6 @@ public class CallActivity extends AppCompatActivity {
                 if(!isLiked) {
                     // neu chua like
                     onLiked();
-                    // delete timer
-                    timerService.onDestroy();
-                    layoutTimer.setVisibility(View.GONE);
                 }
                 else {
                     // cup may
@@ -272,6 +269,9 @@ public class CallActivity extends AppCompatActivity {
         frmTextLike.setVisibility(View.GONE);
         tvDescriptionCall.setText("Bây giờ chúng ta là bạn, thưởng thức cuộc trò chuyện không giới hạn");
 
+        // delete timer
+        timerService.onDestroy();
+        layoutTimer.setVisibility(View.GONE);
         // gửi tin nhắn qua bên kia là đã like
         sendMessageToRemote("Bên kia đã like rồi nha");
     }
