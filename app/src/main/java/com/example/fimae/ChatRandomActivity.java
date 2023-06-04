@@ -8,6 +8,7 @@ import android.widget.ImageButton;
 import android.widget.LinearLayout;
 import android.widget.TextView;
 
+import com.example.fimae.activities.WaitingActivity;
 import com.example.fimae.service.TimerService;
 
 public class ChatRandomActivity extends AppCompatActivity {
@@ -87,6 +88,7 @@ public class ChatRandomActivity extends AppCompatActivity {
     @Override
     protected void onDestroy() {
         super.onDestroy();
+        WaitingActivity.isCalled = false;
         timerService.onDestroy();
     }
 
