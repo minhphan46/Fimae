@@ -73,7 +73,6 @@ public class ChatFragment extends Fragment {
         });
 
         userHomeViewAdapter.setData(fimaers, user -> {
-            System.out.println("***********AAAAAAAA het***********");
             ArrayList<String> participants = new ArrayList<String>(){{
                 add(user.getUid());
                 add(FirebaseAuth.getInstance().getUid());
@@ -128,6 +127,4 @@ public class ChatFragment extends Fragment {
         return view;
 
     }
-
-
 }
