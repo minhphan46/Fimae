@@ -25,6 +25,7 @@ import com.example.fimae.activities.WaitingActivity;
 import com.example.fimae.adapters.UserHomeViewAdapter;
 import com.example.fimae.models.Fimaers;
 import com.example.fimae.repository.ConnectRepo;
+import com.google.android.material.bottomsheet.BottomSheetDialog;
 import com.google.firebase.firestore.CollectionReference;
 import com.google.firebase.firestore.FirebaseFirestore;
 import com.google.firebase.firestore.QueryDocumentSnapshot;
@@ -93,8 +94,7 @@ public class HomeFragment extends Fragment  {
         mBtnSetting.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                Toast toast = Toast.makeText(v.getContext(), "Setting", Toast.LENGTH_SHORT);
-                toast.show();
+                settingUser();
             }
         });
 
@@ -139,6 +139,15 @@ public class HomeFragment extends Fragment  {
             // Cập nhật giao diện người dùng (RecyclerView)
             userAdapter.notifyDataSetChanged();
         });
+    }
+
+    private void settingUser(){
+        // when click setting button
+        View dialogSetting = getLayoutInflater().inflate(R.layout.bottom_sheet_setting, null);
+
+        BottomSheetDialog bottomSheetDialog = new BottomSheetDialog(this.getContext());
+        bottomSheetDialog.setContentView(dialogSetting);
+        bottomSheetDialog.show();
     }
 
     private void showToast(String value) {
