@@ -30,25 +30,22 @@ public class HomeActivity extends AppCompatActivity {
 
         setUpViewPager();
 
-        mNavigationView.setOnItemSelectedListener(new NavigationBarView.OnItemSelectedListener() {
-            @Override
-            public boolean onNavigationItemSelected(@NonNull MenuItem item) {
-                switch (item.getItemId()) {
-                    case R.id.action_home:
-                        mViewPager.setCurrentItem(0);
-                        break;
-                    case R.id.action_feed:
-                        mViewPager.setCurrentItem(1);
-                        break;
-                    case R.id.action_chat:
-                        mViewPager.setCurrentItem(2);
-                        break;
-                    case R.id.action_profile:
-                        mViewPager.setCurrentItem(3);
-                        break;
-                }
-                return true;
+        mNavigationView.setOnItemSelectedListener(item -> {
+            switch (item.getItemId()) {
+                case R.id.action_home:
+                    mViewPager.setCurrentItem(0);
+                    break;
+                case R.id.action_feed:
+                    mViewPager.setCurrentItem(1);
+                    break;
+                case R.id.action_chat:
+                    mViewPager.setCurrentItem(2);
+                    break;
+                case R.id.action_profile:
+                    mViewPager.setCurrentItem(3);
+                    break;
             }
+            return true;
         });
     }
 
