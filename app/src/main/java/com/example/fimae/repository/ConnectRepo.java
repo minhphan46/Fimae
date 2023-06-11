@@ -5,11 +5,11 @@ import android.util.Log;
 import androidx.annotation.NonNull;
 
 import com.example.fimae.models.Fimaers;
-import com.google.firebase.database.DataSnapshot;
-import com.google.firebase.database.DatabaseError;
-import com.google.firebase.database.DatabaseReference;
-import com.google.firebase.database.FirebaseDatabase;
-import com.google.firebase.database.ValueEventListener;
+import com.google.android.gms.tasks.OnCompleteListener;
+import com.google.android.gms.tasks.Task;
+import com.google.firebase.firestore.DocumentReference;
+import com.google.firebase.firestore.DocumentSnapshot;
+import com.google.firebase.firestore.FirebaseFirestore;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -26,77 +26,26 @@ public class ConnectRepo {
     public static ConnectRepo getInstance() {
         return(INSTANCE);
     }
-
-    DatabaseReference databaseReference = FirebaseDatabase.getInstance().getReference();;
+    FirebaseFirestore firestore = FirebaseFirestore.getInstance();
 
     Fimaers userLocal;
     Fimaers userRemote;
 
     public ArrayList<Fimaers> listUsersOnline = new ArrayList<>();
 
-    public static String table_chat_name = "USERS_CHAT_ONLINE";
-    public static String table_call_voice_name = "USERS_CALL_ONLINE";
-    public static String table_call_video_name = "USERS_VIDEO_ONLINE";
+    public  static  String user_table = "fimaers";
+    public static String table_chat_name = "chats";
+    public static String table_call_voice_name = "calls";
+    public static String table_call_video_name = "videos";
 
 
-    public void fetchData(String tableName) {
-        databaseReference.child(tableName).addValueEventListener(
-        new ValueEventListener(){
-            @Override
-            public void onDataChange(@NonNull DataSnapshot snapshot) {
-                if(!listUsersOnline.isEmpty()) listUsersOnline.clear();
-                for (DataSnapshot dataSnapshot : snapshot.getChildren()) {
-                    Fimaers user = dataSnapshot.getValue(Fimaers.class);
-                    if(user != null) {
-                        Log.d("TAG", user.toString());
-                        listUsersOnline.add(user);
-                    }
-                    else break;
-                }
-
-            }
-
-            @Override
-            public void onCancelled(@NonNull DatabaseError error) {
-            }
-        });
-    }
-    public void checkUser(String tableName) {
-        // set local user
-        // when click button call
-        // fetch all user in list
-        // if return null => wait to connect
-        // if has datas
-        // get first user
-        // delete user in database
-        // return this user
-        if(!listUsersOnline.isEmpty()){
-            // if user remote != userLocal
-            if(!getFirstUserOnl().getUid().equals(userLocal.getUid())){
-                userRemote = getFirstUserOnl();
-                deleteUserOnl(getUserRemote(), tableName);
-            }
-        } else {
-            if(userLocal != null)
-                addUserOnl(userLocal, tableName);
-        }
-    }
 
     public void addUserOnl(Fimaers user, String tableName) {
-        String id = "user" + user.getUid();
-        databaseReference.child(tableName).child(id).setValue(user);
-        listUsersOnline.add(user);
+        firestore.collection(tableName.concat("_queue")).document(user.getUid()).set(user);
     }
 
     public void deleteUserOnl(Fimaers user, String tableName) {
-        String id = "user" + user.getUid();
-        // delete user in list
-        databaseReference.child(tableName).child(id).removeValue();
-        listUsersOnline.remove(user);
-    }
-
-    public Fimaers getFirstUserOnl() {
-        return listUsersOnline.get(0);
+       firestore.collection(tableName.concat("_queue")).document(user.getUid()).delete();
     }
 
     public Fimaers getUserLocal() {
@@ -116,12 +65,37 @@ public class ConnectRepo {
     }
 
     public void setUserRemoteById(String id) {
-        List<Fimaers> users = Fimaers.dummy;
-        for(Fimaers user : users){
-            if(user.getUid().equals(id)){
-                setUserRemote(user);
-                return;
+
+        DocumentReference docRef = firestore.collection(user_table).document(id);
+        docRef.get().addOnCompleteListener(new OnCompleteListener<DocumentSnapshot>() {
+            @Override
+            public void onComplete(@NonNull Task<DocumentSnapshot> task) {
+                if(task.isSuccessful())
+                {
+                    DocumentSnapshot documentSnapshot = task.getResult();
+                    if(documentSnapshot.exists())
+                    {
+                        Log.e("ConnectRepo", "No document");
+
+                        Fimaers user = documentSnapshot.toObject(Fimaers.class);
+                        setUserRemote(user);
+                    }
+                    else
+                    {
+                        Log.e("ConnectRepo", "No such document");
+                    }
+                }else {
+                    Log.e("ConnectRepo", "get failed with ", task.getException());
+
+                }
             }
-        }
+        });
+//        List<Fimaers> users = Fimaers.dummy;
+//        for(Fimaers user : users){
+//            if(user.getUid().equals(id)){
+//                setUserRemote(user);
+//                return;
+//            }
+//        }
     }
 }

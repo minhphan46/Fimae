@@ -1,5 +1,7 @@
 package com.example.fimae.models;
 
+import android.widget.Toast;
+
 import androidx.annotation.Nullable;
 
 import java.util.ArrayList;
@@ -18,13 +20,65 @@ public class Fimaers {
     private Date timeCreated;
     @Nullable private String token;
 
-    public Fimaers(){}
+    public static ArrayList<Fimaers> getDummy() {
+        return dummy;
+    }
+
+    public void setUid(String uid) {
+        this.uid = uid;
+    }
+
+    public void setLastName(String lastName) {
+        this.lastName = lastName;
+    }
+
+    public void setFirstName(String firstName) {
+        this.firstName = firstName;
+    }
+
+    public void setGender(boolean gender) {
+        this.gender = gender;
+    }
+
+    public void setEmail(String email) {
+        this.email = email;
+    }
+
+    public void setPhone(String phone) {
+        this.phone = phone;
+    }
+
+    public void setAvatarUrl(String avatarUrl) {
+        this.avatarUrl = avatarUrl;
+    }
+
+    public void setBio(String bio) {
+        this.bio = bio;
+    }
+
+    public void setDob(Date dob) {
+        this.dob = dob;
+    }
+
+    public void setTimeCreated(Date timeCreated) {
+        this.timeCreated = timeCreated;
+    }
+
+    public void setToken(@Nullable String token) {
+        this.token = token;
+    }
+
+    public static void setDummy(ArrayList<Fimaers> dummy) {
+        Fimaers.dummy = dummy;
+    }
+
+    public Fimaers() {}
     public Fimaers(String uid, String lastName, String firstName, boolean gender,String email, String phone, String avatarUrl, String bio, Date dob, Date timeCreated, @Nullable String token) {
         this.uid = uid;
         this.lastName = lastName;
         this.firstName = firstName;
         this.gender = gender;
-        this.email =email;
+        this.email = email;
         this.phone = phone;
         this.avatarUrl = avatarUrl;
         this.bio = bio;
@@ -63,6 +117,10 @@ public class Fimaers {
 
     public Date getDob() {
         return dob;
+    }
+
+    public String getEmail() {
+        return email;
     }
 
     public Date getTimeCreated() {
