@@ -3,6 +3,7 @@ package com.example.fimae;
 import androidx.appcompat.app.AppCompatActivity;
 
 import android.os.Bundle;
+import android.util.Log;
 import android.view.View;
 import android.widget.ImageButton;
 import android.widget.LinearLayout;
@@ -24,6 +25,8 @@ public class ChatRandomActivity extends AppCompatActivity {
     private LinearLayout layoutTimer;
     private TimerService timerService;
     private String to;
+
+    private String chatId;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -31,6 +34,7 @@ public class ChatRandomActivity extends AppCompatActivity {
 
         if(getIntent() != null){
             to = getIntent().getStringExtra("to");
+            chatId = getIntent().getStringExtra("chatId");
         }
         // like
         btnLike = findViewById(R.id.btn_chat_like);
