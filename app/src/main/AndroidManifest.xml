@@ -90,8 +90,8 @@
             android:name=".activities.CallActivity"
             android:exported="false" />
         <activity
-            android:name=".activities.HomeActivity"
-            android:exported="true"></activity>
+                android:name=".activities.HomeActivity"
+                android:exported="true"/>
     </application>
 
 </manifest>
