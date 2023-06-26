@@ -11,7 +11,7 @@
             android:layout_width="match_parent"
             android:layout_height="match_parent"
             android:background="@drawable/bottom_sheet_background"
-            android:backgroundTint="@color/backround_button_2"
+            android:backgroundTint="@color/background_button_2"
     >
 
         <LinearLayout

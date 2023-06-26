@@ -7,16 +7,16 @@
     android:gravity="center_horizontal"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
-    android:background="@color/white"
+    android:background="@drawable/shape_rectangle_border_radius_white"
     android:padding="16dp">
 
     <TextView
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:gravity="center"
-        android:text="Nhắn tin"
+        android:text="Cài đặt"
         android:textColor="@color/text_primary"
-        style="@style/bold_18" />
+        style="@style/bold_20" />
 
     <RelativeLayout
         android:layout_width="match_parent"
@@ -36,17 +36,20 @@
             android:textColor="@color/text_primary"
             style="@style/bold_18" />
     </RelativeLayout>
-    <!--<com.google.android.material.slider.RangeSlider
+    <com.google.android.material.slider.RangeSlider
         android:id="@+id/range_slider_age"
+        android:theme="@style/Theme.MaterialComponents.DayNight.NoActionBar"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:stepSize="10.0"
-        android:valueFrom="0.0"
-        android:valueTo="100.0"
-        app:values="@array/slider_values" />-->
+        android:stepSize="1.0"
+        android:valueFrom="12.0"
+        android:valueTo="40.0"
+        app:values="@array/slider_values" />
     <RelativeLayout
         android:layout_width="match_parent"
-        android:layout_height="wrap_content">
+        android:layout_height="wrap_content"
+        android:layout_marginTop="10dp"
+        android:layout_marginBottom="10dp">
         <TextView
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
@@ -69,7 +72,7 @@
             android:layout_width="0dp"
             android:layout_weight="0.5"
             android:layout_height="match_parent"
-            android:backgroundTint="@color/backround_button_2"
+            android:backgroundTint="@color/background_button_2"
             android:background="@drawable/shape_rectangle_border_radius_pink"
             android:gravity="center"
             android:orientation="vertical"
@@ -90,17 +93,16 @@
                 style="@style/bold_16" />
         </LinearLayout>
 
-        <Space android:layout_width="10dp"
-            android:layout_height="match_parent"/>
-
         <!-- female button -->
         <LinearLayout
             android:id="@+id/btn_female"
+            android:layout_marginEnd="10dp"
+            android:layout_marginStart="10dp"
             android:clickable="true"
             android:layout_width="0dp"
             android:layout_weight="0.5"
             android:layout_height="match_parent"
-            android:backgroundTint="@color/backround_button_2"
+            android:backgroundTint="@color/background_button_2"
             android:background="@drawable/shape_rectangle_border_radius_pink"
             android:gravity="center"
             android:orientation="vertical"
@@ -121,9 +123,6 @@
                 style="@style/bold_16" />
         </LinearLayout>
 
-        <Space android:layout_width="10dp"
-            android:layout_height="match_parent"/>
-
         <!-- both button -->
         <LinearLayout
             android:id="@+id/btn_both"
@@ -131,7 +130,7 @@
             android:layout_width="0dp"
             android:layout_weight="0.5"
             android:layout_height="match_parent"
-            android:backgroundTint="@color/backround_button_2"
+            android:backgroundTint="@color/background_button_2"
             android:background="@drawable/shape_rectangle_border_radius_pink"
             android:gravity="center"
             android:orientation="vertical"
@@ -152,22 +151,17 @@
                 android:textColor="@color/text_primary"
                 style="@style/bold_16" />
         </LinearLayout>
-
-        <Space android:layout_width="10dp"
-            android:layout_height="match_parent"/>
     </LinearLayout>
 
-    <RelativeLayout
+    <androidx.appcompat.widget.AppCompatButton
         android:layout_width="match_parent"
         android:layout_height="50dp"
-        android:gravity="center"
-        android:backgroundTint="@color/primary_2"
-        android:background="@drawable/shape_rectangle_border_radius_pink">
-        <TextView
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:text="Hoàn thành"
-            android:textColor="@color/white"
-            style="@style/bold_20" />
-    </RelativeLayout>
+        android:text="Hoàn thành"
+        android:layout_marginTop="10dp"
+        android:layout_marginBottom="10dp"
+        android:textSize="20sp"
+        android:fontFamily="@font/public_sans_semi_bold"
+        style="@style/btn_can_click"
+        android:background="@drawable/shape_rectangle_border_radius_btn_pink"/>
+
 </LinearLayout>
