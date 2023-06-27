@@ -5,7 +5,7 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:background="@drawable/background_gradient"
-    tools:context=".ChatRandomActivity">
+    tools:context=".activities.ChatRandomActivity">
 
     <LinearLayout
         android:id="@+id/layout_top"

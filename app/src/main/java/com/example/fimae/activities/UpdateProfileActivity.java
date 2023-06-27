@@ -11,6 +11,7 @@ import androidx.appcompat.app.AppCompatActivity;
 import android.os.Bundle;
 import com.example.fimae.R;
 import com.example.fimae.models.Fimaers;
+import com.example.fimae.models.GenderMatch;
 import com.google.android.gms.tasks.OnFailureListener;
 import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.android.gms.tasks.Task;
@@ -175,7 +176,10 @@ public class UpdateProfileActivity extends AppCompatActivity {
                                     bio.getText().toString(),
                                     dateOfBirth,
                                     new Date(),
-                                    access_token
+                                    access_token,
+                                    16,
+                                    20,
+                                    GenderMatch.male
                             )
                     );
 

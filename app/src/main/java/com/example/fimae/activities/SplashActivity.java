@@ -1,12 +1,11 @@
-package com.example.fimae;
+package com.example.fimae.activities;
 
 import android.content.Intent;
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
 import android.os.Bundle;
-import com.example.fimae.activities.AuthenticationActivity;
-import com.example.fimae.activities.HomeActivity;
-import com.example.fimae.activities.UpdateProfileActivity;
+
+import com.example.fimae.R;
 import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.Task;
 import com.google.firebase.auth.FirebaseAuth;

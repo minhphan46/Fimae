@@ -1,4 +1,4 @@
-package com.example.fimae;
+package com.example.fimae.activities;
 
 import androidx.appcompat.app.AppCompatActivity;
 
@@ -8,6 +8,7 @@ import android.widget.ImageButton;
 import android.widget.LinearLayout;
 import android.widget.TextView;
 
+import com.example.fimae.R;
 import com.example.fimae.activities.WaitingActivity;
 import com.example.fimae.service.TimerService;
 

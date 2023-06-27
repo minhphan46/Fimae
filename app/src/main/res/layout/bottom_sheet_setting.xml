@@ -29,6 +29,7 @@
             android:textColor="@color/text_secondary"
             style="@style/bold_18" />
         <TextView
+            android:id="@+id/tv_st_range_ages"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_alignParentEnd="true"
@@ -44,7 +45,16 @@
         android:stepSize="1.0"
         android:valueFrom="12.0"
         android:valueTo="40.0"
-        app:values="@array/slider_values" />
+        app:values="@array/slider_values"
+        app:thumbColor="@color/white"
+        app:thumbRadius="12dp"
+        app:thumbStrokeColor="@color/text_tertiary"
+        app:thumbStrokeWidth="2dp"
+        app:tickVisible="false"
+        app:trackColorActive="@color/primary_2"
+        app:trackColorInactive="@color/background_button_1"
+        app:trackHeight="5dp"
+        />
     <RelativeLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
@@ -67,7 +77,7 @@
 
         <!-- btn male -->
         <LinearLayout
-            android:id="@+id/btn_male"
+            android:id="@+id/btn_st_male"
             android:clickable="true"
             android:layout_width="0dp"
             android:layout_weight="0.5"
@@ -81,11 +91,14 @@
             android:focusable="true">
 
             <ImageView
+                android:id="@+id/img_st_male"
                 android:layout_width="50dp"
                 android:layout_height="50dp"
                 android:layout_marginBottom="10dp"
-                app:srcCompat="@drawable/ic_male" />
+                app:srcCompat="@drawable/ic_male"
+                app:tint="@color/text_tertiary"/>
             <TextView
+                android:id="@+id/tv_st_male"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:text="Nam"
@@ -95,7 +108,7 @@
 
         <!-- female button -->
         <LinearLayout
-            android:id="@+id/btn_female"
+            android:id="@+id/btn_st_female"
             android:layout_marginEnd="10dp"
             android:layout_marginStart="10dp"
             android:clickable="true"
@@ -111,11 +124,14 @@
             android:focusable="true">
 
             <ImageView
+                android:id="@+id/img_st_female"
                 android:layout_width="50dp"
                 android:layout_height="50dp"
                 android:layout_marginBottom="10dp"
-                app:srcCompat="@drawable/ic_female" />
+                app:srcCompat="@drawable/ic_female"
+                app:tint="@color/text_tertiary"/>
             <TextView
+                android:id="@+id/tv_st_female"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:text="Nữ"
@@ -125,7 +141,7 @@
 
         <!-- both button -->
         <LinearLayout
-            android:id="@+id/btn_both"
+            android:id="@+id/btn_st_both"
             android:clickable="true"
             android:layout_width="0dp"
             android:layout_weight="0.5"
@@ -139,12 +155,15 @@
             android:focusable="true">
 
             <ImageView
+                android:id="@+id/img_st_both"
                 android:layout_width="50dp"
                 android:layout_height="50dp"
                 android:layout_marginBottom="10dp"
                 app:tint="@color/text_tertiary"
+                android:tintMode="src_in"
                 app:srcCompat="@drawable/ic_arrow_left_right" />
             <TextView
+                android:id="@+id/tv_st_both"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:text="Cả hai"
@@ -154,6 +173,7 @@
     </LinearLayout>
 
     <androidx.appcompat.widget.AppCompatButton
+        android:id="@+id/btn_st_finish"
         android:layout_width="match_parent"
         android:layout_height="50dp"
         android:text="Hoàn thành"
