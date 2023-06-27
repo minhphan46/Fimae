@@ -1,0 +1,147 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <!-- Bold -->
+    <style name="bold_32">
+        <item name="fontFamily">@font/public_sans_bold</item>
+        <item name="android:textSize">32sp</item>
+        <item name="android:textStyle">bold</item>
+    </style>
+    <style name="bold_24">
+        <item name="fontFamily">@font/public_sans_bold</item>
+        <item name="android:textSize">24sp</item>
+        <item name="android:textStyle">bold</item>
+    </style>
+    <style name="bold_20">
+        <item name="fontFamily">@font/public_sans_bold</item>
+        <item name="android:textSize">20sp</item>
+        <item name="android:textStyle">bold</item>
+    </style>
+    <style name="bold_18">
+        <item name="fontFamily">@font/public_sans_bold</item>
+        <item name="android:textSize">18sp</item>
+        <item name="android:textStyle">bold</item>
+    </style>
+    <style name="bold_16">
+        <item name="fontFamily">@font/public_sans_bold</item>
+        <item name="android:textSize">16sp</item>
+        <item name="android:textStyle">bold</item>
+    </style>
+    <style name="bold_14">
+        <item name="fontFamily">@font/public_sans_bold</item>
+        <item name="android:textSize">14sp</item>
+        <item name="android:textStyle">bold</item>
+    </style>
+    <style name="bold_12">
+        <item name="fontFamily">@font/public_sans_bold</item>
+        <item name="android:textSize">12sp</item>
+        <item name="android:textStyle">bold</item>
+    </style>
+    <style name="bold_10">
+        <item name="fontFamily">@font/public_sans_bold</item>
+        <item name="android:textSize">10sp</item>
+        <item name="android:textStyle">bold</item>
+    </style>
+    <!-- Semi bold-->
+    <style name="semi_bold_18">
+        <item name="fontFamily">@font/public_sans_semi_bold</item>
+        <item name="android:textSize">18sp</item>
+    </style>
+    <style name="semi_bold_16">
+        <item name="fontFamily">@font/public_sans_semi_bold</item>
+        <item name="android:textSize">16sp</item>
+    </style>
+    <style name="semi_bold_14">
+        <item name="fontFamily">@font/public_sans_semi_bold</item>
+        <item name="android:textSize">14sp</item>
+    </style>
+    <style name="semi_bold_12">
+        <item name="fontFamily">@font/public_sans_semi_bold</item>
+        <item name="android:textSize">12sp</item>
+    </style>
+    <style name="semi_bold_10">
+        <item name="fontFamily">@font/public_sans_semi_bold</item>
+        <item name="android:textSize">10sp</item>
+    </style>
+    <style name="semi_bold_8">
+        <item name="fontFamily">@font/public_sans_semi_bold</item>
+        <item name="android:textSize">8sp</item>
+    </style>
+    <!-- Medium -->
+    <style name="medium_18">
+        <item name="fontFamily">@font/public_sans_medium</item>
+        <item name="android:textSize">18sp</item>
+    </style>
+    <style name="medium_16">
+        <item name="fontFamily">@font/public_sans_medium</item>
+        <item name="android:textSize">16sp</item>
+    </style>
+    <style name="medium_12">
+        <item name="fontFamily">@font/public_sans_medium</item>
+        <item name="android:textSize">12sp</item>
+    </style>
+    <style name="medium_10">
+        <item name="fontFamily">@font/public_sans_medium</item>
+        <item name="android:textSize">10sp</item>
+    </style>
+    <!-- Regular -->
+    <style name="regular_16">
+        <item name="fontFamily">@font/public_sans</item>
+        <item name="android:textSize">16sp</item>
+    </style>
+    <style name="regular_14">
+        <item name="fontFamily">@font/public_sans</item>
+        <item name="android:textSize">14sp</item>
+    </style>
+    <style name="regular_12">
+        <item name="fontFamily">@font/public_sans</item>
+        <item name="android:textSize">12sp</item>
+    </style>
+    <style name="regular_10">
+        <item name="fontFamily">@font/public_sans</item>
+        <item name="android:textSize">10sp</item>
+    </style>
+    <style name="regular_8">
+        <item name="fontFamily">@font/public_sans</item>
+        <item name="android:textSize">8sp</item>
+    </style>
+    <!-- Custom font -->
+    <style name="chat_name_appbar_title">
+        <item name="android:textColor">@color/text_primary</item>
+        <item name="android:textSize">16sp</item>
+        <item name="android:textStyle">bold</item>
+    </style>
+    <style name="chat_status_appbar_title">
+        <item name="android:textSize">14sp</item>
+        <item name="android:textStyle">bold</item>
+        <item name="android:textColor">@color/secondary_2</item>
+    </style>
+    <style name="Widget.Fimae.AppWidget.Container" parent="android:Widget">
+        <item name="android:id">@android:id/background</item>
+        <item name="android:background">?android:attr/colorBackground</item>
+    </style>
+
+    <style name="Widget.Fimae.AppWidget.InnerView" parent="android:Widget">
+        <item name="android:background">?android:attr/colorBackground</item>
+        <item name="android:textColor">?android:attr/textColorPrimary</item>
+    </style>
+
+    <style name="btn_can_click" parent="android:Widget">
+        <item name="android:textColor">@color/white</item>
+        <item name="android:backgroundTint">@color/primary_2</item>
+    </style>
+
+    <style name="btn_cant_click" parent="android:Widget">
+        <item name="android:textColor">@color/white</item>
+        <item name="android:backgroundTint">@color/text_tertiary</item>
+    </style>
+
+    <style name="btn_is_chosen" parent="android:Widget">
+        <item name="android:textColor">@color/white</item>
+        <item name="android:backgroundTint">@color/background_button_dark_2</item>
+    </style>
+
+    <style name="btn_is_not_chosen" parent="android:Widget">
+        <item name="android:textColor">@color/text_primary</item>
+        <item name="android:backgroundTint">@color/background_button_2</item>
+    </style>
+</resources>

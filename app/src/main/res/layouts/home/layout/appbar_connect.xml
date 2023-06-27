@@ -1,0 +1,72 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="55dp"
+    android:orientation="horizontal"
+    android:gravity="center"
+    android:paddingLeft="16dp"
+    android:paddingRight="16dp"
+    android:paddingTop="10dp"
+    android:paddingBottom="10dp"
+    android:background="@color/background_button_dark_1_startColor">
+
+    <ImageButton
+        android:id="@+id/btn_close_appbar"
+        android:layout_width="28dp"
+        android:layout_height="28dp"
+        android:background="@drawable/ic_close"
+        android:padding="20dp" />
+
+    <Space
+        android:layout_width="0dp"
+        android:layout_height="0dp"
+        android:layout_weight="1" />
+
+    <!--<TextView
+        style="@style/bold_24"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="Nhắn tin"
+        android:textColor="@color/white"
+        android:gravity="center"/>-->
+    <LinearLayout
+        android:id="@+id/layout_timer"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:orientation="horizontal"
+        android:gravity="center">
+        <ProgressBar
+            android:id="@+id/pbTimer"
+            android:layout_width="35dp"
+            android:layout_height="35dp"
+            android:layout_gravity="center"
+            android:indeterminate="false"
+            android:layout_marginEnd="10dp"
+            style="?android:attr/progressBarStyleHorizontal"
+            android:max="100"
+            android:progress="100"
+            android:rotation="0"
+            android:background="@drawable/gray_processbar_background"
+            android:progressDrawable="@drawable/blue_processbar_background" />
+        <TextView
+            android:id="@+id/tv_time_connect"
+            style="@style/bold_24"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="03:00"
+            android:textColor="@color/white"
+            android:gravity="center"/>
+    </LinearLayout>
+    <Space
+        android:layout_width="0dp"
+        android:layout_height="0dp"
+        android:layout_weight="1" />
+
+    <ImageButton
+        android:id="@+id/btn_report_appbar"
+        android:layout_width="28dp"
+        android:layout_height="28dp"
+        android:background="@drawable/ic_flag"
+        android:padding="20dp"/>
+
+</LinearLayout>
