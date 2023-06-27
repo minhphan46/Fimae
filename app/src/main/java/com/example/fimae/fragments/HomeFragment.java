@@ -39,6 +39,7 @@ import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.android.material.bottomsheet.BottomSheetBehavior;
 import com.google.android.material.bottomsheet.BottomSheetDialog;
 import com.google.android.material.slider.RangeSlider;
+import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
@@ -160,6 +161,7 @@ public class HomeFragment extends Fragment  {
     }
 
     private void GetAllUsers(){
+        String localUid = FirebaseAuth.getInstance().getCurrentUser().getUid();
         // get users from firebase
         fimaeUserRef = firestore.collection("fimaers"); // lay het thu muc user ra
         fimaeUserRef.addSnapshotListener((value, error) -> {
@@ -171,8 +173,10 @@ public class HomeFragment extends Fragment  {
             // Lặp qua các tài liệu (tin nhắn) và thêm vào danh sách
             for (QueryDocumentSnapshot document : value) {
                 System.out.println(document.toString());
-                Fimaers message = document.toObject(Fimaers.class);
-                mUsers.add(message);
+                Fimaers user = document.toObject(Fimaers.class);
+                // set local
+                if(user.getUid().equals(localUid)) ConnectRepo.getInstance().setUserLocal(user);
+                mUsers.add(user);
             }
             // Cập nhật giao diện người dùng (RecyclerView)
             userAdapter.notifyDataSetChanged();
@@ -250,6 +254,19 @@ public class HomeFragment extends Fragment  {
                 ConnectRepo.getInstance().getUserLocal().setMinAgeMatch(Math.round(mRangeAges.getValues().get(0)));
                 ConnectRepo.getInstance().getUserLocal().setMaxAgeMatch(Math.round(mRangeAges.getValues().get(1)));
             }
+            // update in firebase
+            fimaeUserRef.document(ConnectRepo.getInstance().getUserLocal().getUid()).set(ConnectRepo.getInstance().getUserLocal())
+                    .addOnSuccessListener(new OnSuccessListener<Void>() {
+                        @Override
+                        public void onSuccess(Void aVoid) {
+                            Toast.makeText(getContext(), "User has been updated..", Toast.LENGTH_SHORT).show();
+                        }
+                    }).addOnFailureListener(new OnFailureListener() {
+                        @Override
+                        public void onFailure(@NonNull Exception e) {
+                            Toast.makeText(getContext(), "Fail to update the data..", Toast.LENGTH_SHORT).show();
+                        }
+            });
             bottomSheetDialog.dismiss();
         });
     }

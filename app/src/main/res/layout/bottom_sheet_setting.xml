@@ -33,7 +33,7 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_alignParentEnd="true"
-            android:text="17-16"
+            android:text="16-20"
             android:textColor="@color/text_primary"
             style="@style/bold_18" />
     </RelativeLayout>
