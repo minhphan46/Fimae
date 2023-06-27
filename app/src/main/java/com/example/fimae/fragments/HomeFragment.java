@@ -6,6 +6,7 @@ import android.content.Context;
 import android.content.Intent;
 import android.graphics.PorterDuff;
 import android.os.Bundle;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -31,15 +32,25 @@ import com.example.fimae.activities.WaitingActivity;
 import com.example.fimae.adapters.UserHomeViewAdapter;
 import com.example.fimae.models.Fimaers;
 import com.example.fimae.models.GenderMatch;
+import com.example.fimae.models.Report;
 import com.example.fimae.repository.ConnectRepo;
+import com.google.android.gms.tasks.OnFailureListener;
+import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.android.material.bottomsheet.BottomSheetBehavior;
 import com.google.android.material.bottomsheet.BottomSheetDialog;
 import com.google.android.material.slider.RangeSlider;
+import com.google.firebase.database.DataSnapshot;
+import com.google.firebase.database.DatabaseError;
+import com.google.firebase.database.DatabaseReference;
+import com.google.firebase.database.FirebaseDatabase;
+import com.google.firebase.database.ValueEventListener;
 import com.google.firebase.firestore.CollectionReference;
+import com.google.firebase.firestore.DocumentReference;
 import com.google.firebase.firestore.FirebaseFirestore;
 import com.google.firebase.firestore.QueryDocumentSnapshot;
 
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.concurrent.atomic.AtomicBoolean;
 
 public class HomeFragment extends Fragment  {
@@ -121,7 +132,7 @@ public class HomeFragment extends Fragment  {
         mBtnSetting.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                showReport();
+                settingUser();
             }
         });
 
@@ -166,173 +177,6 @@ public class HomeFragment extends Fragment  {
             // Cập nhật giao diện người dùng (RecyclerView)
             userAdapter.notifyDataSetChanged();
         });
-    }
-//== report ===============================================================================
-    AppCompatButton mBtnKhongThich;
-    AppCompatButton mBtnQuayRoi;
-    AppCompatButton mBtnBatHopPhap;
-    AppCompatButton mBtnGianLan;
-    AppCompatButton mBtnAnhGia;
-    AppCompatButton mBtnBatNat;
-    AppCompatButton mBtnViThanhNien;
-    AppCompatButton mBtnKhac;
-    EditText mEdtMoTa;
-    AppCompatButton mBtnSend;
-    AtomicBoolean isKhongThich = new AtomicBoolean(false);
-    AtomicBoolean isQuayRoi = new AtomicBoolean(false);
-    AtomicBoolean isBatHopPhap = new AtomicBoolean(false);
-    AtomicBoolean isGianLan = new AtomicBoolean(false);
-    AtomicBoolean isAnhGia = new AtomicBoolean(false);
-    AtomicBoolean isBatNat = new AtomicBoolean(false);
-    AtomicBoolean isViThanhNien = new AtomicBoolean(false);
-    AtomicBoolean isKhac = new AtomicBoolean(false);
-    AtomicBoolean isCanSend = new AtomicBoolean(false);
-    String sMota = "";
-    String sReport = "";
-    private void showReport() {
-        // when click report button
-        View dialogSetting = getLayoutInflater().inflate(R.layout.bottom_sheet_report, null);
-
-        BottomSheetDialog bottomSheetDialog = new BottomSheetDialog(this.getContext());
-        bottomSheetDialog.setContentView(dialogSetting);
-        bottomSheetDialog.show();
-        // extended bottom sheet
-        BottomSheetBehavior bottomSheetBehavior = BottomSheetBehavior.from((View)dialogSetting.getParent());
-        bottomSheetBehavior.setState(BottomSheetBehavior.STATE_EXPANDED);
-        // set component
-        mBtnKhongThich = dialogSetting.findViewById(R.id.btn_khong_thich);
-        mBtnQuayRoi = dialogSetting.findViewById(R.id.btn_quay_roi);
-        mBtnBatHopPhap = dialogSetting.findViewById(R.id.btn_bat_hop_phap);
-        mBtnGianLan = dialogSetting.findViewById(R.id.btn_gian_lan);
-        mBtnAnhGia = dialogSetting.findViewById(R.id.btn_anh_gia);
-        mBtnBatNat = dialogSetting.findViewById(R.id.btn_bat_nat);
-        mBtnViThanhNien = dialogSetting.findViewById(R.id.btn_vi_thanh_nien);
-        mBtnKhac = dialogSetting.findViewById(R.id.btn_khac);
-        mEdtMoTa = dialogSetting.findViewById(R.id.edt_mo_ta);
-        mBtnSend = dialogSetting.findViewById(R.id.btn_send);
-
-        isKhongThich = new AtomicBoolean(false);
-        isQuayRoi = new AtomicBoolean(false);
-        isBatHopPhap = new AtomicBoolean(false);
-        isGianLan = new AtomicBoolean(false);
-        isAnhGia = new AtomicBoolean(false);
-        isBatNat = new AtomicBoolean(false);
-        isViThanhNien = new AtomicBoolean(false);
-        isKhac = new AtomicBoolean(false);
-        isCanSend = new AtomicBoolean(false);
-
-        mBtnKhongThich.setOnClickListener(v -> {
-            isKhongThich.set(!isKhongThich.get());
-            if(isKhongThich.get()) {
-                setButtonColor(mBtnKhongThich, R.color.background_button_dark_2, R.color.white);
-            } else {
-                setButtonColor(mBtnKhongThich, R.color.background_button_2, R.color.text_primary);
-            }
-            checkCanSend();
-        });
-        mBtnQuayRoi.setOnClickListener(v -> {
-            isQuayRoi.set(!isQuayRoi.get());
-            if(isQuayRoi.get()) {
-                setButtonColor(mBtnQuayRoi, R.color.background_button_dark_2, R.color.white);
-            } else {
-                setButtonColor(mBtnQuayRoi, R.color.background_button_2, R.color.text_primary);
-            }
-            checkCanSend();
-        });
-        mBtnBatHopPhap.setOnClickListener(v -> {
-            isBatHopPhap.set(!isBatHopPhap.get());
-            if(isBatHopPhap.get()) {
-                setButtonColor(mBtnBatHopPhap, R.color.background_button_dark_2, R.color.white);
-            } else {
-                setButtonColor(mBtnBatHopPhap, R.color.background_button_2, R.color.text_primary);
-            }
-            checkCanSend();
-        });
-        mBtnGianLan.setOnClickListener(v -> {
-            isGianLan.set(!isGianLan.get());
-            if(isGianLan.get()) {
-                setButtonColor(mBtnGianLan, R.color.background_button_dark_2, R.color.white);
-            } else {
-                setButtonColor(mBtnGianLan, R.color.background_button_2, R.color.text_primary);
-            }
-            checkCanSend();
-        });
-        mBtnAnhGia.setOnClickListener(v -> {
-            isAnhGia.set(!isAnhGia.get());
-            if(isAnhGia.get()) {
-                setButtonColor(mBtnAnhGia, R.color.background_button_dark_2, R.color.white);
-            } else {
-                setButtonColor(mBtnAnhGia, R.color.background_button_2, R.color.text_primary);
-            }
-            checkCanSend();
-        });
-        mBtnBatNat.setOnClickListener(v -> {
-            isBatNat.set(!isBatNat.get());
-            if(isBatNat.get()) {
-                setButtonColor(mBtnBatNat, R.color.background_button_dark_2, R.color.white);
-            } else {
-                setButtonColor(mBtnBatNat, R.color.background_button_2, R.color.text_primary);
-            }
-            checkCanSend();
-        });
-        mBtnViThanhNien.setOnClickListener(v -> {
-            isViThanhNien.set(!isViThanhNien.get());
-            if(isViThanhNien.get()) {
-                setButtonColor(mBtnViThanhNien, R.color.background_button_dark_2, R.color.white);
-            } else {
-                setButtonColor(mBtnViThanhNien, R.color.background_button_2, R.color.text_primary);
-            }
-            checkCanSend();
-        });
-        // neu chua chon khac thi an di
-        mEdtMoTa.setVisibility(View.GONE);
-        mBtnKhac.setOnClickListener(v -> {
-            isKhac.set(!isKhac.get());
-            sMota = "";
-            if(isKhac.get()) {
-                setButtonColor(mBtnKhac, R.color.background_button_dark_2, R.color.white);
-                mEdtMoTa.setVisibility(View.VISIBLE);
-            } else {
-                mEdtMoTa.setVisibility(View.GONE);
-                mEdtMoTa.setText("");
-                setButtonColor(mBtnKhac, R.color.background_button_2, R.color.text_primary);
-            }
-            checkCanSend();
-        });
-        mBtnSend.setOnClickListener(v -> {
-            sMota = mEdtMoTa.getText().toString();
-            setReportDescription();
-            Toast.makeText(getContext(), sReport, Toast.LENGTH_LONG).show();
-            bottomSheetDialog.dismiss();
-        });
-    }
-
-    private void setReportDescription() {
-        sReport = "";
-        if(isKhongThich.get()) sReport += "Không thích, ";
-        if(isQuayRoi.get()) sReport += "Quấy rối tình dục, ";
-        if(isBatHopPhap.get()) sReport += "Hoạt động bất hợp pháp, ";
-        if(isGianLan.get()) sReport += "Gian lận, ";
-        if(isAnhGia.get()) sReport += "Ảnh giả, ";
-        if(isBatNat.get()) sReport += "Bắt nạt, ";
-        if(isViThanhNien.get()) sReport += "Vị thành niên, ";
-        if(isKhac.get()) sReport += "Khác, ";
-        sReport += sMota;
-    }
-
-    private void checkCanSend() {
-        isCanSend.set(isKhongThich.get() || isQuayRoi.get() || isBatHopPhap.get() || isGianLan.get() || isAnhGia.get() || isBatNat.get() || isViThanhNien.get() || isKhac.get());
-        if(isCanSend.get()){
-            mBtnSend.setClickable(true);
-            setButtonColor(mBtnSend, R.color.primary_2, R.color.white);
-        } else {
-            mBtnSend.setClickable(false);
-            setButtonColor(mBtnSend, R.color.text_tertiary, R.color.white);
-        }
-    }
-    private void setButtonColor(AppCompatButton btn, int colorButton, int colorText) {
-        btn.setBackgroundTintList(getContext().getResources().getColorStateList(colorButton));
-        btn.setTextColor(getContext().getResources().getColorStateList(colorText));
     }
 // ===== setting user =================================================================================
     private void settingUser(){
