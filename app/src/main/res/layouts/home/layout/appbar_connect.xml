@@ -46,8 +46,8 @@
             android:max="100"
             android:progress="100"
             android:rotation="0"
-            android:background="@drawable/gray_processbar_background"
-            android:progressDrawable="@drawable/blue_processbar_background" />
+            android:background="@drawable/gray_progressbar_background"
+            android:progressDrawable="@drawable/blue_progressbar_background" />
         <TextView
             android:id="@+id/tv_time_connect"
             style="@style/bold_24"
