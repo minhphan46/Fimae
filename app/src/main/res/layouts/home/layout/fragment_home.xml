@@ -1,235 +1,282 @@
 <?xml version="1.0" encoding="utf-8"?>
-<LinearLayout
+<RelativeLayout
     xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:orientation="vertical">
-
-    <include
-        android:id="@+id/appbar_layout"
-        layout="@layout/appbar_home" />
+    android:gravity="top">
     <LinearLayout
-        android:id="@+id/layout_buttons"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:orientation="horizontal"
-        android:padding="10dp">
-
-        <!-- Chatting button -->
-        <LinearLayout
-            android:id="@+id/btn_chat_home"
-            android:clickable="true"
-            android:layout_width="0dp"
-            android:layout_weight="0.5"
-            android:layout_height="match_parent"
-            android:background="@drawable/shape_rectangle_border_radius_pink"
-            android:gravity="center"
-            android:orientation="vertical"
-            android:paddingLeft="2dp"
-            android:paddingRight="2dp"
-            android:paddingTop="25dp"
-            android:paddingBottom="25dp"
-            android:focusable="true">
-            <ImageView
-                android:layout_width="35dp"
-                android:layout_height="35dp"
-                android:layout_marginBottom="10dp"
-                app:srcCompat="@drawable/ic_chat_color" />
-
-            <LinearLayout
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:gravity="center"
-                android:orientation="vertical">
-
-                <TextView
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:gravity="center"
-                    android:text="Nhắn tin"
-                    android:textColor="@color/text_primary"
-                    style="@style/bold_16" />
-
-                <LinearLayout
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:gravity="center_vertical"
-                    android:orientation="horizontal">
-
-                    <ImageView
-                        android:layout_width="6dp"
-                        android:layout_height="6dp"
-                        android:layout_marginEnd="5dp"
-                        android:src="@drawable/shape_circle_green" />
-
-                    <TextView
-                        android:id="@+id/tv_num_onl_chat"
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:gravity="center"
-                        android:text="592"
-                        android:textColor="@color/text_primary"
-                        style="@style/regular_12" />
-
-                    <TextView
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:gravity="center"
-                        android:text=" trực tuyến"
-                        android:textColor="@color/text_primary"
-                        style="@style/regular_12"/>
-                </LinearLayout>
-            </LinearLayout>
-        </LinearLayout>
-
-        <Space android:layout_width="10dp"
-            android:layout_height="match_parent"/>
-
-        <!-- Calling button -->
-        <LinearLayout
-            android:id="@+id/btn_call_home"
-            android:clickable="true"
-            android:layout_width="0dp"
-            android:layout_weight="0.5"
-            android:layout_height="match_parent"
-            android:background="@drawable/shape_rectangle_border_radius_green"
-            android:gravity="center"
-            android:orientation="vertical"
-            android:paddingLeft="2dp"
-            android:paddingRight="2dp"
-            android:paddingTop="25dp"
-            android:paddingBottom="25dp"
-            android:focusable="true">
-
-            <ImageView
-                android:layout_width="35dp"
-                android:layout_height="35dp"
-                android:layout_marginBottom="10dp"
-                app:srcCompat="@drawable/ic_phone_color" />
-
-            <LinearLayout
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:gravity="center"
-                android:orientation="vertical">
-
-                <TextView
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:gravity="center"
-                    android:text="Gọi điện"
-                    android:textColor="@color/text_primary"
-                    style="@style/bold_16" />
-
-                <LinearLayout
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:gravity="center_vertical"
-                    android:orientation="horizontal">
-
-                    <ImageView
-                        android:layout_width="6dp"
-                        android:layout_height="6dp"
-                        android:layout_marginRight="5dp"
-                        android:src="@drawable/shape_circle_green" />
-
-                    <TextView
-                        android:id="@+id/tv_num_onl_call"
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:gravity="center"
-                        android:text="592"
-                        android:textColor="@color/text_primary"
-                        style="@style/regular_12" />
-
-                    <TextView
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:gravity="center"
-                        android:text=" trực tuyến"
-                        android:textColor="@color/text_primary"
-                        style="@style/regular_12" />
-                </LinearLayout>
-            </LinearLayout>
-        </LinearLayout>
-
-        <Space android:layout_width="10dp"
-            android:layout_height="match_parent"/>
-
-        <!-- Call video button -->
-        <LinearLayout
-            android:id="@+id/btn_call_video_home"
-            android:clickable="true"
-            android:layout_width="0dp"
-            android:layout_weight="0.5"
-            android:layout_height="match_parent"
-            android:background="@drawable/shape_rectangle_border_radius_purple"
-            android:gravity="center"
-            android:orientation="vertical"
-            android:paddingLeft="2dp"
-            android:paddingRight="2dp"
-            android:paddingTop="25dp"
-            android:paddingBottom="25dp"
-            android:focusable="true">
-
-            <ImageView
-                android:layout_width="35dp"
-                android:layout_height="35dp"
-                android:layout_marginBottom="10dp"
-                app:srcCompat="@drawable/ic_video_call_color" />
-
-            <LinearLayout
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:gravity="center"
-                android:orientation="vertical">
-
-                <TextView
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:gravity="center"
-                    android:text="Gọi video"
-                    android:textColor="@color/text_primary"
-                    style="@style/bold_16" />
-
-                <LinearLayout
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:gravity="center_vertical"
-                    android:orientation="horizontal">
-
-                    <ImageView
-                        android:layout_width="6dp"
-                        android:layout_height="6dp"
-                        android:layout_marginRight="5dp"
-                        android:src="@drawable/shape_circle_green" />
-
-                    <TextView
-                        android:id="@+id/tv_num_onl_call_video"
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:gravity="center"
-                        android:text="592"
-                        android:textColor="@color/text_primary"
-                        style="@style/regular_12" />
-
-                    <TextView
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:gravity="center"
-                        android:text=" trực tuyến"
-                        android:textColor="@color/text_primary"
-                        style="@style/regular_12" />
-                </LinearLayout>
-            </LinearLayout>
-        </LinearLayout>
-    </LinearLayout>
-
-    <androidx.recyclerview.widget.RecyclerView
-        android:id="@+id/recycler_users"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        tools:listitem="@layout/item_user"/>
-</LinearLayout>
+        android:orientation="vertical">
+
+        <include
+            android:id="@+id/appbar_layout"
+            layout="@layout/appbar_home" />
+        <LinearLayout
+            android:id="@+id/layout_buttons"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="horizontal"
+            android:padding="10dp">
+
+            <!-- Chatting button -->
+            <LinearLayout
+                android:id="@+id/btn_chat_home"
+                android:clickable="true"
+                android:layout_width="0dp"
+                android:layout_weight="0.5"
+                android:layout_height="match_parent"
+                android:background="@drawable/shape_rectangle_border_radius_pink"
+                android:gravity="center"
+                android:orientation="vertical"
+                android:paddingLeft="2dp"
+                android:paddingRight="2dp"
+                android:paddingTop="25dp"
+                android:paddingBottom="25dp"
+                android:focusable="true">
+                <ImageView
+                    android:layout_width="35dp"
+                    android:layout_height="35dp"
+                    android:layout_marginBottom="10dp"
+                    app:srcCompat="@drawable/ic_chat_color" />
+
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:gravity="center"
+                    android:orientation="vertical">
+
+                    <TextView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:gravity="center"
+                        android:text="Nhắn tin"
+                        android:textColor="@color/text_primary"
+                        style="@style/bold_16" />
+
+                    <LinearLayout
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:gravity="center_vertical"
+                        android:orientation="horizontal">
+
+                        <ImageView
+                            android:layout_width="6dp"
+                            android:layout_height="6dp"
+                            android:layout_marginEnd="5dp"
+                            android:src="@drawable/shape_circle_green" />
+
+                        <TextView
+                            android:id="@+id/tv_num_onl_chat"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:gravity="center"
+                            android:text="592"
+                            android:textColor="@color/text_primary"
+                            style="@style/regular_12" />
+
+                        <TextView
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:gravity="center"
+                            android:text=" trực tuyến"
+                            android:textColor="@color/text_primary"
+                            style="@style/regular_12"/>
+                    </LinearLayout>
+                </LinearLayout>
+            </LinearLayout>
+
+            <Space android:layout_width="10dp"
+                android:layout_height="match_parent"/>
+
+            <!-- Calling button -->
+            <LinearLayout
+                android:id="@+id/btn_call_home"
+                android:clickable="true"
+                android:layout_width="0dp"
+                android:layout_weight="0.5"
+                android:layout_height="match_parent"
+                android:background="@drawable/shape_rectangle_border_radius_green"
+                android:gravity="center"
+                android:orientation="vertical"
+                android:paddingLeft="2dp"
+                android:paddingRight="2dp"
+                android:paddingTop="25dp"
+                android:paddingBottom="25dp"
+                android:focusable="true">
+
+                <ImageView
+                    android:layout_width="35dp"
+                    android:layout_height="35dp"
+                    android:layout_marginBottom="10dp"
+                    app:srcCompat="@drawable/ic_phone_color" />
+
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:gravity="center"
+                    android:orientation="vertical">
+
+                    <TextView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:gravity="center"
+                        android:text="Gọi điện"
+                        android:textColor="@color/text_primary"
+                        style="@style/bold_16" />
+
+                    <LinearLayout
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:gravity="center_vertical"
+                        android:orientation="horizontal">
+
+                        <ImageView
+                            android:layout_width="6dp"
+                            android:layout_height="6dp"
+                            android:layout_marginRight="5dp"
+                            android:src="@drawable/shape_circle_green" />
+
+                        <TextView
+                            android:id="@+id/tv_num_onl_call"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:gravity="center"
+                            android:text="592"
+                            android:textColor="@color/text_primary"
+                            style="@style/regular_12" />
+
+                        <TextView
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:gravity="center"
+                            android:text=" trực tuyến"
+                            android:textColor="@color/text_primary"
+                            style="@style/regular_12" />
+                    </LinearLayout>
+                </LinearLayout>
+            </LinearLayout>
+
+            <Space android:layout_width="10dp"
+                android:layout_height="match_parent"/>
+
+            <!-- Call video button -->
+            <LinearLayout
+                android:id="@+id/btn_call_video_home"
+                android:clickable="true"
+                android:layout_width="0dp"
+                android:layout_weight="0.5"
+                android:layout_height="match_parent"
+                android:background="@drawable/shape_rectangle_border_radius_purple"
+                android:gravity="center"
+                android:orientation="vertical"
+                android:paddingLeft="2dp"
+                android:paddingRight="2dp"
+                android:paddingTop="25dp"
+                android:paddingBottom="25dp"
+                android:focusable="true">
+
+                <ImageView
+                    android:layout_width="35dp"
+                    android:layout_height="35dp"
+                    android:layout_marginBottom="10dp"
+                    app:srcCompat="@drawable/ic_video_call_color" />
+
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:gravity="center"
+                    android:orientation="vertical">
+
+                    <TextView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:gravity="center"
+                        android:text="Gọi video"
+                        android:textColor="@color/text_primary"
+                        style="@style/bold_16" />
+
+                    <LinearLayout
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:gravity="center_vertical"
+                        android:orientation="horizontal">
+
+                        <ImageView
+                            android:layout_width="6dp"
+                            android:layout_height="6dp"
+                            android:layout_marginRight="5dp"
+                            android:src="@drawable/shape_circle_green" />
+
+                        <TextView
+                            android:id="@+id/tv_num_onl_call_video"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:gravity="center"
+                            android:text="592"
+                            android:textColor="@color/text_primary"
+                            style="@style/regular_12" />
+
+                        <TextView
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:gravity="center"
+                            android:text=" trực tuyến"
+                            android:textColor="@color/text_primary"
+                            style="@style/regular_12" />
+                    </LinearLayout>
+                </LinearLayout>
+            </LinearLayout>
+        </LinearLayout>
+
+        <androidx.recyclerview.widget.RecyclerView
+            android:id="@+id/recycler_users"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            tools:listitem="@layout/item_user"/>
+    </LinearLayout>
+    <LinearLayout
+        android:id="@+id/floating_waiting"
+        android:visibility="gone"
+        android:layout_width="100dp"
+        android:layout_height="140dp"
+        android:paddingTop="20dp"
+        android:paddingBottom="20dp"
+        android:layout_margin="10dp"
+        android:layout_alignParentEnd="true"
+        android:layout_alignParentBottom="true"
+        android:orientation="vertical"
+        android:gravity="center_horizontal"
+        android:background="@drawable/shape_floating_waiting">
+        <FrameLayout
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center">
+            <de.hdodenhof.circleimageview.CircleImageView
+                android:id="@+id/img_floating_waiting"
+                android:layout_width="45dp"
+                android:layout_height="45dp"
+                android:src="@drawable/ic_default_avatar"
+                android:layout_gravity="center"
+                />
+            <ProgressBar
+                android:id="@+id/hello_progress_bar"
+                android:layout_width="60dp"
+                android:layout_height="60dp"
+                style="?android:attr/progressBarStyle"
+                android:progressDrawable="@drawable/progressbar_background_waiting"
+                android:indeterminateDrawable="@drawable/progressbar_background_waiting"
+                />
+        </FrameLayout>
+        <TextView
+            android:layout_marginTop="10dp"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:gravity="center"
+            android:text="Đang kết nối"
+            android:textColor="@color/background_button_dark_2"
+            style="@style/bold_14" />
+    </LinearLayout>
+</RelativeLayout>

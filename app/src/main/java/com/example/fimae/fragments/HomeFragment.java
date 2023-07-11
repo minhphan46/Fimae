@@ -1,5 +1,8 @@
 package com.example.fimae.fragments;
 
+import static android.view.MotionEvent.ACTION_DOWN;
+import static android.view.MotionEvent.ACTION_MOVE;
+import static android.view.MotionEvent.ACTION_UP;
 import static androidx.databinding.DataBindingUtil.setContentView;
 
 import android.content.Context;
@@ -8,9 +11,11 @@ import android.graphics.PorterDuff;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.LayoutInflater;
+import android.view.MotionEvent;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.EditText;
+import android.widget.FrameLayout;
 import android.widget.ImageButton;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
@@ -49,10 +54,13 @@ import com.google.firebase.firestore.CollectionReference;
 import com.google.firebase.firestore.DocumentReference;
 import com.google.firebase.firestore.FirebaseFirestore;
 import com.google.firebase.firestore.QueryDocumentSnapshot;
+import com.squareup.picasso.Picasso;
 
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.concurrent.atomic.AtomicBoolean;
+
+import de.hdodenhof.circleimageview.CircleImageView;
 
 public class HomeFragment extends Fragment  {
 
@@ -96,6 +104,12 @@ public class HomeFragment extends Fragment  {
     private AppCompatButton mBtnFinish;
     private GenderMatch genderMatch;
 
+    private String typeCall = "";
+    private LinearLayout mFlFloatingWaiting;
+    private CircleImageView mImgAvatarWaiting;
+    float xDown = 0, yDown = 0;
+
+    static public boolean isShowFloatingWaiting = false;
     @Nullable
     @Override
     public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
@@ -104,21 +118,24 @@ public class HomeFragment extends Fragment  {
         mBtnChat.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                navigateToWaitingScreen(getContext(), "chat");
+                typeCall = "chat";
+                navigateToWaitingScreen(getContext(), typeCall);
             }
         });
         mBtnCallVoice = (LinearLayout) mView.findViewById(R.id.btn_call_home);
         mBtnCallVoice.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                navigateToWaitingScreen(getContext(), "voice");
+                typeCall = "voice";
+                navigateToWaitingScreen(getContext(), typeCall);
             }
         });
         mBtnCallVideo = (LinearLayout) mView.findViewById(R.id.btn_call_video_home);
         mBtnCallVideo.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                navigateToWaitingScreen(getContext(), "video");
+                typeCall = "video";
+                navigateToWaitingScreen(getContext(), typeCall);
             }
         });
         mBtnNoti = mView.findViewById(R.id.btn_noti_home);
@@ -157,7 +174,56 @@ public class HomeFragment extends Fragment  {
         firestore = FirebaseFirestore.getInstance();
         GetAllUsers();
 
+        // floating waiting
+        mFlFloatingWaiting = mView.findViewById(R.id.floating_waiting);
+        mImgAvatarWaiting = mView.findViewById(R.id.img_floating_waiting);
+
+        if(isShowFloatingWaiting) {
+            setFloatingWaiting();
+            mFlFloatingWaiting.setVisibility(View.VISIBLE);
+        }
+        else {
+            mFlFloatingWaiting.setVisibility(View.GONE);
+        }
+
         return mView;
+    }
+
+    private void setFloatingWaiting() {
+        if(ConnectRepo.getInstance().getUserLocal() != null){
+            String avatar = ConnectRepo.getInstance().getUserLocal().getAvatarUrl();
+            Picasso.get().load(avatar).placeholder(R.drawable.ic_default_avatar).into(mImgAvatarWaiting);
+        }
+        mImgAvatarWaiting.setOnClickListener(v -> {
+            Intent intent = new Intent(getContext(), WaitingActivity.class);
+            intent.addFlags(Intent.FLAG_ACTIVITY_REORDER_TO_FRONT);
+            startActivity(intent);
+            isShowFloatingWaiting = false;
+            mFlFloatingWaiting.setVisibility(View.GONE);
+        });
+        mFlFloatingWaiting.setOnTouchListener(new View.OnTouchListener() {
+            @Override
+            public boolean onTouch(View v, MotionEvent event) {
+                switch (event.getActionMasked()) {
+                    case ACTION_DOWN:
+                        xDown = event.getX();
+                        yDown = event.getY();
+                        break;
+                    case ACTION_MOVE:
+                        float movedX, movedY;
+                        movedX = event.getX();
+                        movedY = event.getY();
+
+                        float distanceX = movedX - xDown;
+                        float distanceY = movedY - yDown;
+
+                        mFlFloatingWaiting.setX(mFlFloatingWaiting.getX() + distanceX);
+                        mFlFloatingWaiting.setY(mFlFloatingWaiting.getY() + distanceY);
+                        break;
+                }
+                return true;
+            }
+        });
     }
 
     private void GetAllUsers(){
