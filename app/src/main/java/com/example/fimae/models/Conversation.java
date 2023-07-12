@@ -16,7 +16,7 @@ public class Conversation {
     String type;
     String name;
     String lastMessageId;
-    ArrayList<String> participantIDs;
+    ArrayList<Participant> participantIDs;
     public Conversation(){
 
     }
@@ -69,11 +69,11 @@ public class Conversation {
         this.lastMessageId = lastMessageId;
     }
 
-    public ArrayList<String> getParticipantIDs() {
+    public ArrayList<Participant> getParticipantIDs() {
         return participantIDs;
     }
 
-    public void setParticipantIDs(ArrayList<String> participantIDs) {
+    public void setParticipantIDs(ArrayList<Participant> participantIDs) {
         this.participantIDs = participantIDs;
     }
 }

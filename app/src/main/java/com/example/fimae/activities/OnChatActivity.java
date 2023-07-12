@@ -10,15 +10,17 @@ import android.view.MenuItem;
 import android.view.View;
 import android.widget.*;
 
+import androidx.annotation.Nullable;
 import androidx.appcompat.app.ActionBar;
 import androidx.appcompat.app.AppCompatActivity;
 import android.os.Bundle;
 import androidx.appcompat.widget.Toolbar;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
+
+import com.example.fimae.adapters.NewMessageAdapter;
 import com.example.fimae.fragments.MediaListDialogFragment;
 import com.example.fimae.R;
-import com.example.fimae.adapters.MessageAdapter;
 import com.example.fimae.fragments.ChatBottomSheetFragment;
 import com.example.fimae.models.BottomSheetItem;
 import com.example.fimae.models.Message;
@@ -27,6 +29,7 @@ import com.example.fimae.utils.FirebaseHelper;
 import com.google.firebase.Timestamp;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.firestore.*;
+import com.google.firebase.firestore.EventListener;
 
 import java.util.*;
 
@@ -38,9 +41,8 @@ public class OnChatActivity extends AppCompatActivity implements MediaListDialog
     private String conversationId;
     private EditText textInput;
     private RecyclerView recyclerView;
-    private MessageAdapter messageAdapter;
+    private NewMessageAdapter messageAdapter;
     private LinearLayoutManager linearLayoutManager;
-    private ArrayList<Message> messages;
     private LinearLayout inputMediaLayout;
     private Uri photoUri;
     private List<BottomSheetItem> bottomSheetItemList;
@@ -145,22 +147,9 @@ public class OnChatActivity extends AppCompatActivity implements MediaListDialog
     }
 
     private void initMessagesListener() {
-        messages = new ArrayList<>();
-        messageAdapter = new MessageAdapter(this, messages);
+        Query quer = messagesCol.orderBy("sentAt", Query.Direction.ASCENDING);
+        messageAdapter = new NewMessageAdapter(quer, this);
         recyclerView.setAdapter(messageAdapter);
-        messagesCol.orderBy("sentAt", Query.Direction.ASCENDING).addSnapshotListener((value, error) -> {
-            if (error != null) {
-                Log.e("OnChatActivity", "Error getting messages", error);
-                return;
-            }
-            messages.clear();
-            for (QueryDocumentSnapshot document : value) {
-                Message message = document.toObject(Message.class);
-                messages.add(message);
-            }
-            messageAdapter.notifyDataSetChanged();
-            recyclerView.scrollToPosition(messageAdapter.getItemCount() - 1);
-        });
     }
 
     private void sendTextMessage() {
@@ -211,27 +200,16 @@ public class OnChatActivity extends AppCompatActivity implements MediaListDialog
         return message;
     }
     private void sendMessage(Message message) {
-        messages.add(message);
-        messageAdapter.notifyItemInserted(messages.size() - 1);
         recyclerView.scrollToPosition(messageAdapter.getItemCount() - 1);
         messagesCol.document(message.getId()).set(message)
                 .addOnFailureListener(e -> {
-                    int i = messages.lastIndexOf(message);
-                    messageAdapter.notifyItemRemoved(i);
                     recyclerView.scrollToPosition(messageAdapter.getItemCount() - 1);
                 });
     }
 
     private void sendMessage(Message message, DocumentReference messDoc) {
-        messages.add(message);
-        messageAdapter.notifyItemInserted(messages.size() - 1);
         recyclerView.scrollToPosition(messageAdapter.getItemCount() - 1);
-        messDoc.set(message)
-                .addOnFailureListener(e -> {
-                    int i = messages.lastIndexOf(message);
-                    messageAdapter.notifyItemRemoved(i);
-                    recyclerView.scrollToPosition(messageAdapter.getItemCount() - 1);
-                });
+        messDoc.set(message);
     }
 
     private void dispatchTakePictureIntent() {
