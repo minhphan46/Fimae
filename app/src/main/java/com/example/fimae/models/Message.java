@@ -1,8 +1,11 @@
 package com.example.fimae.models;
 
 import com.google.firebase.Timestamp;
+import com.google.firebase.auth.FirebaseAuth;
+import com.google.firebase.firestore.ServerTimestamp;
 
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.Objects;
 
 public class Message {
@@ -15,12 +18,20 @@ public class Message {
     private String conversationID;
     private String idSender; // người gửi tin nhắn
     private String type; // nội dung tin nhắn
-    private Timestamp sentAt; // thời điểm gửi tin nhắn
+    private @ServerTimestamp Date sentAt; // thời điểm gửi tin nhắn
     private ArrayList<String> deleteFromUsers;
     private boolean isHideForAllUsers;
     private Object content;
     public Message(){}
 
+    public static Message text(String id, String content){
+        Message message = new Message();
+        message.setId(id);
+        message.setType(Message.TEXT);
+        message.setContent(content);
+        message.setIdSender(FirebaseAuth.getInstance().getUid());
+        return message;
+    }
     public String getId() {
         return id;
     }
@@ -54,11 +65,11 @@ public class Message {
         this.type = type;
     }
 
-    public Timestamp getSentAt() {
+    public Date getSentAt() {
         return sentAt;
     }
 
-    public void setSentAt(Timestamp sentAt) {
+    public void setSentAt(Date sentAt) {
         this.sentAt = sentAt;
     }
 

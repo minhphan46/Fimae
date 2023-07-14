@@ -4,13 +4,11 @@ import android.content.Intent;
 import android.graphics.Bitmap;
 import android.net.Uri;
 import android.provider.MediaStore;
-import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
 import android.widget.*;
 
-import androidx.annotation.Nullable;
 import androidx.appcompat.app.ActionBar;
 import androidx.appcompat.app.AppCompatActivity;
 import android.os.Bundle;
@@ -18,18 +16,17 @@ import androidx.appcompat.widget.Toolbar;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
-import com.example.fimae.adapters.NewMessageAdapter;
+import com.example.fimae.adapters.MessageAdapter;
 import com.example.fimae.fragments.MediaListDialogFragment;
 import com.example.fimae.R;
 import com.example.fimae.fragments.ChatBottomSheetFragment;
 import com.example.fimae.models.BottomSheetItem;
 import com.example.fimae.models.Message;
+import com.example.fimae.repository.ChatRepository;
 import com.example.fimae.utils.FileUtils;
 import com.example.fimae.utils.FirebaseHelper;
-import com.google.firebase.Timestamp;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.firestore.*;
-import com.google.firebase.firestore.EventListener;
 
 import java.util.*;
 
@@ -41,7 +38,7 @@ public class OnChatActivity extends AppCompatActivity implements MediaListDialog
     private String conversationId;
     private EditText textInput;
     private RecyclerView recyclerView;
-    private NewMessageAdapter messageAdapter;
+    private MessageAdapter messageAdapter;
     private LinearLayoutManager linearLayoutManager;
     private LinearLayout inputMediaLayout;
     private Uri photoUri;
@@ -147,8 +144,8 @@ public class OnChatActivity extends AppCompatActivity implements MediaListDialog
     }
 
     private void initMessagesListener() {
-        Query quer = messagesCol.orderBy("sentAt", Query.Direction.ASCENDING);
-        messageAdapter = new NewMessageAdapter(quer, this);
+        Query query = messagesCol.orderBy("sentAt", Query.Direction.ASCENDING);
+        messageAdapter = new MessageAdapter(query, this);
         recyclerView.setAdapter(messageAdapter);
     }
 
@@ -157,7 +154,7 @@ public class OnChatActivity extends AppCompatActivity implements MediaListDialog
             return;
         DocumentReference messDoc = messagesCol.document();
         Message message = createTextMessage(messDoc.getId(), textInput.getText().toString());
-        sendMessage(message, messDoc);
+        ChatRepository.getInstance().sendTextMessage(conversationId, String.valueOf(textInput.getText()));
         textInput.setText("");
     }
 
@@ -183,7 +180,6 @@ public class OnChatActivity extends AppCompatActivity implements MediaListDialog
         Message message = new Message();
         message.setId(messageId);
         message.setType(Message.TEXT);
-        message.setSentAt(Timestamp.now());
         message.setContent(content);
         message.setIdSender(FirebaseAuth.getInstance().getUid());
         return message;
@@ -193,7 +189,6 @@ public class OnChatActivity extends AppCompatActivity implements MediaListDialog
         Message message = new Message();
         message.setId(messagesCol.document().getId());
         message.setType(Message.MEDIA);
-        message.setSentAt(Timestamp.now());
         message.setContent(downloadUrls);
         message.setConversationID(conversationId);
         message.setIdSender(FirebaseAuth.getInstance().getUid());
@@ -254,5 +249,11 @@ public class OnChatActivity extends AppCompatActivity implements MediaListDialog
             data.forEach(e -> uris.add(Uri.parse(e)));
             sendMediaMessage(uris);
         }
+    }
+
+    @Override
+    protected void onDestroy() {
+        super.onDestroy();
+        messageAdapter.stopListening();
     }
 }

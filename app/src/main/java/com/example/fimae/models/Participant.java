@@ -3,17 +3,17 @@ package com.example.fimae.models;
 import com.google.firebase.Timestamp;
 import com.google.firebase.firestore.FieldValue;
 import com.google.firebase.firestore.ServerTimestamp;
-import com.google.type.DateTime;
 
-import java.util.Calendar;
-import java.util.HashMap;
-import java.util.Map;
+import java.util.Date;
 
 public class Participant{
+    public static final String ROLE_ADMIN = "admin";
+    public static final String ROLE_Participant = "participant";
     private String uid;
     private String role;
 
-    private DateTime joinedAt;
+    private String nickname;
+    private @ServerTimestamp Date joinedAt;
 
     public Participant() {
 
@@ -36,11 +36,11 @@ public class Participant{
         this.role = role;
     }
 
-    public DateTime getJoinedAt() {
+    public Date getJoinedAt() {
         return joinedAt;
     }
 
-    public void setJoinedAt(DateTime joinedAt) {
+    public void setJoinedAt(Date joinedAt) {
         this.joinedAt = joinedAt;
     }
 }
