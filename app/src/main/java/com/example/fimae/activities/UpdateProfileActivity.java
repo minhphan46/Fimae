@@ -35,6 +35,7 @@ import java.util.HashMap;
 import java.util.Map;
 import com.auth0.jwt.JWT;
 import com.auth0.jwt.algorithms.Algorithm;
+import com.google.type.DateTime;
 
 public class UpdateProfileActivity extends AppCompatActivity {
     private static final String API_KEY_SID = "AC9bc361f7d58a91c5d27267fd380a017f";
@@ -113,12 +114,17 @@ public class UpdateProfileActivity extends AppCompatActivity {
             headerClaims.put("cty", "stringee-api;v=1");
 
             long exp = (long) (System.currentTimeMillis()) + expireInSecond * 1000;
+            Calendar calendar = Calendar.getInstance();
+            Date now = calendar.getTime();
 
+            // Cộng thêm 30 ngày
+            calendar.add(Calendar.DAY_OF_YEAR, 30);
+            Date futureDate = calendar.getTime();
             String token = JWT.create().withHeader(headerClaims)
                     .withClaim("jti", keySid + "-" + System.currentTimeMillis())
                     .withClaim("iss", keySid)
                     .withClaim("userId", userID)
-                    .withExpiresAt(new Date(exp))
+                    .withExpiresAt(futureDate)
                     .sign(algorithmHS);
 
             return token;
@@ -128,6 +134,7 @@ public class UpdateProfileActivity extends AppCompatActivity {
 
         return null;
     }
+
     private void saveProfile() {
         int radioButtonID = genderRadioGroup.getCheckedRadioButtonId();
         String dateFormat = DATE_FORMAT;

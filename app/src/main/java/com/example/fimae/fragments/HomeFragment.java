@@ -25,7 +25,12 @@ import com.example.fimae.activities.WaitingActivity;
 import com.example.fimae.adapters.UserHomeViewAdapter;
 import com.example.fimae.models.Fimaers;
 import com.example.fimae.repository.ConnectRepo;
+import com.google.android.material.bottomsheet.BottomSheetDialog;
+import com.google.firebase.firestore.CollectionReference;
+import com.google.firebase.firestore.FirebaseFirestore;
+import com.google.firebase.firestore.QueryDocumentSnapshot;
 
+import java.util.ArrayList;
 import java.util.List;
 
 public class HomeFragment extends Fragment  {
@@ -37,11 +42,14 @@ public class HomeFragment extends Fragment  {
     // if you have user
     // navigate to call screen
 
+    private FirebaseFirestore firestore;
+    private CollectionReference fimaeUserRef;
+
     private View mView;
     private RecyclerView mRcvUsers;
     private HomeActivity homeActivity;
     private UserHomeViewAdapter userAdapter;
-    private List<Fimaers> mUsers;
+    private ArrayList<Fimaers> mUsers;
 
     private LinearLayout mBtnChat;
     private LinearLayout mBtnCallVoice;
@@ -86,8 +94,7 @@ public class HomeFragment extends Fragment  {
         mBtnSetting.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                Toast toast = Toast.makeText(v.getContext(), "Setting", Toast.LENGTH_SHORT);
-                toast.show();
+                settingUser();
             }
         });
 
@@ -107,7 +114,40 @@ public class HomeFragment extends Fragment  {
             }
         });
         mRcvUsers.setAdapter(userAdapter);
+
+        firestore = FirebaseFirestore.getInstance();
+        GetAllUsers();
+
         return mView;
+    }
+
+    private void GetAllUsers(){
+        // get users from firebase
+        fimaeUserRef = firestore.collection("fimaers"); // lay het thu muc user ra
+        fimaeUserRef.addSnapshotListener((value, error) -> {
+            if (error != null) {
+                // Xử lý lỗi
+                return;
+            }
+            mUsers.clear();
+            // Lặp qua các tài liệu (tin nhắn) và thêm vào danh sách
+            for (QueryDocumentSnapshot document : value) {
+                System.out.println(document.toString());
+                Fimaers message = document.toObject(Fimaers.class);
+                mUsers.add(message);
+            }
+            // Cập nhật giao diện người dùng (RecyclerView)
+            userAdapter.notifyDataSetChanged();
+        });
+    }
+
+    private void settingUser(){
+        // when click setting button
+        View dialogSetting = getLayoutInflater().inflate(R.layout.bottom_sheet_setting, null);
+
+        BottomSheetDialog bottomSheetDialog = new BottomSheetDialog(this.getContext());
+        bottomSheetDialog.setContentView(dialogSetting);
+        bottomSheetDialog.show();
     }
 
     private void showToast(String value) {

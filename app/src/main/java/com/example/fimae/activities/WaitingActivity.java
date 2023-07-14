@@ -18,6 +18,7 @@ import android.widget.ImageButton;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import com.example.fimae.ChatRandomActivity;
 import com.example.fimae.R;
 import com.example.fimae.adapters.SliderAdapter;
 import com.example.fimae.models.Fimaers;
@@ -59,7 +60,7 @@ public class WaitingActivity extends AppCompatActivity {
 
     // goi dien ====================================================
     public static boolean isCalled = false;
-    private String remoteUserName;
+    private String remoteUserId;
     private TextView mTvStatusConnect;
     public static StringeeClient client;
     DatabaseReference databaseReference;
@@ -163,7 +164,7 @@ public class WaitingActivity extends AppCompatActivity {
     }
 
     private void connectToRemoteUser() {
-        if(remoteUserName != null){
+        if(remoteUserId != null){
             //ConnectRepo.getInstance().deleteUserOnl(ConnectRepo.getInstance().getUserRemote(), tableName);
             if(isCalled) return;
             isCalled = true;
@@ -215,8 +216,8 @@ public class WaitingActivity extends AppCompatActivity {
             showToast("Hàng đợi rỗng");
         }
         else {
-            remoteUserName = ConnectRepo.getInstance().getUserRemote().getFirstName();
-            showToast("Remote user: " + remoteUserName);
+            remoteUserId = ConnectRepo.getInstance().getUserRemote().getUid();
+            showToast("Remote user: " + remoteUserId);
         }
     }
 
@@ -295,8 +296,8 @@ public class WaitingActivity extends AppCompatActivity {
                 runOnUiThread(()->{
                     callMap.put(stringeeCall.getCallId(), stringeeCall);
                     // set user remote
-                    remoteUserName = stringeeCall.getFrom();
-                    ConnectRepo.getInstance().setUserRemoteByName(remoteUserName);
+                    remoteUserId = stringeeCall.getFrom();
+                    ConnectRepo.getInstance().setUserRemoteById(remoteUserId);
                     // navigate to call screen
                     isCalled = true;
                     Intent intent = new Intent(WaitingActivity.this, CallActivity.class);
@@ -311,8 +312,8 @@ public class WaitingActivity extends AppCompatActivity {
                 runOnUiThread(()->{
                     call2Map.put(stringeeCall2.getCallId(), stringeeCall2);
                     // set user remote
-                    remoteUserName = stringeeCall2.getFrom();
-                    ConnectRepo.getInstance().setUserRemoteByName(remoteUserName);
+                    remoteUserId = stringeeCall2.getFrom();
+                    ConnectRepo.getInstance().setUserRemoteById(remoteUserId);
                     // navigate to call video screen
                     isCalled = true;
                     Intent intent = new Intent(WaitingActivity.this, CallVideoActivity.class);
@@ -348,21 +349,21 @@ public class WaitingActivity extends AppCompatActivity {
     }
 
     private void navigateToChatScreen() {
-        /*Intent intent = new Intent(this, ChatActivity.class);
-        intent.putExtra("to", remoteUserName);
-        startActivity(intent);*/
+        Intent intent = new Intent(this, ChatRandomActivity.class);
+        intent.putExtra("to", remoteUserId);
+        startActivity(intent);
     }
 
     private void navigateToCallVoiceScreen() {
         Intent intent = new Intent(this, CallActivity.class);
-        intent.putExtra("to", remoteUserName);
+        intent.putExtra("to", remoteUserId);
         intent.putExtra("isIncomingCall", false);
         startActivity(intent);
     }
 
     private void navigateToCallVideoScreen() {
         Intent intent = new Intent(this, CallVideoActivity.class);
-        intent.putExtra("to", remoteUserName);
+        intent.putExtra("to", remoteUserId);
         intent.putExtra("isIncomingCall", false);
         startActivity(intent);
     }

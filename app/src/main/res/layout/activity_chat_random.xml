@@ -1,0 +1,167 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="@drawable/background_gradient"
+    tools:context=".ChatRandomActivity">
+
+    <LinearLayout
+        android:id="@+id/layout_top"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="vertical"
+        android:gravity="top"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent">
+
+        <include
+            android:id="@+id/appbar_layout"
+            layout="@layout/appbar_connect" />
+
+        <FrameLayout
+            android:id="@+id/frame_text_des"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="20dp"
+            android:layout_marginTop="10dp"
+            android:layout_marginEnd="20dp"
+            android:background="@drawable/shape_rectangle_border_radius_text"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@+id/appbar_layout">
+
+            <TextView
+                android:id="@+id/tv_des_call"
+                style="@style/regular_14"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:gravity="center"
+                android:padding="12dp"
+                android:text="Trò chuyện 3 phút, thích nhau mở khóa trò chuyện không giới hạn"
+                android:textColor="@color/secondary_1" />
+        </FrameLayout>
+    </LinearLayout>
+    <ImageButton
+        android:layout_gravity="end"
+        android:id="@+id/btn_chat_like"
+        android:layout_width="60dp"
+        android:layout_height="60dp"
+        android:layout_marginTop="10dp"
+        android:layout_marginEnd="20dp"
+        android:background="@drawable/background_btn_love"
+        app:layout_constraintTop_toBottomOf="@+id/layout_top"
+        app:layout_constraintEnd_toEndOf="parent"
+        android:padding="0dp" />
+
+    <androidx.recyclerview.widget.RecyclerView
+        android:id="@+id/list_messages"
+        app:layout_constraintVertical_weight="1"
+        app:reverseLayout="false"
+        android:layout_width="match_parent"
+        android:dividerHeight="0dp"
+        android:divider="@null"
+        android:layout_height="0dp"
+        android:layout_marginTop="10dp"
+        app:layout_constraintTop_toBottomOf="@+id/layout_top"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintBottom_toTopOf="@+id/input_layout"
+        tools:listitem="@layout/receiver_message"/>
+
+    <View
+        android:id="@+id/boder_top"
+        android:layout_width="match_parent"
+        android:layout_height="0.5sp"
+        android:background="@color/text_tertiary"
+        app:layout_constraintBottom_toTopOf="@+id/input_layout"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent" />
+    <LinearLayout
+        android:id="@+id/input_layout"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:background="@color/backround_button_dark_1_startColor"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        android:orientation="vertical">
+        <LinearLayout
+            android:gravity="center_vertical"
+            android:layout_width="match_parent"
+            android:layout_height="70dp"
+            >
+            <ImageView
+                android:layout_margin="14dp"
+                android:id="@+id/btn_micro"
+                android:layout_width="26dp"
+                android:layout_height="26dp"
+                android:src="@drawable/ic_micro"
+                app:tint="@color/white"
+                android:clickable="true" android:focusable="true"/>
+            <ImageView
+                android:layout_margin="14dp"
+                android:id="@+id/btn_add_media"
+                android:layout_width="26dp"
+                android:layout_height="26dp"
+                android:src="@drawable/ic_plus_circle"
+                app:tint="@color/white"
+                android:clickable="true" android:focusable="true"/>
+
+            <EditText
+                android:id="@+id/et_input"
+                android:background="@drawable/shape_rectangle_border_radius_text"
+                android:padding="10dp"
+                android:backgroundTint="@color/backround_button_dark_3"
+                android:hint="Soạn tin nhắn..."
+                android:textColor="@color/text_primary"
+                android:textColorHint="@color/text_primary"
+                android:textColorHighlight="@color/white"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
+                android:layout_width="0dp"
+                />
+
+
+            <ImageView
+                android:layout_marginRight="14dp"
+                android:id="@+id/btn_send"
+                android:layout_width="34dp"
+                android:layout_height="34dp"
+                android:src="@drawable/ic_paper_plane"
+                app:tint="@color/white"
+                android:clickable="true" android:focusable="true"/>
+        </LinearLayout>
+        <LinearLayout
+            android:id="@+id/input_media_layout"
+            android:layout_width="match_parent"
+            android:layout_height="100dp"
+            android:orientation="horizontal"
+            android:gravity="center_vertical"
+            >
+            <ImageButton
+                android:id="@+id/btn_galllery"
+                android:layout_margin="10dp"
+                android:background="@color/gray_400"
+                android:padding="20dp"
+                android:layout_width="70dp"
+                android:layout_height="70dp"
+                android:scaleType="centerInside"
+                android:src="@drawable/ic_gallery_blur"
+                android:clickable="true" android:focusable="true"/>
+
+            <ImageButton
+                android:id="@+id/btn_camera"
+                android:layout_margin="10dp"
+                android:background="@color/gray_400"
+                android:padding="20dp"
+                android:layout_width="70dp"
+                android:layout_height="70dp"
+                android:src="@drawable/ic_camera"
+                android:scaleType="centerInside"
+                android:clickable="true" android:focusable="true"/>
+        </LinearLayout>
+    </LinearLayout>
+</androidx.constraintlayout.widget.ConstraintLayout>

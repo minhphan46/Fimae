@@ -115,10 +115,10 @@ public class ConnectRepo {
         this.userRemote = userRemote;
     }
 
-    public void setUserRemoteByName(String name) {
+    public void setUserRemoteById(String id) {
         List<Fimaers> users = Fimaers.dummy;
         for(Fimaers user : users){
-            if(user.getFirstName().equals(name)){
+            if(user.getUid().equals(id)){
                 setUserRemote(user);
                 return;
             }
