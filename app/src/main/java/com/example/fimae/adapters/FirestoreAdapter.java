@@ -18,6 +18,7 @@ import com.google.firebase.firestore.QueryDocumentSnapshot;
 import com.google.firebase.firestore.QuerySnapshot;
 
 import java.util.ArrayList;
+import java.util.concurrent.ExecutionException;
 
 public abstract class FirestoreAdapter<VH extends RecyclerView.ViewHolder> extends RecyclerView.Adapter<VH> {
     private Query query;
@@ -32,11 +33,18 @@ public abstract class FirestoreAdapter<VH extends RecyclerView.ViewHolder> exten
 
     public void startListening() {
         registration = query.addSnapshotListener((value, error) -> {
-                snapshots = (ArrayList<DocumentSnapshot>) value.getDocuments();
+            if(value!= null){
+                snapshots.clear();
+                snapshots.addAll(value.getDocuments());
                 notifyDataSetChanged();
+            }
         });
     }
 
+    @Override
+    public int getItemViewType(int position) {
+        return position;
+    }
 
     public void stopListening() {
         if (registration != null) {
@@ -69,4 +77,5 @@ public abstract class FirestoreAdapter<VH extends RecyclerView.ViewHolder> exten
     public int getItemCount() {
         return snapshots.size();
     }
+
 }
