@@ -6,6 +6,7 @@ import android.app.DatePickerDialog;
 import android.content.ClipData;
 import android.content.ClipboardManager;
 import android.content.Context;
+import android.content.Intent;
 import android.os.Bundle;
 import android.view.View;
 import android.widget.DatePicker;
@@ -48,7 +49,8 @@ public class EditProfileActivity extends AppCompatActivity {
         relativeName.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-
+                Intent intent = new Intent(EditProfileActivity.this,EditNameActivity.class);
+                startActivity(intent);
             }
         });
         backBtn.setOnClickListener(new View.OnClickListener() {

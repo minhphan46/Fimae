@@ -14,10 +14,11 @@ import androidx.fragment.app.Fragment;
 
 import com.example.fimae.R;
 import com.example.fimae.activities.EditProfileActivity;
+import com.google.android.material.bottomsheet.BottomSheetDialog;
 
 public class ProfileFragment extends Fragment {
 
-    ImageButton btnEditProfile, editBioBtn, editChipBtn;
+    ImageButton btnEditProfile, editBioBtn, editChipBtn,avatarBtn;
     @Nullable
     @Override
     public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
@@ -25,6 +26,16 @@ public class ProfileFragment extends Fragment {
         btnEditProfile = view.findViewById(R.id.editProfileBtn);
         editBioBtn = view.findViewById(R.id.editBioBtn);
         editChipBtn = view.findViewById(R.id.editChipBtn);
+        avatarBtn = view.findViewById(R.id.avatarBtn);
+        avatarBtn.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                BottomSheetDialog mBottomSheetDialog = new BottomSheetDialog(getActivity(),R.style.AppBottomSheetDialogTheme);
+                View sheetView = getActivity().getLayoutInflater().inflate(R.layout.choose_image_bottom_modal, null);
+                mBottomSheetDialog.setContentView(sheetView);
+                mBottomSheetDialog.show();
+            }
+        });
         editChipBtn.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {

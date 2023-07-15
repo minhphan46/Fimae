@@ -52,7 +52,6 @@
         android:layout_width="409dp"
         android:layout_height="48dp"
         android:layout_marginTop="1dp"
-        android:background="@drawable/item_color_grey"
         android:clickable="true"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"

@@ -49,13 +49,15 @@
                 android:name="android.support.FILE_PROVIDER_PATHS"
                 android:resource="@xml/provider_paths" />
         </provider>
-
+        <activity
+            android:name=".activities.EditNameActivity"
+            android:exported="false" />
         <activity
             android:name=".activities.EditProfileActivity"
-            android:exported="false"/>
+            android:exported="false" />
         <activity
             android:name=".activities.UpdateProfileActivity"
-            android:exported="false"/>
+            android:exported="false" />
         <activity
             android:name=".SplashActivity"
             android:exported="true">
@@ -68,7 +70,7 @@
         </activity>
         <activity
             android:name=".activities.AuthenticationActivity"
-            android:exported="true"></activity>
+            android:exported="true" />
         <activity
             android:name=".activities.OnChatActivity"
             android:exported="false" />
@@ -94,7 +96,7 @@
             android:exported="false" />
         <activity
             android:name=".activities.HomeActivity"
-            android:exported="true"></activity>
+            android:exported="true" />
     </application>
 
 </manifest>
