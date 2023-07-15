@@ -63,18 +63,13 @@ public class ChatRepository{
                     taskCompletionSource.setResult(conversation);
                 } else {
                     DocumentReference newConDoc = conversationsRef.document();
-                    CollectionReference collectionReference = newConDoc.collection("participants");
-                    Conversation conversation = new Conversation();
-                    conversation.setId(newConDoc.getId());
-                    conversation.setType(Conversation.FRIEND_CHAT);
-                    conversation.setParticipantIds((ArrayList<String>) participantIds);
                     WriteBatch batch = FirebaseFirestore.getInstance().batch();
+                    CollectionReference collectionReference = newConDoc.collection("participants");
+                    Conversation conversation = Conversation.create(newConDoc.getId(), Conversation.FRIEND_CHAT, participantIds);
                     batch.set(newConDoc, conversation);
                     for (String id : participantIds) {
-                        Participant participant = new Participant();
-                        participant.setUid(id);
-                        participant.setRole(Participant.ROLE_Participant);
-                        batch.set(collectionReference.document(), participant);
+                        Participant participant = Participant.create(id, Participant.ROLE_Participant);
+                        batch.set(collectionReference.document(id), participant);
                     }
                     batch.commit().addOnCompleteListener(batchTask -> {
                         if (batchTask.isSuccessful()) {
@@ -91,8 +86,8 @@ public class ChatRepository{
         });
         return taskCompletionSource.getTask();
     }
-    public Task<Conversation> sendTextMessage(String conversationId, String content){
-        TaskCompletionSource taskCompletionSource = new TaskCompletionSource();
+    public Task<Message> sendTextMessage(String conversationId, String content){
+        TaskCompletionSource<Message> taskCompletionSource = new TaskCompletionSource<Message>();
         if(content.isEmpty()){
             taskCompletionSource.setException(new Exception("Text message has null content"));
             return taskCompletionSource.getTask();

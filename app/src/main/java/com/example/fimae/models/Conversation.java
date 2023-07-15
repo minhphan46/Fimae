@@ -25,6 +25,15 @@ public class Conversation {
 
     }
 
+    public static Conversation create(String id, String type, ArrayList<String> participantIds){
+        Conversation conversation = new Conversation();
+        conversation.setId(id);
+        conversation.setType(type);
+        Collections.sort(participantIds);
+        conversation.setParticipantIds(participantIds);
+        return conversation;
+    }
+
     public ArrayList<String> getParticipantIds() {
         return participantIds;
     }
