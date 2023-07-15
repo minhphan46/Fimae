@@ -12,6 +12,7 @@ import android.os.Bundle;
 import com.example.fimae.R;
 import com.example.fimae.models.Fimaers;
 import com.example.fimae.models.GenderMatch;
+import com.example.fimae.repository.FimaerRepository;
 import com.google.android.gms.tasks.OnFailureListener;
 import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.android.gms.tasks.Task;
@@ -55,7 +56,6 @@ public class UpdateProfileActivity extends AppCompatActivity {
     private Uri imageURI = null;
     private RadioButton genderRadioButton;
     private FirebaseFirestore firestore;
-    private CollectionReference fimaersRef;
     private StorageReference storageReference;
     private DatePickerDialog datePickerDialog;
     @Override
@@ -82,10 +82,8 @@ public class UpdateProfileActivity extends AppCompatActivity {
 
     private void initFirebase() {
         firestore = FirebaseFirestore.getInstance();
-        fimaersRef = firestore.collection("fimaers");
         storageReference = FirebaseStorage.getInstance().getReference("AvatarPics");
         firestore = FirebaseFirestore.getInstance();
-        fimaersRef = firestore.collection("fimaers");
         storageReference = FirebaseStorage.getInstance().getReference("AvatarPics");
     }
 
@@ -164,8 +162,8 @@ public class UpdateProfileActivity extends AppCompatActivity {
             storageReference.child(user.getUid() + ".jpg").putFile(imageURI).addOnSuccessListener(taskSnapshot -> {
                 Task<Uri> task = taskSnapshot.getStorage().getDownloadUrl();
                 task.addOnSuccessListener(uri -> {
-                    String uid = user.getUid();
-                    fimaersRef.document(uid).set(
+                    FimaerRepository userRepo = FimaerRepository.getInstance();
+                    userRepo.updateProfile(
                             new Fimaers(user.getUid(),
                                     lastName.getText().toString(),
                                     firstName.getText().toString(),
