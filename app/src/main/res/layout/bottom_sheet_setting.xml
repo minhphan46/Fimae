@@ -7,16 +7,16 @@
     android:gravity="center_horizontal"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
-    android:background="@color/white"
+    android:background="@drawable/shape_rectangle_border_radius_white"
     android:padding="16dp">
 
     <TextView
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:gravity="center"
-        android:text="Nhắn tin"
+        android:text="Cài đặt"
         android:textColor="@color/text_primary"
-        style="@style/bold_18" />
+        style="@style/bold_20" />
 
     <RelativeLayout
         android:layout_width="match_parent"
@@ -29,24 +29,37 @@
             android:textColor="@color/text_secondary"
             style="@style/bold_18" />
         <TextView
+            android:id="@+id/tv_st_range_ages"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_alignParentEnd="true"
-            android:text="17-16"
+            android:text="16-20"
             android:textColor="@color/text_primary"
             style="@style/bold_18" />
     </RelativeLayout>
-    <!--<com.google.android.material.slider.RangeSlider
+    <com.google.android.material.slider.RangeSlider
         android:id="@+id/range_slider_age"
+        android:theme="@style/Theme.MaterialComponents.DayNight.NoActionBar"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:stepSize="10.0"
-        android:valueFrom="0.0"
-        android:valueTo="100.0"
-        app:values="@array/slider_values" />-->
+        android:stepSize="1.0"
+        android:valueFrom="12.0"
+        android:valueTo="40.0"
+        app:values="@array/slider_values"
+        app:thumbColor="@color/white"
+        app:thumbRadius="12dp"
+        app:thumbStrokeColor="@color/text_tertiary"
+        app:thumbStrokeWidth="1dp"
+        app:tickVisible="false"
+        app:trackColorActive="@color/primary_2"
+        app:trackColorInactive="@color/background_button_1"
+        app:trackHeight="5dp"
+        />
     <RelativeLayout
         android:layout_width="match_parent"
-        android:layout_height="wrap_content">
+        android:layout_height="wrap_content"
+        android:layout_marginTop="10dp"
+        android:layout_marginBottom="10dp">
         <TextView
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
@@ -64,12 +77,12 @@
 
         <!-- btn male -->
         <LinearLayout
-            android:id="@+id/btn_male"
+            android:id="@+id/btn_st_male"
             android:clickable="true"
             android:layout_width="0dp"
             android:layout_weight="0.5"
             android:layout_height="match_parent"
-            android:backgroundTint="@color/backround_button_2"
+            android:backgroundTint="@color/background_button_2"
             android:background="@drawable/shape_rectangle_border_radius_pink"
             android:gravity="center"
             android:orientation="vertical"
@@ -78,11 +91,14 @@
             android:focusable="true">
 
             <ImageView
+                android:id="@+id/img_st_male"
                 android:layout_width="50dp"
                 android:layout_height="50dp"
                 android:layout_marginBottom="10dp"
-                app:srcCompat="@drawable/ic_male" />
+                app:srcCompat="@drawable/ic_male"
+                app:tint="@color/text_tertiary"/>
             <TextView
+                android:id="@+id/tv_st_male"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:text="Nam"
@@ -90,17 +106,16 @@
                 style="@style/bold_16" />
         </LinearLayout>
 
-        <Space android:layout_width="10dp"
-            android:layout_height="match_parent"/>
-
         <!-- female button -->
         <LinearLayout
-            android:id="@+id/btn_female"
+            android:id="@+id/btn_st_female"
+            android:layout_marginEnd="10dp"
+            android:layout_marginStart="10dp"
             android:clickable="true"
             android:layout_width="0dp"
             android:layout_weight="0.5"
             android:layout_height="match_parent"
-            android:backgroundTint="@color/backround_button_2"
+            android:backgroundTint="@color/background_button_2"
             android:background="@drawable/shape_rectangle_border_radius_pink"
             android:gravity="center"
             android:orientation="vertical"
@@ -109,11 +124,14 @@
             android:focusable="true">
 
             <ImageView
+                android:id="@+id/img_st_female"
                 android:layout_width="50dp"
                 android:layout_height="50dp"
                 android:layout_marginBottom="10dp"
-                app:srcCompat="@drawable/ic_female" />
+                app:srcCompat="@drawable/ic_female"
+                app:tint="@color/text_tertiary"/>
             <TextView
+                android:id="@+id/tv_st_female"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:text="Nữ"
@@ -121,17 +139,14 @@
                 style="@style/bold_16" />
         </LinearLayout>
 
-        <Space android:layout_width="10dp"
-            android:layout_height="match_parent"/>
-
         <!-- both button -->
         <LinearLayout
-            android:id="@+id/btn_both"
+            android:id="@+id/btn_st_both"
             android:clickable="true"
             android:layout_width="0dp"
             android:layout_weight="0.5"
             android:layout_height="match_parent"
-            android:backgroundTint="@color/backround_button_2"
+            android:backgroundTint="@color/background_button_2"
             android:background="@drawable/shape_rectangle_border_radius_pink"
             android:gravity="center"
             android:orientation="vertical"
@@ -140,34 +155,33 @@
             android:focusable="true">
 
             <ImageView
+                android:id="@+id/img_st_both"
                 android:layout_width="50dp"
                 android:layout_height="50dp"
                 android:layout_marginBottom="10dp"
                 app:tint="@color/text_tertiary"
+                android:tintMode="src_in"
                 app:srcCompat="@drawable/ic_arrow_left_right" />
             <TextView
+                android:id="@+id/tv_st_both"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:text="Cả hai"
                 android:textColor="@color/text_primary"
                 style="@style/bold_16" />
         </LinearLayout>
-
-        <Space android:layout_width="10dp"
-            android:layout_height="match_parent"/>
     </LinearLayout>
 
-    <RelativeLayout
+    <androidx.appcompat.widget.AppCompatButton
+        android:id="@+id/btn_st_finish"
         android:layout_width="match_parent"
         android:layout_height="50dp"
-        android:gravity="center"
-        android:backgroundTint="@color/primary_2"
-        android:background="@drawable/shape_rectangle_border_radius_pink">
-        <TextView
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:text="Hoàn thành"
-            android:textColor="@color/white"
-            style="@style/bold_20" />
-    </RelativeLayout>
+        android:text="Hoàn thành"
+        android:layout_marginTop="20dp"
+        android:layout_marginBottom="10dp"
+        android:textSize="20sp"
+        android:fontFamily="@font/public_sans_semi_bold"
+        style="@style/btn_can_click"
+        android:background="@drawable/shape_rectangle_border_radius_btn_pink"/>
+
 </LinearLayout>

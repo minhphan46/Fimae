@@ -1,0 +1,18 @@
+<layer-list xmlns:android="http://schemas.android.com/apk/res/android">
+    <item android:id="@android:id/progress">
+        <rotate
+            android:duration="@integer/material_motion_duration_long_1"
+            android:pivotX="50%"
+            android:pivotY="50%"
+            android:fromDegrees="0"
+            android:toDegrees="1080">
+            <shape
+                android:shape="ring"
+                android:thickness="3dp"
+                android:innerRadiusRatio="2.5"
+                android:thicknessRatio="20.0">
+                <solid android:color="@color/background_button_dark_2" />
+            </shape>
+        </rotate>
+    </item>
+</layer-list>

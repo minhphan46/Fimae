@@ -18,8 +18,12 @@ public class Fimaers {
     private Date timeCreated;
     @Nullable private String token;
 
+    @Nullable private int minAgeMatch;
+    @Nullable private int maxAgeMatch;
+    @Nullable private GenderMatch genderMatch;
+
     public Fimaers(){}
-    public Fimaers(String uid, String lastName, String firstName, boolean gender,String email, String phone, String avatarUrl, String bio, Date dob, Date timeCreated, @Nullable String token) {
+    public Fimaers(String uid, String lastName, String firstName, boolean gender,String email, String phone, String avatarUrl, String bio, Date dob, Date timeCreated, @Nullable String token, @Nullable int minAgeMatch, @Nullable int maxAgeMatch, @Nullable GenderMatch genderMatch) {
         this.uid = uid;
         this.lastName = lastName;
         this.firstName = firstName;
@@ -31,6 +35,9 @@ public class Fimaers {
         this.dob = dob;
         this.timeCreated = timeCreated;
         this.token = token;
+        this.minAgeMatch = minAgeMatch;
+        this.maxAgeMatch = maxAgeMatch;
+        this.genderMatch = genderMatch;
     }
 
     public String getUid() {
@@ -67,6 +74,31 @@ public class Fimaers {
 
     public Date getTimeCreated() {
         return timeCreated;
+    }
+
+    public int getMinAgeMatch() {
+        return minAgeMatch;
+    }
+
+    public void setMinAgeMatch(int minAgeMatch) {
+        this.minAgeMatch = minAgeMatch;
+    }
+
+    public int getMaxAgeMatch() {
+        return maxAgeMatch;
+    }
+
+    public void setMaxAgeMatch(int maxAgeMatch) {
+        this.maxAgeMatch = maxAgeMatch;
+    }
+
+    @Nullable
+    public GenderMatch getGenderMatch() {
+        return genderMatch;
+    }
+
+    public void setGenderMatch(@Nullable GenderMatch genderMatch) {
+        this.genderMatch = genderMatch;
     }
 
     @Nullable

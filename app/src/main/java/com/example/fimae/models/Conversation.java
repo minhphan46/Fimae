@@ -1,24 +1,36 @@
 package com.example.fimae.models;
 
-import android.content.Intent;
-import com.google.firebase.Timestamp;
-import com.google.type.DateTime;
-import org.apache.http.entity.SerializableEntity;
+import androidx.annotation.IntDef;
+import androidx.annotation.StringDef;
 
+import com.google.firebase.firestore.DocumentReference;
+import com.google.firebase.firestore.ServerTimestamp;
+
+import java.lang.annotation.Retention;
+import java.lang.annotation.RetentionPolicy;
 import java.util.*;
 
 public class Conversation {
     public static final String FRIEND_CHAT = "friend-chat";
     public static final String GROUP_CHAT = "group-chat";
-    String id;
-    String isBlockedBy;
-    Timestamp createdAt;
-    String type;
-    String name;
-    String lastMessageId;
-    ArrayList<String> participantIDs;
+    private String id;
+    private String blockedBy;
+    @ServerTimestamp
+    private Date createdAt;
+    private String type;
+    private String name;
+    private DocumentReference lastMessage;
+    ArrayList<String> participantIds = new ArrayList<> ();
     public Conversation(){
 
+    }
+
+    public ArrayList<String> getParticipantIds() {
+        return participantIds;
+    }
+
+    public void setParticipantIds(ArrayList<String> participantIds) {
+        this.participantIds = participantIds;
     }
 
     public String getId() {
@@ -29,19 +41,19 @@ public class Conversation {
         this.id = id;
     }
 
-    public String getIsBlockedBy() {
-        return isBlockedBy;
+    public String getBlockedBy() {
+        return blockedBy;
     }
 
-    public void setIsBlockedBy(String isBlockedBy) {
-        this.isBlockedBy = isBlockedBy;
+    public void setBlockedBy(String blockedBy) {
+        this.blockedBy = blockedBy;
     }
 
-    public Timestamp getCreatedAt() {
+    public Date getCreatedAt() {
         return createdAt;
     }
 
-    public void setCreatedAt(Timestamp createdAt) {
+    public void setCreatedAt(Date createdAt) {
         this.createdAt = createdAt;
     }
 
@@ -61,19 +73,11 @@ public class Conversation {
         this.name = name;
     }
 
-    public String getLastMessageId() {
-        return lastMessageId;
+    public DocumentReference getLastMessage() {
+        return lastMessage;
     }
 
-    public void setLastMessageId(String lastMessageId) {
-        this.lastMessageId = lastMessageId;
-    }
-
-    public ArrayList<String> getParticipantIDs() {
-        return participantIDs;
-    }
-
-    public void setParticipantIDs(ArrayList<String> participantIDs) {
-        this.participantIDs = participantIDs;
+    public void setLastMessage(DocumentReference lastMessage) {
+        this.lastMessage = lastMessage;
     }
 }

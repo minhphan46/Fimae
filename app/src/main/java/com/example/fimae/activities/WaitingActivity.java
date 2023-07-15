@@ -18,9 +18,9 @@ import android.widget.ImageButton;
 import android.widget.TextView;
 import android.widget.Toast;
 
-import com.example.fimae.ChatRandomActivity;
 import com.example.fimae.R;
 import com.example.fimae.adapters.SliderAdapter;
+import com.example.fimae.fragments.HomeFragment;
 import com.example.fimae.models.Fimaers;
 import com.example.fimae.repository.ConnectRepo;
 import com.google.firebase.database.DataSnapshot;
@@ -41,7 +41,7 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-public class WaitingActivity extends AppCompatActivity {
+public class  WaitingActivity extends AppCompatActivity {
 
     private String type; // type of connect
     private String tableName;
@@ -90,6 +90,7 @@ public class WaitingActivity extends AppCompatActivity {
         mBtnZoomOut = findViewById(R.id.btn_zoom_out_waiting);
         mBtnZoomOut.setOnClickListener(v -> {
             // zoom out
+            ZoomOutWaiting();
         });
 
         mBtnClose = findViewById(R.id.btn_close_waiting);
@@ -366,5 +367,10 @@ public class WaitingActivity extends AppCompatActivity {
         intent.putExtra("to", remoteUserId);
         intent.putExtra("isIncomingCall", false);
         startActivity(intent);
+    }
+
+    private void ZoomOutWaiting() {
+        HomeFragment.isShowFloatingWaiting = true;
+        startActivity(new Intent(WaitingActivity.this, HomeActivity.class));
     }
 }

@@ -3,43 +3,31 @@ package com.example.fimae.activities;
 import android.content.Intent;
 import android.graphics.Bitmap;
 import android.net.Uri;
-import android.os.Environment;
 import android.provider.MediaStore;
-import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
 import android.widget.*;
-import androidx.annotation.NonNull;
+
 import androidx.appcompat.app.ActionBar;
 import androidx.appcompat.app.AppCompatActivity;
 import android.os.Bundle;
 import androidx.appcompat.widget.Toolbar;
-import androidx.core.content.FileProvider;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
-import com.example.fimae.MediaListDialogFragment;
-import com.example.fimae.R;
-import com.example.fimae.adapters.BottomSheetItemAdapter;
+
 import com.example.fimae.adapters.MessageAdapter;
+import com.example.fimae.fragments.MediaListDialogFragment;
+import com.example.fimae.R;
 import com.example.fimae.fragments.ChatBottomSheetFragment;
 import com.example.fimae.models.BottomSheetItem;
 import com.example.fimae.models.Message;
+import com.example.fimae.repository.ChatRepository;
 import com.example.fimae.utils.FileUtils;
 import com.example.fimae.utils.FirebaseHelper;
-import com.google.android.gms.tasks.OnCompleteListener;
-import com.google.android.gms.tasks.OnFailureListener;
-import com.google.android.gms.tasks.Task;
-import com.google.firebase.Timestamp;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.firestore.*;
-import com.google.firebase.storage.FirebaseStorage;
-import com.google.firebase.storage.StorageReference;
-import org.jetbrains.annotations.NotNull;
 
-import java.io.File;
-import java.io.IOException;
-import java.text.SimpleDateFormat;
 import java.util.*;
 
 public class OnChatActivity extends AppCompatActivity implements MediaListDialogFragment.OnMediaSelectedListener {
@@ -52,7 +40,6 @@ public class OnChatActivity extends AppCompatActivity implements MediaListDialog
     private RecyclerView recyclerView;
     private MessageAdapter messageAdapter;
     private LinearLayoutManager linearLayoutManager;
-    private ArrayList<Message> messages;
     private LinearLayout inputMediaLayout;
     private Uri photoUri;
     private List<BottomSheetItem> bottomSheetItemList;
@@ -157,22 +144,9 @@ public class OnChatActivity extends AppCompatActivity implements MediaListDialog
     }
 
     private void initMessagesListener() {
-        messages = new ArrayList<>();
-        messageAdapter = new MessageAdapter(this, messages);
+        Query query = messagesCol.orderBy("sentAt", Query.Direction.ASCENDING);
+        messageAdapter = new MessageAdapter(query, this);
         recyclerView.setAdapter(messageAdapter);
-        messagesCol.orderBy("sentAt", Query.Direction.ASCENDING).addSnapshotListener((value, error) -> {
-            if (error != null) {
-                Log.e("OnChatActivity", "Error getting messages", error);
-                return;
-            }
-            messages.clear();
-            for (QueryDocumentSnapshot document : value) {
-                Message message = document.toObject(Message.class);
-                messages.add(message);
-            }
-            messageAdapter.notifyDataSetChanged();
-            recyclerView.scrollToPosition(messageAdapter.getItemCount() - 1);
-        });
     }
 
     private void sendTextMessage() {
@@ -180,7 +154,7 @@ public class OnChatActivity extends AppCompatActivity implements MediaListDialog
             return;
         DocumentReference messDoc = messagesCol.document();
         Message message = createTextMessage(messDoc.getId(), textInput.getText().toString());
-        sendMessage(message, messDoc);
+        ChatRepository.getInstance().sendTextMessage(conversationId, String.valueOf(textInput.getText()));
         textInput.setText("");
     }
 
@@ -206,7 +180,6 @@ public class OnChatActivity extends AppCompatActivity implements MediaListDialog
         Message message = new Message();
         message.setId(messageId);
         message.setType(Message.TEXT);
-        message.setSentAt(Timestamp.now());
         message.setContent(content);
         message.setIdSender(FirebaseAuth.getInstance().getUid());
         return message;
@@ -216,34 +189,22 @@ public class OnChatActivity extends AppCompatActivity implements MediaListDialog
         Message message = new Message();
         message.setId(messagesCol.document().getId());
         message.setType(Message.MEDIA);
-        message.setSentAt(Timestamp.now());
         message.setContent(downloadUrls);
         message.setConversationID(conversationId);
         message.setIdSender(FirebaseAuth.getInstance().getUid());
         return message;
     }
     private void sendMessage(Message message) {
-        messages.add(message);
-        messageAdapter.notifyItemInserted(messages.size() - 1);
         recyclerView.scrollToPosition(messageAdapter.getItemCount() - 1);
         messagesCol.document(message.getId()).set(message)
                 .addOnFailureListener(e -> {
-                    int i = messages.lastIndexOf(message);
-                    messageAdapter.notifyItemRemoved(i);
                     recyclerView.scrollToPosition(messageAdapter.getItemCount() - 1);
                 });
     }
 
     private void sendMessage(Message message, DocumentReference messDoc) {
-        messages.add(message);
-        messageAdapter.notifyItemInserted(messages.size() - 1);
         recyclerView.scrollToPosition(messageAdapter.getItemCount() - 1);
-        messDoc.set(message)
-                .addOnFailureListener(e -> {
-                    int i = messages.lastIndexOf(message);
-                    messageAdapter.notifyItemRemoved(i);
-                    recyclerView.scrollToPosition(messageAdapter.getItemCount() - 1);
-                });
+        messDoc.set(message);
     }
 
     private void dispatchTakePictureIntent() {
@@ -288,5 +249,11 @@ public class OnChatActivity extends AppCompatActivity implements MediaListDialog
             data.forEach(e -> uris.add(Uri.parse(e)));
             sendMediaMessage(uris);
         }
+    }
+
+    @Override
+    protected void onDestroy() {
+        super.onDestroy();
+        messageAdapter.stopListening();
     }
 }

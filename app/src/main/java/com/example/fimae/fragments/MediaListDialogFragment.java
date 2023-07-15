@@ -1,4 +1,4 @@
-package com.example.fimae;
+package com.example.fimae.fragments;
 
 import android.content.Context;
 import android.os.Bundle;
@@ -9,6 +9,8 @@ import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.recyclerview.widget.GridLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
+
+import com.example.fimae.R;
 import com.example.fimae.adapters.MediaAdapter;
 import com.example.fimae.databinding.FragmentItemListDialogListDialogBinding;
 import com.google.android.material.bottomsheet.BottomSheetDialogFragment;

@@ -90,7 +90,7 @@
                     android:id="@+id/et_input"
                     android:background="@drawable/shape_rectangle_border_radius_text"
                     android:padding="10dp"
-                    android:backgroundTint="@color/backround_button_1"
+                    android:backgroundTint="@color/background_button_1"
                     android:hint="Soạn tin nhắn..."
                     android:layout_height="wrap_content"
                     android:layout_weight="1"

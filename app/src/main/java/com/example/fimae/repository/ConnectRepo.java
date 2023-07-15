@@ -27,7 +27,7 @@ public class ConnectRepo {
         return(INSTANCE);
     }
 
-    DatabaseReference databaseReference = FirebaseDatabase.getInstance().getReference();;
+    DatabaseReference databaseReference = FirebaseDatabase.getInstance().getReference();
 
     Fimaers userLocal;
     Fimaers userRemote;

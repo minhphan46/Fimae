@@ -137,4 +137,24 @@
         <item name="android:background">?android:attr/colorBackground</item>
         <item name="android:textColor">?android:attr/textColorPrimary</item>
     </style>
+
+    <style name="btn_can_click" parent="android:Widget">
+        <item name="android:textColor">@color/white</item>
+        <item name="android:backgroundTint">@color/primary_2</item>
+    </style>
+
+    <style name="btn_cant_click" parent="android:Widget">
+        <item name="android:textColor">@color/white</item>
+        <item name="android:backgroundTint">@color/text_tertiary</item>
+    </style>
+
+    <style name="btn_is_chosen" parent="android:Widget">
+        <item name="android:textColor">@color/white</item>
+        <item name="android:backgroundTint">@color/background_button_dark_2</item>
+    </style>
+
+    <style name="btn_is_not_chosen" parent="android:Widget">
+        <item name="android:textColor">@color/text_primary</item>
+        <item name="android:backgroundTint">@color/background_button_2</item>
+    </style>
 </resources>

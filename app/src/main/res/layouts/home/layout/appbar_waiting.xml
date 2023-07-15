@@ -8,7 +8,7 @@
     android:paddingTop="8dp"
     android:paddingBottom="8dp"
     android:layout_height="wrap_content"
-    android:background="@color/backround_button_dark_1_startColor">
+    android:background="@color/background_button_dark_1_startColor">
 
     <ImageButton
         android:id="@+id/btn_zoom_out_waiting"

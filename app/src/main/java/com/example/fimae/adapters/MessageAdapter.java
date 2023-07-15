@@ -1,59 +1,44 @@
 package com.example.fimae.adapters;
 
 import android.content.Context;
-import android.os.Build;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.GridLayout;
 import android.widget.TextView;
+
 import androidx.annotation.NonNull;
 import androidx.recyclerview.widget.GridLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
+
 import com.example.fimae.R;
 import com.example.fimae.models.Message;
 import com.google.firebase.auth.FirebaseAuth;
+import com.google.firebase.firestore.Query;
 
 import java.util.ArrayList;
-import java.util.Collections;
-import java.util.Comparator;
 import java.util.Objects;
 
-public class MessageAdapter extends RecyclerView.Adapter {
-
+public class MessageAdapter extends  FirestoreAdapter{
     Context context;
-    ArrayList<Message> msgData;
-
     final int SENDER_VIEW_HOLDER = 0;
     final int RECEIVER_VIEW_HOLDER = 1;
-
-    public MessageAdapter(Context context, ArrayList<Message> msgData) {
-
-
-        this.msgData = msgData;
+    public MessageAdapter(Query query, Context context) {
+        super(query);
         this.context = context;
+        startListening();
     }
 
-    @Override
-    public int getItemViewType(int position) {
-        return position;
-    }
 
-    private int getItemType(int position) {
-        return (Objects.equals(msgData.get(position).getIdSender(), FirebaseAuth.getInstance().getUid())) ? SENDER_VIEW_HOLDER : RECEIVER_VIEW_HOLDER;
 
-    }
-
-    @Override
-    public long getItemId(int position) {
-        return position;
+    public int getMessageType(int position){
+        Message message = getSnapshot(position).toObject(Message.class);
+        return  (Objects.equals(message.getIdSender(), FirebaseAuth.getInstance().getUid())) ? SENDER_VIEW_HOLDER : RECEIVER_VIEW_HOLDER;
     }
 
     @NonNull
     @Override
     public RecyclerView.ViewHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
-
-        int type = getItemType(viewType);
+        int type = getMessageType(viewType);
         if (type == SENDER_VIEW_HOLDER) {
             View view = LayoutInflater.from(context).inflate(R.layout.sender_message, parent, false);
             return new OutgoingViewholder(view);
@@ -62,10 +47,19 @@ public class MessageAdapter extends RecyclerView.Adapter {
             return new IncomingViewholder(view);
         }
     }
+    private int calculateGridColumns(int urlsSize) {
+        if (urlsSize == 1) {
+            return 1;
+        } else if (urlsSize % 2 == 0 && urlsSize <= 4) {
+            return 2;
+        } else {
+            return 3;
+        }
+    }
 
     @Override
     public void onBindViewHolder(@NonNull RecyclerView.ViewHolder holder, int position) {
-        Message message = msgData.get(position);
+        Message message = getSnapshot(position).toObject(Message.class);
 
         if (holder instanceof OutgoingViewholder) {
             OutgoingViewholder outgoingViewholder = (OutgoingViewholder) holder;
@@ -96,22 +90,6 @@ public class MessageAdapter extends RecyclerView.Adapter {
             }
         }
     }
-
-    private int calculateGridColumns(int urlsSize) {
-        if (urlsSize == 1) {
-            return 1;
-        } else if (urlsSize % 2 == 0 && urlsSize <= 4) {
-            return 2;
-        } else {
-            return 3;
-        }
-    }
-
-    @Override
-    public int getItemCount() {
-        return msgData.size();
-    }
-
     public static class OutgoingViewholder extends RecyclerView.ViewHolder {
         TextView outgoingMsg;
         RecyclerView recyclerView;
@@ -132,5 +110,4 @@ public class MessageAdapter extends RecyclerView.Adapter {
             recyclerView = itemView.findViewById(R.id.list_images);
         }
     }
-
 }
