@@ -13,6 +13,7 @@ import androidx.annotation.Nullable;
 import androidx.appcompat.app.AppCompatActivity;
 import android.os.Bundle;
 import com.example.fimae.R;
+import com.example.fimae.repository.AuthRepository;
 import com.google.android.gms.auth.api.signin.GoogleSignIn;
 import com.google.android.gms.auth.api.signin.GoogleSignInAccount;
 import com.google.android.gms.auth.api.signin.GoogleSignInClient;
@@ -36,9 +37,9 @@ public class AuthenticationActivity extends AppCompatActivity {
     ImageButton btnGoogleSignIn;
     TextView signUpTextView;
     FirebaseAuth auth = FirebaseAuth.getInstance();
+    AuthRepository authRepository = AuthRepository.getInstance();
 
     GoogleSignInClient mGoogleSignInClient;
-    ProgressDialog progressDialog;
     FirebaseFirestore firestore = FirebaseFirestore.getInstance();
     FirebaseDatabase database = FirebaseDatabase.getInstance();
     CollectionReference fimaeUsersRefer = firestore.collection("fimae-users");
@@ -52,10 +53,6 @@ public class AuthenticationActivity extends AppCompatActivity {
         signUpTextView = findViewById(R.id.textViewRegister);
         btnSignIn = findViewById(R.id.buttonLogin);
         btnGoogleSignIn = findViewById(R.id.googleImgBtn);
-        progressDialog = new ProgressDialog(AuthenticationActivity.this);
-        progressDialog.setTitle("Creating account");
-        progressDialog.setMessage("We are creating your account");
-
         GoogleSignInOptions gso = new GoogleSignInOptions.Builder(GoogleSignInOptions.DEFAULT_SIGN_IN)
                 .requestIdToken(getString(R.string.default_web_client_id))
                 .requestEmail()
@@ -100,70 +97,47 @@ public class AuthenticationActivity extends AppCompatActivity {
         intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TASK | Intent.FLAG_ACTIVITY_NEW_TASK);
         startActivity(intent);
     }
+    void navToUpdateProfile(){
+        Intent intent = new Intent(AuthenticationActivity.this, UpdateProfileActivity.class);
+        intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TASK | Intent.FLAG_ACTIVITY_NEW_TASK);
+        startActivity(intent);
+    }
     private void signIn(){
         String email = String.valueOf(editTextEmail.getText());
         String password = String.valueOf(editTextPassword.getText());
-        if (!(email.isEmpty() && password.isEmpty())) {
-            auth.signInWithEmailAndPassword(email, password)
-                    .addOnCompleteListener(this, new OnCompleteListener<AuthResult>() {
-                        @Override
-                        public void onComplete(@NonNull Task<AuthResult> task) {
-                            if (task.isSuccessful()) {
-                                // Đăng nhập thành công
-                                FirebaseUser user = auth.getCurrentUser();
-                                successAuthentication();
-                                // Tiến hành xử lý sau khi đăng nhập thành công
-                            } else {
-                                // Đăng nhập thất bại
-                                Toast.makeText(getApplicationContext(), String.format("Đăng nhập thất bại. Vì %s", task.getException() != null ? task.getException().getMessage() : "lỗi không xác định"),
-                                        Toast.LENGTH_SHORT).show();
-                            }
-                        }
-                    });
-        }
+        authRepository.signIn(email, password, new AuthRepository.SignInCallback() {
+            @Override
+            public void onSignInSuccess(FirebaseUser user) {
+                successAuthentication();
+                Toast.makeText(getApplicationContext(), "DONE",
+                        Toast.LENGTH_SHORT).show();
+            }
+
+            @Override
+            public void onSignInError(String errorMessage) {
+                Toast.makeText(getApplicationContext(),errorMessage,Toast.LENGTH_SHORT).show();
+            }
+        });
+
     }
     private void signUp() {
         String email = String.valueOf(editTextEmail.getText());
         String password = String.valueOf(editTextPassword.getText());
         if (!(email.isEmpty() && password.isEmpty())) {
-            auth.createUserWithEmailAndPassword(email, password);
-            String username = String.valueOf(editTextUsername.getText());
-            if (!(email.isEmpty() && password.isEmpty() && username.isEmpty())) {
-                auth.createUserWithEmailAndPassword(email, password)
-                        .addOnCompleteListener(this, task -> {
-                            if (task.isSuccessful()) {
-                                // Đăng ký thành công
-                                FirebaseUser user = auth.getCurrentUser();
-//                            String uid = user.getUid();
-//                            UserProfileChangeRequest profileUpdates = new UserProfileChangeRequest.Builder()
-//                                    .setDisplayName(username).build();
-//                            Random random = new Random();
-//
-//                            // Sinh số ngẫu nhiên từ 1 đến 1000
-//                            int randomNumber = random.nextInt(1000) + 1;
-//                            FimaeUser fimaeUser = new FimaeUser(
-//                                    "1",
-//                                    "minh",
-//                                    "https://picsum.photos/200/300?random=" + randomNumber,
-//                                    25,
-//                                    true,
-//                                    "lanh lung ik loi",
-//                                    "eyJjdHkiOiJzdHJpbmdlZS1hcGk7dj0xIiwidHlwIjoiSldUIiwiYWxnIjoiSFMyNTYifQ.eyJqdGkiOiJTSy4wLnM1OFRaMnBJbkIwMFdWMlZmTlQ1RXRmU2xLQ2g3cy0xNjgyODk0NzE0IiwiaXNzIjoiU0suMC5zNThUWjJwSW5CMDBXVjJWZk5UNUV0ZlNsS0NoN3MiLCJleHAiOjE2ODU0ODY3MTQsInVzZXJJZCI6Im1pbmgifQ.rtlgkQhsZMhSUFnxfBk0zSeg0BPHRHHh4SQ54A1GTm8"
-//                            );
-                                successAuthentication();
-                                Intent intent = new Intent(AuthenticationActivity.this, UpdateProfileActivity.class);
-                                intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TASK | Intent.FLAG_ACTIVITY_NEW_TASK);
-                                startActivity(intent);
-                            } else {
-                                // Đăng ký thất bại
-                                Toast.makeText(getApplicationContext(), String.format("Đăng ký thất bại. Vì %s", task.getException() != null ? task.getException().getMessage() : "lỗi không xác định"),
-                                        Toast.LENGTH_SHORT).show();
-                            }
-                        });
-            } else {
-                Toast.makeText(getApplicationContext(), "Nhập tk mk đi bạn êi!",
-                        Toast.LENGTH_SHORT).show();
-            }
+            authRepository.signUp(email, password, new AuthRepository.SignUpCallback() {
+                @Override
+                public void onSignUpSuccess(FirebaseUser user) {
+                    navToUpdateProfile();
+                }
+
+                @Override
+                public void onSignUpError(String errorMessage) {
+                    Toast.makeText(getApplicationContext(), errorMessage,Toast.LENGTH_SHORT).show();
+                }
+            });
+        } else {
+            Toast.makeText(getApplicationContext(), "Nhập tk mk đi bạn êi!",
+                    Toast.LENGTH_SHORT).show();
         }
     }
 
@@ -175,30 +149,25 @@ public class AuthenticationActivity extends AppCompatActivity {
             Task<GoogleSignInAccount> task = GoogleSignIn.getSignedInAccountFromIntent(data);
             try {
                 GoogleSignInAccount account = task.getResult(ApiException.class);
-                firebaseAuth(account.getIdToken());
+                authRepository.googleAuth(account.getIdToken(), new AuthRepository.GoogleSignInCallback() {
+                    @Override
+                    public void onSignInSuccess(FirebaseUser user) {
+                        successAuthentication();
+                    }
+                    @Override
+                    public void onFirstTimeSignIn(FirebaseUser user) {
+                        navToUpdateProfile();
+                    }
+                    @Override
+                    public void onSignInError(String errorMessage) {
+                        Toast.makeText(getApplicationContext(), errorMessage,Toast.LENGTH_SHORT).show();
+                    }
+                });
             } catch (ApiException e) {
                 throw new RuntimeException(e);
             }
         }
     }
 
-    private void firebaseAuth(String idToken) {
-        AuthCredential credential = GoogleAuthProvider.getCredential(idToken,null);
-        auth.signInWithCredential(credential)
-                .addOnCompleteListener(new OnCompleteListener<AuthResult>() {
-                    @Override
-                    public void onComplete(@NonNull Task<AuthResult> task) {
-                        if(task.isSuccessful())
-                        {
-                            FirebaseUser user = auth.getCurrentUser();
 
-                            successAuthentication();
-                        } else {
-                            // Đăng ký thất bại
-                            Toast.makeText(getApplicationContext(), String.format("Đăng ký thất bại. Vì %s", task.getException() != null ? task.getException().getMessage() : "lỗi không xác định"),
-                                    Toast.LENGTH_SHORT).show();
-                        }
-                    }
-                });
-    }
     }
