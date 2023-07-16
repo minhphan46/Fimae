@@ -13,8 +13,8 @@ import com.example.fimae.R;
 import com.example.fimae.databinding.CommentItemBinding;
 import com.example.fimae.databinding.LikedItemUserBinding;
 import com.example.fimae.models.Comment;
+import com.example.fimae.models.Fimaers;
 import com.example.fimae.models.Seed;
-import com.example.fimae.models.UserInfo;
 import com.squareup.picasso.Picasso;
 import com.stringee.messaging.User;
 
@@ -23,9 +23,9 @@ import java.util.List;
 public class LikedAdapeter extends RecyclerView.Adapter<LikedAdapeter.ViewHolder> {
     private Seed seed = new Seed();
     public Context mContext;
-    public UserInfo[] userInfos;
+    public List<Fimaers> userInfos;
     boolean isFollow = false;
-    public LikedAdapeter(Context mContext, UserInfo[] userInfos) {
+    public LikedAdapeter(Context mContext, List<Fimaers> userInfos) {
         this.mContext = mContext;
         this.userInfos = userInfos;
     }
@@ -40,15 +40,15 @@ public class LikedAdapeter extends RecyclerView.Adapter<LikedAdapeter.ViewHolder
     @Override
     public void onBindViewHolder(@NonNull LikedAdapeter.ViewHolder holder, int position) {
         LikedItemUserBinding binding = holder.binding;
-        UserInfo userInfo = userInfos[position];
-        binding.userName.setText(userInfo.getName());
+        Fimaers userInfo = userInfos.get(position);
+        binding.userName.setText(userInfo.getLastName());
         Picasso.get().load(userInfo.getAvatarUrl()).placeholder(R.drawable.ic_default_avatar).into(binding.imageAvatar);
-        binding.userName.setText(userInfo.getName());
-        if(!userInfo.isMale()){
+        binding.userName.setText(userInfo.getLastName());
+        if(!userInfo.isGender()){
             binding.itemUserIcGender.setImageResource(R.drawable.ic_male);
             binding.genderAgeIcon.setBackgroundResource(R.drawable.shape_gender_border_pink);
         }
-        binding.ageTextView.setText(String.valueOf(userInfo.getAge()));
+        binding.ageTextView.setText(String.valueOf(userInfo.calculateAge()));
         binding.follow.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
@@ -69,7 +69,7 @@ public class LikedAdapeter extends RecyclerView.Adapter<LikedAdapeter.ViewHolder
 
     @Override
     public int getItemCount() {
-        return userInfos.length;
+        return userInfos.size();
     }
 
 

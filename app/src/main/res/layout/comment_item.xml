@@ -92,6 +92,16 @@
                             android:layout_marginLeft="10dp"
                             android:text="1 giờ"
                             android:textColor="@color/text_primary" />
+                        <TextView
+                            android:id="@+id/isEdited"
+                            style="@style/regular_8"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:layout_marginLeft="10dp"
+                            android:text="Đã chỉnh sửa"
+                            android:visibility="gone"
+                            android:textColor="@color/text_primary" />
+
                     </LinearLayout>
                     <TextView
                         android:id="@id/like_number"

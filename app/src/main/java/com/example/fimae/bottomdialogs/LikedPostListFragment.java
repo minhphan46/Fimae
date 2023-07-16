@@ -16,12 +16,20 @@ import com.example.fimae.R;
 import com.example.fimae.activities.PostMode;
 import com.example.fimae.adapters.LikedAdapeter;
 import com.example.fimae.databinding.BottomsheetLikedPeopleBinding;
+import com.example.fimae.models.Fimaers;
 import com.example.fimae.models.Post;
 import com.example.fimae.models.Seed;
-import com.example.fimae.models.UserInfo;
+import com.google.android.gms.tasks.OnCompleteListener;
+import com.google.android.gms.tasks.OnSuccessListener;
+import com.google.android.gms.tasks.Task;
 import com.google.android.material.bottomsheet.BottomSheetDialogFragment;
+import com.google.firebase.firestore.CollectionReference;
+import com.google.firebase.firestore.DocumentSnapshot;
+import com.google.firebase.firestore.FirebaseFirestore;
 
+import java.util.ArrayList;
 import java.util.List;
+import java.util.Map;
 
 public class LikedPostListFragment extends BottomSheetDialogFragment {
     Seed seed = new Seed();
@@ -29,36 +37,41 @@ public class LikedPostListFragment extends BottomSheetDialogFragment {
     // the fragment initialization parameters, e.g. ARG_ITEM_NUMBER
     private BottomsheetLikedPeopleBinding binding;
     private Post post;
-    private UserInfo[] userInfoList;
-    public LikedPostListFragment(String postId) {
-        post = seed.getPostbyId(postId);
-        userInfoList = UserInfo.dummy;
+    private List<Fimaers> userInfoList = new ArrayList<>();
+    String number;
+    private Map<String, Boolean> userInfo;
+    LikedAdapeter adapeter;
+    private CollectionReference fimaersRef = FirebaseFirestore.getInstance().collection("fimaers");
+    public LikedPostListFragment(Map<String, Boolean> userList, String number) {
+        this.userInfo = userList;
+        this.number = number;
     }
 
     @NonNull
     @Override
     public Dialog onCreateDialog(@Nullable Bundle savedInstanceState) {
+
         return super.onCreateDialog(savedInstanceState);
     }
 
     private static LikedPostListFragment instance;
-    public static LikedPostListFragment getInstance(String postId) {
+    public static LikedPostListFragment getInstance(Map<String, Boolean> fimaers, String number) {
 
-        if(instance == null){
-            instance = new LikedPostListFragment(postId);
-        }
+            instance = new LikedPostListFragment(fimaers, number);
         return instance;
     }
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-    }
 
+
+    }
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
         // Inflate the layout for this fragment
+
         binding = BottomsheetLikedPeopleBinding.inflate(inflater, container, false);
         return binding.getRoot();
     }
@@ -66,10 +79,25 @@ public class LikedPostListFragment extends BottomSheetDialogFragment {
     @Override
     public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
+        userInfoList.clear();
         LinearLayoutManager linearLayoutManager = new LinearLayoutManager(getContext());
         binding.userList.setLayoutManager(linearLayoutManager);
-        LikedAdapeter adapeter = new LikedAdapeter(getContext(), userInfoList);
+         adapeter = new LikedAdapeter(getContext(), userInfoList);
         binding.userList.setAdapter(adapeter);
-        binding.title.setText("Lượt thích và cảm xúc " +String.valueOf(userInfoList.length));
+        for(Map.Entry<String, Boolean> entry: userInfo.entrySet()){
+            if(entry.getValue())
+            {
+                fimaersRef.document(entry.getKey()).get().addOnSuccessListener(new OnSuccessListener<DocumentSnapshot>() {
+                    @Override
+                    public void onSuccess(DocumentSnapshot documentSnapshot) {
+                        userInfoList.add(documentSnapshot.toObject(Fimaers.class));
+                        if(adapeter != null) adapeter.notifyDataSetChanged();
+                    }
+                });
+            }
+        }
+        binding.title.setText("Lượt thích và cảm xúc: " +String.valueOf(number));
+
+
     }
 }

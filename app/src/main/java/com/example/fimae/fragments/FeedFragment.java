@@ -5,31 +5,48 @@ import android.os.Bundle;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.ImageView;
-
+import androidx.activity.result.ActivityResultLauncher;
+import androidx.activity.result.contract.ActivityResultContracts;
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.fragment.app.Fragment;
 import androidx.recyclerview.widget.LinearLayoutManager;
-import androidx.recyclerview.widget.RecyclerView;
-
-import com.example.fimae.R;
 import com.example.fimae.activities.DetailPostActivity;
 import com.example.fimae.activities.PostActivity;
 import com.example.fimae.adapters.PostAdapter;
 import com.example.fimae.databinding.FragmentFeedBinding;
 import com.example.fimae.models.Post;
-import com.example.fimae.models.Seed;
+import com.google.firebase.firestore.CollectionReference;
+import com.google.firebase.firestore.DocumentChange;
+import com.google.firebase.firestore.EventListener;
+import com.google.firebase.firestore.FirebaseFirestore;
+import com.google.firebase.firestore.FirebaseFirestoreException;
+import com.google.firebase.firestore.QueryDocumentSnapshot;
+import com.google.firebase.firestore.QuerySnapshot;
 
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 public class FeedFragment extends Fragment {
-    private Seed seed = new Seed();
-
+    public static int REQUEST_CREATEPOST_CODE = 1;
     private PostAdapter postAdapter;
-    private List<Post> postList;
+    private List<Post> posts = new ArrayList<>();
     FragmentFeedBinding binding;
+
+
+    ActivityResultLauncher<Intent> mStartForResult = registerForActivityResult(new ActivityResultContracts.StartActivityForResult(),
+            result -> {
+                if (result.getResultCode() == REQUEST_CREATEPOST_CODE) {
+                    Intent intent = result.getData();
+                    String postId = intent.getStringExtra("postId");
+                }
+            });
+    @Override
+    public void onCreate(@Nullable Bundle savedInstanceState) {
+        super.onCreate(savedInstanceState);
+    }
 
     @Nullable
     @Override
@@ -40,25 +57,45 @@ public class FeedFragment extends Fragment {
         linearLayoutManager.setReverseLayout(true);
         linearLayoutManager.setStackFromEnd(true);
         binding.postList.setLayoutManager(linearLayoutManager);
-        postList = new ArrayList<>(seed.postseed());
-        postAdapter = new PostAdapter(getContext(), postList, new PostAdapter.IClickCardUserListener() {
-            @Override
-            public void onClickUser(Post post) {
-                Intent intent = new Intent(getContext(), DetailPostActivity.class);
-                intent.putExtra("id", post.getPostId());
-                startActivity(intent);
-            }
+        postAdapter = new PostAdapter();
+        postAdapter.setData(getContext(), posts, post -> {
+            Intent intent = new Intent(getContext(), DetailPostActivity.class);
+            intent.putExtra("id", post.getPostId());
+            startActivity(intent);
         });
         binding.postList.setAdapter(postAdapter);
-
-        binding.addPost.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                Intent intent = new Intent(getContext(), PostActivity.class);
-                startActivity(intent);
+        CollectionReference postRef = FirebaseFirestore.getInstance().collection("posts");
+        postRef.addSnapshotListener((value, error) -> {
+            if (error != null) {
+                return;
+            }
+            for (DocumentChange dc : value.getDocumentChanges()) {
+                Post post = dc.getDocument().toObject(Post.class);
+                switch (dc.getType()) {
+                    case ADDED:
+                        posts.add(post);
+                        postAdapter.addUpdate();
+                        break;
+                    case MODIFIED:
+                        for(Post item : posts){
+                            if(item.getPostId().equals(post.getPostId())){
+                                if(!post.getContent().equals(item.getContent()) || post.getPostImages().size() != item.getPostImages().size()){
+                                    posts.set(posts.indexOf(item), post);
+                                    postAdapter.notifyItemChanged(posts.indexOf(item));
+                                }
+                            }
+                        }
+                        break;
+                    case REMOVED:
+                        break;
+                }
             }
         });
-
+        binding.addPost.setOnClickListener(view -> {
+            Intent intent = new Intent(getContext(), PostActivity.class );
+            intent.putExtra("id", "mBPGnBIuFfF4yw21gwLZ");
+            mStartForResult.launch(intent);
+        });
         return binding.getRoot();
     }
 }

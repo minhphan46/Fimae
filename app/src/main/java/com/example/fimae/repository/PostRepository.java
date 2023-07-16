@@ -26,6 +26,7 @@ import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
+import com.google.firebase.database.MutableData;
 import com.google.firebase.database.ValueEventListener;
 import com.google.firebase.firestore.CollectionReference;
 import com.google.firebase.firestore.DocumentReference;
@@ -40,6 +41,7 @@ import android.content.ContentResolver;
 import com.google.type.DateTime;
 import com.stringee.messaging.User;
 
+import java.lang.reflect.Type;
 import java.sql.Time;
 import java.time.LocalDateTime;
 import java.util.ArrayList;
@@ -47,6 +49,7 @@ import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.concurrent.atomic.AtomicInteger;
 
 public class PostRepository {
     FirebaseAuth firebaseAuth;
@@ -93,20 +96,53 @@ public class PostRepository {
     public Fimaers getCurrentUser(){
         return currentUser;
     }
-//    public Post getPostbyId(String id){
-//        postRef.document(id).addSnapshotListener((value, e) -> {
-//            if (e != null) {
-//                return;
-//            }
-//
-//            if (value != null && value.exists()) {
-//                return value.toObject(Post.class);
-//            }
-//        });
-//        return null;
-//    }
+    public void addNewPost(List<Uri> imageList, String description, PostMode mode, Context context)  {
+        List<String> downloadUrls = new ArrayList<>();
+        if (imageList != null && imageList.size() > 0) {
+            List<Task<Uri>> uploadTasks = new ArrayList<>();
+            for (Uri imageUri : imageList) {
 
-    public List<String> addNewPost(List<Uri> imageList, String description, PostMode mode, Context context)  {
+                StorageReference fileRef = storageReference.child(System.currentTimeMillis() + "." + getFileExtension(imageUri, context));
+                Task<Uri> uploadTask = fileRef.putFile(imageUri)
+                        .continueWithTask(task -> {
+                            if (!task.isSuccessful()) {
+                                throw task.getException();
+                            }
+                            return fileRef.getDownloadUrl();
+                        });
+                uploadTasks.add(uploadTask);
+            }
+
+            Tasks.whenAllComplete(uploadTasks)
+                    .addOnCompleteListener(taskList -> {
+                        for (Task<Uri> task : uploadTasks) {
+                            if (task.isSuccessful()) {
+                                Uri downloadUri = task.getResult();
+                                downloadUrls.add(downloadUri.toString());
+                            } else {
+                                task.getException().getMessage();
+                            }
+                        }
+                        DocumentReference postdoc = postRef.document();
+                        HashMap<String, Object> hashMap = new HashMap<>();
+                        hashMap.put("postId", postdoc.getId());
+                        hashMap.put("postImages", downloadUrls);
+                        hashMap.put("content", description);
+                        hashMap.put("publisher", currentUser.getUid());
+                        hashMap.put("postMode", mode);
+                        hashMap.put("likes", new HashMap<>());
+                        hashMap.put("saves", new HashMap<>());
+                        hashMap.put("numberOfComments", 0);
+                        hashMap.put("timeCreated", new Timestamp(new Date()));
+                        postdoc.set(hashMap).addOnCompleteListener(task ->
+                                Toast.makeText(context, "Thêm bài viết thành công", Toast.LENGTH_SHORT).show());
+                    })
+                    .addOnFailureListener(e -> {
+                        Toast.makeText(context, e.getMessage(), Toast.LENGTH_SHORT).show();
+                    });
+        }
+    }
+    public void editPost(List<String> editedImageList ,List<Uri> imageList, String description, PostMode mode, Context context, String postId)  {
         List<String> downloadUrls = new ArrayList<>();
         if (imageList != null && imageList.size() > 0) {
             List<Task<Uri>> uploadTasks = new ArrayList<>();
@@ -133,29 +169,37 @@ public class PostRepository {
                                 task.getException().getMessage();
                             }
                         }
-                        DocumentReference postdoc = postRef.document();
+                        editedImageList.addAll(downloadUrls);
                         HashMap<String , Object> hashMap = new HashMap<>();
-                        hashMap.put("postId" , postdoc.getId());
-                        hashMap.put("postImages" , downloadUrls);
+                        hashMap.put("postImages" ,editedImageList);
                         hashMap.put("content" , description);
-                        hashMap.put("publisher" , currentUser.getUid());
                         hashMap.put("postMode", mode);
-                        hashMap.put("likes", new HashMap<>());
-                        hashMap.put("saves", new HashMap<>());
-                        hashMap.put("numberOfComments", 0);
-                        hashMap.put("timeCreated", new Timestamp(new Date()));
-                        postdoc.set(hashMap).addOnCompleteListener(task ->
-                                Toast.makeText(context, "Thêm bài viết thành công",Toast.LENGTH_SHORT).show());
+                        hashMap.put("timeEdited", new Timestamp(new Date()));
+                        postRef(postId).update(hashMap).addOnCompleteListener(task ->
+                                Toast.makeText(context, "Chỉnh sửa bài viết thành công",Toast.LENGTH_SHORT).show());
                     })
                     .addOnFailureListener(e -> {
                         Toast.makeText(context, e.getMessage(), Toast.LENGTH_SHORT).show();
                     });
-            return downloadUrls;
-        } else {
-            return null;
         }
     }
-    public void numberOfCommentListener(){
+
+    public void updateNumOfComment(String postId){
+        final int[] number = {0};
+
+        postRef(postId).get().addOnSuccessListener(new OnSuccessListener<DocumentSnapshot>() {
+            @Override
+            public void onSuccess(DocumentSnapshot documentSnapshot) {
+               Post post = documentSnapshot.toObject(Post.class);
+               number[0] = (post.getNumberOfComments() + 1);
+                postRef(postId).update("numberOfComments", number[0]);
+            }
+        });
+    }
+    public DocumentReference postRef(String id){
+        DocumentReference ref =  FirebaseFirestore.getInstance().collection("posts")
+                .document(id);
+        return ref;
 
     }
     private String getFileExtension(Uri uri, Context context) {

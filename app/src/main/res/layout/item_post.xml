@@ -17,6 +17,7 @@
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toTopOf="parent"
             />
+
         <TextView
             android:id="@+id/user_name"
             android:layout_width="wrap_content"
@@ -73,7 +74,7 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_marginTop="4dp"
-            android:background="@drawable/shape_rectangle_boder_radius_purple"
+            android:background="@drawable/shape_retangle_border_radius_purple"
             android:text="Theo dõi"
             android:layout_marginRight="5dp"
             android:textColor="@color/primary_2"
@@ -127,7 +128,7 @@
             />
         <androidx.recyclerview.widget.RecyclerView
             android:id="@+id/image_list"
-            android:layout_marginTop="20dp"
+            android:layout_marginTop="10dp"
             android:layout_width="0dp"
             android:layout_height="wrap_content"
             app:layout_constraintTop_toBottomOf="@+id/content"
@@ -139,10 +140,11 @@
             android:id="@+id/ic_like"
             android:layout_width="20dp"
             android:layout_height="20dp"
-            android:src="@drawable/ic_heart"
+            android:src="@drawable/ic_heart_gray"
             app:layout_constraintTop_toBottomOf="@id/image_list"
             app:layout_constraintLeft_toLeftOf="parent"
             android:layout_marginLeft="240dp"
+            android:layout_marginTop="10dp"
             />
         <TextView
             android:id="@+id/like_number"

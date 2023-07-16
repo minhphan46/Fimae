@@ -1,5 +1,5 @@
-<?xml version="1.0" encoding="utf-8"?>
-<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<layout xmlns:android="http://schemas.android.com/apk/res/android">
+<RelativeLayout
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:background="@color/white"
@@ -30,7 +30,7 @@
                 android:layout_height="30dp"
                 android:layout_alignParentStart="true"
                 android:layout_centerVertical="true"
-                android:src="@drawable/ic_close" />
+                android:src="@drawable/ic_arrow_left" />
 
             <ImageView
                 android:id="@+id/post"
@@ -47,28 +47,30 @@
         android:id="@+id/content"
         android:layout_below="@+id/toolbar2"
         android:layout_width="match_parent"
+        android:layout_marginHorizontal="20dp"
         android:layout_height="wrap_content">
+        <TextView
+            android:id="@+id/title"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="Nội dung bài đăng"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="parent"
+            />
         <RelativeLayout
+            android:layout_marginTop="10dp"
             android:id="@+id/layout_description"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
+            android:minHeight="200dp"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toTopOf="parent"
-            android:minHeight="120dp"
+            app:layout_constraintTop_toBottomOf="@id/title"
+            android:layout_marginHorizontal="40dp"
+            android:background="@drawable/diolog_item_background"
+            android:paddingHorizontal="10dp"
+
             >
-            <!--        <com.hendraanggrian.appcompat.widget.SocialAutoCompleteTextView-->
-            <!--            android:id="@+id/description"-->
-            <!--            android:layout_width="match_parent"-->
-            <!--            android:layout_height="wrap_content"-->
-            <!--            android:layout_marginStart="10dp"-->
-            <!--            android:layout_marginTop="5dp"-->
-            <!--            android:layout_marginEnd="10dp"-->
-            <!--            android:hint="Bạn đang nghĩ gì..."-->
-            <!--            android:maxLines="10"-->
-            <!--            app:hashtagColor="@color/colorPrimary"-->
-            <!--            android:background="@color/white"-->
-            <!--            app:socialFlags="hashtag" />-->
             <EditText
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
@@ -77,8 +79,9 @@
                 android:layout_marginTop="5dp"
                 android:layout_marginEnd="10dp"
                 android:hint="Bạn đang nghĩ gì..."
+                android:textSize="14dp"
+                android:background="@color/backround_button_2"
                 android:maxLines="10"
-                android:background="@color/white"
                 />
             />
 
@@ -95,20 +98,26 @@
             app:layout_constraintHorizontal_bias="0.973"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toBottomOf="@+id/layout_description" />
+        <TextView
+            android:id="@+id/title2"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="Hình ảnh bài đăng"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@id/numberOfText"
+            />
 
         <androidx.recyclerview.widget.RecyclerView
             android:id="@+id/image_recycler_view"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_marginStart="10dp"
             android:layout_marginTop="10dp"
-            android:layout_marginEnd="10dp"
             android:layout_toEndOf="@id/layout_description"
             android:visibility="visible"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintHorizontal_bias="0.0"
             app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toBottomOf="@+id/numberOfText"
+            app:layout_constraintTop_toBottomOf="@+id/title2"
             app:layout_constraintVertical_bias="0.0" />
     </androidx.constraintlayout.widget.ConstraintLayout>
     <ImageView
@@ -177,4 +186,4 @@
     </androidx.constraintlayout.widget.ConstraintLayout>
 
 </RelativeLayout>
-
+</layout>

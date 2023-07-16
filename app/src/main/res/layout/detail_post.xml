@@ -94,16 +94,16 @@
                     android:layout_marginLeft="10dp"
                     android:text="1 phút trước"
                     android:textSize="12sp"
-                    app:layout_constraintBottom_toBottomOf="@id/image_avatar"
                     app:layout_constraintStart_toEndOf="@+id/image_avatar"
-                    app:layout_constraintTop_toBottomOf="@+id/user_name" />
+                    android:layout_marginBottom="10dp"
+                    app:layout_constraintTop_toBottomOf="@+id/user_name"  />
                 <TextView
                     android:id="@+id/follow"
                     android:visibility="visible"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_marginTop="4dp"
-                    android:background="@drawable/shape_rectangle_boder_radius_purple"
+                    android:background="@drawable/shape_retangle_border_radius_purple"
                     android:text="Theo dõi"
                     android:layout_marginRight="5dp"
                     android:textColor="@color/primary_2"
@@ -117,7 +117,7 @@
                     app:layout_constraintTop_toTopOf="@+id/user_name" />
 
                 <TextView
-                    android:id="@+id/chat"
+                    android:id="@+id/edit"
                     android:layout_marginRight="5dp"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
@@ -141,10 +141,10 @@
                     android:layout_width="10dp"
                     android:layout_height="10dp"
                     android:src="@drawable/ic_more"
-                    app:layout_constraintTop_toTopOf="@id/chat"
+                    app:layout_constraintTop_toTopOf="@id/edit"
                     app:layout_constraintEnd_toEndOf="parent"
                     android:layout_marginRight="10dp"
-                    app:layout_constraintBottom_toBottomOf="@id/chat"
+                    app:layout_constraintBottom_toBottomOf="@id/edit"
                     />
                 <TextView
                     android:id="@+id/content"
@@ -154,10 +154,10 @@
                     app:layout_constraintEnd_toEndOf="parent"
                     app:layout_constraintStart_toStartOf="@+id/active_time"
                     app:layout_constraintTop_toBottomOf="@+id/active_time"
-                    tools:layout_marginTop="20dp" />
+                    tools:layout_marginTop="10dp" />
                 <androidx.recyclerview.widget.RecyclerView
                     android:id="@+id/image_list"
-                    android:layout_marginTop="20dp"
+                    android:layout_marginTop="10dp"
                     android:layout_width="0dp"
                     android:layout_height="wrap_content"
                     app:layout_constraintTop_toBottomOf="@+id/content"
@@ -169,10 +169,11 @@
                     android:id="@+id/ic_like"
                     android:layout_width="20dp"
                     android:layout_height="20dp"
-                    android:src="@drawable/ic_heart"
+                    android:src="@drawable/ic_heart_gray"
                     app:layout_constraintTop_toBottomOf="@id/image_list"
                     app:layout_constraintLeft_toLeftOf="parent"
                     android:layout_marginLeft="240dp"
+                    android:layout_marginTop="10dp"
                     />
                 <TextView
                     android:id="@+id/like_number"
@@ -244,6 +245,7 @@
                         android:paddingRight="0dp"
                         android:text="Bình luận:" />
                     <TextView
+                        android:id="@+id/numberOfComment"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:layout_marginLeft="10dp"
@@ -251,7 +253,6 @@
                         android:textColor="@color/text_primary"
                         android:text="10" />
                     <TextView
-                        android:id="@+id/numberofLike"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:layout_marginLeft="14dp"
@@ -260,6 +261,7 @@
                         android:paddingRight="0dp"
                         android:text="Lượt thích và cảm xúc:" />
                     <TextView
+                        android:id="@+id/numberofLike"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:layout_marginLeft="10dp"

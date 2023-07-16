@@ -71,7 +71,7 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_marginTop="4dp"
-            android:background="@drawable/shape_rectangle_boder_radius_purple"
+            android:background="@drawable/shape_retangle_border_radius_purple"
             android:text="Theo dõi"
             android:layout_marginRight="5dp"
             android:textColor="@color/primary_2"

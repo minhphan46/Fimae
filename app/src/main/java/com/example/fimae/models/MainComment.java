@@ -1,2 +1,5 @@
-package com.example.fimae.models;public class MainComment {
+package com.example.fimae.models;
+
+public class MainComment extends Comment {
+
 }

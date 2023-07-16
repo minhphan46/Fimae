@@ -40,6 +40,7 @@ public class ChatBottomSheetFragment extends BottomSheetDialogFragment {
         BottomSheetItemAdapter adapter = new BottomSheetItemAdapter(bottomSheetItemList, new BottomSheetItemAdapter.IClickBottomSheetItemListener() {
             @Override
             public void onClick(BottomSheetItem bottomSheetItem) {
+
                 iClickBottomSheetItemListener.onClick(bottomSheetItem);
             }
         });

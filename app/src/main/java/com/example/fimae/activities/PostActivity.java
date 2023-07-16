@@ -1,5 +1,9 @@
 package com.example.fimae.activities;
 
+import androidx.activity.result.ActivityResult;
+import androidx.activity.result.ActivityResultCallback;
+import androidx.activity.result.ActivityResultLauncher;
+import androidx.activity.result.contract.ActivityResultContracts;
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.appcompat.app.AppCompatActivity;
@@ -29,59 +33,68 @@ import android.widget.Toast;
 import com.example.fimae.R;
 import com.example.fimae.adapters.PostPhotoAdapter;
 import com.example.fimae.bottomdialogs.PostModeFragment;
+import com.example.fimae.databinding.ActivityPostBinding;
+import com.example.fimae.models.Post;
+import com.example.fimae.models.Seed;
+import com.example.fimae.repository.PostRepository;
+import com.google.android.gms.tasks.OnCompleteListener;
+import com.google.android.gms.tasks.Task;
+import com.google.firebase.firestore.DocumentSnapshot;
 
+import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.List;
-public class PostActivity extends AppCompatActivity implements View.OnClickListener {
-    ViewDataBinding binding1;
-    ImageView close;
-    ImageView post;
-    EditText description;
-    RecyclerView imageRecyclerView;
-    List<Uri> imageList;
-    PostPhotoAdapter postPhotoAdapter;
-    TextView numberOfText;
-    ImageView rightArrow;
-    TextView status;
-    boolean canPost = false;
-    private PostMode postMode = PostMode.PUBLIC;
-    public void Click(){
-        Intent intent = new Intent();
-        System.out.print("Click on button");
-        intent.setType("image/*");
-        intent.putExtra(Intent.EXTRA_ALLOW_MULTIPLE, true);
-        intent.setAction(Intent.ACTION_GET_CONTENT);
-        startActivityForResult(Intent.createChooser(intent, "Select Picture"), 2);
-    }
+import java.util.UUID;
 
+public class PostActivity extends AppCompatActivity implements View.OnClickListener {
+    ActivityPostBinding binding;
+    List<Uri> imageList;
+    List<String> editedImageList;
+    PostPhotoAdapter postPhotoAdapter;
+    Post editPost;
+    PostRepository postRepo;
+    boolean canPost = false;
+    boolean isEdit = false;
+    private PostMode postMode = PostMode.PUBLIC;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-         binding1 = DataBindingUtil.setContentView(this, R.layout.activity_post);
-        close = findViewById(R.id.close);
-        status = findViewById(R.id.status);
-        post = findViewById(R.id.post);
-        numberOfText = findViewById(R.id.numberOfText);
-        description = findViewById(R.id.description);
-        imageRecyclerView = findViewById(R.id.image_recycler_view);
-        rightArrow = findViewById(R.id.right_arrow);
-        imageList = new ArrayList<>();
-        postPhotoAdapter = new PostPhotoAdapter(this, imageList, true);
-        LinearLayoutManager linearLayoutManager = new GridLayoutManager(getApplicationContext(), 3);
-        imageRecyclerView.setLayoutManager(linearLayoutManager);
-        imageRecyclerView.setHasFixedSize(true);
-        imageRecyclerView.setAdapter(postPhotoAdapter);
-        postPhotoAdapter.setOnItemClickListener(this);
+         binding = DataBindingUtil.setContentView(this, R.layout.activity_post);
 
-        close.setOnClickListener(new View.OnClickListener() {
+        Intent intent = getIntent();
+        String postId = intent.getStringExtra("id");
+        if(postId != null && !postId.trim().isEmpty()){
+            isEdit = true;
+            PostRepository.getInstance().postRef(postId).get().addOnCompleteListener(task -> {
+                if(task.isSuccessful()){
+                    editPost  = task.getResult().toObject(Post.class);
+                    if(editPost == null) return;
+                    postMode = editPost.getPostMode();
+                    binding.description.setText(editPost.getContent());
+                    editedImageList = new ArrayList<>(editPost.getPostImages());
+                    postPhotoAdapter.setEditedImageList(editedImageList);
+                    postPhotoAdapter.notifyDataSetChanged();
+                }
+            });
+        }
+        imageList = new ArrayList<>();
+        postPhotoAdapter = new PostPhotoAdapter(this, imageList,true);
+        postPhotoAdapter.setEditedImageList(new ArrayList<>());
+        LinearLayoutManager linearLayoutManager = new GridLayoutManager(getApplicationContext(), 3);
+        binding.imageRecyclerView.setLayoutManager(linearLayoutManager);
+        binding.imageRecyclerView.setHasFixedSize(true);
+        binding.imageRecyclerView.setAdapter(postPhotoAdapter);
+        postPhotoAdapter.setOnItemClickListener(this);
+        postRepo = PostRepository.getInstance();
+        binding.close.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                startActivity(new Intent(PostActivity.this , MainActivity.class));
+                startActivity(new Intent(PostActivity.this , HomeActivity.class));
                 finish();
             }
         });
 
-        description.addTextChangedListener(new TextWatcher() {
+        binding.description.addTextChangedListener(new TextWatcher() {
             @Override
             public void beforeTextChanged(CharSequence charSequence, int i, int i1, int i2) {
 
@@ -89,15 +102,15 @@ public class PostActivity extends AppCompatActivity implements View.OnClickListe
 
             @Override
             public void onTextChanged(CharSequence charSequence, int i, int i1, int i2) {
-                if(description.getText().length() > 0 ){
-                    post.setBackgroundResource(R.drawable.canpost);
-                    int text = description.getText().length();
-                    numberOfText.setText(text+"/1000");
+                if(binding.description.getText().length() > 0 ){
+                    binding.post.setBackgroundResource(R.drawable.canpost);
+                    int text = binding.description.getText().length();
+                    binding.numberOfText.setText(text+"/1000");
                     canPost = true;
                 }
                 else {
-                    post.setBackgroundResource(R.drawable.cantpost);
-                    numberOfText.setText("0/1000");
+                    binding.post.setBackgroundResource(R.drawable.cantpost);
+                    binding.numberOfText.setText("0/1000");
                     canPost = false;
                 }
             }
@@ -107,15 +120,22 @@ public class PostActivity extends AppCompatActivity implements View.OnClickListe
             }
         });
 
-        post.setOnClickListener(new View.OnClickListener() {
+        binding.post.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                if(canPost){
+                if(canPost && !isEdit){
+                    postRepo.addNewPost(imageList, binding.description.getText().toString(), postMode, getApplicationContext());
+                    finish();
+                }
+                else{
+                    postRepo.editPost(editedImageList,imageList, binding.description.getText().toString(), postMode, getApplicationContext(), postId);
+                    finish();
+
                 }
             }
         });
 
-        rightArrow.setOnClickListener(new View.OnClickListener() {
+        binding.rightArrow.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
                 PostModeFragment postModeFragment = PostModeFragment.getInstance(new PostModeFragment.PostModeFragmentListener() {
@@ -134,42 +154,40 @@ public class PostActivity extends AppCompatActivity implements View.OnClickListe
     }
     private void setStatusPost(){
         if(postMode == PostMode.PUBLIC){
-            status.setText("Công khai");
+            binding.status.setText("Công khai");
         }
         else if(postMode == PostMode.FRIEND){
-            status.setText("Bạn bè");
+            binding.status.setText("Bạn bè");
         }
         else if(postMode == PostMode.PRIVATE){
-            status.setText("Chỉ mình tôi");
+            binding.status.setText("Chỉ mình tôi");
         }
     }
-    private String getFileExtension(Uri uri) {
-        ContentResolver contentResolver = getContentResolver();
-        MimeTypeMap mime = MimeTypeMap.getSingleton();
 
-        return mime.getExtensionFromMimeType(contentResolver.getType(uri));
-    }
-
-    @Override
-    protected void onActivityResult(int requestCode, int resultCode, @Nullable Intent data) {
-        super.onActivityResult(requestCode, resultCode, data);
-        if (requestCode == 2 && resultCode == RESULT_OK && null != data) {
-            if (data.getClipData() != null) {
-                int cout = data.getClipData().getItemCount();
-                for (int i = 0; i < cout; i++) {
-                    Uri imageurl = data.getClipData().getItemAt(i).getUri();
-                    imageList.add(imageurl);
+    private ActivityResultLauncher<Intent> launcher = registerForActivityResult(new ActivityResultContracts.StartActivityForResult(),
+            new ActivityResultCallback<ActivityResult>() {
+                @Override
+                public void onActivityResult(ActivityResult result) {
+                    if (result.getResultCode() == RESULT_OK && result.getData() != null) {
+                        Intent data = result.getData();
+                        if (data.getClipData() != null) {
+                            int cout =data.getClipData().getItemCount();
+                            for (int i = 0; i < cout; i++) {
+                                Uri imageurl = data.getClipData().getItemAt(i).getUri();
+                                imageList.add(imageurl);
+                            }
+                        }
+                        else {
+                            Uri imageurl = data.getData();
+                            imageList.add(imageurl);
+                        }
+                        postPhotoAdapter.notifyDataSetChanged();
+                    } else {
+                        Toast.makeText(getApplicationContext(), "You haven't picked Image", Toast.LENGTH_LONG).show();
+                    }
                 }
             }
-            else {
-                Uri imageurl = data.getData();
-                imageList.add(imageurl);
-            }
-            postPhotoAdapter.notifyDataSetChanged();
-        } else {
-            Toast.makeText(this, "You haven't picked Image", Toast.LENGTH_LONG).show();
-        }
-    }
+    );
     @Override
     protected void onStart() {
         super.onStart();
@@ -182,6 +200,6 @@ public class PostActivity extends AppCompatActivity implements View.OnClickListe
         intent.setType("image/*");
         intent.putExtra(Intent.EXTRA_ALLOW_MULTIPLE, true);
         intent.setAction(Intent.ACTION_GET_CONTENT);
-        startActivityForResult(Intent.createChooser(intent, "Select Picture"), 2);
+        launcher.launch(intent);
     }
 }

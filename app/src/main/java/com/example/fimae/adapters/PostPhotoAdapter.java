@@ -20,18 +20,21 @@ import java.util.List;
 public class PostPhotoAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder>{
     private Context context;
     private List<Uri> mImages;
+    private List<String> editedImageList;
     boolean isEdit;
     int VIEW_TYPE_SPECIAL_ITEM = 1;
     int VIEW_TYPE_NORMAL_ITEM = 0;
-    public PostPhotoAdapter(Context context, List<Uri> mImages, boolean isEdit){
-
+    public PostPhotoAdapter(Context context, List<Uri> mImages,  boolean isEdit){
         this.context = context;
         this.mImages = mImages;
         this.isEdit = isEdit;
     }
+    public void setEditedImageList(List<String> editedImageList){
+        this.editedImageList = editedImageList;
+    }
     @Override
     public int getItemViewType(int position) {
-        if (isEdit && position == mImages.size()) {
+        if (isEdit && position == mImages.size() + editedImageList.size()) {
             return VIEW_TYPE_SPECIAL_ITEM;
         } else {
             return VIEW_TYPE_NORMAL_ITEM;
@@ -60,8 +63,13 @@ public class PostPhotoAdapter extends RecyclerView.Adapter<RecyclerView.ViewHold
     @Override
     public void onBindViewHolder(@NonNull RecyclerView.ViewHolder holder, int position) {
 
-        if(position == mImages.size() && isEdit){
+        if(isEdit && position == (mImages.size() + editedImageList.size())){
             SpecialViewHolder viewHolder = (SpecialViewHolder) holder;
+        }
+        else if (position >= mImages.size()){
+            Uri imageUri =Uri.parse(editedImageList.get(position - mImages.size()));
+            ViewHolder viewHolder = (ViewHolder)holder;
+            Glide.with(context).load(imageUri).into(viewHolder.post_image);
         }
         else {
             Uri imageUri = mImages.get(position);
@@ -73,7 +81,7 @@ public class PostPhotoAdapter extends RecyclerView.Adapter<RecyclerView.ViewHold
     @Override
     public int getItemCount()  {
         if(!isEdit) return mImages.size();
-        return mImages.size() + 1;
+        return mImages.size() +  editedImageList.size() + 1;
     }
     public class SpecialViewHolder extends RecyclerView.ViewHolder implements View.OnClickListener {
         public ImageView add_image;
@@ -95,5 +103,4 @@ public class PostPhotoAdapter extends RecyclerView.Adapter<RecyclerView.ViewHold
             post_image = itemView.findViewById(R.id.post_image);
         }
     }
-
 }

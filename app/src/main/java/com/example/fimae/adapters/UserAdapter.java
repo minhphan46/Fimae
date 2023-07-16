@@ -9,14 +9,15 @@ import android.widget.ArrayAdapter;
 import android.widget.ImageView;
 import android.widget.TextView;
 import com.example.fimae.R;
-import com.example.fimae.models.UserInfo;
+import com.example.fimae.models.Fimaers;
 import com.squareup.picasso.Picasso;
 
+import java.lang.reflect.Field;
 import java.util.List;
 
-public class UserAdapter extends ArrayAdapter<UserInfo> {
+public class UserAdapter extends ArrayAdapter<Fimaers> {
 
-    public UserAdapter(Context context, int resource, List<UserInfo> users) {
+    public UserAdapter(Context context, int resource, List<Fimaers> users) {
         super(context, resource, users);
     }
 
@@ -27,14 +28,14 @@ public class UserAdapter extends ArrayAdapter<UserInfo> {
                     .inflate(R.layout.user_chat, parent, false);
         }
 
-        UserInfo user = getItem(position);
+        Fimaers user = getItem(position);
 
         ImageView avatarImageView = convertView.findViewById(R.id.avatar_image_view);
         TextView nameTextView = convertView.findViewById(R.id.name_text_view);
         TextView ageTextView = convertView.findViewById(R.id.age_text_view);
         Picasso.get().load(user.getAvatarUrl()).placeholder(R.drawable.ic_default_avatar).into(avatarImageView);
-        nameTextView.setText(user.getName());
-        ageTextView.setText(String.valueOf(user.getAge()));
+        nameTextView.setText(user.getLastName());
+        ageTextView.setText(String.valueOf(user.calculateAge()));
         return convertView;
     }
 }
