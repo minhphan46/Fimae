@@ -12,10 +12,13 @@ import androidx.recyclerview.widget.RecyclerView;
 
 import com.example.fimae.R;
 import com.example.fimae.models.Message;
+import com.example.fimae.repository.ChatRepository;
 import com.google.firebase.auth.FirebaseAuth;
+import com.google.firebase.firestore.DocumentSnapshot;
 import com.google.firebase.firestore.Query;
 
 import java.util.ArrayList;
+import java.util.List;
 import java.util.Objects;
 
 public class MessageAdapter extends  FirestoreAdapter{
@@ -90,6 +93,18 @@ public class MessageAdapter extends  FirestoreAdapter{
             }
         }
     }
+
+    @Override
+    public void OnSuccessQueryListener(ArrayList queryDocumentSnapshots) {
+        snapshots = queryDocumentSnapshots;
+        if(!snapshots.isEmpty()){
+            DocumentSnapshot lastVisible = (DocumentSnapshot) snapshots.get(snapshots.size() - 1);
+            Message lastMessage = lastVisible.toObject(Message.class);
+            ChatRepository.getInstance().updateReadLastMessageAt(lastMessage.getConversationID(), lastMessage.getSentAt());
+        }
+        notifyDataSetChanged();
+    }
+
     public static class OutgoingViewholder extends RecyclerView.ViewHolder {
         TextView outgoingMsg;
         RecyclerView recyclerView;

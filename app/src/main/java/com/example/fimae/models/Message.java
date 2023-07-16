@@ -24,12 +24,13 @@ public class Message {
     private Object content;
     public Message(){}
 
-    public static Message text(String id, String content){
+    public static Message text(String id, String conversationID, String content){
         Message message = new Message();
         message.setId(id);
         message.setType(Message.TEXT);
         message.setContent(content);
         message.setIdSender(FirebaseAuth.getInstance().getUid());
+        message.setConversationID(conversationID);
         return message;
     }
     public String getId() {

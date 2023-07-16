@@ -1,31 +1,19 @@
 package com.example.fimae.adapters;
 
-import android.util.Log;
-import android.view.ViewGroup;
-
-import androidx.annotation.NonNull;
-import androidx.annotation.Nullable;
 import androidx.recyclerview.widget.RecyclerView;
 
-import com.example.fimae.models.Message;
-import com.google.firebase.firestore.DocumentChange;
 import com.google.firebase.firestore.DocumentSnapshot;
-import com.google.firebase.firestore.EventListener;
-import com.google.firebase.firestore.FirebaseFirestoreException;
 import com.google.firebase.firestore.ListenerRegistration;
 import com.google.firebase.firestore.Query;
-import com.google.firebase.firestore.QueryDocumentSnapshot;
-import com.google.firebase.firestore.QuerySnapshot;
 
 import java.util.ArrayList;
-import java.util.concurrent.ExecutionException;
 
 public abstract class FirestoreAdapter<VH extends RecyclerView.ViewHolder> extends RecyclerView.Adapter<VH> {
     private Query query;
     private ListenerRegistration registration;
-    private ArrayList<DocumentSnapshot> snapshots = new ArrayList<>();
+    protected ArrayList<DocumentSnapshot> snapshots = new ArrayList<>();
     private static final String TAG = "FirestoreAdapter";
-
+    public abstract void OnSuccessQueryListener(ArrayList<DocumentSnapshot> queryDocumentSnapshots);
     public FirestoreAdapter(Query query) {
         this.query = query;
         startListening();
@@ -34,9 +22,7 @@ public abstract class FirestoreAdapter<VH extends RecyclerView.ViewHolder> exten
     public void startListening() {
         registration = query.addSnapshotListener((value, error) -> {
             if(value!= null){
-                snapshots.clear();
-                snapshots.addAll(value.getDocuments());
-                notifyDataSetChanged();
+                OnSuccessQueryListener((ArrayList<DocumentSnapshot>) value.getDocuments());
             }
         });
     }

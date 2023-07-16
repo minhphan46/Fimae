@@ -36,6 +36,10 @@
         android:supportsRtl="true"
         android:theme="@style/Theme.Fimae"
         tools:targetApi="31">
+        <service android:name=".service.UpdateUserActivityTimeService" />
+        <activity
+            android:name=".activities.SearchUserActivity"
+            android:exported="false" />
         <activity
             android:name=".activities.ChatRandomActivity"
             android:exported="false" />
@@ -65,7 +69,7 @@
         </activity>
         <activity
             android:name=".activities.AuthenticationActivity"
-            android:exported="true"></activity>
+            android:exported="true" />
         <activity
             android:name=".activities.OnChatActivity"
             android:exported="false" />
@@ -91,7 +95,7 @@
             android:exported="false" />
         <activity
             android:name=".activities.HomeActivity"
-            android:exported="true"></activity>
+            android:exported="true" />
     </application>
 
 </manifest>

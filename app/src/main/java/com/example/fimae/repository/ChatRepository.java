@@ -22,6 +22,7 @@ import com.google.firebase.firestore.WriteBatch;
 
 import java.util.ArrayList;
 import java.util.Collections;
+import java.util.Date;
 import java.util.Objects;
 
 public class ChatRepository{
@@ -42,6 +43,13 @@ public class ChatRepository{
     }
     public Query getConversationQuery(){
         return conversationsRef.whereArrayContains("participantIds", Objects.requireNonNull(FirebaseAuth.getInstance().getUid()));
+    }
+    public Task<Conversation> getOrCreateFriendConversation(String id){
+        ArrayList<String> arrayList = new ArrayList(){{
+            add(id);
+            add(FirebaseAuth.getInstance().getUid());
+        }};
+        return getOrCreateConversation(arrayList, Conversation.FRIEND_CHAT);
     }
     public Task<Conversation> getOrCreateConversation(ArrayList<String> participantIds, String type) {
 
@@ -96,12 +104,40 @@ public class ChatRepository{
         DocumentReference currentConversationRef = conversationsRef.document(conversationId);
         CollectionReference reference = currentConversationRef.collection("messages");
         DocumentReference messDoc = reference.document();
-        Message message = Message.text(messDoc.getId(), content);
+        Message message = Message.text(messDoc.getId(), conversationId, content);
         batch.set(messDoc, message);
         batch.update(currentConversationRef, "lastMessage", messDoc);
         batch.commit().addOnCompleteListener(task -> {
             if(task.isSuccessful()){
                 taskCompletionSource.setResult(message);
+            } else {
+                taskCompletionSource.setException(Objects.requireNonNull(task.getException()));
+            }
+        });
+        return taskCompletionSource.getTask();
+    }
+    public Task<Boolean> updateReadLastMessageAt(String conversationId, Date timeStamp){
+        TaskCompletionSource taskCompletionSource = new TaskCompletionSource();
+        DocumentReference participantRef = conversationsRef.document(conversationId).collection("participants").document(FirebaseAuth.getInstance().getUid());
+        participantRef.update("readLastMessageAt", timeStamp).addOnCompleteListener(task -> {
+            if(task.isSuccessful()){
+                taskCompletionSource.setResult(true);
+            } else {
+                taskCompletionSource.setException(Objects.requireNonNull(task.getException()));
+            }
+        });
+        return taskCompletionSource.getTask();
+    }
+    public Task<Participant> getParticipantInConversation(String conversationId, String participantId){
+        TaskCompletionSource<Participant> taskCompletionSource = new TaskCompletionSource<>();
+        DocumentReference participantRef = conversationsRef.document(conversationId).collection("participants").document(participantId);
+        participantRef.get().addOnCompleteListener(task -> {
+            if(task.isSuccessful()){
+                DocumentSnapshot documentSnapshot = task.getResult();
+                assert documentSnapshot != null;
+                Participant participant = documentSnapshot.toObject(Participant.class);
+                assert participant != null;
+                taskCompletionSource.setResult(participant);
             } else {
                 taskCompletionSource.setException(Objects.requireNonNull(task.getException()));
             }

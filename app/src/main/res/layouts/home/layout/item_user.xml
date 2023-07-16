@@ -17,17 +17,44 @@
         android:orientation="horizontal"
         app:layout_constraintTop_toTopOf="parent"
         android:clickable="true">
+        <androidx.constraintlayout.widget.ConstraintLayout
+            android:layout_marginRight="10dp"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content">
 
         <de.hdodenhof.circleimageview.CircleImageView
             android:id="@+id/item_user_avatar_view"
-            android:layout_width="44dp"
-            android:layout_height="44dp"
+            android:layout_width="48dp"
+            android:layout_height="48dp"
             android:src="@drawable/ic_default_avatar"
             android:layout_marginEnd="10dp"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toTopOf="parent"
-            app:layout_constraintBottom_toBottomOf="parent" />
+            app:layout_constraintBottom_toBottomOf="parent"/>
 
+            <TextView
+                android:visibility="gone"
+                android:id="@+id/tv_status"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:background="@drawable/status_indicator_offline"
+                android:gravity="center"
+                android:paddingHorizontal="4dp"
+                android:paddingVertical="2dp"
+                android:text="4p"
+                android:textColor="@color/black"
+                android:textSize="8sp"
+                app:layout_constraintBottom_toTopOf="@+id/imv_status_indicator"
+                app:layout_constraintEnd_toEndOf="@+id/item_user_avatar_view" />
+            <ImageView
+                android:visibility="gone"
+                android:id="@+id/imv_status_indicator"
+                android:layout_width="15dp"
+                android:layout_height="15dp"
+                android:src="@drawable/status_indicator_background"
+                app:layout_constraintBottom_toBottomOf="parent"
+                app:layout_constraintEnd_toEndOf="@+id/item_user_avatar_view" />
+        </androidx.constraintlayout.widget.ConstraintLayout>
         <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
@@ -67,6 +94,7 @@
                         android:layout_width="10dp"
                         android:layout_height="10dp"
                         android:layout_marginEnd="2dp"
+
                         android:src="@drawable/ic_male"
                         app:tint="@color/text_white" />
 

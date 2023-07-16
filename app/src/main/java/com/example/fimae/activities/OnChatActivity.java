@@ -147,6 +147,13 @@ public class OnChatActivity extends AppCompatActivity implements MediaListDialog
         Query query = messagesCol.orderBy("sentAt", Query.Direction.ASCENDING);
         messageAdapter = new MessageAdapter(query, this);
         recyclerView.setAdapter(messageAdapter);
+        messageAdapter.registerAdapterDataObserver(new RecyclerView.AdapterDataObserver() {
+            @Override
+            public void onChanged() {
+                super.onChanged();
+                recyclerView.scrollToPosition(messageAdapter.getItemCount() - 1);
+            }
+        });
     }
 
     private void sendTextMessage() {

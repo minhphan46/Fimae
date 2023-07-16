@@ -14,9 +14,7 @@ public class Participant{
 
     private String nickname;
     private @ServerTimestamp Date joinedAt;
-
-    private String readLastMessageHasId;
-    private Date readLastMessageAt;
+    private  @ServerTimestamp Date readLastMessageAt;
 
     public static Participant create(String uid, String role){
         Participant participant = new Participant();
@@ -35,14 +33,6 @@ public class Participant{
 
     public void setNickname(String nickname) {
         this.nickname = nickname;
-    }
-
-    public String getReadLastMessageHasId() {
-        return readLastMessageHasId;
-    }
-
-    public void setReadLastMessageHasId(String readLastMessageHasId) {
-        this.readLastMessageHasId = readLastMessageHasId;
     }
 
     public Date getReadLastMessageAt() {

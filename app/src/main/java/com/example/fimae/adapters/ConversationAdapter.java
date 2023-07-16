@@ -1,5 +1,6 @@
 package com.example.fimae.adapters;
 
+import android.graphics.Typeface;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -14,6 +15,7 @@ import com.example.fimae.R;
 import com.example.fimae.models.Conversation;
 import com.example.fimae.models.Fimaers;
 import com.example.fimae.models.Message;
+import com.example.fimae.repository.ChatRepository;
 import com.example.fimae.repository.FimaerRepository;
 import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.OnSuccessListener;
@@ -22,13 +24,23 @@ import com.google.android.gms.tasks.Tasks;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.firestore.DocumentSnapshot;
 import com.google.firebase.firestore.Query;
+import com.google.firebase.firestore.QueryDocumentSnapshot;
 import com.squareup.picasso.Picasso;
 
+import java.util.ArrayList;
 import java.util.concurrent.ExecutionException;
 
 import de.hdodenhof.circleimageview.CircleImageView;
 
 public class ConversationAdapter extends FirestoreAdapter<ConversationAdapter.ViewHolder> {
+
+
+    @Override
+    public void OnSuccessQueryListener(ArrayList<DocumentSnapshot> queryDocumentSnapshots) {
+        snapshots = queryDocumentSnapshots;
+        notifyDataSetChanged();
+    }
+
     public interface IClickConversationListener {
         void onClickConversation(Conversation conversation);
     }
@@ -48,6 +60,8 @@ public class ConversationAdapter extends FirestoreAdapter<ConversationAdapter.Vi
         private TextView mTextAge;
         private LinearLayout mLayoutGenderAge;
         private ImageView mIconGender;
+        private ImageView onlineStatus;
+        private TextView offlineStatus;
 
         public ViewHolder(@NonNull View itemView) {
             super(itemView);
@@ -58,6 +72,9 @@ public class ConversationAdapter extends FirestoreAdapter<ConversationAdapter.Vi
             mTextAge = itemView.findViewById(R.id.item_user_tv_age);
             mLayoutGenderAge = itemView.findViewById(R.id.item_user_layout_gender_age);
             mIconGender = itemView.findViewById(R.id.item_user_ic_gender);
+
+            onlineStatus = itemView.findViewById(R.id.imv_status_indicator);
+            offlineStatus = itemView.findViewById(R.id.tv_status);
         }
     }
 
@@ -84,21 +101,37 @@ public class ConversationAdapter extends FirestoreAdapter<ConversationAdapter.Vi
                     break;
                 }
             }
-            FimaerRepository.getInstance().getFimaerById(uid).addOnSuccessListener(new OnSuccessListener<Fimaers>() {
-                @Override
-                public void onSuccess(Fimaers user) {
-                    Picasso.get().load(user.getAvatarUrl()).placeholder(R.drawable.ic_default_avatar).into(holder.mAvatarView);
-                    holder.mTextName.setText(user.getFirstName());
-                    if(conversation.getLastMessage() != null){
-                        conversation.getLastMessage().get().addOnCompleteListener(task -> {
-                            Message message = task.getResult().toObject(Message.class);
-                            assert message != null;
-                            holder.mTextDes.setText(message.getContent().toString());
+            FimaerRepository.getInstance().getFimaerById(uid).addOnSuccessListener(user -> {
+                Picasso.get().load(user.getAvatarUrl()).placeholder(R.drawable.ic_default_avatar).into(holder.mAvatarView);
+                holder.mTextName.setText(user.getFirstName() + " " + user.getLastName());
+                if (conversation.getLastMessage() != null) {
+                    conversation.getLastMessage().get().addOnCompleteListener(task -> {
+                        Message message = task.getResult().toObject(Message.class);
+                        assert message != null;
+                        holder.mTextDes.setText(message.getContent().toString());
+                        ChatRepository.getInstance().getParticipantInConversation(conversation.getId(), FirebaseAuth.getInstance().getUid()).addOnSuccessListener(participant -> {
+                            if (participant.getReadLastMessageAt() != null && participant.getReadLastMessageAt().after(message.getSentAt())) {
+                                //set holder.mTextDes fontweight to bold
+                                holder.mTextDes.setTypeface(Typeface.defaultFromStyle(Typeface.BOLD));
+                            } else {
+                                holder.mTextDes.setTypeface(Typeface.defaultFromStyle(Typeface.NORMAL));
+                            }
                         });
-                    }
-                    holder.mTextAge.setText(String.valueOf(user.calculateAge()));
-                    holder.mLayoutGenderAge.setBackgroundResource(user.isGender() ? R.drawable.shape_gender_border_blue : R.drawable.shape_gender_border_pink);
-                    holder.mIconGender.setImageResource(user.isGender() ? R.drawable.ic_male : R.drawable.ic_female);
+                    });
+                }
+                holder.mTextAge.setText(String.valueOf(user.calculateAge()));
+                holder.mLayoutGenderAge.setBackgroundResource(user.isGender() ? R.drawable.shape_gender_border_blue : R.drawable.shape_gender_border_pink);
+                holder.mIconGender.setImageResource(user.isGender() ? R.drawable.ic_male : R.drawable.ic_female);
+                if (user.isOnline()) {
+                    holder.onlineStatus.setVisibility(View.VISIBLE);
+                    holder.offlineStatus.setVisibility(View.GONE);
+                } else if (user.getLastActiveMinuteAgo() <= 60) {
+                    holder.onlineStatus.setVisibility(View.GONE);
+                    holder.offlineStatus.setVisibility(View.VISIBLE);
+                    holder.offlineStatus.setText(user.getLastActiveMinuteAgo() + "m");
+                } else {
+                    holder.onlineStatus.setVisibility(View.GONE);
+                    holder.offlineStatus.setVisibility(View.GONE);
                 }
             });
 

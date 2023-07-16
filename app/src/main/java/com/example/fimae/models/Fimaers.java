@@ -2,6 +2,8 @@ package com.example.fimae.models;
 
 import androidx.annotation.Nullable;
 
+import com.google.firebase.firestore.ServerTimestamp;
+
 import java.util.ArrayList;
 import java.util.Date;
 
@@ -15,12 +17,15 @@ public class Fimaers {
     private String avatarUrl;
     private String bio;
     private Date dob;
+
     private Date timeCreated;
     @Nullable private String token;
 
     @Nullable private int minAgeMatch;
     @Nullable private int maxAgeMatch;
     @Nullable private GenderMatch genderMatch;
+    @ServerTimestamp
+    private Date lastActive;
 
     public Fimaers(){}
     public Fimaers(String uid, String lastName, String firstName, boolean gender,String email, String phone, String avatarUrl, String bio, Date dob, Date timeCreated, @Nullable String token, @Nullable int minAgeMatch, @Nullable int maxAgeMatch, @Nullable GenderMatch genderMatch) {
@@ -38,6 +43,21 @@ public class Fimaers {
         this.minAgeMatch = minAgeMatch;
         this.maxAgeMatch = maxAgeMatch;
         this.genderMatch = genderMatch;
+    }
+
+    public boolean isOnline(){
+        return lastActive != null && lastActive.getTime() > new Date().getTime() - 5 * 60 * 1000;
+    }
+    public int getLastActiveMinuteAgo(){
+        if(lastActive == null) return Integer.MAX_VALUE;
+        return (int) ((new Date().getTime() - lastActive.getTime()) / 1000 / 60);
+    }
+    public Date getLastActive() {
+        return lastActive;
+    }
+
+    public void setLastActive(Date lastActive) {
+        this.lastActive = lastActive;
     }
 
     public String getUid() {
