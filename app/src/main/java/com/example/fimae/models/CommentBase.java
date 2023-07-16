@@ -1,5 +1,6 @@
 package com.example.fimae.models;
 
+import com.google.firebase.firestore.FirebaseFirestore;
 import com.google.firebase.firestore.ServerTimestamp;
 
 import java.util.Date;

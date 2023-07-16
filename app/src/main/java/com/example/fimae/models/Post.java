@@ -2,6 +2,8 @@ package com.example.fimae.models;
 
 import com.example.fimae.activities.PostMode;
 import com.example.fimae.adapters.PostAdapter;
+import com.google.firebase.firestore.Filter;
+import com.google.firebase.firestore.FirebaseFirestore;
 import com.google.firebase.firestore.ServerTimestamp;
 
 
