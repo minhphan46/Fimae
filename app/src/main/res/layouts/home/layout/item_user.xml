@@ -27,10 +27,8 @@
             android:id="@+id/item_user_avatar_view"
             android:layout_width="48dp"
             android:layout_height="48dp"
-            android:src="@drawable/ic_default_avatar"
             android:layout_marginEnd="10dp"
             android:src="@drawable/ic_default_avatar"
-            app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toTopOf="parent"
             app:layout_constraintBottom_toBottomOf="parent"/>

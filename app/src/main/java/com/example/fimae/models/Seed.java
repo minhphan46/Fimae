@@ -39,15 +39,7 @@ public class Seed {
         }
         return comments1;
     }
-    public Fimaers getFimaersByID(String id){
-        Fimaers[] list = Fimaers.dummy1;
-        for (int i = 0; i < list.length; i++ ){
-            if(list[i].getUid().equals(id)){
-                return list[i];
-            }
-        }
-        return null;
-    }
+
 //    public Post getPostbyId(String id){
 //        for(int i = 0; i < postList.size(); i++ ){
 //            if(postList.get(i).getPostId().equals(id)){

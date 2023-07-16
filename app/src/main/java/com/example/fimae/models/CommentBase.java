@@ -1,14 +1,18 @@
 package com.example.fimae.models;
 
+import com.google.firebase.firestore.ServerTimestamp;
+
 import java.util.Date;
 import java.util.Map;
 
 public abstract class CommentBase {
+    @ServerTimestamp
     protected Date timeCreated;
     protected Map<String, Boolean> likes;
     protected String publisher;
     private String id;
     private String content;
+    @ServerTimestamp
     private Date timeEdited;
     public CommentBase(Date timeCreated, Map<String, Boolean> likes, String publisher, String id, String content, Date timeEdited) {
         this.timeCreated = timeCreated;

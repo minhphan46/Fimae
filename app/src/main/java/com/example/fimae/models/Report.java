@@ -1,11 +1,14 @@
 package com.example.fimae.models;
 
+import com.google.firebase.firestore.ServerTimestamp;
+
 import java.util.Date;
 
 public class Report {
     private String uid; // id báo cáo
     private String uidReportedUser; // id người bị báo cáo
     private String uidReporter; // id người báo cáo
+    @ServerTimestamp
     private Date timeCreated;
     private String content;
 

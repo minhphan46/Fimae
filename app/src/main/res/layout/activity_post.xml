@@ -80,7 +80,7 @@
                 android:layout_marginEnd="10dp"
                 android:hint="Bạn đang nghĩ gì..."
                 android:textSize="14dp"
-                android:background="@color/backround_button_2"
+                android:background="@color/background_button_2"
                 android:maxLines="10"
                 />
             />

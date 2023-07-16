@@ -2,6 +2,7 @@ package com.example.fimae.models;
 
 import com.example.fimae.activities.PostMode;
 import com.example.fimae.adapters.PostAdapter;
+import com.google.firebase.firestore.ServerTimestamp;
 
 
 import java.sql.Time;
@@ -21,6 +22,7 @@ public class Post {
     private Map<String, Boolean> likes;
     private int numberOfComments;
     private Map<String, Boolean> saves;
+    @ServerTimestamp
     private Date timeCreated;
     private boolean isDeleted;
     private Date timeEdited;
