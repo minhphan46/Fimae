@@ -89,19 +89,19 @@
         <item name="android:textSize">16sp</item>
     </style>
     <style name="regular_14">
-        <item name="fontFamily">@font/public_sans</item>
+        <item name="fontFamily">@font/publicsans</item>
         <item name="android:textSize">14sp</item>
     </style>
     <style name="regular_12">
-        <item name="fontFamily">@font/public_sans</item>
+        <item name="fontFamily">@font/publicsans</item>
         <item name="android:textSize">12sp</item>
     </style>
     <style name="regular_10">
-        <item name="fontFamily">@font/public_sans</item>
+        <item name="fontFamily">@font/publicsans</item>
         <item name="android:textSize">10sp</item>
     </style>
     <style name="regular_8">
-        <item name="fontFamily">@font/public_sans</item>
+        <item name="fontFamily">@font/publicsans</item>
         <item name="android:textSize">8sp</item>
     </style>
     <!-- Custom font -->
@@ -124,6 +124,10 @@
         <item name="android:background">?android:attr/colorBackground</item>
         <item name="android:textColor">?android:attr/textColorPrimary</item>
     </style>
+    <style name="CustomBottomSheetDialog" parent="@style/ThemeOverlay.MaterialComponents.BottomSheetDialog">
+        <item name="bottomSheetStyle">@drawable/bottomsheet_background</item>
+    </style>
+
 
     <style name="btn_can_click" parent="android:Widget">
         <item name="android:textColor">@color/white</item>

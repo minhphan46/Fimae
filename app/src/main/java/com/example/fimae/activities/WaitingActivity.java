@@ -230,7 +230,7 @@ public class  WaitingActivity extends AppCompatActivity {
     private void initViewPager2(){
         viewPager2 = findViewById(R.id.view_image_slider);
 
-        fimaers = new ArrayList<Fimaers>(Fimaers.dummy);
+        fimaers = new ArrayList<Fimaers>();
         viewPager2.setAdapter(new SliderAdapter(fimaers, viewPager2));
 
         viewPager2.setClipToPadding(false);

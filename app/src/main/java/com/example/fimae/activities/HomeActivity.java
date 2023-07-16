@@ -2,6 +2,7 @@ package com.example.fimae.activities;
 import android.content.Intent;
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.core.provider.FontRequest;
 import androidx.fragment.app.FragmentPagerAdapter;
 import androidx.viewpager.widget.ViewPager;
 
@@ -13,8 +14,8 @@ import com.example.fimae.adapters.ViewPagerAdapter;
 import com.example.fimae.service.UpdateUserActivityTimeService;
 import com.google.android.material.bottomnavigation.BottomNavigationView;
 import com.google.android.material.navigation.NavigationBarView;
-import com.google.firebase.auth.FirebaseAuth;
-import com.google.firebase.auth.FirebaseUser;
+
+import java.security.cert.Certificate;
 
 public class HomeActivity extends AppCompatActivity {
 
@@ -25,28 +26,29 @@ public class HomeActivity extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_home);
-
         mNavigationView = findViewById(R.id.bottom_nav);
         mViewPager = findViewById(R.id.view_paper);
-
         setUpViewPager();
 
-        mNavigationView.setOnItemSelectedListener(item -> {
-            switch (item.getItemId()) {
-                case R.id.action_home:
-                    mViewPager.setCurrentItem(0);
-                    break;
-                case R.id.action_feed:
-                    mViewPager.setCurrentItem(1);
-                    break;
-                case R.id.action_chat:
-                    mViewPager.setCurrentItem(2);
-                    break;
-                case R.id.action_profile:
-                    mViewPager.setCurrentItem(3);
-                    break;
+        mNavigationView.setOnItemSelectedListener(new NavigationBarView.OnItemSelectedListener() {
+            @Override
+            public boolean onNavigationItemSelected(@NonNull MenuItem item) {
+                switch (item.getItemId()) {
+                    case R.id.action_home:
+                        mViewPager.setCurrentItem(0);
+                        break;
+                    case R.id.action_feed:
+                        mViewPager.setCurrentItem(1);
+                        break;
+                    case R.id.action_chat:
+                        mViewPager.setCurrentItem(2);
+                        break;
+                    case R.id.action_profile:
+                        mViewPager.setCurrentItem(3);
+                        break;
+                }
+                return true;
             }
-            return true;
         });
         Intent intent = new Intent(this, UpdateUserActivityTimeService.class);
         startService(intent);
