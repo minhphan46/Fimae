@@ -27,8 +27,8 @@ android {
     }
 
     buildFeatures {
-        viewBinding true
         dataBinding true
+        viewBinding true
     }
 
     compileOptions {
@@ -55,6 +55,11 @@ dependencies {
     implementation 'com.google.firebase:firebase-database:20.2.1'
     implementation 'com.google.firebase:firebase-firestore'
     implementation 'com.google.firebase:firebase-auth'
+    implementation 'com.google.android.gms:play-services-auth:20.5.0'
+    implementation 'com.google.firebase:firebase-firestore:22.0.1'
+    implementation 'com.facebook.shimmer:shimmer:0.5.0'
+
+
     implementation 'com.google.firebase:firebase-storage'
     // stringee
     implementation 'com.stringee.sdk.android:stringee-android-sdk:2.0'
@@ -63,6 +68,7 @@ dependencies {
     implementation 'com.lokiy.databinding:databinding:0.1.4'
     implementation 'androidx.navigation:navigation-fragment:2.5.3'
     implementation 'de.hdodenhof:circleimageview:3.1.0'
+    implementation 'com.google.android.material:material:1.4.0'
     implementation "androidx.viewpager2:viewpager2:1.0.0"
     implementation 'com.google.firebase:firebase-firestore:24.5.0'
     implementation 'com.google.firebase:firebase-storage:20.1.0'
@@ -90,12 +96,13 @@ dependencies {
     def lifecycle_version = "2.6.1"
     // ViewModel
     implementation "androidx.lifecycle:lifecycle-viewmodel:$lifecycle_version"
-    // LiveData
+    // LiveDataCannot resolve method 'with' in 'Picasso'
     implementation "androidx.lifecycle:lifecycle-livedata:$lifecycle_version"
     // Lifecycles only (without ViewModel or LiveData)
     implementation "androidx.lifecycle:lifecycle-runtime:$lifecycle_version"
     // Saved state module for ViewModel
     implementation "androidx.lifecycle:lifecycle-viewmodel-savedstate:$lifecycle_version"
+
 
     //noinspection LifecycleAnnotationProcessorWithJava8
     annotationProcessor "androidx.lifecycle:lifecycle-compiler:$lifecycle_version"
