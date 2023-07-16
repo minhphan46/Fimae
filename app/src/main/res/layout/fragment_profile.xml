@@ -1,9 +1,20 @@
 <?xml version="1.0" encoding="utf-8"?>
-<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<layout>
+    <data>
+        <variable
+            name="viewmodel"
+            type="com.example.fimae.viewmodels.ProfileViewModel" />
+        <variable
+            name="user"
+            type="com.example.fimae.models.Fimaers" />
+    </data>
+<androidx.constraintlayout.widget.ConstraintLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent">
+
 
     <ImageView
         android:id="@+id/backgroundImage"
@@ -28,7 +39,7 @@
         app:layout_constraintTop_toTopOf="parent"
         app:srcCompat="@drawable/ic_setting" />
 
-    <ImageButton
+    <de.hdodenhof.circleimageview.CircleImageView
         android:id="@+id/avatarBtn"
         android:layout_width="95dp"
         android:layout_height="95dp"
@@ -36,10 +47,11 @@
         android:layout_marginTop="95dp"
         android:background="@drawable/circular"
         android:clipToOutline="true"
+        android:clickable="true"
         android:scaleType="centerCrop"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent"
-        app:srcCompat="@drawable/avatar" />
+        android:src="@drawable/avatar" />
 
     <TextView
         android:id="@+id/usernameTxt"
@@ -47,30 +59,42 @@
         android:layout_height="wrap_content"
         android:layout_marginStart="22dp"
         android:layout_marginTop="16dp"
-        android:text="minhphan46"
+        android:text="@{user.name}"
         android:textColor="@color/black"
         android:textSize="32sp"
         android:textStyle="bold"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/avatarBtn" />
 
-    <com.google.android.material.chip.Chip
-        android:id="@+id/gender_age_chip"
+    <LinearLayout
+        android:id="@+id/item_user_layout_gender_age"
         android:layout_width="wrap_content"
-        android:layout_height="35dp"
-        android:layout_marginStart="16dp"
-        android:layout_marginTop="16dp"
-        android:background="@android:color/transparent"
-        android:enabled="false"
-        android:text="33"
-        android:textColor="#FFFFFF"
-        android:textSize="10dp"
-        app:chipBackgroundColor="#92E4EF"
-        app:chipIcon="@drawable/ic_male"
-        app:chipIconSize="10dp"
-        app:chipIconTint="@color/white"
-        app:layout_constraintStart_toEndOf="@+id/usernameTxt"
-        app:layout_constraintTop_toBottomOf="@+id/avatarBtn" />
+        android:layout_height="wrap_content"
+        android:layout_marginLeft= "16dp"
+        android:background="@drawable/shape_gender_border_blue"
+        android:gravity="center"
+        app:layout_constraintTop_toTopOf="@+id/usernameTxt"
+        app:layout_constraintBottom_toBottomOf="@+id/usernameTxt"
+        app:layout_constraintLeft_toRightOf="@+id/usernameTxt"
+        android:paddingHorizontal="5dp"
+        android:paddingVertical="2.5dp">
+
+        <ImageView
+            android:id="@+id/item_user_ic_gender"
+            android:layout_width="10dp"
+            android:layout_height="10dp"
+            android:layout_marginEnd="2dp"
+            android:src="@drawable/ic_male"
+            app:tint="@color/text_white" />
+
+        <TextView
+            android:id="@+id/item_user_tv_age"
+            style="@style/regular_8"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="31"
+            android:textColor="@color/text_white" />
+    </LinearLayout>
 
     <TextView
         android:id="@+id/idTxt"
@@ -103,7 +127,7 @@
         android:layout_height="wrap_content"
         android:layout_marginStart="22dp"
         android:layout_marginTop="15dp"
-        android:text="Mô tả bản thân"
+        android:text="@{user.bio}"
         android:textColor="#000000"
         android:textSize="16dp"
         app:layout_constraintStart_toStartOf="parent"
@@ -269,3 +293,4 @@
         app:layout_constraintTop_toBottomOf="@+id/chipGroup" />
 
 </androidx.constraintlayout.widget.ConstraintLayout>
+</layout>

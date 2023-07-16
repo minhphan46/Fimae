@@ -55,15 +55,13 @@ public class UpdateProfileActivity extends AppCompatActivity {
     EditText dob;
     private Uri imageURI = null;
     private RadioButton genderRadioButton;
-    private FirebaseFirestore firestore;
-    private StorageReference storageReference;
     private DatePickerDialog datePickerDialog;
+    FimaerRepository userRepo = FimaerRepository.getInstance();
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_update_profile);
         initView();
-        initFirebase();
         initListener();
     }
 
@@ -80,12 +78,6 @@ public class UpdateProfileActivity extends AppCompatActivity {
         dob = findViewById(R.id.age);
     }
 
-    private void initFirebase() {
-        firestore = FirebaseFirestore.getInstance();
-        storageReference = FirebaseStorage.getInstance().getReference("AvatarPics");
-        firestore = FirebaseFirestore.getInstance();
-        storageReference = FirebaseStorage.getInstance().getReference("AvatarPics");
-    }
 
     private void initListener() {
         create.setOnClickListener(view -> saveProfile());
@@ -158,11 +150,9 @@ public class UpdateProfileActivity extends AppCompatActivity {
             }
 
             String access_token = genAccessToken(user.getUid(),API_KEY_SID, API_KEY_SECRET, 3600);
-
-            storageReference.child(user.getUid() + ".jpg").putFile(imageURI).addOnSuccessListener(taskSnapshot -> {
-                Task<Uri> task = taskSnapshot.getStorage().getDownloadUrl();
-                task.addOnSuccessListener(uri -> {
-                    FimaerRepository userRepo = FimaerRepository.getInstance();
+            userRepo.uploadAvatar(user.getUid(), imageURI, new FimaerRepository.UploadAvatarCallback() {
+                @Override
+                public void onUploadSuccess(Uri uri) {
                     userRepo.updateProfile(
                             new Fimaers(user.getUid(),
                                     lastName.getText().toString(),
@@ -171,6 +161,7 @@ public class UpdateProfileActivity extends AppCompatActivity {
                                     user.getEmail(),
                                     phoneNumber.getText().toString(),
                                     uri.toString(),
+                                    null,
                                     bio.getText().toString(),
                                     dateOfBirth,
                                     new Date(),
@@ -180,12 +171,16 @@ public class UpdateProfileActivity extends AppCompatActivity {
                                     GenderMatch.male
                             )
                     );
-
                     Intent intent = new Intent(UpdateProfileActivity.this, HomeActivity.class);
                     startActivity(intent);
                     finish();
-                });
-            }).addOnFailureListener(e -> showToast("Failed to upload image"));
+                }
+
+                @Override
+                public void onUploadError(String errorMessage) {
+                    showToast("Failed to upload image");
+                }
+            });
         }
     }
 

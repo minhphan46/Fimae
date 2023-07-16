@@ -1,18 +1,36 @@
 package com.example.fimae.models;
 
 import androidx.annotation.Nullable;
+import androidx.databinding.BaseObservable;
+import androidx.databinding.Bindable;
+
+import com.example.fimae.BR;
 
 import java.util.ArrayList;
 import java.util.Date;
 
-public class Fimaers {
+public class Fimaers extends BaseObservable {
     private String uid;
+
+    public void setLastName(String lastName) {
+        this.lastName = lastName;
+        notifyPropertyChanged(BR.lastName);
+    }
+
+    public void setFirstName(String firstName) {
+        this.firstName = firstName;
+        notifyPropertyChanged(BR.firstName);
+
+    }
+
     private String lastName;
     private String firstName;
     private boolean gender;
     private String email;
     private String phone;
     private String avatarUrl;
+
+    @Nullable private String backgroundUrl;
     private String bio;
     private Date dob;
     private Date timeCreated;
@@ -23,7 +41,7 @@ public class Fimaers {
     @Nullable private GenderMatch genderMatch;
 
     public Fimaers(){}
-    public Fimaers(String uid, String lastName, String firstName, boolean gender,String email, String phone, String avatarUrl, String bio, Date dob, Date timeCreated, @Nullable String token, @Nullable int minAgeMatch, @Nullable int maxAgeMatch, @Nullable GenderMatch genderMatch) {
+    public Fimaers(String uid, String lastName, String firstName, boolean gender,String email, String phone, String avatarUrl,@Nullable String backgroundUrl, String bio, Date dob, Date timeCreated, @Nullable String token, @Nullable int minAgeMatch, @Nullable int maxAgeMatch, @Nullable GenderMatch genderMatch) {
         this.uid = uid;
         this.lastName = lastName;
         this.firstName = firstName;
@@ -31,6 +49,7 @@ public class Fimaers {
         this.email =email;
         this.phone = phone;
         this.avatarUrl = avatarUrl;
+        this.backgroundUrl = backgroundUrl;
         this.bio = bio;
         this.dob = dob;
         this.timeCreated = timeCreated;
@@ -38,18 +57,27 @@ public class Fimaers {
         this.minAgeMatch = minAgeMatch;
         this.maxAgeMatch = maxAgeMatch;
         this.genderMatch = genderMatch;
+        notifyChange();
     }
 
     public String getUid() {
         return uid;
     }
 
+    @Bindable
     public String getLastName() {
         return lastName;
     }
 
+    @Bindable
     public String getFirstName() {
         return firstName;
+    }
+
+    @Bindable
+    public String getName()
+    {
+        return firstName + " " + lastName;
     }
 
     public boolean isGender() {
@@ -99,6 +127,29 @@ public class Fimaers {
 
     public void setGenderMatch(@Nullable GenderMatch genderMatch) {
         this.genderMatch = genderMatch;
+    }
+    @Nullable
+    public String getBackgroundUrl() {
+        return backgroundUrl;
+    }
+
+    public void setBackgroundUrl(@Nullable String backgroundUrl) {
+        this.backgroundUrl = backgroundUrl;
+    }
+
+    public void setName(String fullName)
+    {
+        String[] splits = fullName.split(" ",2);
+        if(splits.length > 1)
+        {
+            this.firstName = splits[0];
+            this.lastName = splits[1];
+        }
+        else
+        {
+            this.firstName = fullName;
+        }
+        notifyPropertyChanged(BR.name);
     }
 
     @Nullable

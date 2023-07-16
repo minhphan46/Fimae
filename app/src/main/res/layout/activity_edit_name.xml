@@ -30,6 +30,7 @@
             android:layout_height="wrap_content"
             android:layout_gravity="center"
             android:text="Tên"
+            style="@style/bold_20"
             android:textColor="@color/black" />
 
         <ImageButton

@@ -1,5 +1,6 @@
 package com.example.fimae.activities;
 
+import androidx.annotation.Nullable;
 import androidx.appcompat.app.AppCompatActivity;
 
 import android.app.DatePickerDialog;
@@ -16,6 +17,7 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import com.example.fimae.R;
+import com.example.fimae.models.Fimaers;
 
 import java.util.Calendar;
 
@@ -24,6 +26,12 @@ public class EditProfileActivity extends AppCompatActivity {
     ImageButton backBtn;
     TextView dobTxt, litIdTxt;
     RelativeLayout relativeName, relativeLitId, relativeDOB;
+
+    public static final int REQUEST_CODE_EDIT_NAME = 511;
+
+
+    Fimaers user;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -50,7 +58,8 @@ public class EditProfileActivity extends AppCompatActivity {
             @Override
             public void onClick(View view) {
                 Intent intent = new Intent(EditProfileActivity.this,EditNameActivity.class);
-                startActivity(intent);
+                intent.putExtra("name", user.getName());
+                startActivityForResult(intent,REQUEST_CODE_EDIT_NAME);
             }
         });
         backBtn.setOnClickListener(new View.OnClickListener() {
@@ -98,5 +107,18 @@ public class EditProfileActivity extends AppCompatActivity {
         );
 
         datePickerDialog.show();
+    }
+
+    @Override
+    protected void onActivityResult(int requestCode, int resultCode, @Nullable Intent data) {
+        super.onActivityResult(requestCode, resultCode, data);
+        if(requestCode == REQUEST_CODE_EDIT_NAME && resultCode == RESULT_OK)
+        {
+            if(data!=null)
+            {
+                user.setName(data.getStringExtra("name"));
+            }
+
+        }
     }
 }

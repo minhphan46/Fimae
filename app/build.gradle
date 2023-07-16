@@ -57,6 +57,7 @@ dependencies {
     implementation 'com.google.firebase:firebase-auth'
     implementation 'com.google.android.gms:play-services-auth:20.5.0'
     implementation 'com.google.firebase:firebase-firestore:22.0.1'
+    implementation 'com.facebook.shimmer:shimmer:0.5.0'
 
 
     implementation 'com.google.firebase:firebase-storage'
@@ -92,12 +93,13 @@ dependencies {
     def lifecycle_version = "2.6.1"
     // ViewModel
     implementation "androidx.lifecycle:lifecycle-viewmodel:$lifecycle_version"
-    // LiveData
+    // LiveDataCannot resolve method 'with' in 'Picasso'
     implementation "androidx.lifecycle:lifecycle-livedata:$lifecycle_version"
     // Lifecycles only (without ViewModel or LiveData)
     implementation "androidx.lifecycle:lifecycle-runtime:$lifecycle_version"
     // Saved state module for ViewModel
     implementation "androidx.lifecycle:lifecycle-viewmodel-savedstate:$lifecycle_version"
+
 
     //noinspection LifecycleAnnotationProcessorWithJava8
     annotationProcessor "androidx.lifecycle:lifecycle-compiler:$lifecycle_version"
