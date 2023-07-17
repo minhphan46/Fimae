@@ -23,12 +23,14 @@ import com.example.fimae.fragments.ChatBottomSheetFragment;
 import com.example.fimae.models.BottomSheetItem;
 import com.example.fimae.models.Message;
 import com.example.fimae.repository.ChatRepository;
+import com.example.fimae.service.FirebaseService;
 import com.example.fimae.utils.FileUtils;
 import com.example.fimae.utils.FirebaseHelper;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.firestore.*;
 
 import java.util.*;
+import java.util.function.BiConsumer;
 
 public class OnChatActivity extends AppCompatActivity implements MediaListDialogFragment.OnMediaSelectedListener {
     private static final int REQUEST_IMAGE_CAPTURE = 1;
@@ -167,12 +169,23 @@ public class OnChatActivity extends AppCompatActivity implements MediaListDialog
 
     private void sendMediaMessage(ArrayList<Uri> uris) {
         inputMediaLayout.setVisibility(View.GONE);
-        FirebaseHelper firebaseHelper = new FirebaseHelper();
-        firebaseHelper.uploadMultipleFiles(uris, this::handleMediaMessageUpload, "conversation-medias", conversationId);
+        FirebaseService.getInstance().uploadTaskFiles("conversation-medias" + "/" + conversationId, uris).whenComplete(new BiConsumer<List<String>, Throwable>() {
+            @Override
+            public void accept(List<String> strings, Throwable throwable) {
+                if (throwable != null) {
+                    Toast.makeText(OnChatActivity.this, "Error: " + throwable.getMessage(), Toast.LENGTH_SHORT).show();
+                    return;
+                }
+                handleMediaMessageUpload((ArrayList<String>) strings);
+            }
+        });
+//        FirebaseHelper firebaseHelper = new FirebaseHelper();
+//        firebaseHelper.uploadMultipleFiles(uris, this::handleMediaMessageUpload, "conversation-medias", conversationId);
     }
 
     private void sendMediaMessage(byte[] bytes) {
         inputMediaLayout.setVisibility(View.GONE);
+
         FirebaseHelper firebaseHelper = new FirebaseHelper();
         firebaseHelper.uploadBytesToFirebase(bytes, this::handleMediaMessageUpload, "conversation-medias", conversationId);
     }
