@@ -50,7 +50,7 @@ android {
 
 dependencies {
     // short
-    implementation'com.firebaseui:firebase-ui-database:6.3.0'
+    //implementation'com.firebaseui:firebase-ui-database:6.3.0'
     implementation 'com.google.firebase:firebase-database-ktx'
 
     // firebase
