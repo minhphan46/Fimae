@@ -18,6 +18,7 @@ import com.example.fimae.R;
 import com.example.fimae.activities.OnChatActivity;
 import com.example.fimae.activities.SearchUserActivity;
 import com.example.fimae.adapters.ConversationAdapter;
+import com.example.fimae.adapters.StoryAdapter;
 import com.example.fimae.adapters.UserHomeViewAdapter;
 import com.example.fimae.models.Conversation;
 import com.example.fimae.models.Fimaers;
@@ -67,8 +68,13 @@ public class ChatFragment extends Fragment {
                 startActivity(intent);
             }
         });
+        RecyclerView storyRecyclerView = view.findViewById(R.id.recycler_view_story);
+        LinearLayoutManager storyLinearLayoutManager = new LinearLayoutManager(this.getContext());
+        storyLinearLayoutManager.setOrientation(RecyclerView.HORIZONTAL);
+        storyRecyclerView.setLayoutManager(storyLinearLayoutManager);
+        StoryAdapter storyAdapter = new StoryAdapter();
+        storyRecyclerView.setAdapter(storyAdapter);
         return view;
-
     }
 
 

@@ -35,13 +35,22 @@
         </androidx.appcompat.widget.Toolbar>
 
     </com.google.android.material.appbar.AppBarLayout>
+    <androidx.recyclerview.widget.RecyclerView
+        android:id="@+id/recycler_view_story"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="horizontal"
+        app:layout_constraintTop_toBottomOf="@+id/appbar"
+        >
+
+    </androidx.recyclerview.widget.RecyclerView>
     <LinearLayout
             android:id="@+id/search_bar"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:orientation="horizontal"
             android:background="@drawable/background"
-            app:layout_constraintTop_toBottomOf="@+id/appbar"
+            app:layout_constraintTop_toBottomOf="@+id/recycler_view_story"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintEnd_toEndOf="parent"
             android:layout_marginHorizontal="10dp"

@@ -39,6 +39,7 @@ public class CommentRepository {
         if(commentRepository == null) commentRepository = new CommentRepository();
         return commentRepository;
     }
+
     public CollectionReference getSubCommentRef(String postId, String commentId){
        CollectionReference ref =  FirebaseFirestore.getInstance().collection("posts")
                .document(postId).collection("comments")
