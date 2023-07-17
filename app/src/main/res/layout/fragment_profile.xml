@@ -4,9 +4,6 @@
         <variable
             name="viewmodel"
             type="com.example.fimae.viewmodels.ProfileViewModel" />
-        <variable
-            name="user"
-            type="com.example.fimae.models.Fimaers" />
     </data>
 <androidx.constraintlayout.widget.ConstraintLayout
     xmlns:android="http://schemas.android.com/apk/res/android"
@@ -59,9 +56,9 @@
         android:layout_height="wrap_content"
         android:layout_marginStart="22dp"
         android:layout_marginTop="16dp"
-        android:text="@{user.name}"
+        android:text="@{viewmodel.user.name}"
         android:textColor="@color/black"
-        android:textSize="32sp"
+        android:textSize="24sp"
         android:textStyle="bold"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/avatarBtn" />
@@ -71,7 +68,7 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_marginLeft= "16dp"
-        android:background="@drawable/shape_gender_border_blue"
+        android:background="@{viewmodel.user.gender ? @drawable/shape_gender_border_blue : @drawable/shape_gender_border_pink}"
         android:gravity="center"
         app:layout_constraintTop_toTopOf="@+id/usernameTxt"
         app:layout_constraintBottom_toBottomOf="@+id/usernameTxt"
@@ -84,7 +81,7 @@
             android:layout_width="10dp"
             android:layout_height="10dp"
             android:layout_marginEnd="2dp"
-            android:src="@drawable/ic_male"
+            android:src="@{ viewmodel.user.gender ? @drawable/ic_male : @drawable/ic_female}"
             app:tint="@color/text_white" />
 
         <TextView
@@ -92,7 +89,7 @@
             style="@style/regular_8"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:text="31"
+            android:text="@{viewmodel.user.age}"
             android:textColor="@color/text_white" />
     </LinearLayout>
 
@@ -102,7 +99,7 @@
         android:layout_height="wrap_content"
         android:layout_marginStart="22dp"
         android:layout_marginTop="14dp"
-        android:text="Lit ID: 1234567890"
+        android:text="@{`Lit ID: ` + viewmodel.user.uid}"
         android:textColor="#939094"
         android:textSize="14dp"
         android:textStyle="bold"
@@ -119,31 +116,40 @@
         android:scaleType="fitXY"
         app:layout_constraintStart_toEndOf="@+id/idTxt"
         app:layout_constraintTop_toBottomOf="@+id/usernameTxt"
+        android:orientation="vertical"
+        android:gravity="bottom"
         app:srcCompat="@drawable/ic_copy" />
 
-    <TextView
-        android:id="@+id/bioTxt"
-        android:layout_width="wrap_content"
+    <LinearLayout
+        android:id="@+id/bioLayout"
+        android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_marginStart="22dp"
+        android:orientation="horizontal"
         android:layout_marginTop="15dp"
-        android:text="@{user.bio}"
-        android:textColor="#000000"
-        android:textSize="16dp"
+        android:paddingLeft="22dp"
+        android:paddingRight="10dp"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/idTxt" />
-
-    <ImageButton
-        android:id="@+id/editBioBtn"
-        android:layout_width="18dp"
-        android:layout_height="18dp"
-        android:layout_marginTop="17dp"
-        android:layout_marginLeft="11dp"
-        android:background="@android:color/transparent"
-        android:scaleType="fitXY"
-        app:layout_constraintStart_toEndOf="@+id/bioTxt"
+        app:layout_constraintRight_toRightOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/idTxt"
-        app:srcCompat="@drawable/ic_edit" />
+        android:gravity="center_vertical">
+
+        <TextView
+            android:id="@+id/bioTxt"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text=""
+            android:textColor="#000000"
+            android:textSize="16sp" />
+
+        <ImageButton
+            android:id="@+id/editBioBtn"
+            android:layout_width="18dp"
+            android:layout_height="18dp"
+            android:background="@android:color/transparent"
+            android:scaleType="fitXY"
+            android:src="@drawable/ic_edit" />
+
+    </LinearLayout>
 
     <ImageButton
         android:id="@+id/editChipBtn"
@@ -166,7 +172,7 @@
         android:background="@android:color/transparent"
         android:scaleType="fitXY"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/bioTxt"
+        app:layout_constraintTop_toBottomOf="@+id/bioLayout"
         app:srcCompat="@drawable/ic_calendar" />
 
     <TextView
@@ -178,7 +184,7 @@
         android:text="Đã tham gia Tháng 6 2023"
         android:textColor="@color/text_secondary"
         app:layout_constraintStart_toEndOf="@+id/joinDateIcon"
-        app:layout_constraintTop_toBottomOf="@+id/bioTxt" />
+        app:layout_constraintTop_toBottomOf="@+id/bioLayout" />
 
     <com.google.android.material.chip.ChipGroup
         android:id="@+id/chipGroup"

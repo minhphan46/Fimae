@@ -4,6 +4,7 @@ import android.net.Uri;
 import android.util.Log;
 
 import androidx.annotation.NonNull;
+import androidx.lifecycle.MutableLiveData;
 
 import com.example.fimae.R;
 import com.example.fimae.models.Conversation;
@@ -25,15 +26,15 @@ import java.util.Date;
 import java.util.Objects;
 
 public class FimaerRepository {
+    private final String TAG = getClass().getSimpleName();
+
     private final FirebaseFirestore firestore = FirebaseFirestore.getInstance();
     private FirebaseAuth auth = FirebaseAuth.getInstance();
 
     private CollectionReference fimaersRef = firestore.collection("fimaers");
     private StorageReference storageReference = FirebaseStorage.getInstance().getReference("AvatarPics");
 
-    public void getCurrentUser(final GetUserCallback callback) {
-        if(currentUser == null)
-        {
+    public MutableLiveData<Fimaers> getCurrentUser() {
             Log.i("USER", "Let get user");
 
             getFimaerById(auth.getUid()).addOnCompleteListener(new OnCompleteListener<Fimaers>() {
@@ -41,37 +42,33 @@ public class FimaerRepository {
                 public void onComplete(@NonNull Task<Fimaers> task) {
                     if(task.isSuccessful())
                     {
-                        currentUser = task.getResult();
-                        callback.onGetUserSuccess(currentUser);
+                        Log.i(TAG, "onComplete: " + task.getResult().getName());
+                        currentUser.setValue(task.getResult());
                     }
                     else
                     {
-                        callback.onGetUserError("Fail to get current user");
+                        Log.e(TAG,"Fail to get current user");
                     }
                 }
             }).addOnFailureListener(new OnFailureListener() {
                 @Override
                 public void onFailure(@NonNull Exception e) {
-                    callback.onGetUserError(e.getMessage().toString());
+                    Log.e(TAG, "onFailure: " + e.getMessage().toString());
                 }
             });
-        }
-        else
-        {
-            Log.i("USER", "I have user");
-            callback.onGetUserSuccess(currentUser);
-        }
+        return currentUser;
+
     }
 
-    Fimaers currentUser;
+    MutableLiveData<Fimaers> currentUser = new MutableLiveData<Fimaers>();
 
     private static FimaerRepository instance;
 
     public static synchronized FimaerRepository getInstance(){
         if(instance == null){
-            return new FimaerRepository();
+            instance =  new FimaerRepository();
         }
-        else return instance;
+        return instance;
     }
     public Task<Fimaers> getFimaerById(String id){
         TaskCompletionSource<Fimaers> taskCompletionSource = new TaskCompletionSource<>();
@@ -91,6 +88,10 @@ public class FimaerRepository {
     public Task<Void> updateProfile(Fimaers user)
     {
         String uid = user.getUid();
+        if(uid == currentUser.getValue().getUid())
+        {
+            currentUser.setValue(user);
+        }
         return fimaersRef.document(uid).set(user);
     }
     public void uploadAvatar(String uid, Uri imageURI, final UploadAvatarCallback callback) {
@@ -118,9 +119,5 @@ public class FimaerRepository {
     public interface UploadAvatarCallback {
         void onUploadSuccess(Uri uri);
         void onUploadError(String errorMessage);
-    }
-    public interface GetUserCallback {
-        void onGetUserSuccess(Fimaers user);
-        void onGetUserError(String errorMessage);
     }
 }

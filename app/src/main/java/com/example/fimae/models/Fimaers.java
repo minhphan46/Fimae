@@ -8,6 +8,7 @@ import com.example.fimae.BR;
 
 import com.google.firebase.firestore.ServerTimestamp;
 
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Date;
 
@@ -33,10 +34,21 @@ public class Fimaers extends BaseObservable {
     private String avatarUrl;
 
     @Nullable private String backgroundUrl;
+
+    public void setBio(String bio) {
+        this.bio = bio;
+    }
+
     private String bio;
     private Date dob;
 
     private Date timeCreated;
+
+    public void setDob(Date dob) {
+        this.dob = dob;
+        notifyPropertyChanged(BR.birthDate);
+    }
+
     @Nullable private String token;
 
     @Nullable private int minAgeMatch;
@@ -80,6 +92,7 @@ public class Fimaers extends BaseObservable {
         this.lastActive = lastActive;
     }
 
+    @Bindable
     public String getUid() {
         return uid;
     }
@@ -118,6 +131,17 @@ public class Fimaers extends BaseObservable {
 
     public Date getDob() {
         return dob;
+    }
+
+    @Bindable
+    public String getBirthDate()
+    {
+        String pattern = "dd-MM-yyyy";
+
+        // Create a SimpleDateFormat object with the desired pattern
+        SimpleDateFormat simpleDateFormat = new SimpleDateFormat(pattern);
+
+        return simpleDateFormat.format(dob);
     }
 
     public Date getTimeCreated() {
@@ -182,6 +206,11 @@ public class Fimaers extends BaseObservable {
         long yearsInMillis = 1000L * 60 * 60 * 24 * 365;
 
         return (int) (timeDiff / yearsInMillis);
+    }
+    @Bindable
+    public String getAge()
+    {
+        return String.valueOf(calculateAge());
     }
     public static ArrayList<Fimaers> dummy = new ArrayList<Fimaers>(){
 //            new FimaeUser(
