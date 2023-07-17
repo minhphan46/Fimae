@@ -16,7 +16,10 @@ import java.util.Date;
 import java.util.List;
 import java.util.Locale;
 import java.util.concurrent.atomic.AtomicInteger;
-
+/**
+ * @deprecated Đừng dùng cái này nữa, dùng cái FirebaseService thay thế
+ */
+@Deprecated
 public class FirebaseHelper {
     private FirebaseStorage firebaseStorage;
 

@@ -6,7 +6,10 @@ import android.database.Cursor;
 import android.graphics.Bitmap;
 import android.media.MediaMetadataRetriever;
 import android.net.Uri;
+import android.os.Build;
 import android.provider.MediaStore;
+
+import androidx.annotation.RequiresApi;
 
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;
@@ -36,6 +39,7 @@ public class FileUtils {
         return "";
     }
 
+    @RequiresApi(api = Build.VERSION_CODES.Q)
     public static long getVideoDuration(String videoPath) throws IOException {
         try (MediaMetadataRetriever retriever = new MediaMetadataRetriever()) {
             retriever.setDataSource(videoPath);
@@ -84,5 +88,9 @@ public class FileUtils {
         bitmap.compress(Bitmap.CompressFormat.JPEG, quality, stream);
         // bitmap.compress(Bitmap.CompressFormat.PNG, quality, stream); // According to the needed quality
         return stream.toByteArray();
+    }
+     static public String getFileNameFromUri(Uri uri) {
+        String path = uri.getPath();
+        return path.substring(path.lastIndexOf("/") + 1);
     }
 }
