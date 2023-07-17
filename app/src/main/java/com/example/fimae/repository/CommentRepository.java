@@ -31,6 +31,8 @@ import java.util.List;
 import java.util.Map;
 import java.util.concurrent.CompletableFuture;
 
+
+@Deprecated
 public class CommentRepository {
     private static CommentRepository commentRepository;
     public static CommentRepository getInstance(){
