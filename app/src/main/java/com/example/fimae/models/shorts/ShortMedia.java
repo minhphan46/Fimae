@@ -9,7 +9,7 @@ import java.util.Date;
 
 public class ShortMedia {
     private String id;
-    private String publisher;
+    private String uid;
     private String description;
     private Object mediaPath;
     private ShortMediaType type;
@@ -25,7 +25,7 @@ public class ShortMedia {
     public static ShortMedia createShortVideo(String id, String description, String videoPath, PostMode postMode, boolean allowComment) {
         ShortMedia shortMedia = new ShortMedia();
         shortMedia.setId(id);
-        shortMedia.setPublisher(FirebaseAuth.getInstance().getUid());
+        shortMedia.setUid(FirebaseAuth.getInstance().getUid());
         shortMedia.setDescription(description);
         shortMedia.setMediaPath(videoPath);
         shortMedia.setType(ShortMediaType.VIDEO);
@@ -37,7 +37,7 @@ public class ShortMedia {
     public static ShortMedia createShortImages(String id, String description, ArrayList<String> imagesPath, PostMode postMode, boolean allowComment) {
         ShortMedia shortMedia = new ShortMedia();
         shortMedia.setId(id);
-        shortMedia.setPublisher(FirebaseAuth.getInstance().getUid());
+        shortMedia.setUid(FirebaseAuth.getInstance().getUid());
         shortMedia.setDescription(description);
         shortMedia.setMediaPath(imagesPath);
         shortMedia.setType(ShortMediaType.IMAGES);
@@ -55,12 +55,12 @@ public class ShortMedia {
         this.id = id;
     }
 
-    public String getPublisher() {
-        return publisher;
+    public String getUid() {
+        return uid;
     }
 
-    public void setPublisher(String publisher) {
-        this.publisher = publisher;
+    public void setUid(String uid) {
+        this.uid = uid;
     }
 
     public String getDescription() {
