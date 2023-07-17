@@ -11,6 +11,7 @@ import com.google.firebase.storage.UploadTask;
 import java.io.File;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.UUID;
 import java.util.concurrent.CompletableFuture;
 import java.util.stream.Collectors;
 
@@ -22,11 +23,13 @@ public class FirebaseService {
         }
         return instance;
     }
-    public UploadTask uploadFile(String path, Uri uri) {
-        return FirebaseStorage.getInstance().getReference(path).putFile(Uri.fromFile(new File(String.valueOf(uri))));
+    public UploadTask uploadFile(String storagePath, Uri uri) {
+        String filename = UUID.randomUUID().toString() +"." + FileUtils.getFileExtension(uri.toString());
+        StorageReference fileRef = FirebaseStorage.getInstance().getReference(storagePath).child(filename);
+        return fileRef.putFile(Uri.fromFile(new File(uri.toString())));
     }
-     public UploadTask uploadFile(String path, String fileName, byte[] data) {
-        return FirebaseStorage.getInstance().getReference(path).child(fileName).putBytes(data);
+     public UploadTask uploadFile(String storagePath, String fileName, byte[] data) {
+        return FirebaseStorage.getInstance().getReference(storagePath).child(fileName).putBytes(data);
     }
      public CompletableFuture<List<String>> uploadTaskFiles(String path, ArrayList<Uri> fileUris) {
         StorageReference storageRef = FirebaseStorage.getInstance().getReference(path);
@@ -63,8 +66,5 @@ public class FirebaseService {
                         .map(CompletableFuture::join)
                         .collect(Collectors.toList())
         );
-    }
-     public  CompletableFuture<List<String>> uploadTaskImages(String path, ArrayList<String> imagePaths) {
-       return uploadTaskFiles(path, imagePaths.stream().map(Uri::parse).collect(Collectors.toCollection(ArrayList::new)));
     }
 }
