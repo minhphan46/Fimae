@@ -72,6 +72,28 @@ public class CommentAdapter extends RecyclerView.Adapter<CommentAdapter.ViewHold
         CommentItemBinding binding = holder.binding;
         CommentItemAdapter currentCommentItem = mCommentItem.get(position);
         Comment currentComment = currentCommentItem.getComment();
+        postRepo.getUserById(currentComment.getPublisher(), userInfo -> {
+            if(userInfo != null){
+                binding(binding, userInfo, currentCommentItem);
+            }
+        });
+    }
+    @Override
+    public int getItemCount() {
+        return mCommentItem.size();
+    }
+
+
+    public class ViewHolder extends RecyclerView.ViewHolder {
+        CommentItemBinding binding;
+        public ViewHolder(CommentItemBinding binding) {
+            super(binding.getRoot());
+            this.binding = binding;
+        }
+    }
+
+    private void binding(CommentItemBinding binding, Fimaers userInfo, CommentItemAdapter currentCommentItem){
+        Comment currentComment = currentCommentItem.getComment();
         binding.content.setText(currentComment.getContent());
         if(currentComment.getTimeEdited() == null ) {
             TimerService.setDuration(binding.time, currentComment.getTimeCreated());
@@ -80,39 +102,34 @@ public class CommentAdapter extends RecyclerView.Adapter<CommentAdapter.ViewHold
             binding.isEdited.setVisibility(View.VISIBLE);
             TimerService.setDuration(binding.time, currentComment.getTimeEdited());
         }
-        postRepo.getUserById(currentComment.getPublisher(), userInfo -> {
-            if(userInfo != null){
+        Picasso.get().load(userInfo.getAvatarUrl()).placeholder(R.drawable.ic_default_avatar).into(binding.imageAvatar);
+        binding.userName.setText(userInfo.getLastName());
+        if(!userInfo.isGender()){
+            binding.itemUserIcGender.setImageResource(R.drawable.ic_male);
+            binding.itemUserLayoutGenderAge.setBackgroundResource(R.drawable.shape_gender_border_pink);
+        }
 
-                Picasso.get().load(userInfo.getAvatarUrl()).placeholder(R.drawable.ic_default_avatar).into(binding.imageAvatar);
-                binding.userName.setText(userInfo.getLastName());
-
-                if(!userInfo.isGender()){
-                    binding.itemUserIcGender.setImageResource(R.drawable.ic_male);
-                    binding.itemUserLayoutGenderAge.setBackgroundResource(R.drawable.shape_gender_border_pink);
-                }
-
-                binding.itemUserTvAge.setText(String.valueOf(userInfo.calculateAge()));
-
-                updateComment(binding, commentRepository.getCommentRef(postId, POST_COLLECTION ).document(currentComment.getId()), currentComment, userInfo);
-                SubCommentAdapter adapter = new SubCommentAdapter(mContext, currentCommentItem, this.iClickCommentItem, this.iClickMyCommentItem);
-                binding.subComment.setVisibility(View.VISIBLE);
-                LinearLayoutManager layoutManager = new LinearLayoutManager(mContext);
-                binding.subComment.setLayoutManager(layoutManager);
-                binding.subComment.setAdapter(adapter);
-                currentCommentItem.setSubAdapter(adapter);
-                binding.constraintLayout.setOnClickListener(view -> {
-                    if(Objects.equals(currentComment.getPublisher(), FirebaseAuth.getInstance().getUid())){
-                        iClickMyCommentItem.onClick(currentComment);
-                    }
-                    else{
-                        iClickCommentItem.onClick(currentComment);
-                    }
-                });
-                commentRepository.getSubComment(currentCommentItem);
+        binding.itemUserTvAge.setText(String.valueOf(userInfo.calculateAge()));
+        //init listener
+        initListener(binding, commentRepository.getCommentRef(postId, POST_COLLECTION ).document(currentComment.getId()), currentComment, userInfo);
+        SubCommentAdapter adapter = new SubCommentAdapter(mContext, currentCommentItem, this.iClickCommentItem, this.iClickMyCommentItem);
+        binding.subComment.setVisibility(View.VISIBLE);
+        LinearLayoutManager layoutManager = new LinearLayoutManager(mContext);
+        binding.subComment.setLayoutManager(layoutManager);
+        binding.subComment.setAdapter(adapter);
+        currentCommentItem.setSubAdapter(adapter);
+        binding.constraintLayout.setOnClickListener(view -> {
+            if(Objects.equals(currentComment.getPublisher(), FirebaseAuth.getInstance().getUid())){
+                iClickMyCommentItem.onClick(currentComment);
+            }
+            else{
+                iClickCommentItem.onClick(currentComment);
             }
         });
+        commentRepository.getSubComment(currentCommentItem);
+
     }
-    private void updateComment(CommentItemBinding binding , DocumentReference reference, Comment current, Fimaers fimaers){
+    private void initListener(CommentItemBinding binding , DocumentReference reference, Comment current, Fimaers fimaers){
         reference.addSnapshotListener((value, error) -> {
             if (error != null) {
                 return;
@@ -121,6 +138,13 @@ public class CommentAdapter extends RecyclerView.Adapter<CommentAdapter.ViewHold
             //truong hop xoa thi update comment se = null
             if(updateComment == null) return;
             //hien da chinh sua
+            if(!updateComment.getContent().equals(current.getContent())){
+                binding.content.setText(updateComment.getContent());
+            }
+            if(updateComment.getTimeEdited() != null){
+                binding.isEdited.setVisibility(View.VISIBLE);
+                TimerService.setDuration(binding.time, updateComment.getTimeEdited());
+            }
             binding.likeNumber.setText(String.valueOf(PostService.getInstance().getNumberOfLikes(updateComment.getLikes())));
             if (updateComment.getLikes().containsKey(current.getPublisher()) && Boolean.TRUE.equals(updateComment.getLikes().get(current.getPublisher()))) {
                 binding.heart.setImageResource(R.drawable.ic_heart1);
@@ -144,19 +168,4 @@ public class CommentAdapter extends RecyclerView.Adapter<CommentAdapter.ViewHold
         });
     }
 
-
-
-    @Override
-    public int getItemCount() {
-        return mCommentItem.size();
-    }
-
-
-    public class ViewHolder extends RecyclerView.ViewHolder {
-        CommentItemBinding binding;
-        public ViewHolder(CommentItemBinding binding) {
-            super(binding.getRoot());
-            this.binding = binding;
-        }
-    }
 }

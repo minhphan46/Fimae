@@ -15,6 +15,7 @@ import com.example.fimae.service.PostService;
 import com.google.android.gms.tasks.Task;
 import com.google.android.gms.tasks.TaskCompletionSource;
 import com.google.firebase.Timestamp;
+import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.firestore.CollectionReference;
 import com.google.firebase.firestore.DocumentChange;
 import com.google.firebase.firestore.DocumentReference;
@@ -50,15 +51,16 @@ public class CommentRepository {
         comment.setLikes(new HashMap<>());
         comment.setChildren(new ArrayList<>());
         comment.setTimeCreated(new Date());
+        comment.setPublisher(FirebaseAuth.getInstance().getUid());
         commentId.set(comment).addOnCompleteListener(ss -> taskCompletionSource.setResult(true))
                 .addOnFailureListener(f -> taskCompletionSource.setResult(false));
         return taskCompletionSource.getTask();
     }
 
-    public Task<Boolean> editComment(String postId, Comment comment) {
+    public Task<Boolean> editComment(String postId, Comment comment, String content) {
         TaskCompletionSource<Boolean> taskCompletionSource = new TaskCompletionSource<>();
         Map<String, Object> updates = new HashMap<>();
-            updates.put("content", comment.getContent());
+            updates.put("content", content);
             updates.put("timeEdited", new Timestamp(new Date()));
             getCommentRef(postId, POST_COLLECTION).document(comment.getId()).update(updates).addOnCompleteListener(ss -> {
                 taskCompletionSource.setResult(true);
@@ -77,7 +79,7 @@ public class CommentRepository {
         return taskCompletionSource.getTask();
 
     }
-    private int findCommentById(List<CommentItemAdapter> commentItemAdapters, String targetId) {
+    private int findCommentItemAdapterById(List<CommentItemAdapter> commentItemAdapters, String targetId) {
         for (CommentItemAdapter commentItem : commentItemAdapters) {
             if (commentItem.getComment().getId().equals(targetId)) {
                 return commentItemAdapters.indexOf(commentItem);
@@ -88,7 +90,7 @@ public class CommentRepository {
     public void getSubComment(CommentItemAdapter commentItem){
         Comment rootComment = commentItem.getComment();
         getCommentRef(rootComment.getPostId(), POST_COLLECTION).whereEqualTo("parentId", rootComment.getId()).addSnapshotListener((value, error) -> {
-            if (error != null) {
+            if (error != null || value == null) {
                 return;
             }
             for(DocumentChange dc: value.getDocumentChanges()){
@@ -98,92 +100,35 @@ public class CommentRepository {
                         commentItem.addNewSubComment(comment);
                         break;
                     case MODIFIED:
-
                         break;
                     case REMOVED:
+                        commentItem.removeSubComment(comment);
                 }
             }
         });
     }
 
-    public void getComment(String postId, List<CommentItemAdapter> comments, CommentAdapter commentAdapter){
+    public void getComment(String postId, List<CommentItemAdapter> comments, CommentAdapter commentAdapter) {
         getCommentRef(postId, POST_COLLECTION).whereEqualTo("parentId", "").addSnapshotListener((value, error) -> {
             if (error != null) {
                 return;
             }
             assert value != null;
-            for(DocumentChange dc: value.getDocumentChanges()){
+            for (DocumentChange dc : value.getDocumentChanges()) {
                 Comment comment = dc.getDocument().toObject(Comment.class);
-                switch (dc.getType()){
+                switch (dc.getType()) {
                     case ADDED:
-                            CommentItemAdapter commentItemAdapter = new CommentItemAdapter(comment);
-                            comments.add(commentItemAdapter);
-                            commentAdapter.addUpdate();
+                        CommentItemAdapter commentItemAdapter = new CommentItemAdapter(comment);
+                        comments.add(commentItemAdapter);
+                        commentAdapter.addUpdate();
                         break;
                     case MODIFIED:
-                            int i = findCommentById(comments, comment.getId());
-                            if(i != -1){
-                                if(comment.getContent().equals(comments.get(i).getComment().getContent())) break;
-                                comments.get(i).modifyComment(comment);
-                                commentAdapter.addModify(i);
-                        }
                         break;
                     case REMOVED:
-                        int h = findCommentById(comments, comment.getId());
+                        int h = findCommentItemAdapterById(comments, comment.getId());
                         comments.remove(h);
                         commentAdapter.notifyItemRemoved(h);
                 }
             }
         });
-//        getCommentRef(postId).addSnapshotListener((value, error) -> {
-//            if (error != null) {
-//                return;
-//            }
-//            comments.clear();
-//            int number = 0;
-//            for (QueryDocumentSnapshot doc : value) {
-//                Comment comment = doc.toObject(Comment.class);
-//                comments.add(comment);
-//            }
-//            commentAdapter.notifyDataSetChanged();
-//        });
     }
-//    public void updateComment(CommentItemBinding binding , DocumentReference reference, Comment current, Fimaers fimaers){
-//        reference.addSnapshotListener((value, error) -> {
-//            if (error != null) {
-//                return;
-//            }
-//            Comment updateComment = value.toObject(Comment.class);
-//            //truong hop xoa thi update comment se = null
-//            if(updateComment == null) return;
-//            //hien da chinh sua
-//            binding.likeNumber.setText(String.valueOf(PostService.getInstance().getNumberOfLikes(updateComment.getLikes())));
-//            if (updateComment.getLikes().containsKey(current.getPublisher()) && Boolean.TRUE.equals(updateComment.getLikes().get(current.getPublisher()))) {
-//                binding.heart.setImageResource(R.drawable.ic_heart1);
-//                binding.heart.setOnClickListener(view -> {
-//                    String path = "likes." + fimaers.getUid();
-//                    binding.heart.setImageResource(R.drawable.ic_heart1);
-//                    reference.update(
-//                            path, false
-//                    );
-//                });
-//            } else {
-//                binding.heart.setImageResource(R.drawable.ic_heart_gray);
-//                binding.heart.setOnClickListener(view -> {
-//                    String path = "likes." + fimaers.getUid();
-//                    binding.heart.setImageResource(R.drawable.ic_heart1);
-//                    reference.update(
-//                            path, true
-//                    );
-//                });
-//            }
-//        });
-//    }
-//
-//    public void commentListener(CommentItemBinding binding, Comment current, Fimaers fimaers) {
-//        Comment comment = (Comment) current;
-//        CollectionReference reference = FirebaseFirestore.getInstance().collection(POST_COLLECTION);
-//        DocumentReference reference1 = reference.document(comment.getPostId()).collection("comments").document(current.getId());
-//        updateComment(binding, reference1, current, fimaers);
-//    }
-}

@@ -7,7 +7,7 @@ import java.util.List;
 import java.util.Map;
 
 public class Comment {
-    @ServerTimestamp
+//    @ServerTimestamp
     protected Date timeCreated;
     protected Map<String, Boolean> likes;
     protected String publisher;
@@ -16,7 +16,7 @@ public class Comment {
     private String parentId;
     private List<String> children;
     private String postId;
-    @ServerTimestamp
+//    @ServerTimestamp
     private Date timeEdited;
 
     public Comment(Date timeCreated, Map<String, Boolean> likes, String publisher, String id, String content, String parentId, List<String> children, String postId, Date timeEdited) {

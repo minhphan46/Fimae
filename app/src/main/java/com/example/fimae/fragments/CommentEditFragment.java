@@ -38,8 +38,8 @@ public class CommentEditFragment extends BottomSheetDialogFragment {
 //        Toast.makeText(getActivity().getApplicationContext(),"djjdf", Toast.LENGTH_SHORT).show();
         String content = binding.tvEdit.getText().toString();
         if(!content.isEmpty() && !content.trim().isEmpty()){
-            comment.setContent(content);
-            commentRepository.editComment(postId, comment);
+//            comment.setContent(content);
+            commentRepository.editComment(postId, comment, content);
         }
     }
     private void deleteComment(){

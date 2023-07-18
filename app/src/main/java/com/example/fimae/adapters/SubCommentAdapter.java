@@ -102,7 +102,16 @@ public class SubCommentAdapter extends RecyclerView.Adapter<SubCommentAdapter.Vi
             Comment updateComment = value.toObject(Comment.class);
             //truong hop xoa thi update comment se = null
             if(updateComment == null) return;
-            //hien da chinh sua
+            //listen content change
+            if(!updateComment.getContent().equals(current.getContent())){
+                binding.content.setText(updateComment.getContent());
+            }
+            //edit time change
+            if(updateComment.getTimeEdited() != null){
+                binding.isEdited.setVisibility(View.VISIBLE);
+                TimerService.setDuration(binding.time, updateComment.getTimeEdited());
+            }
+            //like change
             binding.likeNumber.setText(String.valueOf(PostService.getInstance().getNumberOfLikes(updateComment.getLikes())));
             if (updateComment.getLikes().containsKey(current.getPublisher()) && Boolean.TRUE.equals(updateComment.getLikes().get(current.getPublisher()))) {
                 binding.heart.setImageResource(R.drawable.ic_heart1);

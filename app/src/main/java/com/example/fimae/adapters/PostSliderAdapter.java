@@ -1,2 +1,4 @@
-package com.example.fimae.adapters;public class PostSliderAdapter {
+package com.example.fimae.adapters;
+
+public class PostSliderAdapter {
 }

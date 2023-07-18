@@ -17,8 +17,9 @@ public class CommentItemAdapter{
     }
     public void addNewSubComment(Comment comment){
         subComment.add(new CommentItemAdapter(comment));
+
         if(adapter != null){
-            adapter.notifyItemInserted(subComment.size());
+            adapter.notifyItemInserted(subComment.size() - 1);
         }
     }
     public void modifyComment(Comment comment){
