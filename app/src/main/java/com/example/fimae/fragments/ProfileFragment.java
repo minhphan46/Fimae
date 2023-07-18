@@ -41,6 +41,7 @@ import com.squareup.picasso.Picasso;
 
 import androidx.databinding.BindingAdapter;
 import androidx.databinding.DataBindingUtil;
+import androidx.fragment.app.FragmentManager;
 import androidx.lifecycle.Observer;
 import androidx.lifecycle.ViewModelProvider;
 
@@ -83,10 +84,12 @@ public class ProfileFragment extends Fragment {
         avatarBtn.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                BottomSheetDialog mBottomSheetDialog = new BottomSheetDialog(getActivity(),R.style.AppBottomSheetDialogTheme);
-                View sheetView = getActivity().getLayoutInflater().inflate(R.layout.choose_image_bottom_modal, null);
-                mBottomSheetDialog.setContentView(sheetView);
-                mBottomSheetDialog.show();
+
+                AvatarBottomSheetFragment avatarFragment = AvatarBottomSheetFragment.newInstance(viewModel.getUser().getValue().getAvatarUrl());
+
+                FragmentManager fragmentManager = getChildFragmentManager(); // For fragments
+
+                avatarFragment.show(fragmentManager, "avatar_bottom_sheet");
             }
         });
         copyLitId.setOnClickListener(new View.OnClickListener() {
@@ -167,4 +170,5 @@ public class ProfileFragment extends Fragment {
         Intent intent = new Intent(getContext(), EditProfileActivity.class);
         startActivity(intent);
     }
+
 }

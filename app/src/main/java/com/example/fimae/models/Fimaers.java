@@ -9,8 +9,10 @@ import com.example.fimae.BR;
 import com.google.firebase.firestore.ServerTimestamp;
 
 import java.text.SimpleDateFormat;
+import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
 import java.util.Date;
+import java.util.Locale;
 
 public class Fimaers extends BaseObservable {
     private String uid;
@@ -18,12 +20,13 @@ public class Fimaers extends BaseObservable {
     public void setLastName(String lastName) {
         this.lastName = lastName;
         notifyPropertyChanged(BR.lastName);
+        notifyPropertyChanged(BR.name);
     }
 
     public void setFirstName(String firstName) {
         this.firstName = firstName;
         notifyPropertyChanged(BR.firstName);
-
+        notifyPropertyChanged(BR.name);
     }
 
     private String lastName;
@@ -144,8 +147,10 @@ public class Fimaers extends BaseObservable {
         return simpleDateFormat.format(dob);
     }
 
-    public Date getTimeCreated() {
-        return timeCreated;
+    @Bindable
+    public String getTimeCreated() {
+        SimpleDateFormat sdf = new SimpleDateFormat("MMMM, yyyy", new Locale("vi", "VN"));
+        return sdf.format(timeCreated);
     }
 
     public int getMinAgeMatch() {

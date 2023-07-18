@@ -48,7 +48,9 @@
         android:scaleType="centerCrop"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent"
-        android:src="@drawable/avatar" />
+        app:imageUrl="@{viewmodel.user.avatarUrl}"
+        app:placeholder="@{@drawable/avatar}"
+        />
 
     <TextView
         android:id="@+id/usernameTxt"
@@ -181,7 +183,7 @@
         android:layout_height="wrap_content"
         android:layout_marginStart="7dp"
         android:layout_marginTop="6dp"
-        android:text="Đã tham gia Tháng 6 2023"
+        android:text="@{`Đã tham gia từ ` + viewmodel.user.timeCreated}"
         android:textColor="@color/text_secondary"
         app:layout_constraintStart_toEndOf="@+id/joinDateIcon"
         app:layout_constraintTop_toBottomOf="@+id/bioLayout" />
