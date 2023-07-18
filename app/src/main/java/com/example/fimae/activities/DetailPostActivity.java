@@ -1,88 +1,47 @@
 package com.example.fimae.activities;
 
-import static com.example.fimae.fragments.FeedFragment.REQUEST_CREATEPOST_CODE;
-
 import androidx.activity.result.ActivityResultLauncher;
 import androidx.activity.result.contract.ActivityResultContracts;
-import androidx.annotation.NonNull;
-import androidx.annotation.Nullable;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.databinding.DataBindingUtil;
 
-import androidx.databinding.ViewDataBinding;
 import androidx.recyclerview.widget.GridLayoutManager;
 import androidx.recyclerview.widget.LinearLayoutManager;
-import androidx.recyclerview.widget.RecyclerView;
-import androidx.viewbinding.ViewBinding;
 
 import android.content.Intent;
 import android.net.Uri;
 import android.os.Bundle;
 import android.text.Editable;
 import android.text.TextWatcher;
-import android.view.MotionEvent;
 import android.view.View;
-import android.widget.Toast;
 
 import com.example.fimae.R;
 import com.example.fimae.adapters.CommentAdapter;
 import com.example.fimae.adapters.PostAdapter;
 import com.example.fimae.adapters.PostPhotoAdapter;
-import com.example.fimae.adapters.SubCommentAdapter;
 import com.example.fimae.bottomdialogs.LikedPostListFragment;
-import com.example.fimae.databinding.ActivityPostBinding;
 import com.example.fimae.databinding.DetailPostBinding;
 import com.example.fimae.fragments.ChatBottomSheetFragment;
 import com.example.fimae.fragments.CommentEditFragment;
 import com.example.fimae.models.BottomSheetItem;
 import com.example.fimae.models.Comment;
-import com.example.fimae.models.CommentBase;
+import com.example.fimae.models.CommentItemAdapter;
 import com.example.fimae.models.Post;
-import com.example.fimae.models.Seed;
 import com.example.fimae.models.Fimaers;
-import com.example.fimae.models.SubComment;
 import com.example.fimae.repository.CommentRepository;
 import com.example.fimae.repository.PostRepository;
 import com.example.fimae.service.TimerService;
-import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.OnSuccessListener;
-import com.google.android.gms.tasks.Task;
-import com.google.firebase.Timestamp;
 import com.google.firebase.auth.FirebaseAuth;
-import com.google.firebase.database.DataSnapshot;
-import com.google.firebase.database.DatabaseError;
-import com.google.firebase.database.DatabaseReference;
-import com.google.firebase.database.FirebaseDatabase;
-import com.google.firebase.database.ValueEventListener;
-import com.google.firebase.firestore.AggregateQuery;
-import com.google.firebase.firestore.AggregateQuerySnapshot;
-import com.google.firebase.firestore.AggregateSource;
 import com.google.firebase.firestore.CollectionReference;
-import com.google.firebase.firestore.DocumentChange;
 import com.google.firebase.firestore.DocumentReference;
 import com.google.firebase.firestore.DocumentSnapshot;
-import com.google.firebase.firestore.EventListener;
-import com.google.firebase.firestore.FieldPath;
-import com.google.firebase.firestore.FieldValue;
 import com.google.firebase.firestore.FirebaseFirestore;
-import com.google.firebase.firestore.FirebaseFirestoreException;
-import com.google.firebase.firestore.ListenerRegistration;
-import com.google.firebase.firestore.QueryDocumentSnapshot;
-import com.google.firebase.firestore.QuerySnapshot;
-import com.google.firebase.storage.FirebaseStorage;
-import com.google.type.DateTime;
 import com.squareup.picasso.Picasso;
 
-import org.checkerframework.checker.units.qual.C;
-
-import java.lang.reflect.Field;
 import java.util.ArrayList;
-import java.util.Date;
-import java.util.HashMap;
 import java.util.List;
-import java.util.Map;
 import java.util.Objects;
-import java.util.UUID;
 
 public class DetailPostActivity extends AppCompatActivity {
     boolean isLike = false;
@@ -98,8 +57,9 @@ public class DetailPostActivity extends AppCompatActivity {
     List<String> imageUrls = new ArrayList<>();
     List<Uri> imageUris = new ArrayList<>();
     List<Comment> comments;
+    List<CommentItemAdapter> commentItemAdapters;
     CommentAdapter commentAdapter;
-    SubCommentAdapter selectedAdapter;
+//    SubCommentAdapter selectedAdapter;
     CollectionReference postRef = FirebaseFirestore.getInstance().collection("posts");
     CollectionReference fimaesRef = FirebaseFirestore.getInstance().collection("fimaers");
     CommentRepository commentRepository = CommentRepository.getInstance();
@@ -108,11 +68,11 @@ public class DetailPostActivity extends AppCompatActivity {
     List<BottomSheetItem> postSheetItemList;
     List<BottomSheetItem> reportSheetItemList;
     ChatBottomSheetFragment chatBottomSheetFragment;
+    public static int REQUEST_EDITPOST_CODE = 2;
     ActivityResultLauncher<Intent> mStartForResult = registerForActivityResult(new ActivityResultContracts.StartActivityForResult(),
             result -> {
-                if (result.getResultCode() == REQUEST_CREATEPOST_CODE) {
-                    Intent intent = result.getData();
-                    String postId = intent.getStringExtra("postId");
+                if (result.getResultCode() == REQUEST_EDITPOST_CODE) {
+
                 }
             });
 
@@ -199,16 +159,16 @@ public class DetailPostActivity extends AppCompatActivity {
         }
         binding.ageTextView.setText(String.valueOf(fimaers.calculateAge()));
         comments = new ArrayList<>();
-        commentAdapter = new CommentAdapter(this, comments, (comment, adapter, fimaers) -> {
-            selectedCommentId =  comment;
+        commentItemAdapters = new ArrayList<>();
+        commentAdapter = new CommentAdapter(this, commentItemAdapters, (comment) -> {
+            selectedCommentId =  comment.getParentId() != "" ? comment.getParentId() : comment.getId();
             binding.addComment.setHint("@"+fimaers.getLastName());
-            selectedAdapter = adapter;
             selectedFimaers = fimaers;
         }, post.getPostId(), this::showCommentDialog);
         LinearLayoutManager layoutManager1 = new LinearLayoutManager(this);
         binding.commentRecycler.setLayoutManager(layoutManager1);
         binding.commentRecycler.setAdapter(commentAdapter);
-        commentRepository.getComment(post.getPostId(), comments, commentAdapter);
+        commentRepository.getComment(post.getPostId(), commentItemAdapters, commentAdapter);
     }
     private void initListener(){
         createCommentDialog();
@@ -287,17 +247,19 @@ public class DetailPostActivity extends AppCompatActivity {
         binding.post.setOnClickListener(view -> {
             if(canPost) {
                 if ( !selectedCommentId.trim().isEmpty()) {
-                    SubComment subComment = new SubComment();
+                    Comment subComment = new Comment();
                     subComment.setContent(binding.addComment.getText().toString());
                     subComment.setPublisher(fimaers.getUid());
                     subComment.setParentId(selectedCommentId);
-                    commentRepository.postSubComment(post.getPostId(), selectedCommentId,subComment);
+                    subComment.setPostId(post.getPostId());
+                    commentRepository.postComment(post.getPostId(), "posts", subComment);
                 } else {
                     Comment comment = new Comment();
                     comment.setPostId(post.getPostId());
                     comment.setPublisher(fimaers.getUid());
                     comment.setContent(binding.addComment.getText().toString());
-                    commentRepository.postComment(post.getPostId(), comment);
+                    comment.setParentId("");
+                    commentRepository.postComment(post.getPostId(), "posts",comment);
                 }
                 postRepository.updateNumOfComment(post.getPostId());
                 binding.addComment.clearFocus();
@@ -344,7 +306,7 @@ public class DetailPostActivity extends AppCompatActivity {
                         Intent intent = new Intent(getApplicationContext(), PostActivity.class );
                         intent.putExtra("id", post.getPostId());
                         mStartForResult.launch(intent);
-                        finish();
+                        chatBottomSheetFragment.dismiss();
                     }
                     else if(bottomSheetItem.getTitle().equals("Xóa bài đăng")){
                         chatBottomSheetFragment.dismiss();
@@ -353,39 +315,22 @@ public class DetailPostActivity extends AppCompatActivity {
         chatBottomSheetFragment.show(getSupportFragmentManager(), chatBottomSheetFragment.getTag());
 
     }
-    private void showEditCommentDialog(CommentBase comment){
+    private void showEditCommentDialog(Comment comment){
         CommentEditFragment commentEditFragment = new CommentEditFragment(comment, post.getPostId());
         commentEditFragment.show(getSupportFragmentManager(), commentEditFragment.getTag());
         chatBottomSheetFragment.dismiss();
     }
-    public void showCommentDialog(CommentBase comment){
+    public void showCommentDialog(Comment comment){
             chatBottomSheetFragment = new ChatBottomSheetFragment(commentSheetItemList,
                     bottomSheetItem -> {
                         if(bottomSheetItem.getTitle().equals("Chỉnh sửa bình luận"))
                             showEditCommentDialog(comment);
                         else if(bottomSheetItem.getTitle().equals("Xóa bình luận")){
-                            commentRepository.deleteComment(post.getPostId(), comment, getApplicationContext());
+                            commentRepository.deleteComment(post.getPostId(), comment);
                             chatBottomSheetFragment.dismiss();
                         }
                     });
         chatBottomSheetFragment.show(getSupportFragmentManager(), chatBottomSheetFragment.getTag());
     }
 
-//    private void readComments () {
-//        CollectionReference commentRef = FirebaseFirestore.getInstance().collection("posts").document(post.getPostId()).collection("comments");
-//        commentRef.addSnapshotListener((value, error) -> {
-//            if (error != null) {
-//                return;
-//            }
-//            comments.clear();
-//            int number = 0;
-//            for (QueryDocumentSnapshot doc : value) {
-//                Comment comment = doc.toObject(Comment.class);
-//                comments.add(comment);
-//                number += 1 + comment.getSubComments().size();
-//            }
-//            postRef.document(post.getPostId()).update("numberOfComments", number);
-//            commentAdapter.notifyDataSetChanged();
-//        });
-//    }
 }

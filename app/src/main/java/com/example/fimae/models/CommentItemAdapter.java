@@ -1,29 +1,56 @@
-//package com.example.fimae.models;
-//
-//import com.google.firebase.Timestamp;
-//
-//import java.sql.Time;
-//import java.util.Date;
-//import java.util.List;
-//import java.util.Map;
-//
-//public class Comment extends CommentBase {
-//    private String postId;
-//
-//    public String getPostId() {
-//        return postId;
-//    }
-//
-//    public void setPostId(String postId) {
-//        this.postId = postId;
-//    }
-//
-//    public Comment(Date timeCreated, Map<String, Boolean> likes, String publisher, String id, String content, String postId, Date timeEdited) {
-//        super(timeCreated, likes, publisher, id, content, timeEdited);
-//        this.postId = postId;
-//    }
-//
-//    public Comment() {
-//    }
-//}
-//
+package com.example.fimae.models;
+
+import com.example.fimae.adapters.CommentAdapter;
+import com.example.fimae.adapters.SubCommentAdapter;
+
+import java.util.ArrayList;
+import java.util.List;
+
+public class CommentItemAdapter{
+    private Comment comment;
+    private List<CommentItemAdapter> subComment;
+    private SubCommentAdapter adapter;
+
+    public CommentItemAdapter(Comment comment){
+        this.comment = comment;
+        subComment = new ArrayList<>();
+    }
+    public void addNewSubComment(Comment comment){
+        subComment.add(new CommentItemAdapter(comment));
+        if(adapter != null){
+            adapter.notifyItemInserted(subComment.size());
+        }
+    }
+    public void modifyComment(Comment comment){
+        this.comment = comment;
+    }
+    public Comment getComment(){
+        return this.comment;
+    }
+    private int findCommentItem(String id){
+        for(int i = 0; i < subComment.size(); i++){
+            if(subComment.get(i).comment.getId().equals(id)){
+                return i;
+            }
+        }
+        return -1;
+    }
+    public void modifySubComment(Comment comment){
+        int i = findCommentItem(comment.getId());
+        if(i  == -1) return;
+        subComment.get(i).modifyComment(comment);
+        adapter.notifyItemChanged(i);
+    }
+    public void removeSubComment(Comment comment){
+        int i = findCommentItem(comment.getId());
+        if(i  == -1) return;
+        subComment.remove(i);
+        adapter.notifyItemRemoved(i);
+    }
+    public void setSubAdapter(SubCommentAdapter adapter){
+        this.adapter = adapter;
+    }
+    public List<CommentItemAdapter> getSubComment(){
+        return this.subComment;
+    }
+}

@@ -1,31 +1,62 @@
 package com.example.fimae.models;
 
-import com.google.firebase.firestore.FirebaseFirestore;
 import com.google.firebase.firestore.ServerTimestamp;
 
 import java.util.Date;
+import java.util.List;
 import java.util.Map;
 
-public abstract class CommentBase {
+public class Comment {
     @ServerTimestamp
     protected Date timeCreated;
     protected Map<String, Boolean> likes;
     protected String publisher;
     private String id;
     private String content;
+    private String parentId;
+    private List<String> children;
+    private String postId;
     @ServerTimestamp
     private Date timeEdited;
-    public CommentBase(Date timeCreated, Map<String, Boolean> likes, String publisher, String id, String content, Date timeEdited) {
+
+    public Comment(Date timeCreated, Map<String, Boolean> likes, String publisher, String id, String content, String parentId, List<String> children, String postId, Date timeEdited) {
         this.timeCreated = timeCreated;
         this.likes = likes;
         this.publisher = publisher;
         this.id = id;
         this.content = content;
+        this.parentId = parentId;
+        this.children = children;
+        this.postId = postId;
         this.timeEdited = timeEdited;
     }
 
-    public CommentBase() {
+    public Comment() {
 
+    }
+
+    public String getPostId() {
+        return postId;
+    }
+
+    public void setPostId(String postId) {
+        this.postId = postId;
+    }
+
+    public String getParentId() {
+        return parentId;
+    }
+
+    public void setParentId(String parentId) {
+        this.parentId = parentId;
+    }
+
+    public List<String> getChildren() {
+        return children;
+    }
+
+    public void setChildren(List<String> children) {
+        this.children = children;
     }
 
     public Date getTimeCreated() {
