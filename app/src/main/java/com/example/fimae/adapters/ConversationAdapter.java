@@ -94,12 +94,11 @@ public class ConversationAdapter extends FirestoreAdapter<ConversationAdapter.Vi
         Conversation conversation = getSnapshot(position).toObject(Conversation.class);
         assert conversation != null;
         if (conversation.getType().equals(Conversation.FRIEND_CHAT)) {
-            String uid = "";
-            for (String id : conversation.getParticipantIds()) {
-                if (!id.equals(FirebaseAuth.getInstance().getUid())) {
-                    uid = id;
-                    break;
-                }
+            ArrayList<String> ids = new ArrayList<>(conversation.getParticipantIds());
+            ids.remove(FirebaseAuth.getInstance().getUid());
+            String uid = ids.get(0);
+            if(uid.equals("")){
+                return;
             }
             FimaerRepository.getInstance().getFimaerById(uid).addOnSuccessListener(user -> {
                 Picasso.get().load(user.getAvatarUrl()).placeholder(R.drawable.ic_default_avatar).into(holder.mAvatarView);
