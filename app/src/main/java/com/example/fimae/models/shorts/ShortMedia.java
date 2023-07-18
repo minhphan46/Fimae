@@ -3,15 +3,16 @@ package com.example.fimae.models.shorts;
 import com.example.fimae.activities.PostMode;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.firestore.ServerTimestamp;
+import com.google.firebase.storage.FirebaseStorage;
 
 import java.util.ArrayList;
 import java.util.Date;
 
 public class ShortMedia {
     private String id;
-    private String publisher;
+    private String uid;
     private String description;
-    private Object mediaPath;
+    private Object mediaUrl;
     private ShortMediaType type;
     private PostMode postMode;
     @ServerTimestamp
@@ -25,9 +26,9 @@ public class ShortMedia {
     public static ShortMedia createShortVideo(String id, String description, String videoPath, PostMode postMode, boolean allowComment) {
         ShortMedia shortMedia = new ShortMedia();
         shortMedia.setId(id);
-        shortMedia.setPublisher(FirebaseAuth.getInstance().getUid());
+        shortMedia.setUid(FirebaseAuth.getInstance().getUid());
         shortMedia.setDescription(description);
-        shortMedia.setMediaPath(videoPath);
+        shortMedia.setMediaUrl(videoPath);
         shortMedia.setType(ShortMediaType.VIDEO);
         shortMedia.setPostMode(postMode);
         shortMedia.setAllowComment(allowComment);
@@ -37,9 +38,9 @@ public class ShortMedia {
     public static ShortMedia createShortImages(String id, String description, ArrayList<String> imagesPath, PostMode postMode, boolean allowComment) {
         ShortMedia shortMedia = new ShortMedia();
         shortMedia.setId(id);
-        shortMedia.setPublisher(FirebaseAuth.getInstance().getUid());
+        shortMedia.setUid(FirebaseAuth.getInstance().getUid());
         shortMedia.setDescription(description);
-        shortMedia.setMediaPath(imagesPath);
+        shortMedia.setMediaUrl(imagesPath);
         shortMedia.setType(ShortMediaType.IMAGES);
         shortMedia.setPostMode(postMode);
         shortMedia.setAllowComment(allowComment);
@@ -55,12 +56,12 @@ public class ShortMedia {
         this.id = id;
     }
 
-    public String getPublisher() {
-        return publisher;
+    public String getUid() {
+        return uid;
     }
 
-    public void setPublisher(String publisher) {
-        this.publisher = publisher;
+    public void setUid(String uid) {
+        this.uid = uid;
     }
 
     public String getDescription() {
@@ -71,12 +72,12 @@ public class ShortMedia {
         this.description = description;
     }
 
-    public Object getMediaPath() {
-        return mediaPath;
+    public Object getMediaUrl() {
+        return mediaUrl;
     }
 
-    public void setMediaPath(Object mediaPath) {
-        this.mediaPath = mediaPath;
+    public void setMediaUrl(Object mediaUrl) {
+        this.mediaUrl = mediaUrl;
     }
 
     public ShortMediaType getType() {

@@ -9,6 +9,7 @@ import android.view.MenuItem;
 import android.view.View;
 import android.widget.*;
 
+import androidx.annotation.NonNull;
 import androidx.appcompat.app.ActionBar;
 import androidx.appcompat.app.AppCompatActivity;
 import android.os.Bundle;
@@ -22,10 +23,15 @@ import com.example.fimae.R;
 import com.example.fimae.fragments.ChatBottomSheetFragment;
 import com.example.fimae.models.BottomSheetItem;
 import com.example.fimae.models.Message;
+import com.example.fimae.models.shorts.ShortMedia;
+import com.example.fimae.models.shorts.ShortMediaType;
 import com.example.fimae.repository.ChatRepository;
+import com.example.fimae.repository.ShortsRepository;
 import com.example.fimae.service.FirebaseService;
 import com.example.fimae.utils.FileUtils;
 import com.example.fimae.utils.FirebaseHelper;
+import com.google.android.gms.tasks.OnCompleteListener;
+import com.google.android.gms.tasks.Task;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.firestore.*;
 
