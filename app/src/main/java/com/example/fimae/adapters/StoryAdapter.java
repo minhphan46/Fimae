@@ -1,5 +1,6 @@
 package com.example.fimae.adapters;
 
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -12,6 +13,7 @@ import com.bumptech.glide.Glide;
 import com.bumptech.glide.load.engine.DiskCacheStrategy;
 import com.example.fimae.R;
 import com.example.fimae.models.story.Story;
+import com.google.firebase.storage.FirebaseStorage;
 import com.squareup.picasso.Picasso;
 
 import java.util.ArrayList;
@@ -37,6 +39,7 @@ public class StoryAdapter extends RecyclerView.Adapter<StoryAdapter.StoryViewHol
                 .diskCacheStrategy(DiskCacheStrategy.ALL)
                 .into(holder.storyImage);
         holder.storyTitle.setText("Nhật hào"); // Set the story title
+        Log.d("Bucket", FirebaseStorage.getInstance().getReference().getBucket());
     }
 
     @Override

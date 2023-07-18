@@ -3,8 +3,12 @@ package com.example.fimae.service;
 import android.net.Uri;
 import android.util.Log;
 
+import androidx.annotation.NonNull;
+
 import com.example.fimae.utils.FileUtils;
+import com.google.android.gms.tasks.OnFailureListener;
 import com.google.firebase.storage.FirebaseStorage;
+import com.google.firebase.storage.StorageMetadata;
 import com.google.firebase.storage.StorageReference;
 import com.google.firebase.storage.UploadTask;
 
@@ -45,8 +49,15 @@ public class FirebaseService {
                 uploadTask
                         .addOnSuccessListener(taskSnapshot -> {
                             // Get the download URL
-                            fileRef.getDownloadUrl().addOnSuccessListener(downloadUrl -> {
+                            taskSnapshot.getStorage().getDownloadUrl().addOnSuccessListener(downloadUrl -> {
                                 future.complete(downloadUrl.toString());
+                            }).addOnFailureListener(new OnFailureListener() {
+                                @Override
+                                public void onFailure(@NonNull Exception e) {
+                                    Log.d("FirebaseService", "Error: " + e.getMessage());
+                                    e.printStackTrace();
+                                    future.completeExceptionally(e);
+                                }
                             });
                         })
                         .addOnFailureListener(future::completeExceptionally);
