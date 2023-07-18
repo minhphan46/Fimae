@@ -1,6 +1,7 @@
 package com.example.fimae.adapters;
 
 import android.content.Context;
+import android.content.Intent;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -11,6 +12,7 @@ import androidx.recyclerview.widget.GridLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.example.fimae.R;
+import com.example.fimae.activities.MediaSliderActivity;
 import com.example.fimae.models.Message;
 import com.example.fimae.repository.ChatRepository;
 import com.google.firebase.auth.FirebaseAuth;
@@ -71,7 +73,18 @@ public class MessageAdapter extends  FirestoreAdapter{
                 outgoingViewholder.recyclerView.setVisibility(View.GONE);
             } else if (Message.MEDIA.equals(message.getType())) {
                 ArrayList<String> urls = (ArrayList<String>) message.getContent();
-                outgoingViewholder.recyclerView.setAdapter(new ImageMessageAdapter(urls));
+                ImageMessageAdapter imageMessageAdapter = new ImageMessageAdapter(urls);
+                imageMessageAdapter.setOnClickMediaItem(new ImageMessageAdapter.IClickMediaItem() {
+                    @Override
+                    public void onClick(String url, int position) {
+                        Intent intent = new Intent(context, MediaSliderActivity.class);
+                        intent.putExtra("urls", urls);
+                        intent.putExtra("currentIndex", position);
+                        context.startActivity(intent);
+                    }
+                });
+
+                outgoingViewholder.recyclerView.setAdapter(imageMessageAdapter);
                 int col = calculateGridColumns(urls.size());
                 GridLayoutManager gridLayoutManager = new GridLayoutManager(holder.itemView.getContext(), col);
                 outgoingViewholder.recyclerView.setLayoutManager(gridLayoutManager);
@@ -85,7 +98,17 @@ public class MessageAdapter extends  FirestoreAdapter{
                 incomingViewholder.recyclerView.setVisibility(View.GONE);
             } else if (Message.MEDIA.equals(message.getType())) {
                 ArrayList<String> urls = (ArrayList<String>) message.getContent();
-                incomingViewholder.recyclerView.setAdapter(new ImageMessageAdapter(urls));
+                ImageMessageAdapter imageMessageAdapter = new ImageMessageAdapter(urls);
+                imageMessageAdapter.setOnClickMediaItem(new ImageMessageAdapter.IClickMediaItem() {
+                    @Override
+                    public void onClick(String url, int position) {
+                        Intent intent = new Intent(context, MediaSliderActivity.class);
+                        intent.putExtra("urls", urls);
+                        intent.putExtra("currentIndex", position);
+                        context.startActivity(intent);
+                    }
+                });
+                incomingViewholder.recyclerView.setAdapter(imageMessageAdapter);
                 int col = calculateGridColumns(urls.size());
                 GridLayoutManager gridLayoutManager = new GridLayoutManager(holder.itemView.getContext(), col);
                 incomingViewholder.recyclerView.setLayoutManager(gridLayoutManager);

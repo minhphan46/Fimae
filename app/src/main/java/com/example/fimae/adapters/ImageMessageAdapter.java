@@ -21,7 +21,13 @@ import java.util.ArrayList;
 
 public class ImageMessageAdapter extends RecyclerView.Adapter<ImageMessageAdapter.ViewHolder> {
     private ArrayList<String> urls;
-
+    public interface IClickMediaItem {
+        void onClick(String url, int position);
+    }
+    private IClickMediaItem onClickMediaItem;
+    public void setOnClickMediaItem(IClickMediaItem onClickMediaItem) {
+        this.onClickMediaItem = onClickMediaItem;
+    }
     public ImageMessageAdapter(ArrayList<String> urls) {
         this.urls = urls;
     }
@@ -45,6 +51,10 @@ public class ImageMessageAdapter extends RecyclerView.Adapter<ImageMessageAdapte
             holder.videoDurationTextView.setVisibility(View.GONE);
         } else {
             holder.videoDurationTextView.setText("Video");
+
+        }
+        if(onClickMediaItem != null) {
+            holder.layout.setOnClickListener(v -> onClickMediaItem.onClick(url, position));
         }
 
     }
