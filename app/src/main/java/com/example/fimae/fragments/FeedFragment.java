@@ -11,11 +11,15 @@ import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.fragment.app.Fragment;
 import androidx.recyclerview.widget.LinearLayoutManager;
+import androidx.viewpager2.widget.ViewPager2;
+
 import com.example.fimae.activities.DetailPostActivity;
 import com.example.fimae.activities.PostActivity;
 import com.example.fimae.adapters.PostAdapter;
+import com.example.fimae.adapters.ShortFragmentPageAdapter;
 import com.example.fimae.databinding.FragmentFeedBinding;
 import com.example.fimae.models.Post;
+import com.google.android.material.tabs.TabLayout;
 import com.google.firebase.firestore.CollectionReference;
 import com.google.firebase.firestore.DocumentChange;
 import com.google.firebase.firestore.EventListener;
@@ -35,6 +39,7 @@ public class FeedFragment extends Fragment {
     private List<Post> posts = new ArrayList<>();
     FragmentFeedBinding binding;
 
+    private ShortFragmentPageAdapter shortFragmentPageAdapter;
 
     ActivityResultLauncher<Intent> mStartForResult = registerForActivityResult(new ActivityResultContracts.StartActivityForResult(),
             result -> {
@@ -96,6 +101,43 @@ public class FeedFragment extends Fragment {
             Intent intent = new Intent(getContext(), PostActivity.class );
             mStartForResult.launch(intent);
         });
+
+        // page shorts
+        shortFragmentPageAdapter = new ShortFragmentPageAdapter(getChildFragmentManager(), getLifecycle());
+        //binding.tabLayoutVideo.addTab(binding.tabLayoutVideo.newTab().setText("Shorts"));
+        //binding.tabLayoutVideo.addTab(binding.tabLayoutVideo.newTab().setText("Stories"));
+
+        binding.viewPagerVideo.setAdapter(shortFragmentPageAdapter);
+        binding.tabLayoutVideo.addOnTabSelectedListener(new TabLayout.OnTabSelectedListener() {
+
+            @Override
+            public void onTabSelected(TabLayout.Tab tab) {
+                if(tab != null) {
+                    binding.viewPagerVideo.setCurrentItem(tab.getPosition());
+                }
+            }
+
+            @Override
+            public void onTabUnselected(TabLayout.Tab tab) {
+
+            }
+
+            @Override
+            public void onTabReselected(TabLayout.Tab tab) {
+
+            }
+        });
+
+        binding.viewPagerVideo.registerOnPageChangeCallback(new ViewPager2.OnPageChangeCallback() {
+            @Override
+            public void onPageSelected(int position) {
+                super.onPageSelected(position);
+                binding.tabLayoutVideo.selectTab(binding.tabLayoutVideo.getTabAt(position));
+            }
+        });
+
         return binding.getRoot();
     }
+
+
 }

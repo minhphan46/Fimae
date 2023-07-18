@@ -36,6 +36,31 @@
                         />
                 </androidx.appcompat.widget.Toolbar>
             </com.google.android.material.appbar.AppBarLayout>
+            <!-- tab reels -->
+            <com.google.android.material.tabs.TabLayout
+                android:id="@+id/tab_layout_video"
+                android:layout_width="match_parent"
+                android:layout_height="50dp"
+                app:tabGravity="fill"
+                app:tabMode="fixed"
+                app:tabIndicatorAnimationMode="elastic"
+                app:tabSelectedTextAppearance="@style/CustomTextAppearanceTab"
+                app:tabTextAppearance="@style/CustomTextAppearanceTab"
+                android:background="@color/text_white">
+                <com.google.android.material.tabs.TabItem
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:text="Shorts"/>
+                <com.google.android.material.tabs.TabItem
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:text="Stories"/>
+            </com.google.android.material.tabs.TabLayout>
+            <androidx.viewpager2.widget.ViewPager2
+                android:id="@+id/view_pager_video"
+                android:layout_width="match_parent"
+                android:layout_height="150dp"/>
+
             <androidx.recyclerview.widget.RecyclerView
                 android:id="@+id/post_list"
                 android:layout_width="match_parent"
