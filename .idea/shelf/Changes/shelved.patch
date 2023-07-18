@@ -1,0 +1,264 @@
+Index: app/src/main/java/com/example/fimae/adapters/StoryAdapter.java
+IDEA additional info:
+Subsystem: com.intellij.openapi.diff.impl.patch.BaseRevisionTextPatchEP
+<+>package com.example.fimae.adapters;\r\n\r\nimport android.util.Log;\r\nimport android.view.LayoutInflater;\r\nimport android.view.View;\r\nimport android.view.ViewGroup;\r\nimport android.widget.*;\r\n\r\nimport androidx.annotation.NonNull;\r\nimport androidx.recyclerview.widget.RecyclerView;\r\n\r\nimport com.bumptech.glide.Glide;\r\nimport com.bumptech.glide.load.engine.DiskCacheStrategy;\r\nimport com.example.fimae.R;\r\nimport com.example.fimae.models.story.Story;\r\nimport com.google.firebase.storage.FirebaseStorage;\r\nimport com.squareup.picasso.Picasso;\r\n\r\nimport java.util.ArrayList;\r\n\r\nimport de.hdodenhof.circleimageview.CircleImageView;\r\n\r\npublic class StoryAdapter extends RecyclerView.Adapter<StoryAdapter.StoryViewHolder>{\r\n\r\n    ArrayList<Story> stories = Story.getFakeData();\r\n    @NonNull\r\n    @Override\r\n    public StoryViewHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {\r\n        View view = LayoutInflater.from(parent.getContext()).inflate(R.layout.story_item, parent, false);\r\n        return new StoryViewHolder(view);\r\n    }\r\n    @Override\r\n    public void onBindViewHolder(@NonNull StoryViewHolder holder, int position) {\r\n        // Get the data at the specified position\r\n        Story story = stories.get(position);\r\n//        Picasso.get().load(story.getUrl()).placeholder(R.drawable.ic_default_avatar).into(holder.storyImage);\r\n        Glide.with(holder.itemView.getContext())\r\n                .load(\"http://commondatastorage.googleapis.com/gtv-videos-bucket/sample/BigBuckBunny.mp4\")\r\n                .diskCacheStrategy(DiskCacheStrategy.ALL)\r\n                .into(holder.storyImage);\r\n        holder.storyTitle.setText(\"Nhật hào\"); // Set the story title\r\n        Log.d(\"Bucket\", FirebaseStorage.getInstance().getReference().getBucket());\r\n    }\r\n\r\n    @Override\r\n    public int getItemCount() {\r\n        return stories.size();\r\n    }\r\n\r\n    public class StoryViewHolder extends RecyclerView.ViewHolder {\r\n    ImageView storyImage;\r\n    CircleImageView storyAvatar;\r\n    TextView storyTitle;\r\n\r\n    public StoryViewHolder(View itemView) {\r\n        super(itemView);\r\n        // Initialize the views from the layout\r\n        storyImage = itemView.findViewById(R.id.story_image);\r\n        storyAvatar = itemView.findViewById(R.id.story_avatar);\r\n        storyTitle = itemView.findViewById(R.id.story_title);\r\n    }\r\n}\r\n}\r\n
+Subsystem: com.intellij.openapi.diff.impl.patch.CharsetEP
+<+>UTF-8
+===================================================================
+diff --git a/app/src/main/java/com/example/fimae/adapters/StoryAdapter.java b/app/src/main/java/com/example/fimae/adapters/StoryAdapter.java
+--- a/app/src/main/java/com/example/fimae/adapters/StoryAdapter.java	(revision 27641a1b4eb439c08262507bc895d73f5d26c7de)
++++ b/app/src/main/java/com/example/fimae/adapters/StoryAdapter.java	(date 1689667471414)
+@@ -20,44 +20,46 @@
+ 
+ import de.hdodenhof.circleimageview.CircleImageView;
+ 
+-public class StoryAdapter extends RecyclerView.Adapter<StoryAdapter.StoryViewHolder>{
++public class StoryAdapter extends RecyclerView.Adapter<StoryAdapter.StoryViewHolder> {
+ 
+     ArrayList<Story> stories = Story.getFakeData();
++
+     @NonNull
+     @Override
+     public StoryViewHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
+         View view = LayoutInflater.from(parent.getContext()).inflate(R.layout.story_item, parent, false);
+         return new StoryViewHolder(view);
+     }
++
+     @Override
+     public void onBindViewHolder(@NonNull StoryViewHolder holder, int position) {
+         // Get the data at the specified position
+         Story story = stories.get(position);
+ //        Picasso.get().load(story.getUrl()).placeholder(R.drawable.ic_default_avatar).into(holder.storyImage);
+-        Glide.with(holder.itemView.getContext())
+-                .load("http://commondatastorage.googleapis.com/gtv-videos-bucket/sample/BigBuckBunny.mp4")
+-                .diskCacheStrategy(DiskCacheStrategy.ALL)
++        Glide.with(holder.itemView)
++                .load(story.getUrl())
+                 .into(holder.storyImage);
+-        holder.storyTitle.setText("Nhật hào"); // Set the story title
++        holder.storyTitle.setText("Nhật Hào"); // Set the story title
+         Log.d("Bucket", FirebaseStorage.getInstance().getReference().getBucket());
+     }
+ 
++
+     @Override
+     public int getItemCount() {
+         return stories.size();
+     }
+ 
+     public class StoryViewHolder extends RecyclerView.ViewHolder {
+-    ImageView storyImage;
+-    CircleImageView storyAvatar;
+-    TextView storyTitle;
++        ImageView storyImage;
++        CircleImageView storyAvatar;
++        TextView storyTitle;
+ 
+-    public StoryViewHolder(View itemView) {
+-        super(itemView);
+-        // Initialize the views from the layout
+-        storyImage = itemView.findViewById(R.id.story_image);
+-        storyAvatar = itemView.findViewById(R.id.story_avatar);
+-        storyTitle = itemView.findViewById(R.id.story_title);
+-    }
+-}
++        public StoryViewHolder(View itemView) {
++            super(itemView);
++            // Initialize the views from the layout
++            storyImage = itemView.findViewById(R.id.story_image);
++            storyAvatar = itemView.findViewById(R.id.story_avatar);
++            storyTitle = itemView.findViewById(R.id.story_title);
++        }
++    }
+ }
+Index: app/src/main/res/layout/story_item.xml
+IDEA additional info:
+Subsystem: com.intellij.openapi.diff.impl.patch.BaseRevisionTextPatchEP
+<+><androidx.constraintlayout.widget.ConstraintLayout xmlns:android=\"http://schemas.android.com/apk/res/android\"\r\n    xmlns:app=\"http://schemas.android.com/apk/res-auto\"\r\n    android:layout_width=\"wrap_content\"\r\n    android:layout_height=\"wrap_content\"\r\n    android:minWidth=\"100dp\"\r\n    android:minHeight=\"155dp\"\r\n    android:background=\"@drawable/story_layout_background\">\r\n\r\n    <!-- Add a custom drawable for the layout background with rounded corners and shadow -->\r\n\r\n    <ImageView\r\n        android:id=\"@+id/story_image\"\r\n        android:layout_width=\"match_parent\"\r\n        android:layout_height=\"match_parent\"\r\n        app:layout_constraintBottom_toBottomOf=\"parent\"\r\n        app:layout_constraintEnd_toEndOf=\"parent\"\r\n        app:layout_constraintStart_toStartOf=\"parent\"\r\n        app:layout_constraintTop_toTopOf=\"parent\" />\r\n\r\n    <de.hdodenhof.circleimageview.CircleImageView\r\n        android:id=\"@+id/story_avatar\"\r\n        android:layout_width=\"24dp\"\r\n        android:layout_height=\"24dp\"\r\n        android:layout_margin=\"5dp\"\r\n        android:src=\"@drawable/ic_default_avatar\"\r\n        app:layout_constraintStart_toStartOf=\"parent\"\r\n        app:layout_constraintTop_toTopOf=\"parent\" />\r\n\r\n    <TextView\r\n        android:id=\"@+id/story_title\"\r\n        android:layout_width=\"wrap_content\"\r\n        android:layout_height=\"wrap_content\"\r\n        android:text=\"Story Title\"\r\n        android:textColor=\"@color/white\"\r\n        android:textStyle=\"bold\"\r\n        android:textSize=\"12sp\"\r\n        android:layout_margin=\"5dp\"\r\n        app:layout_constraintBottom_toBottomOf=\"parent\"\r\n        app:layout_constraintStart_toStartOf=\"parent\" />\r\n\r\n</androidx.constraintlayout.widget.ConstraintLayout>\r\n
+Subsystem: com.intellij.openapi.diff.impl.patch.CharsetEP
+<+>UTF-8
+===================================================================
+diff --git a/app/src/main/res/layout/story_item.xml b/app/src/main/res/layout/story_item.xml
+--- a/app/src/main/res/layout/story_item.xml	(revision 27641a1b4eb439c08262507bc895d73f5d26c7de)
++++ b/app/src/main/res/layout/story_item.xml	(date 1689667452078)
+@@ -1,41 +1,51 @@
+-<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
++<androidx.cardview.widget.CardView xmlns:android="http://schemas.android.com/apk/res/android"
+     xmlns:app="http://schemas.android.com/apk/res-auto"
++    xmlns:tools="http://schemas.android.com/tools"
++    android:id="@+id/media_item_layout"
++    app:cardCornerRadius="8dp"
+     android:layout_width="wrap_content"
+-    android:layout_height="wrap_content"
+-    android:minWidth="100dp"
+-    android:minHeight="155dp"
+-    android:background="@drawable/story_layout_background">
++    android:layout_height="wrap_content">
++    <androidx.constraintlayout.widget.ConstraintLayout
++        android:layout_width="wrap_content"
++        android:layout_height="wrap_content"
++        android:padding="0dp"
++        android:background="@drawable/story_layout_background"
++        android:minWidth="100dp"
++        android:minHeight="150dp">
+ 
+-    <!-- Add a custom drawable for the layout background with rounded corners and shadow -->
++        <!-- Add a custom drawable for the layout background with rounded corners and shadow -->
+ 
+-    <ImageView
+-        android:id="@+id/story_image"
+-        android:layout_width="match_parent"
+-        android:layout_height="match_parent"
+-        app:layout_constraintBottom_toBottomOf="parent"
+-        app:layout_constraintEnd_toEndOf="parent"
+-        app:layout_constraintStart_toStartOf="parent"
+-        app:layout_constraintTop_toTopOf="parent" />
++        <ImageView
++            android:id="@+id/story_image"
++            app:layout_constraintDimensionRatio="H,2:3"
++            android:background="@color/black"
++            android:layout_width="0dp"
++            android:layout_height="0dp"
++            app:layout_constraintBottom_toBottomOf="parent"
++            app:layout_constraintEnd_toEndOf="parent"
++            app:layout_constraintStart_toStartOf="parent"
++            app:layout_constraintTop_toTopOf="parent" />
+ 
+-    <de.hdodenhof.circleimageview.CircleImageView
+-        android:id="@+id/story_avatar"
+-        android:layout_width="24dp"
+-        android:layout_height="24dp"
+-        android:layout_margin="5dp"
+-        android:src="@drawable/ic_default_avatar"
+-        app:layout_constraintStart_toStartOf="parent"
+-        app:layout_constraintTop_toTopOf="parent" />
++        <de.hdodenhof.circleimageview.CircleImageView
++            android:id="@+id/story_avatar"
++            android:layout_width="28dp"
++            android:layout_height="28dp"
++            android:layout_margin="5dp"
++            android:src="@drawable/ic_default_avatar"
++            app:layout_constraintStart_toStartOf="parent"
++            app:layout_constraintTop_toTopOf="parent" />
+ 
+-    <TextView
+-        android:id="@+id/story_title"
+-        android:layout_width="wrap_content"
+-        android:layout_height="wrap_content"
+-        android:text="Story Title"
+-        android:textColor="@color/white"
+-        android:textStyle="bold"
+-        android:textSize="12sp"
+-        android:layout_margin="5dp"
+-        app:layout_constraintBottom_toBottomOf="parent"
+-        app:layout_constraintStart_toStartOf="parent" />
++        <TextView
++            android:id="@+id/story_title"
++            android:layout_width="wrap_content"
++            android:layout_height="wrap_content"
++            android:layout_margin="5dp"
++            android:text="Story Title"
++            android:textColor="@color/white"
++            android:textSize="12sp"
++            android:textStyle="bold"
++            app:layout_constraintBottom_toBottomOf="parent"
++            app:layout_constraintStart_toStartOf="parent" />
+ 
+-</androidx.constraintlayout.widget.ConstraintLayout>
++    </androidx.constraintlayout.widget.ConstraintLayout>
++</androidx.cardview.widget.CardView>
+\ No newline at end of file
+Index: app/src/main/java/com/example/fimae/adapters/SpacingItemDecoration.java
+IDEA additional info:
+Subsystem: com.intellij.openapi.diff.impl.patch.CharsetEP
+<+>UTF-8
+===================================================================
+diff --git a/app/src/main/java/com/example/fimae/adapters/SpacingItemDecoration.java b/app/src/main/java/com/example/fimae/adapters/SpacingItemDecoration.java
+new file mode 100644
+--- /dev/null	(date 1689667702758)
++++ b/app/src/main/java/com/example/fimae/adapters/SpacingItemDecoration.java	(date 1689667702758)
+@@ -0,0 +1,39 @@
++package com.example.fimae.adapters;
++
++import android.graphics.Rect;
++import android.view.View;
++
++import androidx.recyclerview.widget.RecyclerView;
++
++public class SpacingItemDecoration extends RecyclerView.ItemDecoration {
++    private int top;
++    private int bottom;
++    private int left;
++    private int right;
++
++    public SpacingItemDecoration(int spacing) {
++        this.top = spacing;
++        this.bottom = spacing;
++        this.left = spacing;
++        this.right = spacing;
++    }
++    public SpacingItemDecoration(int top, int bottom, int left, int right) {
++        this.top = top;
++        this.bottom = bottom;
++        this.left = left;
++        this.right = right;
++    }
++    public SpacingItemDecoration(int vertical, int horizontal) {
++        this.top = vertical;
++        this.bottom = vertical;
++        this.left = horizontal;
++        this.right = horizontal;
++    }
++    @Override
++    public void getItemOffsets(Rect outRect, View view, RecyclerView parent, RecyclerView.State state) {
++        outRect.top = top;
++        outRect.bottom = bottom;
++        outRect.left = left;
++        outRect.right = right;
++    }
++}
+Index: app/src/main/java/com/example/fimae/fragments/ChatFragment.java
+IDEA additional info:
+Subsystem: com.intellij.openapi.diff.impl.patch.BaseRevisionTextPatchEP
+<+>package com.example.fimae.fragments;\r\n\r\nimport android.content.Intent;\r\nimport android.os.Bundle;\r\nimport android.view.LayoutInflater;\r\nimport android.view.View;\r\nimport android.view.ViewGroup;\r\n\r\nimport android.widget.LinearLayout;\r\nimport android.widget.Toast;\r\nimport androidx.annotation.NonNull;\r\nimport androidx.annotation.Nullable;\r\nimport androidx.fragment.app.Fragment;\r\n\r\nimport androidx.recyclerview.widget.LinearLayoutManager;\r\nimport androidx.recyclerview.widget.RecyclerView;\r\nimport com.example.fimae.R;\r\nimport com.example.fimae.activities.OnChatActivity;\r\nimport com.example.fimae.activities.SearchUserActivity;\r\nimport com.example.fimae.adapters.ConversationAdapter;\r\nimport com.example.fimae.adapters.StoryAdapter;\r\nimport com.example.fimae.adapters.UserHomeViewAdapter;\r\nimport com.example.fimae.models.Conversation;\r\nimport com.example.fimae.models.Fimaers;\r\nimport com.example.fimae.models.Participant;\r\nimport com.example.fimae.repository.ChatRepository;\r\nimport com.google.android.gms.tasks.OnCompleteListener;\r\nimport com.google.android.gms.tasks.Task;\r\nimport com.google.firebase.auth.FirebaseAuth;\r\nimport com.google.firebase.firestore.CollectionReference;\r\nimport com.google.firebase.firestore.DocumentReference;\r\nimport com.google.firebase.firestore.FirebaseFirestore;\r\nimport com.google.firebase.firestore.Query;\r\nimport com.google.firebase.firestore.QueryDocumentSnapshot;\r\nimport com.google.firebase.firestore.WriteBatch;\r\n\r\nimport org.jetbrains.annotations.NotNull;\r\n\r\nimport java.util.*;\r\nimport java.util.function.BiConsumer;\r\nimport java.util.function.Consumer;\r\n\r\npublic class ChatFragment extends Fragment {\r\n    private FirebaseFirestore firestore;\r\n    private CollectionReference fimaeUserRef;\r\n    private CollectionReference conversationRef;\r\n\r\n    private LinearLayout searchbar;\r\n    @Nullable\r\n    @Override\r\n    public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {\r\n        View view = inflater.inflate(R.layout.fragment_chat, container, false);\r\n        RecyclerView recyclerView = view.findViewById(R.id.list_user);\r\n        searchbar = view.findViewById(R.id.search_bar);\r\n        Query query = ChatRepository.getInstance().getConversationQuery();\r\n        ConversationAdapter adapter = new ConversationAdapter(query, conversation -> {\r\n            Intent intent = new Intent(getContext(), OnChatActivity.class);\r\n            intent.putExtra(\"conversationID\", conversation.getId());\r\n            startActivity(intent);\r\n        });\r\n        LinearLayoutManager linearLayoutManager = new LinearLayoutManager(this.getContext());\r\n        recyclerView.setAdapter(adapter);\r\n        recyclerView.setLayoutManager(linearLayoutManager);\r\n        searchbar.setOnClickListener(new View.OnClickListener() {\r\n            @Override\r\n            public void onClick(View v) {\r\n                Intent intent = new Intent(getContext(), SearchUserActivity.class);\r\n                startActivity(intent);\r\n            }\r\n        });\r\n        RecyclerView storyRecyclerView = view.findViewById(R.id.recycler_view_story);\r\n        LinearLayoutManager storyLinearLayoutManager = new LinearLayoutManager(this.getContext());\r\n        storyLinearLayoutManager.setOrientation(RecyclerView.HORIZONTAL);\r\n        storyRecyclerView.setLayoutManager(storyLinearLayoutManager);\r\n        StoryAdapter storyAdapter = new StoryAdapter();\r\n        storyRecyclerView.setAdapter(storyAdapter);\r\n        return view;\r\n    }\r\n\r\n\r\n}\r\n
+Subsystem: com.intellij.openapi.diff.impl.patch.CharsetEP
+<+>UTF-8
+===================================================================
+diff --git a/app/src/main/java/com/example/fimae/fragments/ChatFragment.java b/app/src/main/java/com/example/fimae/fragments/ChatFragment.java
+--- a/app/src/main/java/com/example/fimae/fragments/ChatFragment.java	(revision 27641a1b4eb439c08262507bc895d73f5d26c7de)
++++ b/app/src/main/java/com/example/fimae/fragments/ChatFragment.java	(date 1689668633616)
+@@ -18,6 +18,7 @@
+ import com.example.fimae.activities.OnChatActivity;
+ import com.example.fimae.activities.SearchUserActivity;
+ import com.example.fimae.adapters.ConversationAdapter;
++import com.example.fimae.adapters.SpacingItemDecoration;
+ import com.example.fimae.adapters.StoryAdapter;
+ import com.example.fimae.adapters.UserHomeViewAdapter;
+ import com.example.fimae.models.Conversation;
+@@ -59,19 +60,19 @@
+             startActivity(intent);
+         });
+         LinearLayoutManager linearLayoutManager = new LinearLayoutManager(this.getContext());
+-        recyclerView.setAdapter(adapter);
+         recyclerView.setLayoutManager(linearLayoutManager);
+-        searchbar.setOnClickListener(new View.OnClickListener() {
+-            @Override
+-            public void onClick(View v) {
+-                Intent intent = new Intent(getContext(), SearchUserActivity.class);
+-                startActivity(intent);
+-            }
++        recyclerView.setAdapter(adapter);
++
++        searchbar.setOnClickListener(v -> {
++            Intent intent = new Intent(getContext(), SearchUserActivity.class);
++            startActivity(intent);
+         });
+         RecyclerView storyRecyclerView = view.findViewById(R.id.recycler_view_story);
+         LinearLayoutManager storyLinearLayoutManager = new LinearLayoutManager(this.getContext());
+         storyLinearLayoutManager.setOrientation(RecyclerView.HORIZONTAL);
+         storyRecyclerView.setLayoutManager(storyLinearLayoutManager);
++        SpacingItemDecoration itemDecoration = new SpacingItemDecoration(16, 16, 8, 8);
++        storyRecyclerView.addItemDecoration(itemDecoration);
+         StoryAdapter storyAdapter = new StoryAdapter();
+         storyRecyclerView.setAdapter(storyAdapter);
+         return view;
