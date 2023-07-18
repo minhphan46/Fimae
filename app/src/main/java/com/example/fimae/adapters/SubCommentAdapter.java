@@ -30,17 +30,17 @@ import java.util.List;
 import java.util.Objects;
 public class SubCommentAdapter extends RecyclerView.Adapter<SubCommentAdapter.ViewHolder> {
     public Context mContext;
-    private CommentAdapter.IClickMyCommentItem iClickCommentItem;
+    private NewCommentAdapter.IClickMyCommentItem iClickCommentItem;
     private PostRepository postRepo = PostRepository.getInstance();
     final CommentRepository commentRepository = CommentRepository.getInstance();
     private CommentItemAdapter commentItemAdapter;
     private List<CommentItemAdapter> mSubComment;
-    final CommentAdapter.IClickMyCommentItem iClickMyCommentItem;
+    final NewCommentAdapter.IClickMyCommentItem iClickMyCommentItem;
 //    public interface IClickCommentItem {
 //        void onClick(String commentId, SubCommentAdapter commentAdapter, Fimaers fimaers);
 //    }
 
-    public SubCommentAdapter(Context mContext, CommentItemAdapter commentItemAdapter, CommentAdapter.IClickMyCommentItem listener, CommentAdapter.IClickMyCommentItem iClickMyCommentItem ) {
+    public SubCommentAdapter(Context mContext, CommentItemAdapter commentItemAdapter, NewCommentAdapter.IClickMyCommentItem listener, NewCommentAdapter.IClickMyCommentItem iClickMyCommentItem ) {
         this.mContext = mContext;
         this.iClickCommentItem = listener;
         this.iClickMyCommentItem = iClickMyCommentItem;

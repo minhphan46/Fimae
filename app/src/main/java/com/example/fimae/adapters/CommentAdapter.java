@@ -29,6 +29,7 @@ import java.util.Date;
 import java.util.List;
 import java.util.Objects;
 
+@Deprecated
 public class CommentAdapter extends RecyclerView.Adapter<CommentAdapter.ViewHolder> {
     public Context mContext;
 //    public List<Comment> mComment;
@@ -113,7 +114,7 @@ public class CommentAdapter extends RecyclerView.Adapter<CommentAdapter.ViewHold
         binding.itemUserTvAge.setText(String.valueOf(userInfo.calculateAge()));
         //init listener
         initListener(binding, commentRepository.getCommentRef(postId, POST_COLLECTION ).document(currentComment.getId()), currentComment, userInfo);
-        SubCommentAdapter adapter = new SubCommentAdapter(mContext, currentCommentItem, this.iClickCommentItem, this.iClickMyCommentItem);
+        SubCommentAdapter adapter = new SubCommentAdapter(mContext, currentCommentItem, (NewCommentAdapter.IClickMyCommentItem) this.iClickCommentItem, (NewCommentAdapter.IClickMyCommentItem) this.iClickMyCommentItem);
         binding.subComment.setVisibility(View.VISIBLE);
         LinearLayoutManager layoutManager = new LinearLayoutManager(mContext);
         binding.subComment.setLayoutManager(layoutManager);

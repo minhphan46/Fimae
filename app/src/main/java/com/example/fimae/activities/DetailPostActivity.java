@@ -16,7 +16,7 @@ import android.text.TextWatcher;
 import android.view.View;
 
 import com.example.fimae.R;
-import com.example.fimae.adapters.CommentAdapter;
+import com.example.fimae.adapters.NewCommentAdapter;
 import com.example.fimae.adapters.PostAdapter;
 import com.example.fimae.adapters.PostPhotoAdapter;
 import com.example.fimae.bottomdialogs.LikedPostListFragment;
@@ -37,6 +37,7 @@ import com.google.firebase.firestore.CollectionReference;
 import com.google.firebase.firestore.DocumentReference;
 import com.google.firebase.firestore.DocumentSnapshot;
 import com.google.firebase.firestore.FirebaseFirestore;
+import com.google.firebase.firestore.Query;
 import com.squareup.picasso.Picasso;
 
 import java.util.ArrayList;
@@ -58,7 +59,7 @@ public class DetailPostActivity extends AppCompatActivity {
     List<Uri> imageUris = new ArrayList<>();
     List<Comment> comments;
     List<CommentItemAdapter> commentItemAdapters;
-    CommentAdapter commentAdapter;
+    NewCommentAdapter newCommentAdapter;
 //    SubCommentAdapter selectedAdapter;
     CollectionReference postRef = FirebaseFirestore.getInstance().collection("posts");
     CollectionReference fimaesRef = FirebaseFirestore.getInstance().collection("fimaers");
@@ -75,13 +76,13 @@ public class DetailPostActivity extends AppCompatActivity {
 
                 }
             });
-
+    String postId;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         binding = DataBindingUtil.setContentView(this, R.layout.detail_post);
         Intent intent = getIntent();
-        String postId = intent.getStringExtra("id");
+        postId = intent.getStringExtra("id");
         getPost(postId);
     }
     private void getPost(String postId){
@@ -160,15 +161,18 @@ public class DetailPostActivity extends AppCompatActivity {
         binding.ageTextView.setText(String.valueOf(fimaers.calculateAge()));
         comments = new ArrayList<>();
         commentItemAdapters = new ArrayList<>();
-        commentAdapter = new CommentAdapter(this, commentItemAdapters, (comment) -> {
+
+        Query query = postRef.document(postId).collection("comments").orderBy("timeCreated", Query.Direction.ASCENDING);
+
+        newCommentAdapter = new NewCommentAdapter(this, query, (comment) -> {
             selectedCommentId =  comment.getParentId() != "" ? comment.getParentId() : comment.getId();
             binding.addComment.setHint("@"+fimaers.getLastName());
             selectedFimaers = fimaers;
         }, post.getPostId(), this::showCommentDialog);
         LinearLayoutManager layoutManager1 = new LinearLayoutManager(this);
         binding.commentRecycler.setLayoutManager(layoutManager1);
-        binding.commentRecycler.setAdapter(commentAdapter);
-        commentRepository.getComment(post.getPostId(), commentItemAdapters, commentAdapter);
+        binding.commentRecycler.setAdapter(newCommentAdapter);
+        commentRepository.getComment(post.getPostId(), commentItemAdapters, newCommentAdapter);
     }
     private void initListener(){
         createCommentDialog();

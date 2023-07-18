@@ -1,6 +1,5 @@
 package com.example.fimae.models;
 
-import com.example.fimae.adapters.CommentAdapter;
 import com.example.fimae.adapters.SubCommentAdapter;
 
 import java.util.ArrayList;

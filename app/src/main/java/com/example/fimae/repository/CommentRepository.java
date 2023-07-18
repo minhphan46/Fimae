@@ -1,26 +1,15 @@
 package com.example.fimae.repository;
 
-import android.content.Context;
-import android.widget.Toast;
-
-import com.example.fimae.R;
-import com.example.fimae.adapters.CommentAdapter;
-import com.example.fimae.adapters.SubCommentAdapter;
-import com.example.fimae.databinding.CommentItemBinding;
+import com.example.fimae.adapters.NewCommentAdapter;
 import com.example.fimae.models.Comment;
 import com.example.fimae.models.CommentItemAdapter;
-import com.example.fimae.models.Fimaers;
-import com.example.fimae.models.shorts.ShortMedia;
-import com.example.fimae.service.PostService;
 import com.google.android.gms.tasks.Task;
 import com.google.android.gms.tasks.TaskCompletionSource;
-import com.google.firebase.Timestamp;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.firestore.CollectionReference;
 import com.google.firebase.firestore.DocumentChange;
 import com.google.firebase.firestore.DocumentReference;
 import com.google.firebase.firestore.FieldValue;
-import com.google.firebase.firestore.Filter;
 import com.google.firebase.firestore.FirebaseFirestore;
 
 import java.util.ArrayList;
@@ -28,8 +17,6 @@ import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
-import java.util.Objects;
-
 
 
 public class CommentRepository {
@@ -108,7 +95,7 @@ public class CommentRepository {
         });
     }
 
-    public void getComment(String postId, List<CommentItemAdapter> comments, CommentAdapter commentAdapter) {
+    public void getComment(String postId, List<CommentItemAdapter> comments, NewCommentAdapter newCommentAdapter) {
         getCommentRef(postId, POST_COLLECTION).whereEqualTo("parentId", "").addSnapshotListener((value, error) -> {
             if (error != null) {
                 return;
@@ -120,14 +107,14 @@ public class CommentRepository {
                     case ADDED:
                         CommentItemAdapter commentItemAdapter = new CommentItemAdapter(comment);
                         comments.add(commentItemAdapter);
-                        commentAdapter.addUpdate();
+                        newCommentAdapter.addUpdate();
                         break;
                     case MODIFIED:
                         break;
                     case REMOVED:
                         int h = findCommentItemAdapterById(comments, comment.getId());
                         comments.remove(h);
-                        commentAdapter.notifyItemRemoved(h);
+                        newCommentAdapter.notifyItemRemoved(h);
                 }
             }
         });
