@@ -61,7 +61,7 @@ public class CommentRepository {
         TaskCompletionSource<Boolean> taskCompletionSource = new TaskCompletionSource<>();
         Map<String, Object> updates = new HashMap<>();
             updates.put("content", content);
-            updates.put("timeEdited", new Timestamp(new Date()));
+            updates.put("timeEdited", FieldValue.serverTimestamp());
             getCommentRef(postId, POST_COLLECTION).document(comment.getId()).update(updates).addOnCompleteListener(ss -> {
                 taskCompletionSource.setResult(true);
             }).addOnFailureListener(e -> {

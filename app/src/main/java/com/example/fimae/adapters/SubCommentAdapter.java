@@ -23,6 +23,8 @@ import com.example.fimae.service.TimerService;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.firestore.DocumentReference;
 import com.squareup.picasso.Picasso;
+
+import java.util.Date;
 import java.util.List;
 
 import java.util.Objects;
@@ -86,7 +88,7 @@ public class SubCommentAdapter extends RecyclerView.Adapter<SubCommentAdapter.Vi
             }
         });
         binding.content.setText(currentComment.getContent());
-        TimerService.setDuration(binding.time, currentComment.getTimeCreated());
+        TimerService.setDuration(binding.time, (Date) currentComment.getTimeCreated());
     }
     public void addUpdate(){
         this.notifyItemInserted(mSubComment.size() - 1);

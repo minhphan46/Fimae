@@ -1,5 +1,6 @@
 package com.example.fimae.models;
 
+import com.google.firebase.firestore.FieldValue;
 import com.google.firebase.firestore.ServerTimestamp;
 
 import java.util.Date;
@@ -7,7 +8,7 @@ import java.util.List;
 import java.util.Map;
 
 public class Comment {
-//    @ServerTimestamp
+    @ServerTimestamp
     protected Date timeCreated;
     protected Map<String, Boolean> likes;
     protected String publisher;

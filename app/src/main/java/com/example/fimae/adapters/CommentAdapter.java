@@ -25,6 +25,7 @@ import com.google.firebase.firestore.DocumentReference;
 import com.squareup.picasso.Picasso;
 
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.List;
 import java.util.Objects;
 
@@ -96,7 +97,7 @@ public class CommentAdapter extends RecyclerView.Adapter<CommentAdapter.ViewHold
         Comment currentComment = currentCommentItem.getComment();
         binding.content.setText(currentComment.getContent());
         if(currentComment.getTimeEdited() == null ) {
-            TimerService.setDuration(binding.time, currentComment.getTimeCreated());
+            TimerService.setDuration(binding.time, (Date) currentComment.getTimeCreated());
         }
         else{
             binding.isEdited.setVisibility(View.VISIBLE);
