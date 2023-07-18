@@ -1,46 +1,49 @@
 package com.example.fimae.adapters;
 
+import static com.example.fimae.repository.CommentRepository.POST_COLLECTION;
+
 import android.content.Context;
 import android.view.LayoutInflater;
+import android.view.View;
 import android.view.ViewGroup;
 
 import androidx.annotation.NonNull;
+import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.example.fimae.R;
 import com.example.fimae.databinding.CommentItemBinding;
+import com.example.fimae.models.Comment;
+import com.example.fimae.models.CommentItemAdapter;
 import com.example.fimae.models.Fimaers;
-import com.example.fimae.models.SubComment;
 import com.example.fimae.repository.CommentRepository;
 import com.example.fimae.repository.PostRepository;
+import com.example.fimae.service.PostService;
 import com.example.fimae.service.TimerService;
 import com.google.firebase.auth.FirebaseAuth;
+import com.google.firebase.firestore.DocumentReference;
 import com.squareup.picasso.Picasso;
-
-import java.util.HashMap;
 import java.util.List;
-import java.util.Map;
+
 import java.util.Objects;
 public class SubCommentAdapter extends RecyclerView.Adapter<SubCommentAdapter.ViewHolder> {
     public Context mContext;
-    public List<SubComment> mSubComment;
-    private IClickCommentItem iClickCommentItem;
+    private CommentAdapter.IClickMyCommentItem iClickCommentItem;
     private PostRepository postRepo = PostRepository.getInstance();
     final CommentRepository commentRepository = CommentRepository.getInstance();
-    private String postId;
-    private String commentId;
+    private CommentItemAdapter commentItemAdapter;
+    private List<CommentItemAdapter> mSubComment;
     final CommentAdapter.IClickMyCommentItem iClickMyCommentItem;
-    public interface IClickCommentItem {
-        void onClick(String commentId, SubCommentAdapter commentAdapter, Fimaers fimaers);
-    }
+//    public interface IClickCommentItem {
+//        void onClick(String commentId, SubCommentAdapter commentAdapter, Fimaers fimaers);
+//    }
 
-    public SubCommentAdapter(Context mContext, List<SubComment> mSubComment, IClickCommentItem listener, CommentAdapter.IClickMyCommentItem iClickMyCommentItem, String postId, String commentId ) {
+    public SubCommentAdapter(Context mContext, CommentItemAdapter commentItemAdapter, CommentAdapter.IClickMyCommentItem listener, CommentAdapter.IClickMyCommentItem iClickMyCommentItem ) {
         this.mContext = mContext;
-        this.mSubComment = mSubComment;
         this.iClickCommentItem = listener;
-        this.postId = postId;
-        this.commentId = commentId;
         this.iClickMyCommentItem = iClickMyCommentItem;
+        this.commentItemAdapter = commentItemAdapter;
+        this.mSubComment = commentItemAdapter.getSubComment();
     }
     @NonNull
     @Override
@@ -52,7 +55,8 @@ public class SubCommentAdapter extends RecyclerView.Adapter<SubCommentAdapter.Vi
     @Override
     public void onBindViewHolder(@NonNull ViewHolder holder, int position) {
         CommentItemBinding binding = holder.binding;
-        SubComment currentComment = mSubComment.get(position);
+        CommentItemAdapter currentCommentItem = mSubComment.get(position);
+        Comment currentComment = mSubComment.get(position).getComment();
         postRepo.getUserById(currentComment.getPublisher(), result -> {
             Fimaers userInfo = result;
             if(userInfo != null){
@@ -68,11 +72,17 @@ public class SubCommentAdapter extends RecyclerView.Adapter<SubCommentAdapter.Vi
                         iClickMyCommentItem.onClick(currentComment);
                     }
                     else{
-                        iClickCommentItem.onClick(commentId, this, result);
+                        iClickCommentItem.onClick(currentComment);
                     }
                 } );
-
-                commentRepository.subCommentListener(binding, result, postId, commentId, currentComment);
+                SubCommentAdapter adapter = new SubCommentAdapter(mContext, currentCommentItem, this.iClickCommentItem, this.iClickMyCommentItem);
+                binding.subComment.setVisibility(View.VISIBLE);
+                LinearLayoutManager layoutManager = new LinearLayoutManager(mContext);
+                binding.subComment.setLayoutManager(layoutManager);
+                binding.subComment.setAdapter(adapter);
+                currentCommentItem.setSubAdapter(adapter);
+                commentRepository.getSubComment(currentCommentItem);
+                updateComment(binding, commentRepository.getCommentRef(currentComment.getPostId(), POST_COLLECTION ).document(currentComment.getId()), currentComment, userInfo);
             }
         });
         binding.content.setText(currentComment.getContent());
@@ -84,6 +94,47 @@ public class SubCommentAdapter extends RecyclerView.Adapter<SubCommentAdapter.Vi
     public void addModify(int pos){
         this.notifyItemChanged(pos);
     }
+    private void updateComment(CommentItemBinding binding , DocumentReference reference, Comment current, Fimaers fimaers){
+        reference.addSnapshotListener((value, error) -> {
+            if (error != null) {
+                return;
+            }
+            Comment updateComment = value.toObject(Comment.class);
+            //truong hop xoa thi update comment se = null
+            if(updateComment == null) return;
+            //listen content change
+            if(!updateComment.getContent().equals(current.getContent())){
+                binding.content.setText(updateComment.getContent());
+            }
+            //edit time change
+            if(updateComment.getTimeEdited() != null){
+                binding.isEdited.setVisibility(View.VISIBLE);
+                TimerService.setDuration(binding.time, updateComment.getTimeEdited());
+            }
+            //like change
+            binding.likeNumber.setText(String.valueOf(PostService.getInstance().getNumberOfLikes(updateComment.getLikes())));
+            if (updateComment.getLikes().containsKey(current.getPublisher()) && Boolean.TRUE.equals(updateComment.getLikes().get(current.getPublisher()))) {
+                binding.heart.setImageResource(R.drawable.ic_heart1);
+                binding.heart.setOnClickListener(view -> {
+                    String path = "likes." + fimaers.getUid();
+                    binding.heart.setImageResource(R.drawable.ic_heart1);
+                    reference.update(
+                            path, false
+                    );
+                });
+            } else {
+                binding.heart.setImageResource(R.drawable.ic_heart_gray);
+                binding.heart.setOnClickListener(view -> {
+                    String path = "likes." + fimaers.getUid();
+                    binding.heart.setImageResource(R.drawable.ic_heart1);
+                    reference.update(
+                            path, true
+                    );
+                });
+            }
+        });
+    }
+
 
     @Override
     public int getItemCount() {
