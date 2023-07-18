@@ -86,9 +86,7 @@ public class ProfileFragment extends Fragment {
             public void onClick(View view) {
 
                 AvatarBottomSheetFragment avatarFragment = AvatarBottomSheetFragment.newInstance(viewModel.getUser().getValue().getAvatarUrl());
-
                 FragmentManager fragmentManager = getChildFragmentManager(); // For fragments
-
                 avatarFragment.show(fragmentManager, "avatar_bottom_sheet");
             }
         });

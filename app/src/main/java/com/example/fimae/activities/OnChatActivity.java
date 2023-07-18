@@ -232,6 +232,7 @@ public class OnChatActivity extends AppCompatActivity implements MediaListDialog
         startActivityForResult(takePictureIntent, REQUEST_IMAGE_CAPTURE);
     }
 
+
     @Override
     protected void onActivityResult(int requestCode, int resultCode, Intent data) {
         super.onActivityResult(requestCode, resultCode, data);
