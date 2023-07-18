@@ -104,10 +104,9 @@ public class FeedFragment extends Fragment {
 
         // page shorts
         shortFragmentPageAdapter = new ShortFragmentPageAdapter(getChildFragmentManager(), getLifecycle());
-        //binding.tabLayoutVideo.addTab(binding.tabLayoutVideo.newTab().setText("Shorts"));
-        //binding.tabLayoutVideo.addTab(binding.tabLayoutVideo.newTab().setText("Stories"));
 
         binding.viewPagerVideo.setAdapter(shortFragmentPageAdapter);
+        binding.viewPagerVideo.setUserInputEnabled(false);
         binding.tabLayoutVideo.addOnTabSelectedListener(new TabLayout.OnTabSelectedListener() {
 
             @Override

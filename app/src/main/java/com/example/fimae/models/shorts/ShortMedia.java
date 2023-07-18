@@ -1,6 +1,8 @@
 package com.example.fimae.models.shorts;
 
 import com.example.fimae.activities.PostMode;
+import com.example.fimae.models.story.Story;
+import com.example.fimae.models.story.StoryType;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.firestore.ServerTimestamp;
 import com.google.firebase.storage.FirebaseStorage;
@@ -46,6 +48,20 @@ public class ShortMedia {
         shortMedia.setAllowComment(allowComment);
         shortMedia.setUsersLiked(new ArrayList<>());
         return shortMedia;
+    }
+    public static ArrayList<ShortMedia> getFakeData(){
+        ArrayList<ShortMedia> shortMedias = new ArrayList<>();
+        shortMedias.add(createShortVideo("1", "test", "https://picsum.photos/200/300?random=1", PostMode.PUBLIC, true));
+        shortMedias.add(createShortVideo("2", "test", "https://picsum.photos/200/300?random=2", PostMode.PUBLIC, true));
+        shortMedias.add(createShortVideo("3", "test", "https://picsum.photos/200/300?random=3", PostMode.PUBLIC, true));
+        shortMedias.add(createShortVideo("4", "test", "https://picsum.photos/200/300?random=4", PostMode.PUBLIC, true));
+        shortMedias.add(createShortVideo("5", "test", "https://picsum.photos/200/300?random=5", PostMode.PUBLIC, true));
+        shortMedias.add(createShortVideo("6", "test", "https://picsum.photos/200/300?random=6", PostMode.PUBLIC, true));
+        shortMedias.add(createShortVideo("7", "test", "https://picsum.photos/200/300?random=7", PostMode.PUBLIC, true));
+        shortMedias.add(createShortVideo("8", "test", "https://picsum.photos/200/300?random=8", PostMode.PUBLIC, true));
+        shortMedias.add(createShortVideo("9", "test", "https://picsum.photos/200/300?random=9", PostMode.PUBLIC, true));
+        shortMedias.add(createShortVideo("10", "test", "https://picsum.photos/200/300?random=10", PostMode.PUBLIC, true));
+        return shortMedias;
     }
 
     public String getId() {

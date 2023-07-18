@@ -3,12 +3,17 @@ package com.example.fimae.fragments;
 import android.os.Bundle;
 
 import androidx.fragment.app.Fragment;
+import androidx.recyclerview.widget.LinearLayoutManager;
+import androidx.recyclerview.widget.RecyclerView;
 
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 
 import com.example.fimae.R;
+import com.example.fimae.adapters.ShortsReviewAdapter;
+import com.example.fimae.adapters.SpacingItemDecoration;
+import com.example.fimae.adapters.StoryAdapter;
 
 /**
  * A simple {@link Fragment} subclass.
@@ -30,21 +35,13 @@ public class ShortTabFragment extends Fragment {
         // Required empty public constructor
     }
 
-    /**
-     * Use this factory method to create a new instance of
-     * this fragment using the provided parameters.
-     *
-     * @param param1 Parameter 1.
-     * @param param2 Parameter 2.
-     * @return A new instance of fragment ShortTabFragment.
-     */
-    // TODO: Rename and change types and number of parameters
     public static ShortTabFragment newInstance(String param1, String param2) {
         ShortTabFragment fragment = new ShortTabFragment();
         Bundle args = new Bundle();
         args.putString(ARG_PARAM1, param1);
         args.putString(ARG_PARAM2, param2);
         fragment.setArguments(args);
+
         return fragment;
     }
 
@@ -60,7 +57,17 @@ public class ShortTabFragment extends Fragment {
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
-        // Inflate the layout for this fragment
-        return inflater.inflate(R.layout.fragment_short_tab, container, false);
+        View view = inflater.inflate(R.layout.fragment_short_tab, container, false);
+
+        RecyclerView storyRecyclerView = view.findViewById(R.id.recycler_view_shorts_tab);
+        LinearLayoutManager storyLinearLayoutManager = new LinearLayoutManager(this.getContext());
+        storyLinearLayoutManager.setOrientation(RecyclerView.HORIZONTAL);
+        storyRecyclerView.setLayoutManager(storyLinearLayoutManager);
+        SpacingItemDecoration itemDecoration = new SpacingItemDecoration(16, 16, 8, 8);
+        storyRecyclerView.addItemDecoration(itemDecoration);
+        ShortsReviewAdapter shortAdapter = new ShortsReviewAdapter();
+        storyRecyclerView.setAdapter(shortAdapter);
+
+        return view;
     }
 }

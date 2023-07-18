@@ -3,12 +3,16 @@ package com.example.fimae.fragments;
 import android.os.Bundle;
 
 import androidx.fragment.app.Fragment;
+import androidx.recyclerview.widget.LinearLayoutManager;
+import androidx.recyclerview.widget.RecyclerView;
 
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 
 import com.example.fimae.R;
+import com.example.fimae.adapters.SpacingItemDecoration;
+import com.example.fimae.adapters.StoryAdapter;
 
 /**
  * A simple {@link Fragment} subclass.
@@ -61,6 +65,16 @@ public class StoryTabFragment extends Fragment {
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
         // Inflate the layout for this fragment
-        return inflater.inflate(R.layout.fragment_story_tab, container, false);
+        View view =  inflater.inflate(R.layout.fragment_story_tab, container, false);
+        RecyclerView storyRecyclerView = view.findViewById(R.id.recycler_view_story_tab);
+        LinearLayoutManager storyLinearLayoutManager = new LinearLayoutManager(this.getContext());
+        storyLinearLayoutManager.setOrientation(RecyclerView.HORIZONTAL);
+        storyRecyclerView.setLayoutManager(storyLinearLayoutManager);
+        SpacingItemDecoration itemDecoration = new SpacingItemDecoration(16, 16, 8, 8);
+        storyRecyclerView.addItemDecoration(itemDecoration);
+        StoryAdapter storyAdapter = new StoryAdapter();
+        storyRecyclerView.setAdapter(storyAdapter);
+
+        return view;
     }
 }

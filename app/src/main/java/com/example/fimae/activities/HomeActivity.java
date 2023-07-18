@@ -8,9 +8,12 @@ import androidx.viewpager.widget.ViewPager;
 
 import android.os.Bundle;
 import android.view.MenuItem;
+import android.view.MotionEvent;
+import android.view.View;
 
 import com.example.fimae.R;
 import com.example.fimae.adapters.ViewPagerAdapter;
+import com.example.fimae.service.CustomViewPager;
 import com.example.fimae.service.UpdateUserActivityTimeService;
 import com.google.android.material.bottomnavigation.BottomNavigationView;
 import com.google.android.material.navigation.NavigationBarView;
@@ -20,7 +23,7 @@ import java.security.cert.Certificate;
 public class HomeActivity extends AppCompatActivity {
 
     private BottomNavigationView mNavigationView;
-    private ViewPager mViewPager;
+    private CustomViewPager mViewPager;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -57,7 +60,6 @@ public class HomeActivity extends AppCompatActivity {
     private void setUpViewPager() {
         ViewPagerAdapter viewPagerAdapter = new ViewPagerAdapter(getSupportFragmentManager(), FragmentPagerAdapter.BEHAVIOR_RESUME_ONLY_CURRENT_FRAGMENT);
         mViewPager.setAdapter(viewPagerAdapter);
-
         mViewPager.addOnPageChangeListener(new ViewPager.OnPageChangeListener() {
             @Override
             public void onPageScrolled(int position, float positionOffset, int positionOffsetPixels) {
