@@ -1,5 +1,7 @@
 package com.example.fimae.models.shorts;
 
+import com.example.fimae.R;
+import com.example.fimae.activities.HomeActivity;
 import com.example.fimae.activities.PostMode;
 import com.example.fimae.models.story.Story;
 import com.example.fimae.models.story.StoryType;
@@ -51,16 +53,17 @@ public class ShortMedia {
     }
     public static ArrayList<ShortMedia> getFakeData(){
         ArrayList<ShortMedia> shortMedias = new ArrayList<>();
-        shortMedias.add(createShortVideo("1", "test", "https://picsum.photos/200/300?random=1", PostMode.PUBLIC, true));
-        shortMedias.add(createShortVideo("2", "test", "https://picsum.photos/200/300?random=2", PostMode.PUBLIC, true));
-        shortMedias.add(createShortVideo("3", "test", "https://picsum.photos/200/300?random=3", PostMode.PUBLIC, true));
-        shortMedias.add(createShortVideo("4", "test", "https://picsum.photos/200/300?random=4", PostMode.PUBLIC, true));
-        shortMedias.add(createShortVideo("5", "test", "https://picsum.photos/200/300?random=5", PostMode.PUBLIC, true));
-        shortMedias.add(createShortVideo("6", "test", "https://picsum.photos/200/300?random=6", PostMode.PUBLIC, true));
-        shortMedias.add(createShortVideo("7", "test", "https://picsum.photos/200/300?random=7", PostMode.PUBLIC, true));
-        shortMedias.add(createShortVideo("8", "test", "https://picsum.photos/200/300?random=8", PostMode.PUBLIC, true));
-        shortMedias.add(createShortVideo("9", "test", "https://picsum.photos/200/300?random=9", PostMode.PUBLIC, true));
-        shortMedias.add(createShortVideo("10", "test", "https://picsum.photos/200/300?random=10", PostMode.PUBLIC, true));
+
+        shortMedias.add(ShortMedia.createShortVideo("1", "Video \"Ngọt ngào cùng những chú mèo đáng yêu\" là một bộ sưu tập những cảnh quay đáng yêu và đầy hài hước về các chú mèo dễ thương", "android.resource://" + HomeActivity.PACKAGE_NAME + "/"+ R.raw.video1, PostMode.PUBLIC, true));
+        shortMedias.add(ShortMedia.createShortVideo("2", "Video bắt đầu bằng những cảnh mèo con vui đùa, nhảy lên nhảy xuống với niềm vui tột độ trên chiếc giường nhỏ. ", "android.resource://" + HomeActivity.PACKAGE_NAME + "/"+ R.raw.video2, PostMode.PUBLIC, true));
+        shortMedias.add(ShortMedia.createShortVideo("3", "Từ những cánh rừng rậm rạp, thác nước xiết dòng", "android.resource://" + HomeActivity.PACKAGE_NAME + "/"+ R.raw.video3, PostMode.PUBLIC, true));
+        shortMedias.add(ShortMedia.createShortVideo("4", "test", "android.resource://" + HomeActivity.PACKAGE_NAME + "/"+ R.raw.video4, PostMode.PUBLIC, true));
+        shortMedias.add(ShortMedia.createShortVideo("5", "test", "android.resource://" + HomeActivity.PACKAGE_NAME + "/"+ R.raw.video5, PostMode.PUBLIC, true));
+        shortMedias.add(ShortMedia.createShortVideo("6", "test", "android.resource://" + HomeActivity.PACKAGE_NAME + "/"+ R.raw.video6, PostMode.PUBLIC, true));
+        shortMedias.add(ShortMedia.createShortVideo("7", "test", "android.resource://" + HomeActivity.PACKAGE_NAME + "/"+ R.raw.video7, PostMode.PUBLIC, true));
+        shortMedias.add(ShortMedia.createShortVideo("8", "test", "android.resource://" + HomeActivity.PACKAGE_NAME + "/"+ R.raw.video8, PostMode.PUBLIC, true));
+        shortMedias.add(ShortMedia.createShortVideo("9", "test", "android.resource://" + HomeActivity.PACKAGE_NAME + "/"+ R.raw.video9, PostMode.PUBLIC, true));
+        shortMedias.add(ShortMedia.createShortVideo("10", "test", "android.resource://" + HomeActivity.PACKAGE_NAME + "/"+ R.raw.video10, PostMode.PUBLIC, true));
         return shortMedias;
     }
 

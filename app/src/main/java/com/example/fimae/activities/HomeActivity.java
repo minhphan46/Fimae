@@ -24,11 +24,13 @@ public class HomeActivity extends AppCompatActivity {
 
     private BottomNavigationView mNavigationView;
     private CustomViewPager mViewPager;
-
+    public static String PACKAGE_NAME;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_home);
+        PACKAGE_NAME = getApplicationContext().getPackageName();
+
         mNavigationView = findViewById(R.id.bottom_nav);
         mViewPager = findViewById(R.id.view_paper);
         setUpViewPager();
