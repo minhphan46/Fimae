@@ -11,6 +11,7 @@ import com.example.fimae.R;
 import com.example.fimae.models.Conversation;
 import com.example.fimae.models.Fimaers;
 import com.example.fimae.models.GenderMatch;
+import com.google.android.gms.tasks.Continuation;
 import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.OnFailureListener;
 import com.google.android.gms.tasks.Task;
@@ -20,15 +21,21 @@ import com.google.firebase.auth.FirebaseUser;
 import com.google.firebase.firestore.CollectionReference;
 import com.google.firebase.firestore.DocumentSnapshot;
 import com.google.firebase.firestore.FirebaseFirestore;
+import com.google.firebase.functions.FirebaseFunctions;
+import com.google.firebase.functions.HttpsCallableResult;
 import com.google.firebase.storage.FirebaseStorage;
 import com.google.firebase.storage.StorageReference;
 
 import java.util.ArrayList;
 import java.util.Date;
+import java.util.HashMap;
+import java.util.Map;
 import java.util.Objects;
 
 public class FimaerRepository {
     private final String TAG = getClass().getSimpleName();
+
+    private FirebaseFunctions mFunctions = FirebaseFunctions.getInstance();
 
     private final FirebaseFirestore firestore = FirebaseFirestore.getInstance();
     private FirebaseAuth auth = FirebaseAuth.getInstance();
@@ -40,6 +47,23 @@ public class FimaerRepository {
     public String getCurrentUserUid()
     {
         return auth.getUid();
+    }
+
+    public Task<String> refreshToken()
+    {
+        Map<String, Object> data = new HashMap<>();
+        data.put("uid", getCurrentUserUid());
+
+        return mFunctions
+            .getHttpsCallable("addMessage")
+            .call(data)
+            .continueWith(new Continuation<HttpsCallableResult, String>() {
+                @Override
+                public String then(@NonNull Task<HttpsCallableResult> task) throws Exception {
+                    String result = (String) task.getResult().getData();
+                    return result;
+                }
+            });
     }
 
     public MutableLiveData<Fimaers> getCurrentUser() {

@@ -30,6 +30,9 @@ import com.example.fimae.adapters.SliderAdapter;
 import com.example.fimae.models.Calls;
 import com.example.fimae.models.Fimaers;
 import com.example.fimae.repository.ConnectRepo;
+import com.example.fimae.repository.FimaerRepository;
+import com.google.android.gms.tasks.OnCompleteListener;
+import com.google.android.gms.tasks.Task;
 import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
@@ -362,6 +365,18 @@ public class WaitingActivity extends AppCompatActivity {
             @Override
             public void onConnectionError(StringeeClient stringeeClient, StringeeError stringeeError) {
                 runOnUiThread(()->{
+                    if(stringeeError.getCode() == 2)
+                    {
+                        FimaerRepository.getInstance().refreshToken().addOnCompleteListener(new OnCompleteListener<String>() {
+                            @Override
+                            public void onComplete(@NonNull Task<String> task) {
+                                if(task.isSuccessful())
+                                {
+                                    stringeeClient.connect(task.getResult());
+                                }
+                            }
+                        });
+                    }
                     mTvStatusConnect.setText("Kết nối bị lỗi: " + stringeeError.getMessage());
                 });
             }
