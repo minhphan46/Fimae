@@ -18,6 +18,7 @@ import com.example.fimae.R;
 import com.example.fimae.activities.OnChatActivity;
 import com.example.fimae.activities.SearchUserActivity;
 import com.example.fimae.adapters.ConversationAdapter;
+import com.example.fimae.adapters.SpacingItemDecoration;
 import com.example.fimae.adapters.StoryAdapter;
 import com.example.fimae.adapters.UserHomeViewAdapter;
 import com.example.fimae.models.Conversation;
@@ -59,19 +60,19 @@ public class ChatFragment extends Fragment {
             startActivity(intent);
         });
         LinearLayoutManager linearLayoutManager = new LinearLayoutManager(this.getContext());
-        recyclerView.setAdapter(adapter);
         recyclerView.setLayoutManager(linearLayoutManager);
-        searchbar.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                Intent intent = new Intent(getContext(), SearchUserActivity.class);
-                startActivity(intent);
-            }
+        recyclerView.setAdapter(adapter);
+
+        searchbar.setOnClickListener(v -> {
+            Intent intent = new Intent(getContext(), SearchUserActivity.class);
+            startActivity(intent);
         });
         RecyclerView storyRecyclerView = view.findViewById(R.id.recycler_view_story);
         LinearLayoutManager storyLinearLayoutManager = new LinearLayoutManager(this.getContext());
         storyLinearLayoutManager.setOrientation(RecyclerView.HORIZONTAL);
         storyRecyclerView.setLayoutManager(storyLinearLayoutManager);
+        SpacingItemDecoration itemDecoration = new SpacingItemDecoration(16, 16, 8, 8);
+        storyRecyclerView.addItemDecoration(itemDecoration);
         StoryAdapter storyAdapter = new StoryAdapter();
         storyRecyclerView.setAdapter(storyAdapter);
         return view;

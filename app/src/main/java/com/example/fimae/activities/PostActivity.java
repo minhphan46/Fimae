@@ -1,5 +1,7 @@
 package com.example.fimae.activities;
 
+import static com.example.fimae.activities.DetailPostActivity.REQUEST_EDITPOST_CODE;
+
 import androidx.activity.result.ActivityResult;
 import androidx.activity.result.ActivityResultCallback;
 import androidx.activity.result.ActivityResultLauncher;
@@ -89,7 +91,6 @@ public class PostActivity extends AppCompatActivity implements View.OnClickListe
         binding.close.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                startActivity(new Intent(PostActivity.this , HomeActivity.class));
                 finish();
             }
         });
@@ -129,6 +130,7 @@ public class PostActivity extends AppCompatActivity implements View.OnClickListe
                 }
                 else{
                     postRepo.editPost(editedImageList,imageList, binding.description.getText().toString(), postMode, getApplicationContext(), postId);
+                    setResult(REQUEST_EDITPOST_CODE);
                     finish();
 
                 }

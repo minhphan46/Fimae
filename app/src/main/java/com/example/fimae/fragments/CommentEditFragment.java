@@ -1,30 +1,22 @@
 package com.example.fimae.fragments;
 
-import android.app.Application;
 import android.os.Bundle;
 
-import android.os.Handler;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.Toast;
 
 import androidx.databinding.DataBindingUtil;
 
 import com.example.fimae.R;
 import com.example.fimae.databinding.FragmentCommentEditBinding;
 import com.example.fimae.models.Comment;
-import com.example.fimae.models.CommentBase;
-import com.example.fimae.models.SubComment;
 import com.example.fimae.repository.CommentRepository;
-import com.example.fimae.utils.AsyncTask;
 import com.google.android.material.bottomsheet.BottomSheetDialogFragment;
-
-import java.util.concurrent.Delayed;
 
 public class CommentEditFragment extends BottomSheetDialogFragment {
 
-    public CommentEditFragment(CommentBase comment, String postId ) {
+    public CommentEditFragment(Comment comment, String postId ) {
         // Required empty public constructor
         this.comment = comment;
         this.postId = postId;
@@ -35,7 +27,7 @@ public class CommentEditFragment extends BottomSheetDialogFragment {
     }
     private FragmentCommentEditBinding binding;
     private String postId;
-    private CommentBase comment;
+    private Comment comment;
     private static CommentEditFragment commentEditFragment;
     public static CommentEditFragment getInstance(Comment comment, String postId) {
         if(commentEditFragment == null) commentEditFragment = new CommentEditFragment(comment, postId );
@@ -46,12 +38,12 @@ public class CommentEditFragment extends BottomSheetDialogFragment {
 //        Toast.makeText(getActivity().getApplicationContext(),"djjdf", Toast.LENGTH_SHORT).show();
         String content = binding.tvEdit.getText().toString();
         if(!content.isEmpty() && !content.trim().isEmpty()){
-            comment.setContent(content);
-            commentRepository.editComment(postId, comment, getActivity().getApplicationContext());
+//            comment.setContent(content);
+            commentRepository.editComment(postId, comment, content);
         }
     }
     private void deleteComment(){
-        commentRepository.deleteComment(postId, comment, getActivity().getApplicationContext());
+        commentRepository.deleteComment(postId, comment);
     }
     @Override
     public void onCreate(Bundle savedInstanceState) {
