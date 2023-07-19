@@ -45,11 +45,14 @@ public class HomeActivity extends AppCompatActivity {
                     case R.id.action_feed:
                         mViewPager.setCurrentItem(1);
                         break;
-                    case R.id.action_chat:
+                    case R.id.action_date:
                         mViewPager.setCurrentItem(2);
                         break;
-                    case R.id.action_profile:
+                    case R.id.action_chat:
                         mViewPager.setCurrentItem(3);
+                        break;
+                    case R.id.action_profile:
+                        mViewPager.setCurrentItem(4);
                         break;
                 }
                 return true;
@@ -78,9 +81,12 @@ public class HomeActivity extends AppCompatActivity {
                         mNavigationView.getMenu().findItem(R.id.action_feed).setChecked(true);
                         break;
                     case 2:
-                        mNavigationView.getMenu().findItem(R.id.action_chat).setChecked(true);
+                        mNavigationView.getMenu().findItem(R.id.action_date).setChecked(true);
                         break;
                     case 3:
+                        mNavigationView.getMenu().findItem(R.id.action_chat).setChecked(true);
+                        break;
+                    case 4:
                         mNavigationView.getMenu().findItem(R.id.action_profile).setChecked(true);
                         break;
                 }
