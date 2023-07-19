@@ -76,12 +76,13 @@ public class CommentRepository {
     }
     public void getSubComment(CommentItemAdapter commentItem){
         Comment rootComment = commentItem.getComment();
-        getCommentRef(rootComment.getPostId(), POST_COLLECTION).whereEqualTo("parentId", rootComment.getId()).addSnapshotListener((value, error) -> {
+        getCommentRef(rootComment.getPostId(), POST_COLLECTION).orderBy("timeCreated").addSnapshotListener((value, error) -> {
             if (error != null || value == null) {
                 return;
             }
             for(DocumentChange dc: value.getDocumentChanges()){
                 Comment comment = dc.getDocument().toObject(Comment.class);
+                if(comment.getParentId().equals("") || !comment.getParentId().equals(rootComment.getId())) break;
                 switch (dc.getType()){
                     case ADDED:
                         commentItem.addNewSubComment(comment);
@@ -96,13 +97,14 @@ public class CommentRepository {
     }
 
     public void getComment(String postId, List<CommentItemAdapter> comments, NewCommentAdapter newCommentAdapter) {
-        getCommentRef(postId, POST_COLLECTION).whereEqualTo("parentId", "").addSnapshotListener((value, error) -> {
+        getCommentRef(postId, POST_COLLECTION).orderBy("timeCreated").addSnapshotListener((value, error) -> {
             if (error != null) {
                 return;
             }
             assert value != null;
             for (DocumentChange dc : value.getDocumentChanges()) {
                 Comment comment = dc.getDocument().toObject(Comment.class);
+                if(!comment.getParentId().equals("")) return;
                 switch (dc.getType()) {
                     case ADDED:
                         CommentItemAdapter commentItemAdapter = new CommentItemAdapter(comment);
