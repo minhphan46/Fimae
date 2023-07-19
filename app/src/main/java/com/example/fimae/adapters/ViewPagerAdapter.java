@@ -28,7 +28,7 @@ public class ViewPagerAdapter extends FragmentPagerAdapter {
             case 2:
                 return new ChatFragment();
             case 3:
-                return new SwipeViewFragment();
+                return new ProfileFragment();
             default:
                 return new HomeFragment();
 
