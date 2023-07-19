@@ -1,5 +1,6 @@
 package com.example.fimae.fragments;
 
+import android.content.Intent;
 import android.os.Bundle;
 
 import androidx.fragment.app.Fragment;
@@ -11,6 +12,7 @@ import android.view.View;
 import android.view.ViewGroup;
 
 import com.example.fimae.R;
+import com.example.fimae.activities.ShortVideoActivity;
 import com.example.fimae.adapters.ShortsReviewAdapter;
 import com.example.fimae.adapters.SpacingItemDecoration;
 import com.example.fimae.adapters.StoryAdapter;
@@ -65,7 +67,11 @@ public class ShortTabFragment extends Fragment {
         storyRecyclerView.setLayoutManager(storyLinearLayoutManager);
         SpacingItemDecoration itemDecoration = new SpacingItemDecoration(16, 16, 8, 8);
         storyRecyclerView.addItemDecoration(itemDecoration);
-        ShortsReviewAdapter shortAdapter = new ShortsReviewAdapter();
+        ShortsReviewAdapter shortAdapter = new ShortsReviewAdapter(video -> {
+            Intent intent = new Intent(getContext(), ShortVideoActivity.class);
+            //intent.putExtra("idVideo", video.getId());  // Truyền một String
+            startActivity(intent);
+        });
         storyRecyclerView.setAdapter(shortAdapter);
 
         return view;

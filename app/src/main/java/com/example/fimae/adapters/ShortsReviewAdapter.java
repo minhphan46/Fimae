@@ -25,6 +25,16 @@ public class ShortsReviewAdapter extends RecyclerView.Adapter<ShortsReviewAdapte
 
     ArrayList<ShortMedia> shortMedias = ShortMedia.getFakeData();
 
+    private ShortsReviewAdapter.IClickCardListener iClickCardListener;
+
+    public interface IClickCardListener {
+        void onClickUser(ShortMedia video);
+    }
+
+    public ShortsReviewAdapter(IClickCardListener iClickCardListener) {
+        this.iClickCardListener = iClickCardListener;
+    }
+
     @NonNull
     @Override
     public ShortsReviewHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
@@ -40,8 +50,10 @@ public class ShortsReviewAdapter extends RecyclerView.Adapter<ShortsReviewAdapte
         Glide.with(holder.itemView)
                 .load(shortMedia.getMediaUrl())
                 .into(holder.shortImage);
+        holder.shortImage.setOnClickListener(view -> {
+            iClickCardListener.onClickUser(shortMedia);
+        });
         holder.shortViewCount.setText("120K");
-        //Log.d("Bucket", FirebaseStorage.getInstance().getReference().getBucket());
     }
 
 
