@@ -2,6 +2,7 @@ package com.example.fimae.fragments;
 
 import android.content.Intent;
 import android.os.Bundle;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -63,6 +64,7 @@ public class FeedFragment extends Fragment {
         linearLayoutManager.setStackFromEnd(true);
         binding.postList.setLayoutManager(linearLayoutManager);
         postAdapter = new PostAdapter();
+        posts.clear();
         postAdapter.setData(getContext(), posts, post -> {
             Intent intent = new Intent(getContext(), DetailPostActivity.class);
             intent.putExtra("id", post.getPostId());

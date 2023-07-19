@@ -6,6 +6,7 @@ import androidx.databinding.Bindable;
 
 import com.example.fimae.BR;
 
+import com.google.firebase.firestore.Exclude;
 import com.google.firebase.firestore.ServerTimestamp;
 
 import java.text.SimpleDateFormat;
@@ -110,6 +111,7 @@ public class Fimaers extends BaseObservable {
         return firstName;
     }
 
+    @Exclude
     @Bindable
     public String getName()
     {
@@ -136,6 +138,7 @@ public class Fimaers extends BaseObservable {
         return dob;
     }
 
+    @Exclude
     @Bindable
     public String getBirthDate()
     {
@@ -147,6 +150,7 @@ public class Fimaers extends BaseObservable {
         return simpleDateFormat.format(dob);
     }
 
+    @Exclude
     @Bindable
     public String getTimeCreated() {
         SimpleDateFormat sdf = new SimpleDateFormat("MMMM, yyyy", new Locale("vi", "VN"));
@@ -212,12 +216,14 @@ public class Fimaers extends BaseObservable {
 
         return (int) (timeDiff / yearsInMillis);
     }
+    @Exclude
     @Bindable
     public String getAge()
     {
         return String.valueOf(calculateAge());
     }
 
+    @Exclude
     @Bindable
     public ArrayList<String> getChip()
     {

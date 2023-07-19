@@ -89,6 +89,7 @@ public class ProfileFragment extends Fragment {
         View view = binding.getRoot();
         binding.setLifecycleOwner(this.getViewLifecycleOwner());
         binding.setViewmodel(viewModel);
+        posts.clear();
 
         Log.i("PROFILE", "onCreateView: ");
         viewModel.getUser().observe(getViewLifecycleOwner(), new Observer<Fimaers>() {
