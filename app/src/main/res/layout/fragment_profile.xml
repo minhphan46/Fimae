@@ -1,17 +1,16 @@
 <?xml version="1.0" encoding="utf-8"?>
-<layout>
+<layout xmlns:tools="http://schemas.android.com/tools"
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto">
     <data>
         <variable
             name="viewmodel"
             type="com.example.fimae.viewmodels.ProfileViewModel" />
-        <variable
-            name="user"
-            type="com.example.fimae.models.Fimaers" />
     </data>
+<androidx.core.widget.NestedScrollView
+    android:layout_width="wrap_content"
+    android:layout_height="wrap_content">
 <androidx.constraintlayout.widget.ConstraintLayout
-    xmlns:android="http://schemas.android.com/apk/res/android"
-    xmlns:app="http://schemas.android.com/apk/res-auto"
-    xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent">
 
@@ -51,7 +50,9 @@
         android:scaleType="centerCrop"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent"
-        android:src="@drawable/avatar" />
+        app:imageUrl="@{viewmodel.user.avatarUrl}"
+        app:placeholder="@{@drawable/avatar}"
+        />
 
     <TextView
         android:id="@+id/usernameTxt"
@@ -59,9 +60,9 @@
         android:layout_height="wrap_content"
         android:layout_marginStart="22dp"
         android:layout_marginTop="16dp"
-        android:text="@{user.name}"
+        android:text="@{viewmodel.user.name}"
         android:textColor="@color/black"
-        android:textSize="32sp"
+        android:textSize="24sp"
         android:textStyle="bold"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/avatarBtn" />
@@ -71,7 +72,7 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_marginLeft= "16dp"
-        android:background="@drawable/shape_gender_border_blue"
+        android:background="@{viewmodel.user.gender ? @drawable/shape_gender_border_blue : @drawable/shape_gender_border_pink}"
         android:gravity="center"
         app:layout_constraintTop_toTopOf="@+id/usernameTxt"
         app:layout_constraintBottom_toBottomOf="@+id/usernameTxt"
@@ -84,7 +85,7 @@
             android:layout_width="10dp"
             android:layout_height="10dp"
             android:layout_marginEnd="2dp"
-            android:src="@drawable/ic_male"
+            android:src="@{ viewmodel.user.gender ? @drawable/ic_male : @drawable/ic_female}"
             app:tint="@color/text_white" />
 
         <TextView
@@ -92,7 +93,7 @@
             style="@style/regular_8"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:text="31"
+            android:text="@{viewmodel.user.age}"
             android:textColor="@color/text_white" />
     </LinearLayout>
 
@@ -102,7 +103,7 @@
         android:layout_height="wrap_content"
         android:layout_marginStart="22dp"
         android:layout_marginTop="14dp"
-        android:text="Lit ID: 1234567890"
+        android:text="@{`Lit ID: ` + viewmodel.user.uid}"
         android:textColor="#939094"
         android:textSize="14dp"
         android:textStyle="bold"
@@ -119,31 +120,23 @@
         android:scaleType="fitXY"
         app:layout_constraintStart_toEndOf="@+id/idTxt"
         app:layout_constraintTop_toBottomOf="@+id/usernameTxt"
+        android:orientation="vertical"
+        android:gravity="bottom"
         app:srcCompat="@drawable/ic_copy" />
 
     <TextView
         android:id="@+id/bioTxt"
-        android:layout_width="wrap_content"
+        android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_marginStart="22dp"
         android:layout_marginTop="15dp"
-        android:text="@{user.bio}"
-        android:textColor="#000000"
-        android:textSize="16dp"
+        android:layout_marginLeft="22dp"
+        android:layout_marginRight="10dp"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/idTxt" />
-
-    <ImageButton
-        android:id="@+id/editBioBtn"
-        android:layout_width="18dp"
-        android:layout_height="18dp"
-        android:layout_marginTop="17dp"
-        android:layout_marginLeft="11dp"
-        android:background="@android:color/transparent"
-        android:scaleType="fitXY"
-        app:layout_constraintStart_toEndOf="@+id/bioTxt"
+        app:layout_constraintRight_toRightOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/idTxt"
-        app:srcCompat="@drawable/ic_edit" />
+        android:text=""
+        android:textColor="#000000"
+        android:textSize="16sp" />
 
     <ImageButton
         android:id="@+id/editChipBtn"
@@ -154,7 +147,8 @@
         android:background="@android:color/transparent"
         android:scaleType="fitXY"
         app:layout_constraintStart_toEndOf="@+id/chipGroup"
-        app:layout_constraintTop_toBottomOf="@+id/joinDateTxt"
+        app:layout_constraintBottom_toBottomOf="@id/chipGroup"
+        app:layout_constraintTop_toTopOf="@+id/chipGroup"
         app:srcCompat="@drawable/ic_edit" />
 
     <ImageButton
@@ -175,7 +169,7 @@
         android:layout_height="wrap_content"
         android:layout_marginStart="7dp"
         android:layout_marginTop="6dp"
-        android:text="Đã tham gia Tháng 6 2023"
+        android:text="@{`Đã tham gia từ ` + viewmodel.user.timeCreated}"
         android:textColor="@color/text_secondary"
         app:layout_constraintStart_toEndOf="@+id/joinDateIcon"
         app:layout_constraintTop_toBottomOf="@+id/bioTxt" />
@@ -187,31 +181,9 @@
         android:layout_marginStart="22dp"
         android:layout_marginTop="12dp"
         app:layout_constraintStart_toStartOf="parent"
+        app:chipsData="@{viewmodel.user.chip}"
         app:layout_constraintTop_toBottomOf="@+id/joinDateIcon">
 
-        <com.google.android.material.chip.Chip
-            android:id="@+id/chip"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:text="Hài hước"
-            android:textColor="@color/text_secondary"
-            app:chipBackgroundColor="@color/white"
-            app:chipStrokeColor="@color/text_tertiary"
-            app:chipStrokeWidth="1dp"
-            tools:layout_editor_absoluteX="123dp"
-            tools:layout_editor_absoluteY="377dp" />
-
-        <com.google.android.material.chip.Chip
-            android:id="@+id/chip2"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:text="Đm lập trình"
-            android:textColor="@color/text_secondary"
-            app:chipBackgroundColor="@color/white"
-            app:chipStrokeColor="@color/text_tertiary"
-            app:chipStrokeWidth="1dp"
-            tools:layout_editor_absoluteX="123dp"
-            tools:layout_editor_absoluteY="377dp" />
     </com.google.android.material.chip.ChipGroup>
 
     <View
@@ -292,5 +264,37 @@
         app:layout_constraintStart_toEndOf="@id/visitorNum"
         app:layout_constraintTop_toBottomOf="@+id/chipGroup" />
 
+
+    <com.google.android.material.tabs.TabLayout
+        android:id="@+id/tabView"
+        android:layout_width="400dp"
+        android:layout_height="wrap_content"
+        android:layout_marginHorizontal="0dp"
+        app:layout_constraintTop_toBottomOf="@id/lineBreak"
+        app:layout_constraintLeft_toLeftOf="@id/lineBreak"
+        app:layout_constraintRight_toRightOf="@id/lineBreak">
+
+        <com.google.android.material.tabs.TabItem
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:icon="@drawable/ic_post" />
+
+        <com.google.android.material.tabs.TabItem
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:icon="@drawable/ic_short"/>
+
+    </com.google.android.material.tabs.TabLayout>
+
+    <androidx.recyclerview.widget.RecyclerView
+        android:id="@+id/post_list"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        app:layout_constraintTop_toBottomOf="@id/tabView"
+        app:layout_constraintLeft_toLeftOf="parent"
+        app:layout_constraintRight_toRightOf="parent"
+        />
+
 </androidx.constraintlayout.widget.ConstraintLayout>
+</androidx.core.widget.NestedScrollView>
 </layout>

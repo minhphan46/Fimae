@@ -1,10 +1,18 @@
 <?xml version="1.0" encoding="utf-8"?>
-<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<layout
+    xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
-    android:layout_width="match_parent"
-    android:layout_height="match_parent"
-    tools:context=".activities.EditProfileActivity">
+    >
+    <data>
+        <variable
+            name="viewmodel"
+            type="com.example.fimae.viewmodels.ProfileViewModel" />
+    </data>
+    <androidx.constraintlayout.widget.ConstraintLayout
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        tools:context=".activities.EditProfileActivity">
 
 
     <androidx.appcompat.widget.Toolbar
@@ -43,7 +51,7 @@
             android:layout_marginRight="20dp"
             android:background="@android:color/transparent"
             android:scaleType="fitXY"
-            app:srcCompat="@drawable/ic_check" />
+            app:srcCompat="@drawable/ic_check_outline" />
 
     </androidx.appcompat.widget.Toolbar>
 
@@ -85,7 +93,7 @@
             android:layout_centerVertical="true"
             android:layout_marginRight="10dp"
             style="@style/regular_14"
-            android:text="minhphan46"
+            android:text="@{viewmodel.user.name}"
             android:textColor="@color/black" />
 
     </RelativeLayout>
@@ -127,7 +135,7 @@
             android:layout_toStartOf="@id/copyImg"
             android:layout_centerVertical="true"
             android:layout_marginRight="10dp"
-            android:text="413212312312"
+            android:text="@{viewmodel.user.uid}"
             style="@style/regular_14"
             android:textColor="@color/black" />
 
@@ -169,7 +177,7 @@
             android:layout_toStartOf="@id/right_arrow"
             android:layout_centerVertical="true"
             android:layout_marginRight="10dp"
-            android:text="01-01-2003" />
+            android:text="@{viewmodel.user.birthDate}" />
 
     </RelativeLayout>
 
@@ -206,6 +214,7 @@
                 android:inputType="textMultiLine"
                 android:paddingTop="15dp"
                 style="@style/regular_16"
+                android:text="@={viewmodel.user.bio}"
                 android:maxLength="200"
                 android:background="@drawable/background"
                 android:imeOptions="actionDone"
@@ -215,4 +224,5 @@
 
 
     </RelativeLayout>
-</androidx.constraintlayout.widget.ConstraintLayout>
+    </androidx.constraintlayout.widget.ConstraintLayout>
+</layout>
