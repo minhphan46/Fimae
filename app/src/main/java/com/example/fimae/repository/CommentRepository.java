@@ -75,24 +75,24 @@ public class CommentRepository {
         return -1; // Comment with the specified ID not found
     }
     public void getSubComment(CommentItemAdapter commentItem){
-        Comment rootComment = commentItem.getComment();
-        getCommentRef(rootComment.getPostId(), POST_COLLECTION).whereEqualTo("parentId", rootComment.getId()).addSnapshotListener((value, error) -> {
-            if (error != null || value == null) {
-                return;
-            }
-            for(DocumentChange dc: value.getDocumentChanges()){
-                Comment comment = dc.getDocument().toObject(Comment.class);
-                switch (dc.getType()){
-                    case ADDED:
-                        commentItem.addNewSubComment(comment);
-                        break;
-                    case MODIFIED:
-                        break;
-                    case REMOVED:
-                        commentItem.removeSubComment(comment);
-                }
-            }
-        });
+//        Comment rootComment = commentItem.getComment();
+//        getCommentRef(rootComment.getPostId(), POST_COLLECTION).whereEqualTo("parentId", rootComment.getId()).addSnapshotListener((value, error) -> {
+//            if (error != null || value == null) {
+//                return;
+//            }
+//            for(DocumentChange dc: value.getDocumentChanges()){
+//                Comment comment = dc.getDocument().toObject(Comment.class);
+//                switch (dc.getType()){
+//                    case ADDED:
+//                        commentItem.addNewSubComment(comment);
+//                        break;
+//                    case MODIFIED:
+//                        break;
+//                    case REMOVED:
+//                        commentItem.removeSubComment(comment);
+//                }
+//            }
+//        });
     }
 
     public void getComment(String postId, List<CommentItemAdapter> comments, NewCommentAdapter newCommentAdapter) {

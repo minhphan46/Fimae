@@ -7,29 +7,32 @@ import java.util.List;
 
 public class CommentItemAdapter{
     private Comment comment;
-    private List<CommentItemAdapter> subComment;
+    private List<Comment> subComment(){
+        return adapter.getmSubComment();
+    }
     private SubCommentAdapter adapter;
 
     public CommentItemAdapter(Comment comment){
         this.comment = comment;
-        subComment = new ArrayList<>();
+        adapter = new SubCommentAdapter();
     }
     public void addNewSubComment(Comment comment){
-        subComment.add(new CommentItemAdapter(comment));
+        subComment().add(comment);
 
         if(adapter != null){
-            adapter.notifyItemInserted(subComment.size() - 1);
+            adapter.notifyItemInserted(subComment().size() - 1);
         }
     }
     public void modifyComment(Comment comment){
         this.comment = comment;
     }
+
     public Comment getComment(){
         return this.comment;
     }
     private int findCommentItem(String id){
-        for(int i = 0; i < subComment.size(); i++){
-            if(subComment.get(i).comment.getId().equals(id)){
+        for(int i = 0; i < subComment().size(); i++){
+            if(subComment().get(i).getId().equals(id)){
                 return i;
             }
         }
@@ -38,19 +41,22 @@ public class CommentItemAdapter{
     public void modifySubComment(Comment comment){
         int i = findCommentItem(comment.getId());
         if(i  == -1) return;
-        subComment.get(i).modifyComment(comment);
+        subComment().set(i, comment);
         adapter.notifyItemChanged(i);
     }
     public void removeSubComment(Comment comment){
         int i = findCommentItem(comment.getId());
         if(i  == -1) return;
-        subComment.remove(i);
+        subComment().remove(i);
         adapter.notifyItemRemoved(i);
     }
     public void setSubAdapter(SubCommentAdapter adapter){
         this.adapter = adapter;
     }
-    public List<CommentItemAdapter> getSubComment(){
-        return this.subComment;
+    public SubCommentAdapter getSubAdapter(){
+        return this.adapter;
+    }
+    public List<Comment> getSubComment(){
+        return this.subComment();
     }
 }
