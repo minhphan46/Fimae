@@ -21,15 +21,28 @@
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toTopOf="parent" />
+
+        <ImageButton
+            android:id="@+id/item_video_ic_play"
+            android:visibility="gone"
+            android:layout_width="100dp"
+            android:layout_height="100dp"
+            android:layout_gravity="center"
+            android:background="@null"
+            android:src="@drawable/ic_play_arrow"
+            android:scaleType="fitCenter"
+            app:tint="#80ffffff"
+        />
+
     </FrameLayout>
 
 
     <ImageButton
         android:id="@+id/item_video_ic_back"
-        android:layout_width="40dp"
-        android:layout_height="40dp"
+        android:layout_width="30dp"
+        android:layout_height="30dp"
         android:layout_marginStart="10dp"
-        android:layout_marginTop="10dp"
+        android:layout_marginTop="15dp"
         android:adjustViewBounds="true"
         android:background="@null"
         android:scaleType="fitCenter"
@@ -40,8 +53,8 @@
 
     <ImageButton
         android:id="@+id/item_video_ic_search"
-        android:layout_width="30dp"
-        android:layout_height="30dp"
+        android:layout_width="25dp"
+        android:layout_height="25dp"
         android:layout_marginEnd="20dp"
         android:layout_marginTop="16dp"
         android:adjustViewBounds="true"
@@ -57,14 +70,14 @@
         android:layout_height="wrap_content"
         android:orientation="vertical"
         android:gravity="center_horizontal"
-        android:layout_marginBottom="80dp"
+        android:layout_marginBottom="100dp"
         android:layout_marginEnd="10dp"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent">
         <de.hdodenhof.circleimageview.CircleImageView
             android:id="@+id/story_avatar"
-            android:layout_width="50dp"
-            android:layout_height="50dp"
+            android:layout_width="40dp"
+            android:layout_height="40dp"
             android:src="@drawable/ic_default_avatar"
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintStart_toStartOf="parent" />
@@ -76,15 +89,15 @@
             android:layout_marginTop="15dp">
             <ImageButton
                 android:id="@+id/item_video_ic_like"
-                android:layout_width="50dp"
-                android:layout_height="50dp"
+                android:layout_width="40dp"
+                android:layout_height="40dp"
                 android:src="@drawable/ic_heart_video"
                 android:adjustViewBounds="true"
                 android:background="@null"
                 android:scaleType="fitCenter"/>
             <TextView
                 android:id="@+id/item_video_tv_like"
-                android:layout_width="match_parent"
+                android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:textAlignment="center"
                 android:text="120.7K"
@@ -100,15 +113,15 @@
             android:layout_marginTop="10dp">
             <ImageButton
                 android:id="@+id/item_video_ic_comment"
-                android:layout_width="50dp"
-                android:layout_height="50dp"
+                android:layout_width="40dp"
+                android:layout_height="40dp"
                 android:src="@drawable/ic_message_video"
                 android:adjustViewBounds="true"
                 android:background="@null"
                 android:scaleType="fitCenter"/>
             <TextView
                 android:id="@+id/item_video_tv_comment"
-                android:layout_width="match_parent"
+                android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:textAlignment="center"
                 android:text="120"
@@ -124,15 +137,15 @@
             android:layout_marginTop="10dp">
             <ImageButton
                 android:id="@+id/item_video_ic_share"
-                android:layout_width="50dp"
-                android:layout_height="50dp"
+                android:layout_width="40dp"
+                android:layout_height="40dp"
                 android:src="@drawable/ic_shares_video"
                 android:adjustViewBounds="true"
                 android:background="@null"
                 android:scaleType="fitCenter"/>
             <TextView
                 android:id="@+id/item_video_tv_share"
-                android:layout_width="match_parent"
+                android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:textAlignment="center"
                 android:text="50"

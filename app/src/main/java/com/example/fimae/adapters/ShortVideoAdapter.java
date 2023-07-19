@@ -21,6 +21,7 @@ public class ShortVideoAdapter extends RecyclerView.Adapter<ShortVideoAdapter.Vi
     Context context;
     ArrayList<ShortMedia> shortMedias = new ArrayList<>();
     private ShortVideoAdapter.IClickCardListener iClickCardListener;
+    boolean isPlaying = false;
 
     public interface IClickCardListener {
         void onClickUser(ShortMedia video);
@@ -44,16 +45,39 @@ public class ShortVideoAdapter extends RecyclerView.Adapter<ShortVideoAdapter.Vi
         ShortMedia media = shortMedias.get(position);
         Log.d("URL VIDEO", (String) media.getMediaUrl());
         holder.binding.videoView.setVideoURI(Uri.parse((String) media.getMediaUrl()));
-        holder.binding.videoView.setOnPreparedListener(mp -> {
-            //mp.setLooping(true);
-            mp.start();
-        });
         holder.binding.itemVideoTvName.setText("Minh Phan");
         holder.binding.itemVideoTvDescription.setText(media.getDescription());
         //holder.binding.itemVideoTvLike.setText(media.getUsersLiked().size());
         //holder.binding.itemVideoTvComment.setText(media.getNumOfComments());
         holder.binding.itemVideoIcBack.setOnClickListener(view -> {
             iClickCardListener.onClickUser(media);
+        });
+        holder.binding.videoView.setOnPreparedListener(mp -> {
+            mp.start();
+            mp.setLooping(true);
+            isPlaying = true;
+        });
+        holder.binding.videoView.setOnClickListener(view -> {
+            if (isPlaying) {
+                holder.binding.videoView.pause();
+                isPlaying = false;
+                holder.binding.itemVideoIcPlay.setVisibility(View.VISIBLE);
+            } else {
+                holder.binding.videoView.start();
+                isPlaying = true;
+                holder.binding.itemVideoIcPlay.setVisibility(View.GONE);
+            }
+        });
+        holder.binding.itemVideoIcPlay.setOnClickListener(view -> {
+            if (isPlaying) {
+                holder.binding.videoView.pause();
+                isPlaying = false;
+                holder.binding.itemVideoIcPlay.setVisibility(View.VISIBLE);
+            } else {
+                holder.binding.videoView.start();
+                isPlaying = true;
+                holder.binding.itemVideoIcPlay.setVisibility(View.GONE);
+            }
         });
     }
 
