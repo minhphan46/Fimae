@@ -36,7 +36,12 @@
         android:supportsRtl="true"
         android:theme="@style/Theme.Fimae"
         tools:targetApi="31">
+        <activity
+            android:name=".activities.MediaSliderActivity"
+            android:exported="false" />
+
         <service android:name=".service.UpdateUserActivityTimeService" />
+
         <activity
             android:name=".activities.SearchUserActivity"
             android:exported="false" />
@@ -53,6 +58,7 @@
                 android:name="android.support.FILE_PROVIDER_PATHS"
                 android:resource="@xml/provider_paths" />
         </provider>
+
         <activity
             android:name=".activities.EditNameActivity"
             android:exported="false" />
@@ -66,10 +72,10 @@
             android:name=".activities.SplashActivity"
             android:exported="true">
             <intent-filter>
-                <action android:name="android.intent.action.MAIN"/>
-                <action android:name="android.media.action.IMAGE_CAPTURE"/>
+                <action android:name="android.intent.action.MAIN" />
+                <action android:name="android.media.action.IMAGE_CAPTURE" />
 
-                <category android:name="android.intent.category.LAUNCHER"/>
+                <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
         <activity
@@ -91,34 +97,29 @@
             <meta-data
                 android:name="android.app.lib_name"
                 android:value="" />
-        </activity>
-<!--        android:allowBackup="true"-->
-<!--        android:dataExtractionRules="@xml/data_extraction_rules"-->
-<!--        android:fullBackupContent="@xml/backup_rules"-->
-<!--        android:icon="@mipmap/ic_launcher"-->
-<!--        android:label="@string/app_name"-->
-<!--        android:roundIcon="@mipmap/ic_launcher_round"-->
-<!--        android:supportsRtl="true"-->
-<!--        android:theme="@style/Theme.Fimae"-->
-<!--        tools:targetApi="31">-->
+        </activity> <!-- android:allowBackup="true" -->
+        <!-- android:dataExtractionRules="@xml/data_extraction_rules" -->
+        <!-- android:fullBackupContent="@xml/backup_rules" -->
+        <!-- android:icon="@mipmap/ic_launcher" -->
+        <!-- android:label="@string/app_name" -->
+        <!-- android:roundIcon="@mipmap/ic_launcher_round" -->
+        <!-- android:supportsRtl="true" -->
+        <!-- android:theme="@style/Theme.Fimae" -->
+        <!-- tools:targetApi="31"> -->
         <activity
             android:name=".activities.WaitingActivity"
-            android:exported="false" />
-<!--                android:name=".activities.WaitingActivity"-->
-<!--                android:exported="false"/>-->
-
+            android:exported="false" /> <!-- android:name=".activities.WaitingActivity" -->
+        <!-- android:exported="false"/> -->
         <meta-data
             android:name="com.google.android.actions"
             android:resource="@drawable/shape_gender_border_blue" />
         <meta-data
             android:name="preloaded_fonts"
-            android:resource="@array/preloaded_fonts" />
-
-<!--        <activity-->
-<!--            android:name=".activities.ChatActivity"-->
-<!--            android:exported="false"-->
-<!--            android:label="@string/title_activity_chat"-->
-<!--            android:theme="@style/Theme.Fimae.NoActionBar" />-->
+            android:resource="@array/preloaded_fonts" /> <!-- <activity -->
+        <!-- android:name=".activities.ChatActivity" -->
+        <!-- android:exported="false" -->
+        <!-- android:label="@string/title_activity_chat" -->
+        <!-- android:theme="@style/Theme.Fimae.NoActionBar" /> -->
         <activity
             android:name=".activities.ConnectActivity"
             android:exported="false" />

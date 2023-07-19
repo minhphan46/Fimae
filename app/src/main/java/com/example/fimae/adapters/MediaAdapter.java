@@ -1,6 +1,7 @@
 package com.example.fimae.adapters;
 
 import android.content.Context;
+import android.os.Build;
 import android.os.Handler;
 import android.os.Looper;
 import android.view.LayoutInflater;
@@ -9,11 +10,10 @@ import android.view.ViewGroup;
 import android.widget.ImageView;
 import android.widget.TextView;
 import androidx.annotation.NonNull;
+import androidx.annotation.RequiresApi;
 import androidx.cardview.widget.CardView;
-import androidx.constraintlayout.widget.ConstraintLayout;
 import androidx.recyclerview.widget.RecyclerView;
 import com.bumptech.glide.Glide;
-import com.example.fimae.R;
 import com.example.fimae.databinding.FragmentItemListDialogListDialogItemBinding;
 import com.example.fimae.utils.FileUtils;
 import org.jetbrains.annotations.NotNull;
@@ -27,9 +27,9 @@ public class MediaAdapter extends RecyclerView.Adapter<MediaAdapter.ViewHolder> 
     private static final int IMAGE = 0;
     private static final int VIDEO = 1;
     private final ArrayList<String> pickedItems;
-    private final ArrayList<MediaItem> mediaItems;
+    private final ArrayList<MediaAdapterItem> mediaAdapterItems;
 
-    public static class MediaItem {
+    public static class MediaAdapterItem {
         int position;
         int indexPicked;
         int mediaType;
@@ -37,15 +37,17 @@ public class MediaAdapter extends RecyclerView.Adapter<MediaAdapter.ViewHolder> 
         boolean isSelected;
         String videoDuration;
 
-        public MediaItem(String path) {
+        public MediaAdapterItem(String path) {
             this.path = path;
             indexPicked = -1;
             isSelected = false;
         }
     }
+
+    @RequiresApi(api = Build.VERSION_CODES.Q)
     public MediaAdapter(Context context) {
         pickedItems = new ArrayList<>();
-        mediaItems = new ArrayList<>();
+        mediaAdapterItems = new ArrayList<>();
         ExecutorService executor = Executors.newSingleThreadExecutor();
         Handler handler = new Handler(Looper.getMainLooper());
 
@@ -54,7 +56,7 @@ public class MediaAdapter extends RecyclerView.Adapter<MediaAdapter.ViewHolder> 
             ArrayList<String> mediaPaths = FileUtils.getAllMediaPaths(context);
             for (int i = 0; i < mediaPaths.size(); i++) {
                 String path = mediaPaths.get(i);
-                MediaItem item = new MediaItem(path);
+                MediaAdapterItem item = new MediaAdapterItem(path);
                 item.position = i;
                 if (FileUtils.isImageFile(path)) {
                     item.mediaType = IMAGE;
@@ -68,7 +70,7 @@ public class MediaAdapter extends RecyclerView.Adapter<MediaAdapter.ViewHolder> 
                     item.mediaType = VIDEO;
                     item.videoDuration = videoDuration;
                 }
-                mediaItems.add(item);
+                mediaAdapterItems.add(item);
             }
             //UI Thread work here
             handler.post(this::notifyDataSetChanged);
@@ -83,7 +85,7 @@ public class MediaAdapter extends RecyclerView.Adapter<MediaAdapter.ViewHolder> 
 
     @Override
     public void onBindViewHolder(@NonNull @NotNull ViewHolder holder, int position) {
-        MediaItem item = mediaItems.get(position);
+        MediaAdapterItem item = mediaAdapterItems.get(position);
         setMediaItem(holder, item);
         holder.layout.setOnClickListener(v -> {
             if (!item.isSelected) {
@@ -105,12 +107,12 @@ public ArrayList<String> getSelectedMedias(){
 
     @Override
     public int getItemCount() {
-        return mediaItems.size();
+        return mediaAdapterItems.size();
     }
 
     private void updateSelectedIndices() {
 
-        for (MediaItem item : mediaItems) {
+        for (MediaAdapterItem item : mediaAdapterItems) {
             if (item.isSelected) {
                 item.indexPicked = pickedItems.lastIndexOf(item.path) + 1;
                 notifyItemChanged(item.position);
@@ -132,7 +134,7 @@ public ArrayList<String> getSelectedMedias(){
         }
     }
 
-    private static void setMediaItem(ViewHolder holder, MediaItem item) {
+    private static void setMediaItem(ViewHolder holder, MediaAdapterItem item) {
         Glide.with(holder.imageView)
                 .load(item.path)
                 .into(holder.imageView);
@@ -148,5 +150,6 @@ public ArrayList<String> getSelectedMedias(){
         } else {
             holder.tvPickedIndex.setVisibility(View.GONE);
         }
+
     }
 }
