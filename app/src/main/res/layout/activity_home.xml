@@ -23,7 +23,7 @@
         android:id="@+id/bottom_nav"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        app:labelVisibilityMode="labeled"
+        app:labelVisibilityMode="unlabeled"
         android:layout_alignParentBottom="true"
         app:itemBackground="@color/background"
         app:menu="@menu/menu_bottom_nav"
