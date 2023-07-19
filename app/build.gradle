@@ -49,6 +49,9 @@ android {
 }
 
 dependencies {
+    // short
+    //implementation'com.firebaseui:firebase-ui-database:6.3.0'
+    implementation 'com.google.firebase:firebase-database-ktx'
 
     // firebase
     implementation platform('com.google.firebase:firebase-bom:32.0.0')
@@ -56,7 +59,7 @@ dependencies {
     implementation 'com.google.firebase:firebase-firestore'
     implementation 'com.google.firebase:firebase-auth'
     implementation 'com.google.android.gms:play-services-auth:20.6.0'
-    implementation 'com.google.firebase:firebase-firestore:24.6.1'
+    implementation 'com.google.firebase:firebase-firestore:24.7.0'
     implementation 'com.facebook.shimmer:shimmer:0.5.0'
 
 
@@ -70,7 +73,7 @@ dependencies {
     implementation 'de.hdodenhof:circleimageview:3.1.0'
     implementation 'com.google.android.material:material:1.9.0'
     implementation "androidx.viewpager2:viewpager2:1.0.0"
-    implementation 'com.google.firebase:firebase-firestore:24.6.1'
+    implementation 'com.google.firebase:firebase-firestore:24.7.0'
     implementation 'com.google.firebase:firebase-storage:20.2.1'
     implementation 'androidx.coordinatorlayout:coordinatorlayout:1.2.0'
     implementation 'androidx.legacy:legacy-support-v4:1.0.0'
@@ -123,8 +126,8 @@ dependencies {
 
     implementation 'com.github.bumptech.glide:glide:4.15.1'
     annotationProcessor 'com.github.bumptech.glide:compiler:4.12.0'
-
     // https://mvnrepository.com/artifact/androidx.palette/palette
     implementation group: 'androidx.palette', name: 'palette', version: '1.0.0-alpha1'
 
+    annotationProcessor 'com.github.bumptech.glide:compiler:4.10.0'
 }

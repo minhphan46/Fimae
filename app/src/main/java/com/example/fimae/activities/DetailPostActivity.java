@@ -177,7 +177,13 @@ public class DetailPostActivity extends AppCompatActivity {
     private void initListener(){
         createCommentDialog();
         //go back
-        binding.goBack.setOnClickListener(new View.OnClickListener() {
+        /*binding.goBack.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                finish();
+            }
+        });*/
+        binding.toolbar.setNavigationOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
                 finish();
