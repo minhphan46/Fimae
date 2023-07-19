@@ -217,6 +217,15 @@ public class Fimaers extends BaseObservable {
     {
         return String.valueOf(calculateAge());
     }
+
+    @Bindable
+    public ArrayList<String> getChip()
+    {
+        ArrayList<String> chips = new ArrayList<>();
+        chips.add("Chế này hài");
+        chips.add("Đm lập trình");
+        return chips;
+    }
     public static ArrayList<Fimaers> dummy = new ArrayList<Fimaers>(){
 //            new FimaeUser(
 //                    "1",

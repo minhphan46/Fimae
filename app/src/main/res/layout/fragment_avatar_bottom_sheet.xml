@@ -4,8 +4,11 @@
     xmlns:app="http://schemas.android.com/apk/res-auto">
     <data>
         <variable
-            name="imageURL"
+            name="url"
             type="String" />
+        <variable
+            name="viewmodel"
+            type="com.example.fimae.viewmodels.AvatarBottomSheetViewModel" />
     </data>
     <LinearLayout
         android:id="@+id/fragment_avatar_menu_bottom"
@@ -31,7 +34,7 @@
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintStart_toStartOf="parent"
                 app:layout_constraintTop_toTopOf="parent"
-                app:imageUrl="@{imageURL}"
+                app:imageUrl="@{url}"
                 app:placeholder="@{@drawable/avatar}"
                 />
 

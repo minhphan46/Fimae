@@ -1,4 +1,4 @@
-package com.example.fimae.fragments;
+package com.example.fimae.bottomdialogs;
 
 import static android.app.Activity.RESULT_OK;
 
@@ -20,6 +20,7 @@ import androidx.databinding.DataBindingUtil;
 
 import com.example.fimae.R;
 import com.example.fimae.databinding.FragmentAvatarBottomSheetBinding;
+import com.example.fimae.fragments.BottomModalItemView;
 import com.example.fimae.utils.FileUtils;
 import com.google.android.material.bottomsheet.BottomSheetDialog;
 import com.google.android.material.bottomsheet.BottomSheetDialogFragment;
@@ -34,10 +35,10 @@ public class PickImageBottomSheetFragment extends BottomSheetDialogFragment
 {
     private static final int REQUEST_IMAGE_CAPTURE = 1;
     private static final int REQUEST_IMAGE_PICK = 2;
-    private Uri photoUri;
 
     private PickImageCallBack callBack;
-    private String mCurrentPhotoPath;
+
+    private Uri photoUri;
 
     public void setCallBack(PickImageCallBack callBack)
     {
@@ -67,42 +68,17 @@ public class PickImageBottomSheetFragment extends BottomSheetDialogFragment
         return view;
     }
     private void dispatchTakePictureIntent() {
-        Intent takePictureIntent = new Intent(MediaStore.ACTION_IMAGE_CAPTURE);
-        if (takePictureIntent.resolveActivity(getContext().getPackageManager()) != null) {
-            // Create a file to save the captured image
-            File photoFile = createImageFile();
-            if (photoFile != null) {
-                photoUri = FileProvider.getUriForFile(getContext(),
-                        "com.example.fimae.fileprovider", photoFile);
-                takePictureIntent.putExtra(MediaStore.EXTRA_OUTPUT, photoUri);
-                startActivityForResult(takePictureIntent, REQUEST_IMAGE_CAPTURE);
-            }
-        }
-    }
+        long time = System.currentTimeMillis();
+        String stvalue = Long.toString(time);
 
-    private File createImageFile() {
-        // Create an image file name using timestamp
-        String timeStamp = new SimpleDateFormat("yyyyMMdd_HHmmss", Locale.getDefault()).format(new Date());
-        String imageFileName = "JPEG_" + timeStamp + "_";
+        Intent intent = new Intent(MediaStore.ACTION_IMAGE_CAPTURE);
 
-        // Get the directory where you want to save the image
-        File storageDir = requireContext().getExternalFilesDir(Environment.DIRECTORY_PICTURES);
+        File dir = Environment.getExternalStoragePublicDirectory(Environment.DIRECTORY_DCIM);
+        File output = new File(dir, stvalue + ".jpg"); // Append ".jpg" to the file name to make it a valid image file
+        photoUri = FileProvider.getUriForFile(getContext(), "com.example.fimae.provider", output);
 
-        try {
-            // Create the image file
-            File imageFile = File.createTempFile(
-                    imageFileName,  /* prefix */
-                    ".jpg",         /* suffix */
-                    storageDir      /* directory */
-            );
-
-            // Save the file path to access it in onActivityResult
-            mCurrentPhotoPath = imageFile.getAbsolutePath();
-            return imageFile;
-        } catch (IOException e) {
-            e.printStackTrace();
-            return null;
-        }
+        intent.putExtra(MediaStore.EXTRA_OUTPUT, photoUri);
+        startActivityForResult(intent, REQUEST_IMAGE_CAPTURE);
     }
 
     public interface PickImageCallBack {
@@ -120,16 +96,15 @@ public class PickImageBottomSheetFragment extends BottomSheetDialogFragment
         super.onActivityResult(requestCode, resultCode, data);
         if (requestCode == REQUEST_IMAGE_PICK && resultCode == RESULT_OK) {
             if (data != null) {
-                // Get the URI of the selected image
-                Uri imageUri = data.getData();
-                callBack.pickImageComplete(imageUri);
+                callBack.pickImageComplete(data.getData());
                 dismiss();
-                // Now you can use this imageUri to display the selected image or perform other actions with it.
             }
         }
         if (requestCode == REQUEST_IMAGE_CAPTURE && resultCode == RESULT_OK) {
-            callBack.pickImageComplete(photoUri);
-            dismiss();
+            if (data != null) {
+                callBack.pickImageComplete(photoUri);
+                dismiss();
+            }
         }
     }
 }

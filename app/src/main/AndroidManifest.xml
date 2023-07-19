@@ -8,7 +8,6 @@
     <uses-permission android:name="android.permission.ACCESS_WIFI_STATE" /> <!-- permission cho cuộc gọi -->
     <uses-permission android:name="android.permission.RECORD_AUDIO" /> <!-- Nếu sử dụng class StringeeAudioManager của Stringee quản lý phát âm thanh thì cần thêm các permission này -->
     <uses-permission android:name="android.permission.MODIFY_AUDIO_SETTINGS" />
-    <uses-permission android:name="android.permission.CAMERA" />
     <uses-permission android:name="android.permission.BLUETOOTH" />
     <uses-permission android:name="android.permission.BLUETOOTH_CONNECT" />
 
@@ -61,6 +60,9 @@
             android:exported="false" />
         <activity
             android:name=".activities.UpdateProfileActivity"
+            android:exported="false" />
+        <activity
+            android:name=".activities.ProfileActivity"
             android:exported="false" />
         <activity
             android:name=".activities.SplashActivity"

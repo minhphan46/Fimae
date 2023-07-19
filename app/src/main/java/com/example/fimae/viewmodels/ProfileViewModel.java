@@ -7,6 +7,7 @@ import android.util.Log;
 import android.widget.Toast;
 
 import androidx.annotation.NonNull;
+import androidx.annotation.Nullable;
 import androidx.databinding.BaseObservable;
 import androidx.databinding.Bindable;
 import androidx.lifecycle.LiveData;
@@ -23,6 +24,8 @@ public class ProfileViewModel  extends ViewModel {
 
     private MutableLiveData<Fimaers> user;
 
+    private String uid;
+
     public MutableLiveData<Fimaers> getUser() {
         return user;
     }
@@ -31,9 +34,20 @@ public class ProfileViewModel  extends ViewModel {
 
 
     public ProfileViewModel(){
-
         userRepo = FimaerRepository.getInstance();
+        uid = userRepo.getCurrentUserUid();
         fetchUser();
+    }
+
+    @Nullable
+    public String getUid() {
+        return uid;
+    }
+
+    public void setUid(String value)
+    {
+        uid = value;
+        fetchUser(value);
     }
 
     public MutableLiveData<Fimaers> fetchUser()
@@ -43,6 +57,20 @@ public class ProfileViewModel  extends ViewModel {
         {
             user = userRepo.getCurrentUser();
         }
+        return user;
+    }
+    public MutableLiveData<Fimaers> fetchUser(String uid)
+    {
+        Log.i("PROFILEVM", "fetchUser: ");
+        userRepo.getFimaerById(uid).addOnCompleteListener(new OnCompleteListener<Fimaers>() {
+                @Override
+                public void onComplete(@NonNull Task<Fimaers> task) {
+                    if(task.isSuccessful())
+                    {
+                        user.setValue(task.getResult());
+                    }
+                }
+            });
         return user;
     }
 

@@ -1,6 +1,5 @@
 package com.example.fimae.fragments;
 
-import android.app.ProgressDialog;
 import android.content.ClipData;
 import android.content.ClipboardManager;
 import android.content.Context;
@@ -17,7 +16,6 @@ import android.util.TypedValue;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.Button;
 import android.widget.ImageButton;
 import android.widget.ImageView;
 import android.widget.TextView;
@@ -28,22 +26,36 @@ import androidx.annotation.Nullable;
 import androidx.fragment.app.Fragment;
 
 import com.example.fimae.R;
+import com.example.fimae.activities.DetailPostActivity;
 import com.example.fimae.activities.EditProfileActivity;
+import com.example.fimae.adapters.CommentAdapter;
+import com.example.fimae.adapters.PostAdapter;
+import com.example.fimae.adapters.ProfileViewPagerApdater;
+import com.example.fimae.adapters.StoryAdapter;
+import com.example.fimae.adapters.UserAdapter;
+import com.example.fimae.bottomdialogs.AvatarBottomSheetFragment;
 import com.example.fimae.databinding.FragmentProfileBinding;
 import com.example.fimae.models.Fimaers;
+import com.example.fimae.models.Post;
 import com.example.fimae.repository.FimaerRepository;
 import com.example.fimae.viewmodels.ProfileViewModel;
-import com.google.android.gms.tasks.OnCompleteListener;
-import com.google.android.gms.tasks.OnFailureListener;
-import com.google.android.gms.tasks.Task;
-import com.google.android.material.bottomsheet.BottomSheetDialog;
-import com.squareup.picasso.Picasso;
+import com.google.android.material.tabs.TabLayout;
+import com.google.firebase.firestore.CollectionReference;
+import com.google.firebase.firestore.DocumentChange;
+import com.google.firebase.firestore.FirebaseFirestore;
 
-import androidx.databinding.BindingAdapter;
 import androidx.databinding.DataBindingUtil;
+import androidx.fragment.app.FragmentContainerView;
 import androidx.fragment.app.FragmentManager;
+import androidx.fragment.app.FragmentPagerAdapter;
+import androidx.fragment.app.FragmentTransaction;
 import androidx.lifecycle.Observer;
 import androidx.lifecycle.ViewModelProvider;
+import androidx.recyclerview.widget.LinearLayoutManager;
+import androidx.viewpager.widget.ViewPager;
+
+import java.util.ArrayList;
+import java.util.List;
 
 import de.hdodenhof.circleimageview.CircleImageView;
 
@@ -55,14 +67,27 @@ public class ProfileFragment extends Fragment {
     CircleImageView avatarBtn;
     TextView bioTextView;
     FragmentProfileBinding binding;
+    ProfileViewModel viewModel;
+    private List<Post> posts = new ArrayList<>();
+
+    private PostAdapter postAdapter;
+
+    public static ProfileFragment newInstance(String uid) {
+        Bundle args = new Bundle();
+        args.putString("uid", uid);
+        ProfileFragment fragment = new ProfileFragment();
+        fragment.setArguments(args);
+        return fragment;
+    }
+
 
     @Nullable
     @Override
     public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
-        ProfileViewModel viewModel = new ViewModelProvider(this).get(ProfileViewModel.class);
+        viewModel = new ViewModelProvider(this).get(ProfileViewModel.class);
         binding = DataBindingUtil.inflate(inflater,R.layout.fragment_profile,container,false);
         View view = binding.getRoot();
-        binding.setLifecycleOwner(this);
+        binding.setLifecycleOwner(this.getViewLifecycleOwner());
         binding.setViewmodel(viewModel);
 
         Log.i("PROFILE", "onCreateView: ");
@@ -73,14 +98,95 @@ public class ProfileFragment extends Fragment {
                 Log.i("PROFILE", "onChanged: " + fimaers.getName());
             }
         });
-
+        TabLayout tabLayout = view.findViewById(R.id.tabView);
         bioTextView = view.findViewById(R.id.bioTxt);
         btnEditProfile = view.findViewById(R.id.editProfileBtn);
-        editBioBtn = view.findViewById(R.id.editBioBtn);
         editChipBtn = view.findViewById(R.id.editChipBtn);
         avatarBtn = view.findViewById(R.id.avatarBtn);
         backgroundImg = view.findViewById(R.id.backgroundImage);
         copyLitId = view.findViewById(R.id.copyBtn);
+        if (getArguments() != null) {
+            String uid = getArguments().getString("uid");
+            viewModel.setUid(uid);
+            editChipBtn.setVisibility(View.GONE);
+        }
+        else {
+            viewModel.fetchUser();
+        }
+        binding.postList.setHasFixedSize(true);
+        LinearLayoutManager linearLayoutManager = new LinearLayoutManager(getContext());
+        linearLayoutManager.setReverseLayout(true);
+        linearLayoutManager.setStackFromEnd(true);
+        binding.postList.setLayoutManager(linearLayoutManager);
+        postAdapter = new PostAdapter();
+        postAdapter.setData(getContext(), posts, post -> {
+            Intent intent = new Intent(getContext(), DetailPostActivity.class);
+            intent.putExtra("id", post.getPostId());
+            startActivity(intent);
+        });
+        binding.postList.setAdapter(postAdapter);
+        CollectionReference postRef = FirebaseFirestore.getInstance().collection("posts");
+        postRef.addSnapshotListener((value, error) -> {
+            if (error != null) {
+                return;
+            }
+            for (DocumentChange dc : value.getDocumentChanges()) {
+                Post post = dc.getDocument().toObject(Post.class);
+                switch (dc.getType()) {
+                    case ADDED:
+                        if(post.getPublisher().equals(viewModel.getUid()))
+                        {
+                            posts.add(post);
+                            postAdapter.addUpdate();
+                        }
+                        break;
+                    case MODIFIED:
+                        for(Post item : posts){
+                            if(item.getPostId().equals(post.getPostId())){
+                                if(!post.getContent().equals(item.getContent()) || post.getPostImages().size() != item.getPostImages().size()){
+                                    posts.set(posts.indexOf(item), post);
+                                    postAdapter.notifyItemChanged(posts.indexOf(item));
+                                }
+                            }
+                        }
+                        break;
+                    case REMOVED:
+                        break;
+                }
+            }
+        });
+        tabLayout.addOnTabSelectedListener(new TabLayout.OnTabSelectedListener() {
+
+            @Override
+            public void onTabSelected(TabLayout.Tab tab) {
+                int position = tab.getPosition();
+
+                if (position == 0) {
+                    binding.postList.setAdapter(postAdapter);
+                } else if (position == 1) {
+                    StoryAdapter commentAdapter = new StoryAdapter();
+                    binding.postList.setAdapter(commentAdapter);
+                }
+            }
+
+            @Override
+            public void onTabUnselected(TabLayout.Tab tab) {
+                // Do nothing when tab is unselected
+            }
+
+            @Override
+            public void onTabReselected(TabLayout.Tab tab) {
+                // Handle tab reselection if needed
+            }
+        });
+
+        initListener();
+
+        return view;
+    }
+
+    private void initListener()
+    {
         avatarBtn.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
@@ -102,19 +208,12 @@ public class ProfileFragment extends Fragment {
                 navToEditProfile();
             }
         });
-        editBioBtn.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                navToEditProfile();
-            }
-        });
         btnEditProfile.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
                 navToEditProfile();
             }
         });
-        return view;
     }
 
     private void copyLitId() {

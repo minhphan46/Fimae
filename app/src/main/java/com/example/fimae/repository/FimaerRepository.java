@@ -4,6 +4,7 @@ import android.net.Uri;
 import android.util.Log;
 
 import androidx.annotation.NonNull;
+import androidx.annotation.Nullable;
 import androidx.lifecycle.MutableLiveData;
 
 import com.example.fimae.R;
@@ -34,6 +35,12 @@ public class FimaerRepository {
 
     private CollectionReference fimaersRef = firestore.collection("fimaers");
     private StorageReference storageReference = FirebaseStorage.getInstance().getReference("AvatarPics");
+
+    @Nullable
+    public String getCurrentUserUid()
+    {
+        return auth.getUid();
+    }
 
     public MutableLiveData<Fimaers> getCurrentUser() {
             Log.i("USER", "Let get user");
