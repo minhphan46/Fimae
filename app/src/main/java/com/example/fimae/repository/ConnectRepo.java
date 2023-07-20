@@ -12,7 +12,9 @@ import com.google.firebase.firestore.DocumentSnapshot;
 import com.google.firebase.firestore.FirebaseFirestore;
 
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 public class ConnectRepo {
 
@@ -41,7 +43,7 @@ public class ConnectRepo {
 
 
     public void addUserOnl(Fimaers user, String tableName) {
-        firestore.collection(tableName.concat("_queue")).document(user.getUid()).set(user);
+        firestore.collection(tableName.concat("_queue")).document(user.getUid()).set(user.toJson());
     }
 
     public void deleteUserOnl(Fimaers user, String tableName) {
