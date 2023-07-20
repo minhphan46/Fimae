@@ -39,6 +39,9 @@
             android:name=".SettingActivity"
             android:exported="false" />
         <activity
+            android:name=".StoryActivity"
+            android:exported="false" />
+        <activity
             android:name=".activities.MediaSliderActivity"
             android:exported="false" />
         <activity
