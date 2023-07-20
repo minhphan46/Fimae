@@ -24,7 +24,6 @@ import android.widget.ImageButton;
 import android.widget.TextView;
 import android.widget.Toast;
 
-import com.example.fimae.ChatRandomActivity;
 import com.example.fimae.R;
 import com.example.fimae.adapters.SliderAdapter;
 import com.example.fimae.models.Calls;
