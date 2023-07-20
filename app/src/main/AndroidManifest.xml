@@ -50,10 +50,6 @@
         <activity
             android:name=".activities.SearchUserActivity"
             android:exported="false" />
-        <activity
-            android:name=".activities.ChatRandomActivity"
-            android:exported="false" />
-
         <provider
             android:name="androidx.core.content.FileProvider"
             android:authorities="com.example.fimae.provider"
@@ -99,6 +95,7 @@
                 android:name="android.app.lib_name"
                 android:value="" />
         </activity>
+        <activity android:name=".activities.ChatRandomActivity"></activity>
         <activity
             android:name=".activities.PostActivity"
             android:exported="false">
