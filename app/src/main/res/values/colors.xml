@@ -1,5 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
+    <color name="whiteGray">#F6F7FB</color>
     <color name="primary_1">#7D1CFF</color>
     <color name="primary_2">#A667FE</color>
     <color name="secondary_1">#FF68A3</color>
@@ -34,6 +35,15 @@
     <color name="light_blue_50">#FFE1F5FE</color>
     <color name="light_blue_200">#FF81D4FA</color>
     <color name="light_blue_900">#FF01579B</color>
+
+    <color name="transparent">#00000000 </color>
+
+    <color name="divider">#E2E0E0</color>
+    <color name="darkGray">#333333</color>
+    <color name="darkGrayLight">#737c8d</color>
+
+    <color name="transparent_white">#1FFFFFFF</color>
+    <color name="transparent_dark">#80000000</color>
 
 <!--    StoryView-->
     <color name="progress_primary">@color/white</color>

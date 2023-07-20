@@ -238,7 +238,6 @@ public class HomeFragment extends Fragment  {
             mUsers.clear();
             // Lặp qua các tài liệu (tin nhắn) và thêm vào danh sách
             for (QueryDocumentSnapshot document : value) {
-                System.out.println(document.toString());
                 Fimaers user = document.toObject(Fimaers.class);
                 // set local
                 if(user.getUid().equals(localUid)) ConnectRepo.getInstance().setUserLocal(user);

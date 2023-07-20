@@ -6,10 +6,10 @@ import androidx.fragment.app.FragmentManager;
 import androidx.fragment.app.FragmentPagerAdapter;
 
 import com.example.fimae.fragments.ChatFragment;
-import com.example.fimae.fragments.DateFragment;
 import com.example.fimae.fragments.FeedFragment;
 import com.example.fimae.fragments.HomeFragment;
 import com.example.fimae.fragments.ProfileFragment;
+import com.example.fimae.fragments.SwipeViewFragment;
 
 public class ViewPagerAdapter extends FragmentPagerAdapter {
 
@@ -24,7 +24,7 @@ public class ViewPagerAdapter extends FragmentPagerAdapter {
             case 1:
                 return new FeedFragment();
             case 2:
-                return new DateFragment();
+                return new SwipeViewFragment();
             case 3:
                 return new ChatFragment();
             case 4:

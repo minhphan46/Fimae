@@ -32,6 +32,7 @@
             app:iconSrc="@drawable/ic_gallery"
             app:textString="Chọn từ thư viện" />
         <com.example.fimae.fragments.BottomModalItemView
+            android:id="@+id/takePhoto"
             app:layout_constraintTop_toBottomOf="@id/choose_image"
             app:layout_constraintLeft_toLeftOf="parent"
             app:layout_constraintRight_toRightOf="parent"

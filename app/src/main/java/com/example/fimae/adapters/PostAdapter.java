@@ -64,7 +64,7 @@ public class PostAdapter extends RecyclerView.Adapter<PostAdapter.ViewHolder> {
     }
 
     public void addUpdate(){
-        notifyItemInserted(posts.size() - 1);
+        notifyDataSetChanged();
     }
 
     @NonNull

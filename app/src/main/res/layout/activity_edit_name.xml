@@ -41,7 +41,7 @@
             android:layout_marginRight="20dp"
             android:background="@android:color/transparent"
             android:scaleType="fitXY"
-            app:srcCompat="@drawable/ic_check" />
+            app:srcCompat="@drawable/ic_check_outline" />
 
     </androidx.appcompat.widget.Toolbar>
 

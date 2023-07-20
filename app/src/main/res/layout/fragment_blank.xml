@@ -3,14 +3,12 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:layout_gravity="center"
-    tools:context=".fragments.DateFragment">
+    tools:context=".fragments.BlankFragment">
 
     <!-- TODO: Update blank fragment layout -->
     <TextView
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:text="Hen ho"
-        android:layout_gravity="center"/>
+        android:text="@string/hello_blank_fragment" />
 
 </FrameLayout>
