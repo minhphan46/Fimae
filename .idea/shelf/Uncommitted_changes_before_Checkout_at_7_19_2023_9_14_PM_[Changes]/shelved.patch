@@ -1,0 +1,288 @@
+Index: app/src/main/AndroidManifest.xml
+IDEA additional info:
+Subsystem: com.intellij.openapi.diff.impl.patch.BaseRevisionTextPatchEP
+<+><?xml version=\"1.0\" encoding=\"utf-8\"?>\r\n<manifest xmlns:android=\"http://schemas.android.com/apk/res/android\"\r\n    xmlns:tools=\"http://schemas.android.com/tools\"\r\n    package=\"com.example.fimae\">\r\n    <!-- permission cho việc kết nối internet -->\r\n    <uses-permission android:name=\"android.permission.INTERNET\" />\r\n    <uses-permission android:name=\"android.permission.ACCESS_NETWORK_STATE\" />\r\n    <uses-permission android:name=\"android.permission.ACCESS_WIFI_STATE\" /> <!-- permission cho cuộc gọi -->\r\n    <uses-permission android:name=\"android.permission.RECORD_AUDIO\" /> <!-- Nếu sử dụng class StringeeAudioManager của Stringee quản lý phát âm thanh thì cần thêm các permission này -->\r\n    <uses-permission android:name=\"android.permission.MODIFY_AUDIO_SETTINGS\" />\r\n    <uses-permission android:name=\"android.permission.CAMERA\" />\r\n    <uses-permission android:name=\"android.permission.BLUETOOTH\" />\r\n    <uses-permission android:name=\"android.permission.BLUETOOTH_CONNECT\" />\r\n\r\n    <uses-feature\r\n        android:name=\"android.hardware.camera\"\r\n        android:required=\"false\" />\r\n    <uses-feature\r\n        android:name=\"android.hardware.camera.autofocus\"\r\n        android:required=\"false\" />\r\n    <uses-feature\r\n        android:name=\"android.hardware.camera.flash\"\r\n        android:required=\"false\" />\r\n\r\n    <uses-permission android:name=\"android.permission.WRITE_EXTERNAL_STORAGE\" />\r\n    <uses-permission android:name=\"android.permission.CAMERA\" />\r\n    <uses-permission android:name=\"android.permission.READ_EXTERNAL_STORAGE\" />\r\n\r\n    <application\r\n        android:allowBackup=\"true\"\r\n        android:dataExtractionRules=\"@xml/data_extraction_rules\"\r\n        android:fullBackupContent=\"@xml/backup_rules\"\r\n        android:icon=\"@mipmap/ic_launcher\"\r\n        android:label=\"@string/app_name\"\r\n        android:roundIcon=\"@mipmap/ic_launcher_round\"\r\n        android:supportsRtl=\"true\"\r\n        android:theme=\"@style/Theme.Fimae\"\r\n        tools:targetApi=\"31\">\r\n        <activity\r\n            android:name=\".activities.MediaSliderActivity\"\r\n            android:exported=\"false\" />\r\n\r\n        <service android:name=\".service.UpdateUserActivityTimeService\" />\r\n\r\n        <activity\r\n            android:name=\".activities.SearchUserActivity\"\r\n            android:exported=\"false\" />\r\n        <activity\r\n            android:name=\".activities.ChatRandomActivity\"\r\n            android:exported=\"false\" />\r\n\r\n        <provider\r\n            android:name=\"androidx.core.content.FileProvider\"\r\n            android:authorities=\"com.example.fimae.provider\"\r\n            android:exported=\"false\"\r\n            android:grantUriPermissions=\"true\">\r\n            <meta-data\r\n                android:name=\"android.support.FILE_PROVIDER_PATHS\"\r\n                android:resource=\"@xml/provider_paths\" />\r\n        </provider>\r\n\r\n        <activity\r\n            android:name=\".activities.EditNameActivity\"\r\n            android:exported=\"false\" />\r\n        <activity\r\n            android:name=\".activities.EditProfileActivity\"\r\n            android:exported=\"false\" />\r\n        <activity\r\n            android:name=\".activities.UpdateProfileActivity\"\r\n            android:exported=\"false\" />\r\n        <activity\r\n            android:name=\".activities.SplashActivity\"\r\n            android:exported=\"true\">\r\n            <intent-filter>\r\n                <action android:name=\"android.intent.action.MAIN\" />\r\n                <action android:name=\"android.media.action.IMAGE_CAPTURE\" />\r\n\r\n                <category android:name=\"android.intent.category.LAUNCHER\" />\r\n            </intent-filter>\r\n        </activity>\r\n        <activity\r\n            android:name=\".activities.AuthenticationActivity\"\r\n            android:exported=\"true\" />\r\n        <activity\r\n            android:name=\".activities.OnChatActivity\"\r\n            android:exported=\"false\" />\r\n        <activity\r\n            android:name=\".activities.DetailPostActivity\"\r\n            android:exported=\"false\">\r\n            <meta-data\r\n                android:name=\"android.app.lib_name\"\r\n                android:value=\"\" />\r\n        </activity>\r\n        <activity\r\n            android:name=\".activities.PostActivity\"\r\n            android:exported=\"false\">\r\n            <meta-data\r\n                android:name=\"android.app.lib_name\"\r\n                android:value=\"\" />\r\n        </activity> <!-- android:allowBackup=\"true\" -->\r\n        <!-- android:dataExtractionRules=\"@xml/data_extraction_rules\" -->\r\n        <!-- android:fullBackupContent=\"@xml/backup_rules\" -->\r\n        <!-- android:icon=\"@mipmap/ic_launcher\" -->\r\n        <!-- android:label=\"@string/app_name\" -->\r\n        <!-- android:roundIcon=\"@mipmap/ic_launcher_round\" -->\r\n        <!-- android:supportsRtl=\"true\" -->\r\n        <!-- android:theme=\"@style/Theme.Fimae\" -->\r\n        <!-- tools:targetApi=\"31\"> -->\r\n        <activity\r\n            android:name=\".activities.WaitingActivity\"\r\n            android:exported=\"false\" /> <!-- android:name=\".activities.WaitingActivity\" -->\r\n        <!-- android:exported=\"false\"/> -->\r\n        <meta-data\r\n            android:name=\"com.google.android.actions\"\r\n            android:resource=\"@drawable/shape_gender_border_blue\" />\r\n        <meta-data\r\n            android:name=\"preloaded_fonts\"\r\n            android:resource=\"@array/preloaded_fonts\" /> <!-- <activity -->\r\n        <!-- android:name=\".activities.ChatActivity\" -->\r\n        <!-- android:exported=\"false\" -->\r\n        <!-- android:label=\"@string/title_activity_chat\" -->\r\n        <!-- android:theme=\"@style/Theme.Fimae.NoActionBar\" /> -->\r\n        <activity\r\n            android:name=\".activities.ConnectActivity\"\r\n            android:exported=\"false\" />\r\n        <activity\r\n            android:name=\".activities.CallVideoActivity\"\r\n            android:exported=\"false\" />\r\n        <activity\r\n            android:name=\".activities.CallActivity\"\r\n            android:exported=\"false\" />\r\n        <activity\r\n            android:name=\".activities.HomeActivity\"\r\n            android:exported=\"true\" />\r\n    </application>\r\n\r\n</manifest>
+Subsystem: com.intellij.openapi.diff.impl.patch.CharsetEP
+<+>UTF-8
+===================================================================
+diff --git a/app/src/main/AndroidManifest.xml b/app/src/main/AndroidManifest.xml
+--- a/app/src/main/AndroidManifest.xml	
++++ b/app/src/main/AndroidManifest.xml	
+@@ -37,6 +37,13 @@
+         android:theme="@style/Theme.Fimae"
+         tools:targetApi="31">
+         <activity
++            android:name=".activities.MediaSliderDesActivity"
++            android:exported="false">
++            <meta-data
++                android:name="android.app.lib_name"
++                android:value="" />
++        </activity>
++        <activity
+             android:name=".activities.MediaSliderActivity"
+             android:exported="false" />
+ 
+Index: app/src/main/res/layout/fragment_feed.xml
+IDEA additional info:
+Subsystem: com.intellij.openapi.diff.impl.patch.BaseRevisionTextPatchEP
+<+><layout>\r\n    <FrameLayout xmlns:android=\"http://schemas.android.com/apk/res/android\"\r\n        xmlns:app=\"http://schemas.android.com/apk/res-auto\"\r\n        xmlns:tools=\"http://schemas.android.com/tools\"\r\n        android:layout_width=\"match_parent\"\r\n        android:layout_height=\"match_parent\">\r\n\r\n        <androidx.recyclerview.widget.RecyclerView\r\n            android:id=\"@+id/post_list\"\r\n            android:layout_width=\"match_parent\"\r\n            android:layout_height=\"match_parent\" />\r\n        <RelativeLayout\r\n            android:layout_width=\"match_parent\"\r\n            android:layout_height=\"match_parent\">\r\n            <ImageView\r\n                android:id=\"@+id/add_post\"\r\n                android:layout_alignParentBottom=\"true\"\r\n                android:layout_alignParentRight=\"true\"\r\n                android:layout_marginBottom=\"20dp\"\r\n                android:layout_marginRight=\"20dp\"\r\n                android:layout_width=\"55dp\"\r\n                android:layout_height=\"55dp\"\r\n                android:src=\"@drawable/add_post_image\"\r\n                />\r\n        </RelativeLayout>\r\n    </FrameLayout>\r\n</layout>
+Subsystem: com.intellij.openapi.diff.impl.patch.CharsetEP
+<+>UTF-8
+===================================================================
+diff --git a/app/src/main/res/layout/fragment_feed.xml b/app/src/main/res/layout/fragment_feed.xml
+--- a/app/src/main/res/layout/fragment_feed.xml	
++++ b/app/src/main/res/layout/fragment_feed.xml	
+@@ -8,7 +8,9 @@
+         <androidx.recyclerview.widget.RecyclerView
+             android:id="@+id/post_list"
+             android:layout_width="match_parent"
+-            android:layout_height="match_parent" />
++            android:layout_height="wrap_content"
++            android:minHeight="200dp"
++            />
+         <RelativeLayout
+             android:layout_width="match_parent"
+             android:layout_height="match_parent">
+Index: app/src/main/res/layout/activity_media_slider_des.xml
+===================================================================
+diff --git a/app/src/main/res/layout/activity_media_slider_des.xml b/app/src/main/res/layout/activity_media_slider_des.xml
+new file mode 100644
+--- /dev/null	
++++ b/app/src/main/res/layout/activity_media_slider_des.xml	
+@@ -0,0 +1,15 @@
++<?xml version="1.0" encoding="utf-8"?>
++<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
++    xmlns:app="http://schemas.android.com/apk/res-auto"
++    xmlns:tools="http://schemas.android.com/tools"
++    android:layout_width="match_parent"
++    android:layout_height="match_parent"
++    tools:context=".activities.MediaSliderActivity">
++
++    <androidx.viewpager.widget.ViewPager
++        android:id="@+id/view_paper"
++        android:layout_width="match_parent"
++        android:layout_height="match_parent">
++
++    </androidx.viewpager.widget.ViewPager>
++</androidx.constraintlayout.widget.ConstraintLayout>
+\ No newline at end of file
+Index: .idea/misc.xml
+IDEA additional info:
+Subsystem: com.intellij.openapi.diff.impl.patch.BaseRevisionTextPatchEP
+<+><?xml version=\"1.0\" encoding=\"UTF-8\"?>\r\n<project version=\"4\">\r\n  <component name=\"DesignSurface\">\r\n    <option name=\"filePathToZoomLevelMap\">\r\n      <map>\r\n        <entry key=\"..\\:/development/projects_android/Fimae/app/src/main/res/drawable-v24/background_btn_love.xml\" value=\"0.187\" />\r\n        <entry key=\"..\\:/development/projects_android/Fimae/app/src/main/res/drawable-v24/shape_rectangle_boder_radius_green.xml\" value=\"0.1515\" />\r\n        <entry key=\"..\\:/development/projects_android/Fimae/app/src/main/res/drawable-v24/shape_rectangle_border_radius_black.xml\" value=\"0.177\" />\r\n        <entry key=\"..\\:/development/projects_android/Fimae/app/src/main/res/drawable-v24/shape_rectangle_border_radius_btn_pink.xml\" value=\"0.177\" />\r\n        <entry key=\"..\\:/development/projects_android/Fimae/app/src/main/res/drawable-v24/shape_rectangle_border_radius_green.xml\" value=\"0.177\" />\r\n        <entry key=\"..\\:/development/projects_android/Fimae/app/src/main/res/drawable/background_btn_answer_call.xml\" value=\"0.171\" />\r\n        <entry key=\"..\\:/development/projects_android/Fimae/app/src/main/res/drawable/background_btn_call.xml\" value=\"0.187\" />\r\n        <entry key=\"..\\:/development/projects_android/Fimae/app/src/main/res/drawable/background_btn_videocam_on.xml\" value=\"0.171\" />\r\n        <entry key=\"..\\:/development/projects_android/Fimae/app/src/main/res/drawable/background_gradient.xml\" value=\"0.187\" />\r\n        <entry key=\"..\\:/development/projects_android/Fimae/app/src/main/res/drawable/backgrounds/drawable/background_gradient.xml\" value=\"0.177\" />\r\n        <entry key=\"..\\:/development/projects_android/Fimae/app/src/main/res/drawable/backgrounds/drawable/gray_processbar_background.xml\" value=\"0.177\" />\r\n        <entry key=\"..\\:/development/projects_android/Fimae/app/src/main/res/drawable/backround_gender_custom.xml\" value=\"0.171\" />\r\n        <entry key=\"..\\:/development/projects_android/Fimae/app/src/main/res/drawable/backround_pink.xml\" value=\"0.1515\" />\r\n        <entry key=\"..\\:/development/projects_android/Fimae/app/src/main/res/drawable/blue_processbar_background.xml\" value=\"0.177\" />\r\n        <entry key=\"..\\:/development/projects_android/Fimae/app/src/main/res/drawable/blue_progressbar_background.xml\" value=\"0.177\" />\r\n        <entry key=\"..\\:/development/projects_android/Fimae/app/src/main/res/drawable/btn_answer_call.xml\" value=\"0.1515\" />\r\n        <entry key=\"..\\:/development/projects_android/Fimae/app/src/main/res/drawable/btn_call.xml\" value=\"0.1515\" />\r\n        <entry key=\"..\\:/development/projects_android/Fimae/app/src/main/res/drawable/btn_chat_home.xml\" value=\"0.1515\" />\r\n        <entry key=\"..\\:/development/projects_android/Fimae/app/src/main/res/drawable/btn_mic_off.xml\" value=\"0.1515\" />\r\n        <entry key=\"..\\:/development/projects_android/Fimae/app/src/main/res/drawable/btn_mic_on.xml\" value=\"0.1515\" />\r\n        <entry key=\"..\\:/development/projects_android/Fimae/app/src/main/res/drawable/btn_speaker_on.xml\" value=\"0.1515\" />\r\n        <entry key=\"..\\:/development/projects_android/Fimae/app/src/main/res/drawable/btn_videocam_off.xml\" value=\"0.1515\" />\r\n        <entry key=\"..\\:/development/projects_android/Fimae/app/src/main/res/drawable/btn_videocam_on.xml\" value=\"0.1515\" />\r\n        <entry key=\"..\\:/development/projects_android/Fimae/app/src/main/res/drawable/bubble_sender.xml\" value=\"0.177\" />\r\n        <entry key=\"..\\:/development/projects_android/Fimae/app/src/main/res/drawable/color_icon_gender.xml\" value=\"0.171\" />\r\n        <entry key=\"..\\:/development/projects_android/Fimae/app/src/main/res/drawable/gender_border.xml\" value=\"0.171\" />\r\n        <entry key=\"..\\:/development/projects_android/Fimae/app/src/main/res/drawable/gray_processbar_background.xml\" value=\"0.177\" />\r\n        <entry key=\"..\\:/development/projects_android/Fimae/app/src/main/res/drawable/ic_answer_call.xml\" value=\"0.1515\" />\r\n        <entry key=\"..\\:/development/projects_android/Fimae/app/src/main/res/drawable/ic_call.xml\" value=\"0.1515\" />\r\n        <entry key=\"..\\:/development/projects_android/Fimae/app/src/main/res/drawable/ic_default_avatar.xml\" value=\"0.171\" />\r\n        <entry key=\"..\\:/development/projects_android/Fimae/app/src/main/res/drawable/ic_favorite.xml\" value=\"0.187\" />\r\n        <entry key=\"..\\:/development/projects_android/Fimae/app/src/main/res/drawable/ic_flip_camera.xml\" value=\"0.177\" />\r\n        <entry key=\"..\\:/development/projects_android/Fimae/app/src/main/res/drawable/ic_launcher_background.xml\" value=\"0.177\" />\r\n        <entry key=\"..\\:/development/projects_android/Fimae/app/src/main/res/drawable/ic_mic_off.xml\" value=\"0.177\" />\r\n        <entry key=\"..\\:/development/projects_android/Fimae/app/src/main/res/drawable/ic_mic_on.xml\" value=\"0.177\" />\r\n        <entry key=\"..\\:/development/projects_android/Fimae/app/src/main/res/drawable/ic_speaker_off.xml\" value=\"0.177\" />\r\n        <entry key=\"..\\:/development/projects_android/Fimae/app/src/main/res/drawable/ic_speaker_on.xml\" value=\"0.177\" />\r\n        <entry key=\"..\\:/development/projects_android/Fimae/app/src/main/res/drawable/ic_videocam_off.xml\" value=\"0.177\" />\r\n        <entry key=\"..\\:/development/projects_android/Fimae/app/src/main/res/drawable/ic_videocam_on.xml\" value=\"0.177\" />\r\n        <entry key=\"..\\:/development/projects_android/Fimae/app/src/main/res/drawable/icons/drawable/ic_videocam_on.xml\" value=\"0.177\" />\r\n        <entry key=\"..\\:/development/projects_android/Fimae/app/src/main/res/drawable/shape_circle_green.xml\" value=\"0.1515\" />\r\n        <entry key=\"..\\:/development/projects_android/Fimae/app/src/main/res/drawable/shape_gender_border_blue.xml\" value=\"0.171\" />\r\n        <entry key=\"..\\:/development/projects_android/Fimae/app/src/main/res/drawable/shape_gender_border_pink.xml\" value=\"0.171\" />\r\n        <entry key=\"..\\:/development/projects_android/Fimae/app/src/main/res/drawable/shape_rectangle_boder_radius_pink.xml\" value=\"0.1515\" />\r\n        <entry key=\"..\\:/development/projects_android/Fimae/app/src/main/res/drawable/shape_rectangle_boder_radius_purple.xml\" value=\"0.171\" />\r\n        <entry key=\"..\\:/development/projects_android/Fimae/app/src/main/res/drawable/shape_rectangle_boder_radius_text.xml\" value=\"0.177\" />\r\n        <entry key=\"..\\:/development/projects_android/Fimae/app/src/main/res/drawable/shape_rectangle_border_radius_pink.xml\" value=\"0.177\" />\r\n        <entry key=\"..\\:/development/projects_android/Fimae/app/src/main/res/drawable/shape_rectangle_border_radius_purple.xml\" value=\"0.177\" />\r\n        <entry key=\"..\\:/development/projects_android/Fimae/app/src/main/res/drawable/shape_rectangle_border_radius_text.xml\" value=\"0.177\" />\r\n        <entry key=\"..\\:/development/projects_android/Fimae/app/src/main/res/drawable/shape_rectangle_border_radius_white.xml\" value=\"0.121\" />\r\n        <entry key=\"..\\:/development/projects_android/Fimae/app/src/main/res/drawable/shape_triangle_border_radius_white.xml\" value=\"0.177\" />\r\n        <entry key=\"..\\:/development/projects_android/Fimae/app/src/main/res/drawable/shapes/drawable/shape_gender_border_pink.xml\" value=\"0.177\" />\r\n        <entry key=\"..\\:/development/projects_android/Fimae/app/src/main/res/drawable/shapes/drawable/shape_rectangle_border_radius_pink.xml\" value=\"0.177\" />\r\n        <entry key=\"..\\:/development/projects_android/Fimae/app/src/main/res/drawable/shapes/drawable/shape_rectangle_border_radius_purple.xml\" value=\"0.177\" />\r\n        <entry key=\"..\\:/development/projects_android/Fimae/app/src/main/res/drawable/shapes/drawable/shape_rectangle_border_radius_text.xml\" value=\"0.177\" />\r\n        <entry key=\"..\\:/development/projects_android/Fimae/app/src/main/res/drawable/shapes/drawable/shape_rectangle_border_radius_white.xml\" value=\"0.177\" />\r\n        <entry key=\"..\\:/development/projects_android/Fimae/app/src/main/res/font/public_sans.xml\" value=\"0.28020833333333334\" />\r\n        <entry key=\"..\\:/development/projects_android/Fimae/app/src/main/res/font/public_sans_bold.xml\" value=\"0.28020833333333334\" />\r\n        <entry key=\"..\\:/development/projects_android/Fimae/app/src/main/res/layout/activity_call.xml\" value=\"0.25\" />\r\n        <entry key=\"..\\:/development/projects_android/Fimae/app/src/main/res/layout/activity_call_video.xml\" value=\"0.23796296296296296\" />\r\n        <entry key=\"..\\:/development/projects_android/Fimae/app/src/main/res/layout/activity_chat.xml\" value=\"0.25\" />\r\n        <entry key=\"..\\:/development/projects_android/Fimae/app/src/main/res/layout/activity_connect.xml\" value=\"0.25\" />\r\n        <entry key=\"..\\:/development/projects_android/Fimae/app/src/main/res/layout/activity_main.xml\" value=\"0.25\" />\r\n        <entry key=\"..\\:/development/projects_android/Fimae/app/src/main/res/layout/activity_waiting.xml\" value=\"0.25\" />\r\n        <entry key=\"..\\:/development/projects_android/Fimae/app/src/main/res/layout/appbar.xml\" value=\"0.25\" />\r\n        <entry key=\"..\\:/development/projects_android/Fimae/app/src/main/res/layout/appbar_connect.xml\" value=\"0.25\" />\r\n        <entry key=\"..\\:/development/projects_android/Fimae/app/src/main/res/layout/appbar_home.xml\" value=\"0.25\" />\r\n        <entry key=\"..\\:/development/projects_android/Fimae/app/src/main/res/layout/appbar_waiting.xml\" value=\"0.2\" />\r\n        <entry key=\"..\\:/development/projects_android/Fimae/app/src/main/res/layout/btn_chat_home.xml\" value=\"0.24895833333333334\" />\r\n        <entry key=\"..\\:/development/projects_android/Fimae/app/src/main/res/layout/content_chat.xml\" value=\"0.25\" />\r\n        <entry key=\"..\\:/development/projects_android/Fimae/app/src/main/res/layout/fragment_feed.xml\" value=\"0.25\" />\r\n        <entry key=\"..\\:/development/projects_android/Fimae/app/src/main/res/layout/fragment_first.xml\" value=\"0.25\" />\r\n        <entry key=\"..\\:/development/projects_android/Fimae/app/src/main/res/layout/fragment_home.xml\" value=\"0.23796296296296296\" />\r\n        <entry key=\"..\\:/development/projects_android/Fimae/app/src/main/res/layout/fragment_profile.xml\" value=\"0.25\" />\r\n        <entry key=\"..\\:/development/projects_android/Fimae/app/src/main/res/layout/fragment_second.xml\" value=\"0.25\" />\r\n        <entry key=\"..\\:/development/projects_android/Fimae/app/src/main/res/layout/item_image_avatar.xml\" value=\"0.25\" />\r\n        <entry key=\"..\\:/development/projects_android/Fimae/app/src/main/res/layout/item_user.xml\" value=\"0.4\" />\r\n        <entry key=\"..\\:/development/projects_android/Fimae/app/src/main/res/layout/receiver_message.xml\" value=\"0.25\" />\r\n        <entry key=\"..\\:/development/projects_android/Fimae/app/src/main/res/layout/sender_message.xml\" value=\"0.25\" />\r\n        <entry key=\"..\\:/development/projects_android/Fimae/app/src/main/res/layout/user_chat.xml\" value=\"0.264\" />\r\n        <entry key=\"..\\:/development/projects_android/Fimae/app/src/main/res/layouts/chat/layout/test.xml\" value=\"0.25\" />\r\n        <entry key=\"..\\:/development/projects_android/Fimae/app/src/main/res/layouts/home/drawable/items.xml\" value=\"0.177\" />\r\n        <entry key=\"..\\:/development/projects_android/Fimae/app/src/main/res/layouts/home/layout/activity_call.xml\" value=\"0.25\" />\r\n        <entry key=\"..\\:/development/projects_android/Fimae/app/src/main/res/layouts/home/layout/activity_call_video.xml\" value=\"0.25\" />\r\n        <entry key=\"..\\:/development/projects_android/Fimae/app/src/main/res/layouts/home/layout/activity_waiting.xml\" value=\"0.25\" />\r\n        <entry key=\"..\\:/development/projects_android/Fimae/app/src/main/res/layouts/home/layout/appbar_connect.xml\" value=\"0.25\" />\r\n        <entry key=\"..\\:/development/projects_android/Fimae/app/src/main/res/layouts/home/layout/appbar_waiting.xml\" value=\"0.25\" />\r\n        <entry key=\"..\\:/development/projects_android/Fimae/app/src/main/res/layouts/home/layout/fragment_home.xml\" value=\"0.25\" />\r\n        <entry key=\"..\\:/development/projects_android/Fimae/app/src/main/res/layouts/home/layout/item_user.xml\" value=\"0.25\" />\r\n        <entry key=\"..\\:/development/projects_android/Fimae/app/src/main/res/layouts/home/layout/layout.xml\" value=\"0.25\" />\r\n        <entry key=\"..\\:/development/projects_android/Fimae/app/src/main/res/menu/chat_menu.xml\" value=\"0.25\" />\r\n      </map>\r\n    </option>\r\n  </component>\r\n  <component name=\"ExternalStorageConfigurationManager\" enabled=\"true\" />\r\n  <component name=\"FrameworkDetectionExcludesConfiguration\">\r\n    <file type=\"web\" url=\"file://$PROJECT_DIR$\" />\r\n  </component>\r\n  <component name=\"ProjectRootManager\" version=\"2\" languageLevel=\"JDK_17\" default=\"true\" project-jdk-name=\"jbr-17\" project-jdk-type=\"JavaSDK\">\r\n    <output url=\"file://$PROJECT_DIR$/build/classes\" />\r\n  </component>\r\n  <component name=\"ProjectType\">\r\n    <option name=\"id\" value=\"Android\" />\r\n  </component>\r\n</project>
+Subsystem: com.intellij.openapi.diff.impl.patch.CharsetEP
+<+>UTF-8
+===================================================================
+diff --git a/.idea/misc.xml b/.idea/misc.xml
+--- a/.idea/misc.xml	
++++ b/.idea/misc.xml	
+@@ -101,7 +101,7 @@
+   <component name="FrameworkDetectionExcludesConfiguration">
+     <file type="web" url="file://$PROJECT_DIR$" />
+   </component>
+-  <component name="ProjectRootManager" version="2" languageLevel="JDK_17" default="true" project-jdk-name="jbr-17" project-jdk-type="JavaSDK">
++  <component name="ProjectRootManager" version="2" languageLevel="JDK_17_PREVIEW" project-jdk-name="jbr-17" project-jdk-type="JavaSDK">
+     <output url="file://$PROJECT_DIR$/build/classes" />
+   </component>
+   <component name="ProjectType">
+Index: app/src/main/java/com/example/fimae/adapters/MediaSliderAdapter/MediaSliderDesAdapter.java
+===================================================================
+diff --git a/app/src/main/java/com/example/fimae/adapters/MediaSliderAdapter/MediaSliderDesAdapter.java b/app/src/main/java/com/example/fimae/adapters/MediaSliderAdapter/MediaSliderDesAdapter.java
+new file mode 100644
+--- /dev/null	
++++ b/app/src/main/java/com/example/fimae/adapters/MediaSliderAdapter/MediaSliderDesAdapter.java	
+@@ -0,0 +1,113 @@
++package com.example.fimae.adapters.MediaSliderAdapter;
++
++import android.content.Context;
++import android.view.LayoutInflater;
++import android.view.View;
++import android.view.ViewGroup;
++import android.widget.ImageView;
++import android.widget.TextView;
++
++import androidx.annotation.NonNull;
++import androidx.media3.common.MediaItem;
++import androidx.media3.common.Player;
++import androidx.media3.exoplayer.ExoPlayer;
++import androidx.media3.ui.PlayerView;
++import androidx.viewpager.widget.PagerAdapter;
++
++
++import com.bumptech.glide.Glide;
++import com.example.fimae.R;
++import com.example.fimae.adapters.MediaSliderAdapter.MediaSliderItem;
++
++import java.util.ArrayList;
++import java.util.Objects;
++
++public class MediaSliderDesAdapter extends PagerAdapter {
++    Context context;
++    ArrayList<MediaSliderItem> mediaSliderItems;
++
++    public MediaSliderDesAdapter(Context context, ArrayList<MediaSliderItem> items) {
++        this.context = context;
++        this.mediaSliderItems = items;
++    }
++
++    @Override
++    public int getCount() {
++        if (mediaSliderItems != null)
++            return mediaSliderItems.size();
++        return 0;
++    }
++
++
++    @Override
++    public boolean isViewFromObject(@NonNull View view, @NonNull Object object) {
++        return view == object;
++    }
++    @NonNull
++    @Override
++    public Object instantiateItem(@NonNull ViewGroup container, int position) {
++        MediaSliderItem item = mediaSliderItems.get(position);
++        View view;
++        if(item.getType() == MediaSliderItemType.IMAGE ){
++            view = LayoutInflater.from(context).inflate(R.layout.slider_image, container, false);
++            ImageView imageView = view.findViewById(R.id.imageViewSliderImage);
++            Glide.with(context).load(item.getUrl()).into(imageView);
++            TextView textView = view.findViewById(R.id.descriptionTextView);
++            textView.setText("Hehhehe");
++            imageView.setOnClickListener(v -> {
++                if (textView.getVisibility() == View.VISIBLE) {
++                    textView.setVisibility(View.GONE);
++                } else {
++                    textView.setVisibility(View.VISIBLE);
++                }
++            });
++
++        } else {
++            view = LayoutInflater.from(context).inflate(R.layout.slider_video, container, false);
++            PlayerView playerView = view.findViewById(R.id.playerViewSliderVideo);
++            ExoPlayer player = new ExoPlayer.Builder(context).build();
++            MediaItem mediaItem = MediaItem.fromUri(item.getUrl());
++            player.setMediaItem(mediaItem);
++            player.prepare();
++            playerView.setPlayer(player);
++
++        }
++        view.addOnAttachStateChangeListener(new View.OnAttachStateChangeListener() {
++            @Override
++            public void onViewAttachedToWindow(@NonNull View v) {
++                if(item.getType() == MediaSliderItemType.VIDEO){
++                    PlayerView playerView = v.findViewById(R.id.playerViewSliderVideo);
++                    ExoPlayer player = (ExoPlayer) playerView.getPlayer();
++                    if (player != null)
++                        player.play();
++                }
++            }
++
++            @Override
++            public void onViewDetachedFromWindow(@NonNull View v) {
++                if(item.getType() == MediaSliderItemType.VIDEO){
++                    PlayerView playerView = v.findViewById(R.id.playerViewSliderVideo);
++                    ExoPlayer player = (ExoPlayer) playerView.getPlayer();
++                    if (player != null)
++                        player.pause();
++                }
++            }
++        });
++        container.addView(view);
++        return view;
++    }
++    @Override
++    public void destroyItem(@NonNull ViewGroup container, int position, @NonNull Object object) {
++        //Remove view from container because it is not used anymore.
++        //If we don't remove it, it will be added to the container again.
++        View view = (View) object;
++        if(mediaSliderItems.get(position).getType() == MediaSliderItemType.VIDEO){
++            PlayerView playerView = view.findViewById(R.id.playerViewSliderVideo);
++            if(playerView != null){
++                Player player = playerView.getPlayer();
++                player.release();
++            }
++        }
++        container.removeView(((View) object));
++    }
++}
+Index: app/src/main/java/com/example/fimae/activities/MediaSliderDesActivity.java
+===================================================================
+diff --git a/app/src/main/java/com/example/fimae/activities/MediaSliderDesActivity.java b/app/src/main/java/com/example/fimae/activities/MediaSliderDesActivity.java
+new file mode 100644
+--- /dev/null	
++++ b/app/src/main/java/com/example/fimae/activities/MediaSliderDesActivity.java	
+@@ -0,0 +1,49 @@
++package com.example.fimae.activities;
++
++import androidx.appcompat.app.AppCompatActivity;
++import androidx.media3.common.MediaItem;
++import androidx.media3.common.Player;
++import androidx.media3.exoplayer.ExoPlayer;
++import androidx.media3.ui.PlayerView;
++import androidx.viewpager.widget.ViewPager;
++
++import android.net.Uri;
++import android.os.Bundle;
++
++import com.example.fimae.R;
++import com.example.fimae.adapters.MediaSliderAdapter.MediaSliderDesAdapter;
++import com.example.fimae.adapters.MediaSliderAdapter.MediaSliderItem;
++import com.example.fimae.adapters.MediaSliderAdapter.MediaSliderItemType;
++import com.example.fimae.utils.FileUtils;
++
++import java.util.ArrayList;
++
++public class MediaSliderDesActivity extends AppCompatActivity {
++
++
++
++    @Override
++    protected void onCreate(Bundle savedInstanceState) {
++        super.onCreate(savedInstanceState);
++        setContentView(R.layout.activity_media_slider);
++        ViewPager viewPager = findViewById(R.id.view_paper);
++        int currentIndex = getIntent().getIntExtra("currentIndex", 0);
++        ArrayList<String> urls = getIntent().getStringArrayListExtra("urls");
++        ArrayList<MediaSliderItem> items = new ArrayList<>();
++        if (urls != null) {
++            for (String url : urls) {
++                if(FileUtils.isImageFile(url))
++                    items.add(new MediaSliderItem(url, MediaSliderItemType.IMAGE));
++                else
++                    items.add(new MediaSliderItem(url, MediaSliderItemType.VIDEO));
++            }
++            MediaSliderDesAdapter adapter = new MediaSliderDesAdapter(this, items);
++            viewPager.setAdapter(adapter);
++        }
++
++        MediaSliderDesAdapter adapter = new MediaSliderDesAdapter(this, items);
++        viewPager.setAdapter(adapter);
++        viewPager.setCurrentItem(currentIndex);
++    }
++
++}
+\ No newline at end of file
+Index: app/src/main/res/layout/slider_image.xml
+IDEA additional info:
+Subsystem: com.intellij.openapi.diff.impl.patch.BaseRevisionTextPatchEP
+<+><?xml version=\"1.0\" encoding=\"utf-8\"?>\r\n<FrameLayout xmlns:android=\"http://schemas.android.com/apk/res/android\"\r\n    xmlns:tools=\"http://schemas.android.com/tools\"\r\n    android:layout_width=\"match_parent\"\r\n    android:layout_height=\"match_parent\">\r\n\r\n    <ImageView\r\n        android:id=\"@+id/imageViewSliderImage\"\r\n        android:layout_width=\"match_parent\"\r\n        android:layout_height=\"match_parent\"/>\r\n\r\n</FrameLayout>
+===================================================================
+diff --git a/app/src/main/res/layout/slider_image.xml b/app/src/main/res/layout/slider_image.xml
+--- a/app/src/main/res/layout/slider_image.xml	
++++ b/app/src/main/res/layout/slider_image.xml	
+@@ -8,5 +8,13 @@
+         android:id="@+id/imageViewSliderImage"
+         android:layout_width="match_parent"
+         android:layout_height="match_parent"/>
+-
++    <TextView
++        android:id="@+id/descriptionTextView"
++        android:layout_width="wrap_content"
++        android:layout_height="wrap_content"
++        android:textSize="16sp"
++        android:padding="10dp"
++        android:textColor="@android:color/white"
++        android:background="#80000000"
++        android:visibility="gone" />
+ </FrameLayout>
+\ No newline at end of file

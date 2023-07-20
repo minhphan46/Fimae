@@ -1,0 +1,203 @@
+Index: app/src/main/java/com/example/fimae/adapters/PostPhotoAdapter.java
+IDEA additional info:
+Subsystem: com.intellij.openapi.diff.impl.patch.BaseRevisionTextPatchEP
+<+>package com.example.fimae.adapters;\r\n\r\n\r\nimport android.content.Context;\r\nimport android.net.Uri;\r\nimport android.view.LayoutInflater;\r\nimport android.view.View;\r\nimport android.view.ViewGroup;\r\nimport android.widget.AdapterView;\r\nimport android.widget.ImageView;\r\n\r\nimport androidx.annotation.NonNull;\r\nimport androidx.recyclerview.widget.RecyclerView;\r\n\r\nimport com.bumptech.glide.Glide;\r\nimport com.example.fimae.R;\r\n\r\nimport java.util.List;\r\n\r\npublic class PostPhotoAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder>{\r\n    private Context context;\r\n    private List<Uri> mImages;\r\n    private List<String> editedImageList;\r\n    boolean isEdit;\r\n    int VIEW_TYPE_SPECIAL_ITEM = 1;\r\n    int VIEW_TYPE_NORMAL_ITEM = 0;\r\n    public PostPhotoAdapter(Context context, List<Uri> mImages,  boolean isEdit){\r\n        this.context = context;\r\n        this.mImages = mImages;\r\n        this.isEdit = isEdit;\r\n    }\r\n    public void setEditedImageList(List<String> editedImageList){\r\n        this.editedImageList = editedImageList;\r\n    }\r\n    @Override\r\n    public int getItemViewType(int position) {\r\n        if (isEdit && position == mImages.size() + editedImageList.size()) {\r\n            return VIEW_TYPE_SPECIAL_ITEM;\r\n        } else {\r\n            return VIEW_TYPE_NORMAL_ITEM;\r\n        }\r\n    }\r\n    @NonNull\r\n    @Override\r\n    public RecyclerView.ViewHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {\r\n        if(viewType == VIEW_TYPE_NORMAL_ITEM) {\r\n            View view = LayoutInflater.from(parent.getContext()).inflate(R.layout.fotos_item, parent, false);\r\n            return new PostPhotoAdapter.ViewHolder(view);\r\n        }\r\n        else {\r\n            View view = LayoutInflater.from(parent.getContext()).inflate(R.layout.add_button, parent, false);\r\n            return new PostPhotoAdapter.SpecialViewHolder(view);\r\n        }\r\n    }\r\n\r\n    private View.OnClickListener mOnItemClickListener;\r\n\r\n    public void setOnItemClickListener(View.OnClickListener onItemClickListener) {\r\n        mOnItemClickListener = onItemClickListener;\r\n    }\r\n\r\n\r\n    @Override\r\n    public void onBindViewHolder(@NonNull RecyclerView.ViewHolder holder, int position) {\r\n\r\n        if(isEdit && position == (mImages.size() + editedImageList.size())){\r\n            SpecialViewHolder viewHolder = (SpecialViewHolder) holder;\r\n        }\r\n        else if (position >= mImages.size()){\r\n            Uri imageUri =Uri.parse(editedImageList.get(position - mImages.size()));\r\n            ViewHolder viewHolder = (ViewHolder)holder;\r\n            Glide.with(context).load(imageUri).into(viewHolder.post_image);\r\n        }\r\n        else {\r\n            Uri imageUri = mImages.get(position);\r\n            ViewHolder viewHolder = (ViewHolder)holder;\r\n            Glide.with(context).load(imageUri).into(viewHolder.post_image);\r\n        }\r\n    }\r\n\r\n    @Override\r\n    public int getItemCount()  {\r\n        if(!isEdit) return mImages.size();\r\n        return mImages.size() +  editedImageList.size() + 1;\r\n    }\r\n    public class SpecialViewHolder extends RecyclerView.ViewHolder implements View.OnClickListener {\r\n        public ImageView add_image;\r\n        public SpecialViewHolder(@NonNull View itemView){\r\n            super(itemView);\r\n            add_image = itemView.findViewById(R.id.button);\r\n            itemView.setOnClickListener(this);\r\n        }\r\n\r\n        @Override\r\n        public void onClick(View view) {\r\n            mOnItemClickListener.onClick(view);\r\n        }\r\n    }\r\n    public class ViewHolder extends RecyclerView.ViewHolder{\r\n        public ImageView post_image;\r\n        public ViewHolder(@NonNull View itemView) {\r\n            super(itemView);\r\n            post_image = itemView.findViewById(R.id.post_image);\r\n        }\r\n    }\r\n}
+Subsystem: com.intellij.openapi.diff.impl.patch.CharsetEP
+<+>UTF-8
+===================================================================
+diff --git a/app/src/main/java/com/example/fimae/adapters/PostPhotoAdapter.java b/app/src/main/java/com/example/fimae/adapters/PostPhotoAdapter.java
+--- a/app/src/main/java/com/example/fimae/adapters/PostPhotoAdapter.java	
++++ b/app/src/main/java/com/example/fimae/adapters/PostPhotoAdapter.java	
+@@ -2,25 +2,33 @@
+ 
+ 
+ import android.content.Context;
++import android.content.Intent;
+ import android.net.Uri;
+ import android.view.LayoutInflater;
+ import android.view.View;
+ import android.view.ViewGroup;
+ import android.widget.AdapterView;
+ import android.widget.ImageView;
++import android.widget.Toast;
+ 
+ import androidx.annotation.NonNull;
+ import androidx.recyclerview.widget.RecyclerView;
+ 
+ import com.bumptech.glide.Glide;
+ import com.example.fimae.R;
++import com.example.fimae.activities.MediaSliderActivity;
++import com.example.fimae.activities.MediaSliderDesActivity;
++import com.example.fimae.adapters.MediaSliderAdapter.MediaSliderDesAdapter;
++import com.squareup.picasso.Picasso;
+ 
++import java.util.ArrayList;
+ import java.util.List;
+ 
+ public class PostPhotoAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder>{
+     private Context context;
+     private List<Uri> mImages;
+     private List<String> editedImageList;
++    private ArrayList<String> mImageUrls;
+     boolean isEdit;
+     int VIEW_TYPE_SPECIAL_ITEM = 1;
+     int VIEW_TYPE_NORMAL_ITEM = 0;
+@@ -29,6 +37,22 @@
+         this.mImages = mImages;
+         this.isEdit = isEdit;
+     }
++    public PostPhotoAdapter(Context context, ArrayList<String> mImageUrls){
++        mImages = new ArrayList<>();
++        this.mImageUrls = mImageUrls;
++        this.context = context;
++        this.isEdit = false;
++        for (int i =0; i < mImageUrls.size(); i++){
++            mImages.add( Uri.parse(mImageUrls.get(i)));
++        }
++    }
++    private void imageDetail(int index){
++        Intent intent = new Intent( context, MediaSliderDesActivity.class);
++        intent.putExtra("urls", mImageUrls);
++        intent.putExtra("currentIndex", index);
++        context.startActivity(intent);
++    }
++
+     public void setEditedImageList(List<String> editedImageList){
+         this.editedImageList = editedImageList;
+     }
+@@ -69,12 +93,22 @@
+         else if (position >= mImages.size()){
+             Uri imageUri =Uri.parse(editedImageList.get(position - mImages.size()));
+             ViewHolder viewHolder = (ViewHolder)holder;
+-            Glide.with(context).load(imageUri).into(viewHolder.post_image);
++//            Glide.with(context).load(imageUri).into(viewHolder.post_image);
++            Picasso.get()
++                    .load(imageUri)
++                    .into(viewHolder.post_image);
+         }
+         else {
+             Uri imageUri = mImages.get(position);
+             ViewHolder viewHolder = (ViewHolder)holder;
+             Glide.with(context).load(imageUri).into(viewHolder.post_image);
++            viewHolder.post_image.setOnClickListener(new View.OnClickListener() {
++                @Override
++                public void onClick(View view) {
++                    Toast.makeText(context, "OnClick", Toast.LENGTH_SHORT).show();
++                    imageDetail(holder.getAdapterPosition());
++                }
++            });
+         }
+     }
+ 
+@@ -101,6 +135,7 @@
+         public ViewHolder(@NonNull View itemView) {
+             super(itemView);
+             post_image = itemView.findViewById(R.id.post_image);
++
+         }
+     }
+ }
+\ No newline at end of file
+Index: app/src/main/java/com/example/fimae/adapters/PostAdapter.java
+IDEA additional info:
+Subsystem: com.intellij.openapi.diff.impl.patch.BaseRevisionTextPatchEP
+<+>package com.example.fimae.adapters;\r\n\r\nimport android.content.Context;\r\nimport android.net.Uri;\r\nimport android.util.Log;\r\nimport android.view.LayoutInflater;\r\nimport android.view.View;\r\nimport android.view.ViewGroup;\r\nimport android.widget.TextView;\r\n\r\nimport androidx.annotation.NonNull;\r\nimport androidx.annotation.Nullable;\r\nimport androidx.recyclerview.widget.GridLayoutManager;\r\nimport androidx.recyclerview.widget.LinearLayoutManager;\r\nimport androidx.recyclerview.widget.RecyclerView;\r\n\r\nimport com.example.fimae.R;\r\nimport com.example.fimae.databinding.ItemPostBinding;\r\nimport com.example.fimae.models.Post;\r\nimport com.example.fimae.models.Seed;\r\nimport com.example.fimae.models.Fimaers;\r\nimport com.example.fimae.repository.PostRepository;\r\nimport com.example.fimae.service.TimerService;\r\nimport com.google.firebase.Timestamp;\r\nimport com.google.firebase.firestore.CollectionReference;\r\nimport com.google.firebase.firestore.DocumentChange;\r\nimport com.google.firebase.firestore.DocumentReference;\r\nimport com.google.firebase.firestore.DocumentSnapshot;\r\nimport com.google.firebase.firestore.EventListener;\r\nimport com.google.firebase.firestore.FirebaseFirestore;\r\nimport com.google.firebase.firestore.FirebaseFirestoreException;\r\nimport com.google.type.DateTime;\r\nimport com.google.type.DateTimeOrBuilder;\r\nimport com.squareup.picasso.Picasso;\r\n\r\nimport java.time.LocalDateTime;\r\nimport java.time.ZoneId;\r\nimport java.time.temporal.ChronoUnit;\r\nimport java.util.ArrayList;\r\nimport java.util.Date;\r\nimport java.util.List;\r\nimport java.util.Map;\r\nimport java.util.concurrent.TimeUnit;\r\nimport java.util.concurrent.atomic.AtomicBoolean;\r\n\r\npublic class PostAdapter extends RecyclerView.Adapter<PostAdapter.ViewHolder> {\r\n    public Context mContext;\r\n    public List<Post> posts;\r\n    private IClickCardUserListener iClickCardUserListener;\r\n    private PostPhotoAdapter adapter;\r\n\r\n    public interface IClickCardUserListener {\r\n        void onClickUser(Post post);\r\n    }\r\n\r\n    public interface CallBack<T> {\r\n        void onSuccess(T result);\r\n    }\r\n\r\n    public void setData(Context mContext, List<Post> mPost, IClickCardUserListener clickCardUserListener) {\r\n        this.mContext = mContext;\r\n        posts = mPost;\r\n        this.iClickCardUserListener = clickCardUserListener;\r\n    }\r\n\r\n    public void addUpdate(){\r\n        notifyItemInserted(posts.size() - 1);\r\n    }\r\n\r\n    @NonNull\r\n    @Override\r\n    public ViewHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {\r\n        ItemPostBinding postBinding = ItemPostBinding.inflate(LayoutInflater.from(mContext), parent, false );\r\n        return new PostAdapter.ViewHolder(postBinding);\r\n    }\r\n\r\n    @Override\r\n    public void onBindViewHolder(@NonNull ViewHolder holder, int position) {\r\n        ItemPostBinding binding = holder.binding;\r\n        Post currentPost = posts.get(position);\r\n        boolean isLike = false;\r\n\r\n        PostRepository.getInstance().getUserById(currentPost.getPublisher(), new CallBack<Fimaers>() {\r\n            @Override\r\n            public void onSuccess(Fimaers fimaers) {\r\n                Picasso.get().load(fimaers.getAvatarUrl()).placeholder(R.drawable.ic_default_avatar).into(binding.imageAvatar);\r\n                if(!fimaers.isGender()){\r\n                    binding.itemUserIcGender.setImageResource(R.drawable.ic_male);\r\n                    binding.genderAgeIcon.setBackgroundResource(R.drawable.shape_gender_border_pink);\r\n                }\r\n\r\n                binding.ageTextView.setText(String.valueOf(fimaers.calculateAge()));\r\n                binding.userName.setText(fimaers.getLastName());\r\n                initListener(binding, currentPost, fimaers);\r\n\r\n            }\r\n        });\r\n\r\n        List<String> imageUrls = currentPost.getPostImages();\r\n        List<Uri> imageUris = new ArrayList<>();\r\n        String description = currentPost.getContent();\r\n\r\n        binding.content.setText(description);\r\n        binding.commentNumber.setText(String.valueOf(currentPost.getNumberOfComments()));\r\n        binding.likeNumber.setText(String.valueOf(currentPost.getLikes().size()));\r\n\r\n        for(int i = 0; i < imageUrls.size();i++){\r\n            imageUris.add(Uri.parse(imageUrls.get(i)));\r\n        }\r\n\r\n        if(currentPost.getPostImages() != null && !currentPost.getPostImages().isEmpty()){\r\n            adapter = new PostPhotoAdapter(mContext, imageUris, false);\r\n            binding.imageList.setVisibility(View.VISIBLE);\r\n            LinearLayoutManager layoutManager = new GridLayoutManager(mContext, getColumnSpan(imageUris.size()) );\r\n            binding.imageList.setLayoutManager(layoutManager);\r\n            binding.imageList.setAdapter(adapter);\r\n            binding.commentNumber.setText(String.valueOf(currentPost.getNumberOfComments()));\r\n            binding.likeNumber.setText(currentPost.getNumberTrue());\r\n        }\r\n\r\n        binding.getRoot().setOnClickListener(view -> {\r\n            iClickCardUserListener.onClickUser(currentPost);\r\n        });\r\n\r\n        TimerService.setDuration(binding.activeTime, currentPost.getTimeCreated());\r\n    }\r\n    private void initListener(ItemPostBinding binding, Post currentPost, Fimaers fimaers){\r\n        CollectionReference reference = FirebaseFirestore.getInstance().collection(\"posts\");\r\n        reference.document(currentPost.getPostId()).addSnapshotListener((value, error) -> {\r\n            if (error != null) {\r\n                return;\r\n            }\r\n            Post updatePost = value.toObject(Post.class);\r\n\r\n            if(currentPost.getPostImages().size() != updatePost.getPostImages().size()){\r\n                currentPost.setPostImages(updatePost.getPostImages());\r\n                adapter.notifyDataSetChanged();\r\n            }\r\n\r\n            if(!currentPost.getContent().equals(updatePost.getContent())){\r\n                binding.content.setText(updatePost.getContent());\r\n            }\r\n            binding.commentNumber.setText(String.valueOf(updatePost.getNumberOfComments()));\r\n            binding.likeNumber.setText(updatePost.getNumberTrue());\r\n\r\n            if(updatePost.getLikes().containsKey(currentPost.getPublisher()) && updatePost.getLikes().get(currentPost.getPublisher())){\r\n                binding.icLike.setImageResource(R.drawable.ic_heart1);\r\n                binding.icLike.setOnClickListener(view -> {\r\n                    String path = \"likes.\" + fimaers.getUid();\r\n                    binding.icLike.setImageResource(R.drawable.ic_heart1);\r\n                    reference.document(currentPost.getPostId()).update(\r\n                            path, false\r\n                    );\r\n                });\r\n            }\r\n            else {\r\n                binding.icLike.setImageResource(R.drawable.ic_heart_gray);\r\n                binding.icLike.setOnClickListener(view -> {\r\n                    String path = \"likes.\" + fimaers.getUid();\r\n                    binding.icLike.setImageResource(R.drawable.ic_heart1);\r\n                    reference.document(currentPost.getPostId()).update(\r\n                            path, true\r\n                    );\r\n                });\r\n            }\r\n        });\r\n        //go back\r\n        //like\r\n//        binding.follow.setOnClickListener(new View.OnClickListener() {\r\n//            @Override\r\n//            public void onClick(View view) {\r\n//                isFollow.set(true);\r\n//                binding.follow.setVisibility(View.INVISIBLE);\r\n//                binding.chat.setVisibility(View.VISIBLE);\r\n//            }\r\n//        });\r\n//        binding.chat.setOnClickListener(view -> {\r\n//            isFollow.set(false);\r\n//            binding.chat.setVisibility(View.INVISIBLE);\r\n//            binding.follow.setVisibility(View.VISIBLE);\r\n//        });\r\n    }\r\n\r\n    @Override\r\n    public int getItemCount() {\r\n        return posts.size();\r\n    }\r\n\r\n    public class ViewHolder extends RecyclerView.ViewHolder {\r\n        ItemPostBinding binding;\r\n        public ViewHolder(ItemPostBinding commentItemBinding) {\r\n            super(commentItemBinding.getRoot());\r\n            binding = commentItemBinding;\r\n        }\r\n    }\r\n    public static int getColumnSpan(int number){\r\n        if(number <= 2) return number;\r\n        else return 2;\r\n    }\r\n\r\n}\r\n\r\n
+Subsystem: com.intellij.openapi.diff.impl.patch.CharsetEP
+<+>UTF-8
+===================================================================
+diff --git a/app/src/main/java/com/example/fimae/adapters/PostAdapter.java b/app/src/main/java/com/example/fimae/adapters/PostAdapter.java
+--- a/app/src/main/java/com/example/fimae/adapters/PostAdapter.java	
++++ b/app/src/main/java/com/example/fimae/adapters/PostAdapter.java	
+@@ -1,6 +1,7 @@
+ package com.example.fimae.adapters;
+ 
+ import android.content.Context;
++import android.content.Intent;
+ import android.net.Uri;
+ import android.util.Log;
+ import android.view.LayoutInflater;
+@@ -15,6 +16,7 @@
+ import androidx.recyclerview.widget.RecyclerView;
+ 
+ import com.example.fimae.R;
++import com.example.fimae.activities.MediaSliderActivity;
+ import com.example.fimae.databinding.ItemPostBinding;
+ import com.example.fimae.models.Post;
+ import com.example.fimae.models.Seed;
+@@ -48,7 +50,6 @@
+     public List<Post> posts;
+     private IClickCardUserListener iClickCardUserListener;
+     private PostPhotoAdapter adapter;
+-
+     public interface IClickCardUserListener {
+         void onClickUser(Post post);
+     }
+@@ -96,22 +97,17 @@
+             }
+         });
+ 
+-        List<String> imageUrls = currentPost.getPostImages();
+-        List<Uri> imageUris = new ArrayList<>();
++        ArrayList<String> imageUrls = (ArrayList<String>)currentPost.getPostImages();
+         String description = currentPost.getContent();
+ 
+         binding.content.setText(description);
+         binding.commentNumber.setText(String.valueOf(currentPost.getNumberOfComments()));
+         binding.likeNumber.setText(String.valueOf(currentPost.getLikes().size()));
+ 
+-        for(int i = 0; i < imageUrls.size();i++){
+-            imageUris.add(Uri.parse(imageUrls.get(i)));
+-        }
+-
+         if(currentPost.getPostImages() != null && !currentPost.getPostImages().isEmpty()){
+-            adapter = new PostPhotoAdapter(mContext, imageUris, false);
++            adapter = new PostPhotoAdapter(mContext, imageUrls);
+             binding.imageList.setVisibility(View.VISIBLE);
+-            LinearLayoutManager layoutManager = new GridLayoutManager(mContext, getColumnSpan(imageUris.size()) );
++            LinearLayoutManager layoutManager = new GridLayoutManager(mContext, getColumnSpan(imageUrls.size()) );
+             binding.imageList.setLayoutManager(layoutManager);
+             binding.imageList.setAdapter(adapter);
+             binding.commentNumber.setText(String.valueOf(currentPost.getNumberOfComments()));
+Index: app/src/main/res/layout/fotos_item.xml
+IDEA additional info:
+Subsystem: com.intellij.openapi.diff.impl.patch.BaseRevisionTextPatchEP
+<+><?xml version=\"1.0\" encoding=\"utf-8\"?>\r\n<RelativeLayout xmlns:android=\"http://schemas.android.com/apk/res/android\"\r\n    android:layout_width=\"match_parent\"\r\n    android:layout_height=\"wrap_content\">\r\n\r\n    <com.example.fimae.adapters.SquareImageView\r\n        android:id=\"@+id/post_image\"\r\n        android:layout_width=\"match_parent\"\r\n        android:layout_height=\"wrap_content\"\r\n        android:layout_marginStart=\"1dp\"\r\n        android:layout_marginTop=\"1dp\"\r\n        android:layout_marginEnd=\"1dp\"\r\n        android:layout_marginBottom=\"1dp\"\r\n\r\n        android:background=\"@drawable/image_background\"\r\n        android:scaleType=\"centerCrop\" />\r\n\r\n</RelativeLayout>
+Subsystem: com.intellij.openapi.diff.impl.patch.CharsetEP
+<+>UTF-8
+===================================================================
+diff --git a/app/src/main/res/layout/fotos_item.xml b/app/src/main/res/layout/fotos_item.xml
+--- a/app/src/main/res/layout/fotos_item.xml	
++++ b/app/src/main/res/layout/fotos_item.xml	
+@@ -1,18 +1,25 @@
+ <?xml version="1.0" encoding="utf-8"?>
+-<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
++<layout  xmlns:android="http://schemas.android.com/apk/res/android"
++    >
++<androidx.cardview.widget.CardView
+     android:layout_width="match_parent"
+-    android:layout_height="wrap_content">
++    xmlns:app="http://schemas.android.com/apk/res-auto"
++    app:cardCornerRadius="20dp"
++    android:layout_height="wrap_content"
++    >
+ 
+     <com.example.fimae.adapters.SquareImageView
+         android:id="@+id/post_image"
++        android:clickable="true"
+         android:layout_width="match_parent"
+         android:layout_height="wrap_content"
+         android:layout_marginStart="1dp"
+         android:layout_marginTop="1dp"
+         android:layout_marginEnd="1dp"
+         android:layout_marginBottom="1dp"
+-
+         android:background="@drawable/image_background"
+-        android:scaleType="centerCrop" />
++        android:scaleType="centerCrop"
++        android:focusable="true" />
+ 
+-</RelativeLayout>
+\ No newline at end of file
++</androidx.cardview.widget.CardView>
++</layout>
+\ No newline at end of file
