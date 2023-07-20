@@ -44,6 +44,7 @@ import com.google.firebase.firestore.FirebaseFirestore;
 import com.google.firebase.firestore.FirebaseFirestoreException;
 import com.google.firebase.firestore.QueryDocumentSnapshot;
 import com.google.firebase.firestore.QuerySnapshot;
+import com.google.firebase.functions.FirebaseFunctionsException;
 import com.stringee.StringeeClient;
 import com.stringee.call.StringeeCall;
 import com.stringee.call.StringeeCall2;
@@ -365,19 +366,32 @@ public class WaitingActivity extends AppCompatActivity {
             @Override
             public void onConnectionError(StringeeClient stringeeClient, StringeeError stringeeError) {
                 runOnUiThread(()->{
-                    if(stringeeError.getCode() == 2)
+                    Log.e("TAG", "onConnectionError: " + stringeeError.getCode() + stringeeError.getMessage());
+                    if(stringeeError.getCode() == 2 || stringeeError.getCode() == 6  || stringeeError.getCode() == 10)
                     {
+                        Log.e("TOKEN", "start geting: ");
+                        mTvStatusConnect.setText("Kết nối bị lỗi: " + stringeeError.getMessage());
                         FimaerRepository.getInstance().refreshToken().addOnCompleteListener(new OnCompleteListener<String>() {
                             @Override
                             public void onComplete(@NonNull Task<String> task) {
                                 if(task.isSuccessful())
                                 {
+                                    Log.e("TOKEN", "onComplete: " + task.getResult());
                                     stringeeClient.connect(task.getResult());
+                                }
+                                else
+                                {
+                                    Exception e = task.getException();
+                                    if (e instanceof FirebaseFunctionsException) {
+                                        FirebaseFunctionsException ffe = (FirebaseFunctionsException) e;
+                                        FirebaseFunctionsException.Code code = ffe.getCode();
+                                        Object details = ffe.getDetails();
+                                        Log.e("TOKEN", "onComplete: " + details.toString() );
+                                    }
                                 }
                             }
                         });
                     }
-                    mTvStatusConnect.setText("Kết nối bị lỗi: " + stringeeError.getMessage());
                 });
             }
 

@@ -46,6 +46,10 @@ public class Fimaers extends BaseObservable {
     private String bio;
     private Date dob;
 
+    public void setTimeCreated(Date timeCreated) {
+        this.timeCreated = timeCreated;
+    }
+
     private Date timeCreated;
 
     public void setDob(Date dob) {
@@ -152,9 +156,13 @@ public class Fimaers extends BaseObservable {
 
     @Exclude
     @Bindable
-    public String getTimeCreated() {
+    public String getJD() {
         SimpleDateFormat sdf = new SimpleDateFormat("MMMM, yyyy", new Locale("vi", "VN"));
         return sdf.format(timeCreated);
+    }
+
+    public Date getTimeCreated() {
+        return timeCreated;
     }
 
     public int getMinAgeMatch() {
