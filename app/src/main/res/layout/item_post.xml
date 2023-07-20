@@ -1,5 +1,4 @@
 <layout
-
     xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
@@ -61,61 +60,57 @@
             android:id="@+id/active_time"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_marginLeft="10dp"
+            android:layout_marginStart="10dp"
             android:text="1 phút trước"
             android:textSize="12sp"
             app:layout_constraintBottom_toBottomOf="@id/image_avatar"
             app:layout_constraintStart_toEndOf="@+id/image_avatar"
             app:layout_constraintTop_toBottomOf="@+id/user_name" />
-
-        <TextView
-            android:id="@+id/follow"
-            android:visibility="visible"
+        <LinearLayout
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_marginTop="4dp"
-            android:background="@drawable/shape_retangle_border_radius_purple"
-            android:text="Theo dõi"
-            android:layout_marginRight="5dp"
-            android:textColor="@color/primary_2"
-            android:textSize="12sp"
-            android:paddingHorizontal="10dp"
-            android:paddingVertical="2dp"
+            android:orientation="horizontal"
+            android:gravity="center_vertical"
             app:layout_constraintBottom_toBottomOf="@+id/active_time"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintHorizontal_bias="0.926"
-            app:layout_constraintEnd_toStartOf="@+id/ic_more"
-            app:layout_constraintTop_toTopOf="@+id/user_name" />
+            app:layout_constraintTop_toTopOf="@+id/user_name"
+            >
+            <TextView
+                android:id="@+id/follow"
+                android:visibility="visible"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:background="@drawable/shape_retangle_border_radius_purple"
+                android:text="Theo dõi"
+                android:textColor="@color/primary_2"
+                android:textSize="12sp"
+                android:paddingHorizontal="10dp"
+                android:paddingVertical="2dp"
+                android:layout_marginEnd="5dp"
+                />
 
-        <TextView
-            android:id="@+id/chat"
-            android:layout_marginRight="5dp"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_marginTop="4dp"
-            android:background="@drawable/cancel_button_background"
-            android:text="Trò chuyện"
-            android:visibility="gone"
-            android:textColor="@color/primary_2"
-            android:textSize="12sp"
-            android:paddingHorizontal="10dp"
-            android:paddingVertical="2dp"
-            app:layout_constraintBottom_toBottomOf="@+id/active_time"
-            app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintHorizontal_bias="0.926"
-            app:layout_constraintEnd_toStartOf="@+id/ic_more"
-            app:layout_constraintTop_toTopOf="@+id/user_name" />
+            <TextView
+                android:id="@+id/chat"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:background="@drawable/cancel_button_background"
+                android:text="Trò chuyện"
+                android:visibility="gone"
+                android:textColor="@color/primary_2"
+                android:textSize="12sp"
+                android:paddingHorizontal="10dp"
+                android:paddingVertical="2dp"
+                android:layout_marginEnd="5dp"/>
 
-        <ImageView
-            android:id="@+id/ic_more"
-            android:layout_width="10dp"
-            android:layout_height="10dp"
-            android:src="@drawable/ic_more"
-            app:layout_constraintTop_toTopOf="@id/chat"
-            app:layout_constraintEnd_toEndOf="parent"
-            android:layout_marginRight="10dp"
-            app:layout_constraintBottom_toBottomOf="@id/chat"
-            />
+            <ImageView
+                android:id="@+id/ic_more"
+                android:layout_width="10dp"
+                android:layout_height="10dp"
+                android:src="@drawable/ic_more"
+                />
+        </LinearLayout>
+
         <TextView
             android:id="@+id/content"
             android:layout_width="0dp"
@@ -133,72 +128,69 @@
             android:layout_height="wrap_content"
             app:layout_constraintTop_toBottomOf="@+id/content"
             app:layout_constraintLeft_toLeftOf="@id/content"
-            android:layout_marginRight="30dp"
+            android:layout_marginEnd="30dp"
             app:layout_constraintRight_toRightOf="parent"
             />
-        <ImageView
-            android:id="@+id/ic_like"
-            android:layout_width="20dp"
-            android:layout_height="20dp"
-            android:src="@drawable/ic_heart_gray"
+        <LinearLayout
+            android:id="@+id/layout_icon"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:orientation="horizontal"
             app:layout_constraintTop_toBottomOf="@id/image_list"
-            app:layout_constraintLeft_toLeftOf="parent"
-            android:layout_marginLeft="240dp"
+            app:layout_constraintRight_toRightOf="parent"
+            android:gravity="center_vertical"
             android:layout_marginTop="10dp"
-            />
-        <TextView
-            android:id="@+id/like_number"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:textColor="@color/black"
-            android:text="20"
-            android:textSize="12dp"
-            app:layout_constraintLeft_toRightOf="@id/ic_like"
-            app:layout_constraintTop_toTopOf="@id/ic_like"
-            android:layout_marginLeft="10dp"
-            app:layout_constraintBottom_toBottomOf="@id/ic_like"
-            />
-        <ImageView
-            android:id="@+id/ic_comment"
-            android:layout_width="20dp"
-            android:layout_height="20dp"
-            android:src="@drawable/ic_comment"
-            app:layout_constraintLeft_toRightOf="@id/like_number"
-            app:layout_constraintTop_toTopOf="@id/ic_like"
-            android:layout_marginLeft="20dp"
-            app:layout_constraintBottom_toBottomOf="@id/ic_like"
-            />
-        <TextView
-            android:id="@+id/comment_number"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:textColor="@color/black"
-            android:text="20"
-            android:textSize="12dp"
-            app:layout_constraintLeft_toRightOf="@id/ic_comment"
-            app:layout_constraintTop_toTopOf="@id/ic_like"
-            android:layout_marginLeft="10dp"
-            app:layout_constraintBottom_toBottomOf="@id/ic_like"
-            />
-        <ImageView
-            android:id="@+id/ic_share"
-            android:layout_width="20dp"
-            android:layout_height="20dp"
-            android:src="@drawable/ic_share"
-            app:layout_constraintLeft_toRightOf="@id/comment_number"
-            app:layout_constraintTop_toTopOf="@id/ic_like"
-            android:layout_marginLeft="20dp"
-            app:layout_constraintBottom_toBottomOf="@id/ic_like"
-            />
+            >
+            <ImageView
+                android:id="@+id/ic_like"
+                android:layout_width="20dp"
+                android:layout_height="20dp"
+                android:src="@drawable/ic_heart_gray"
+                />
+            <TextView
+                android:id="@+id/like_number"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:textColor="@color/black"
+                android:text="20"
+                android:textSize="12sp"
+                android:layout_marginStart="10dp"
+                />
+            <ImageView
+                android:id="@+id/ic_comment"
+                android:layout_width="20dp"
+                android:layout_height="20dp"
+                android:src="@drawable/ic_comment"
+                android:layout_marginStart="20dp"
+                />
+            <TextView
+                android:id="@+id/comment_number"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:textColor="@color/black"
+                android:text="20"
+                android:textSize="12sp"
+                android:layout_marginStart="10dp"
+                />
+            <ImageView
+                android:id="@+id/ic_share"
+                android:layout_width="20dp"
+                android:layout_height="20dp"
+                android:src="@drawable/ic_share"
+                android:layout_marginStart="20dp"
+                />
+
+
+        </LinearLayout>
 
         <ImageView
             android:layout_width="match_parent"
             android:layout_height="0.5dp"
             android:background="@drawable/divided_shape"
-            app:layout_constraintTop_toBottomOf="@id/ic_share"
             android:layout_marginTop="10dp"
-            app:layout_constraintLeft_toLeftOf="parent"
-            app:layout_constraintStart_toStartOf="parent" />
+            app:layout_constraintTop_toBottomOf="@id/layout_icon"
+            app:layout_constraintRight_toRightOf="parent"
+            android:gravity="center_vertical"/>
 
     </androidx.constraintlayout.widget.ConstraintLayout>
 </layout>

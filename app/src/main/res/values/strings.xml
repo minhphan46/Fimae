@@ -2,6 +2,7 @@
     <string name="app_name">Fimae</string>
     <string name="action_home">Home</string>
     <string name="action_feed">Feed</string>
+    <string name="action_date">Date</string>
     <string name="action_chat">Chat</string>
     <string name="action_profile">Me</string>
     <string name="title_activity_chat">Activity chat</string>

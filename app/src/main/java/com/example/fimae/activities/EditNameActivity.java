@@ -40,7 +40,7 @@ public class EditNameActivity extends AppCompatActivity {
             @Override
             public void onClick(View view) {
                 Intent resultIntent = new Intent();
-                resultIntent.putExtra("name", editNameTxt.getText());
+                resultIntent.putExtra("name", editNameTxt.getText().toString());
                 setResult(RESULT_OK, resultIntent);
                 finish();
             }

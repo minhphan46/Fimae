@@ -40,8 +40,6 @@ import com.auth0.jwt.algorithms.Algorithm;
 import com.google.type.DateTime;
 
 public class UpdateProfileActivity extends AppCompatActivity {
-    private static final String API_KEY_SID = "AC9bc361f7d58a91c5d27267fd380a017f";
-    private static final String API_KEY_SECRET = "zFot3ZBCik1A9AYLzupXgi4S7zbAmTXj";
     private static final int PICK_IMAGE = 1;
     private static final String DATE_FORMAT = "dd/MM/yyyy";
     EditText firstName;
@@ -95,37 +93,6 @@ public class UpdateProfileActivity extends AppCompatActivity {
         });
     }
 
-    public static String genAccessToken(String userID,String keySid, String keySecret, int expireInSecond) {
-        try {
-            Algorithm algorithmHS = Algorithm.HMAC256(keySecret);
-
-            Map<String, Object> headerClaims = new HashMap<String, Object>();
-            headerClaims.put("typ", "JWT");
-            headerClaims.put("alg", "HS256");
-            headerClaims.put("cty", "stringee-api;v=1");
-
-            long exp = (long) (System.currentTimeMillis()) + expireInSecond * 1000;
-            Calendar calendar = Calendar.getInstance();
-            Date now = calendar.getTime();
-
-            // Cộng thêm 30 ngày
-            calendar.add(Calendar.DAY_OF_YEAR, 30);
-            Date futureDate = calendar.getTime();
-            String token = JWT.create().withHeader(headerClaims)
-                    .withClaim("jti", keySid + "-" + System.currentTimeMillis())
-                    .withClaim("iss", keySid)
-                    .withClaim("userId", userID)
-                    .withExpiresAt(futureDate)
-                    .sign(algorithmHS);
-
-            return token;
-        } catch (Exception ex) {
-            ex.printStackTrace();
-        }
-
-        return null;
-    }
-
     private void saveProfile() {
         int radioButtonID = genderRadioGroup.getCheckedRadioButtonId();
         String dateFormat = DATE_FORMAT;
@@ -149,7 +116,6 @@ public class UpdateProfileActivity extends AppCompatActivity {
                 return;
             }
 
-            String access_token = genAccessToken(user.getUid(),API_KEY_SID, API_KEY_SECRET, 3600);
             userRepo.uploadAvatar(user.getUid(), imageURI, new FimaerRepository.UploadAvatarCallback() {
                 @Override
                 public void onUploadSuccess(Uri uri) {
@@ -165,7 +131,7 @@ public class UpdateProfileActivity extends AppCompatActivity {
                                     bio.getText().toString(),
                                     dateOfBirth,
                                     new Date(),
-                                    access_token,
+                                    null,
                                     16,
                                     20,
                                     GenderMatch.male

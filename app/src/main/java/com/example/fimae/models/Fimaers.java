@@ -6,11 +6,15 @@ import androidx.databinding.Bindable;
 
 import com.example.fimae.BR;
 
+import com.google.firebase.firestore.Exclude;
 import com.google.firebase.firestore.ServerTimestamp;
 
 import java.io.Serializable;
+import java.text.SimpleDateFormat;
+import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
 import java.util.Date;
+import java.util.Locale;
 
 public class Fimaers extends BaseObservable implements Serializable {
     private String uid;
@@ -18,6 +22,7 @@ public class Fimaers extends BaseObservable implements Serializable {
     public void setLastName(String lastName) {
         this.lastName = lastName;
         notifyPropertyChanged(BR.lastName);
+        notifyPropertyChanged(BR.name);
     }
 
     public void setFirstName(String firstName) {
@@ -33,33 +38,37 @@ public class Fimaers extends BaseObservable implements Serializable {
     private String phone;
     private String avatarUrl;
 
-    @Nullable
-    private String backgroundUrl;
+    @Nullable private String backgroundUrl;
+
+    public void setBio(String bio) {
+        this.bio = bio;
+    }
+
     private String bio;
     private Date dob;
 
     private Date timeCreated;
-    @Nullable
-    private String token;
 
-    @Nullable
-    private int minAgeMatch;
-    @Nullable
-    private int maxAgeMatch;
-    @Nullable
-    private GenderMatch genderMatch;
+    public void setDob(Date dob) {
+        this.dob = dob;
+        notifyPropertyChanged(BR.birthDate);
+    }
+
+    @Nullable private String token;
+
+    @Nullable private int minAgeMatch;
+    @Nullable private int maxAgeMatch;
+    @Nullable private GenderMatch genderMatch;
     @ServerTimestamp
     private Date lastActive;
 
-    public Fimaers() {
-    }
-
-    public Fimaers(String uid, String lastName, String firstName, boolean gender, String email, String phone, String avatarUrl, @Nullable String backgroundUrl, String bio, Date dob, Date timeCreated, @Nullable String token, @Nullable int minAgeMatch, @Nullable int maxAgeMatch, @Nullable GenderMatch genderMatch) {
+    public Fimaers(){}
+    public Fimaers(String uid, String lastName, String firstName, boolean gender,String email, String phone, String avatarUrl,@Nullable String backgroundUrl, String bio, Date dob, Date timeCreated, @Nullable String token, @Nullable int minAgeMatch, @Nullable int maxAgeMatch, @Nullable GenderMatch genderMatch) {
         this.uid = uid;
         this.lastName = lastName;
         this.firstName = firstName;
         this.gender = gender;
-        this.email = email;
+        this.email =email;
         this.phone = phone;
         this.avatarUrl = avatarUrl;
         this.backgroundUrl = backgroundUrl;
@@ -73,15 +82,13 @@ public class Fimaers extends BaseObservable implements Serializable {
         notifyChange();
     }
 
-    public boolean isOnline() {
+    public boolean isOnline(){
         return lastActive != null && lastActive.getTime() > new Date().getTime() - 5 * 60 * 1000;
     }
-
-    public int getLastActiveMinuteAgo() {
-        if (lastActive == null) return Integer.MAX_VALUE;
+    public int getLastActiveMinuteAgo(){
+        if(lastActive == null) return Integer.MAX_VALUE;
         return (int) ((new Date().getTime() - lastActive.getTime()) / 1000 / 60);
     }
-
     public Date getLastActive() {
         return lastActive;
     }
@@ -105,7 +112,8 @@ public class Fimaers extends BaseObservable implements Serializable {
     }
 
     @Bindable
-    public String getName() {
+    public String getName()
+    {
         return firstName + " " + lastName;
     }
 
@@ -129,8 +137,23 @@ public class Fimaers extends BaseObservable implements Serializable {
         return dob;
     }
 
-    public Date getTimeCreated() {
-        return timeCreated;
+    @Exclude
+    @Bindable
+    public String getBirthDate()
+    {
+        String pattern = "dd-MM-yyyy";
+
+        // Create a SimpleDateFormat object with the desired pattern
+        SimpleDateFormat simpleDateFormat = new SimpleDateFormat(pattern);
+
+        return simpleDateFormat.format(dob);
+    }
+
+    @Exclude
+    @Bindable
+    public String getTimeCreated() {
+        SimpleDateFormat sdf = new SimpleDateFormat("MMMM, yyyy", new Locale("vi", "VN"));
+        return sdf.format(timeCreated);
     }
 
     public int getMinAgeMatch() {
@@ -157,7 +180,6 @@ public class Fimaers extends BaseObservable implements Serializable {
     public void setGenderMatch(@Nullable GenderMatch genderMatch) {
         this.genderMatch = genderMatch;
     }
-
     @Nullable
     public String getBackgroundUrl() {
         return backgroundUrl;
@@ -167,12 +189,16 @@ public class Fimaers extends BaseObservable implements Serializable {
         this.backgroundUrl = backgroundUrl;
     }
 
-    public void setName(String fullName) {
-        String[] splits = fullName.split(" ", 2);
-        if (splits.length > 1) {
+    public void setName(String fullName)
+    {
+        String[] splits = fullName.split(" ",2);
+        if(splits.length > 1)
+        {
             this.firstName = splits[0];
             this.lastName = splits[1];
-        } else {
+        }
+        else
+        {
             this.firstName = fullName;
         }
         notifyPropertyChanged(BR.name);
@@ -182,7 +208,6 @@ public class Fimaers extends BaseObservable implements Serializable {
     public String getToken() {
         return token;
     }
-
     public int calculateAge() {
         Date currentDate = new Date();
         long timeDiff = currentDate.getTime() - dob.getTime();
@@ -190,7 +215,22 @@ public class Fimaers extends BaseObservable implements Serializable {
 
         return (int) (timeDiff / yearsInMillis);
     }
+    @Exclude
+    @Bindable
+    public String getAge()
+    {
+        return String.valueOf(calculateAge());
+    }
 
+    @Exclude
+    @Bindable
+    public ArrayList<String> getChip()
+    {
+        ArrayList<String> chips = new ArrayList<>();
+        chips.add("Chế này hài");
+        chips.add("Đm lập trình");
+        return chips;
+    }
     private Fimaers(String id, String name, String avatarUrl, int age, boolean gender, String bio, String tk) {
         this.uid = id;
         this.firstName = name;
