@@ -175,7 +175,8 @@ public class DetailPostActivity extends AppCompatActivity {
         LinearLayoutManager layoutManager1 = new LinearLayoutManager(this);
         binding.commentRecycler.setLayoutManager(layoutManager1);
         binding.commentRecycler.setAdapter(newCommentAdapter);
-        commentRepository.getComment(post.getPostId(), commentItemAdapters, newCommentAdapter);
+//        commentRepository.getComment(post.getPostId(), commentItemAdapters, newCommentAdapter);
+
     }
     private void initListener(){
         createCommentDialog();

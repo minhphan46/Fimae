@@ -169,7 +169,7 @@
         android:layout_height="wrap_content"
         android:layout_marginStart="7dp"
         android:layout_marginTop="6dp"
-        android:text="@{`Đã tham gia từ ` + viewmodel.user.timeCreated}"
+        android:text="@{`Đã tham gia từ ` + viewmodel.user.JD}"
         android:textColor="@color/text_secondary"
         app:layout_constraintStart_toEndOf="@+id/joinDateIcon"
         app:layout_constraintTop_toBottomOf="@+id/bioTxt" />

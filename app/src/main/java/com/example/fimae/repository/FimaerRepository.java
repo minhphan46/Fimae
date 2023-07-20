@@ -51,12 +51,10 @@ public class FimaerRepository {
 
     public Task<String> refreshToken()
     {
-        Map<String, Object> data = new HashMap<>();
-        data.put("uid", getCurrentUserUid());
 
         return mFunctions
-            .getHttpsCallable("addMessage")
-            .call(data)
+            .getHttpsCallable("refreshToken")
+            .call()
             .continueWith(new Continuation<HttpsCallableResult, String>() {
                 @Override
                 public String then(@NonNull Task<HttpsCallableResult> task) throws Exception {

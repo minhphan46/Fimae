@@ -14,7 +14,9 @@ import java.text.SimpleDateFormat;
 import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
 import java.util.Date;
+import java.util.HashMap;
 import java.util.Locale;
+import java.util.Map;
 
 public class Fimaers extends BaseObservable implements Serializable {
     private String uid;
@@ -46,6 +48,10 @@ public class Fimaers extends BaseObservable implements Serializable {
 
     private String bio;
     private Date dob;
+
+    public void setTimeCreated(Date timeCreated) {
+        this.timeCreated = timeCreated;
+    }
 
     private Date timeCreated;
 
@@ -151,9 +157,26 @@ public class Fimaers extends BaseObservable implements Serializable {
 
     @Exclude
     @Bindable
-    public String getTimeCreated() {
+    public String getJD() {
         SimpleDateFormat sdf = new SimpleDateFormat("MMMM, yyyy", new Locale("vi", "VN"));
         return sdf.format(timeCreated);
+    }
+
+    @Exclude
+    public Map<String,Object> toJson()
+    {
+        Map<String,Object> docData = new HashMap<>();
+        docData.put("uid", getUid());
+        docData.put("genderMatch", getGenderMatch());
+        docData.put("minAgeMatch", getMinAgeMatch());
+        docData.put("maxAgeMatch", maxAgeMatch);
+        docData.put("gender", isGender());
+        docData.put("age", calculateAge());
+        return docData;
+    }
+
+    public Date getTimeCreated() {
+        return timeCreated;
     }
 
     public int getMinAgeMatch() {
