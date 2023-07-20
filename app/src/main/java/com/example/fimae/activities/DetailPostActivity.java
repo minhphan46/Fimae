@@ -55,8 +55,8 @@ public class DetailPostActivity extends AppCompatActivity {
     private Fimaers fimaers;
     DetailPostBinding binding;
     private PostPhotoAdapter adapter;
-    List<String> imageUrls = new ArrayList<>();
-    List<Uri> imageUris = new ArrayList<>();
+    ArrayList<String> imageUrls = new ArrayList<>();
+//    List<Uri> imageUris = new ArrayList<>();
     List<Comment> comments;
     List<CommentItemAdapter> commentItemAdapters;
     NewCommentAdapter newCommentAdapter;
@@ -110,10 +110,13 @@ public class DetailPostActivity extends AppCompatActivity {
 
     }
     private void listenToChange(Post updatePost){
-        if(imageUrls.size() != post.getPostImages().size()){
-            imageUrls = post.getPostImages();
-            if(adapter != null) adapter.notifyDataSetChanged();
-        }
+            imageUrls = new ArrayList<>(updatePost.getPostImages());
+
+            if(adapter != null){
+                adapter.updateImages(imageUrls);
+                adapter.notifyDataSetChanged();
+            }
+
         if(!post.getContent().equals(updatePost.getContent())){
             binding.content.setText(updatePost.getContent());
         }
@@ -141,12 +144,12 @@ public class DetailPostActivity extends AppCompatActivity {
         Picasso.get().load(fimaers.getAvatarUrl()).placeholder(R.drawable.ic_default_avatar).into(binding.imageAvatar);
         binding.userName.setText(fimaers.getLastName());
         if(imageUrls != null && !imageUrls.isEmpty()){
-            for(int i = 0; i < imageUrls.size(); i++){
-                imageUris.add(Uri.parse(imageUrls.get(i)));
-            }
-            adapter = new PostPhotoAdapter(this, imageUris, false);
+//            for(int i = 0; i < imageUrls.size(); i++){
+//                imageUris.add(Uri.parse(imageUrls.get(i)));
+//            }
+            adapter = new PostPhotoAdapter(this, imageUrls);
             binding.imageList.setVisibility(View.VISIBLE);
-            LinearLayoutManager layoutManager = new GridLayoutManager(this, PostAdapter.getColumnSpan(imageUris.size()) );
+            LinearLayoutManager layoutManager = new GridLayoutManager(this, PostAdapter.getColumnSpan(imageUrls.size()) );
             binding.imageList.setLayoutManager(layoutManager);
             binding.imageList.setAdapter(adapter);
         }
@@ -315,6 +318,7 @@ public class DetailPostActivity extends AppCompatActivity {
                     if(bottomSheetItem.getTitle().equals("Chỉnh sửa bài đăng")){
                         Intent intent = new Intent(getApplicationContext(), PostActivity.class );
                         intent.putExtra("id", post.getPostId());
+
                         mStartForResult.launch(intent);
                         chatBottomSheetFragment.dismiss();
                     }

@@ -1,0 +1,29 @@
+Index: .idea/deploymentTargetDropDown.xml
+IDEA additional info:
+Subsystem: com.intellij.openapi.diff.impl.patch.BaseRevisionTextPatchEP
+<+><?xml version=\"1.0\" encoding=\"UTF-8\"?>\r\n<project version=\"4\">\r\n  <component name=\"deploymentTargetDropDown\">\r\n    <runningDeviceTargetSelectedWithDropDown>\r\n      <Target>\r\n        <type value=\"RUNNING_DEVICE_TARGET\" />\r\n        <deviceKey>\r\n          <Key>\r\n            <type value=\"VIRTUAL_DEVICE_PATH\" />\r\n            <value value=\"C:\\Users\\haosi\\.android\\avd\\Pixel_6_Pro.avd\" />\r\n          </Key>\r\n        </deviceKey>\r\n      </Target>\r\n    </runningDeviceTargetSelectedWithDropDown>\r\n    <timeTargetWasSelectedWithDropDown value=\"2023-07-19T16:47:18.883604900Z\" />\r\n    <runningDeviceTargetsSelectedWithDialog>\r\n      <Target>\r\n        <type value=\"RUNNING_DEVICE_TARGET\" />\r\n        <deviceKey>\r\n          <Key>\r\n            <type value=\"VIRTUAL_DEVICE_PATH\" />\r\n            <value value=\"C:\\Users\\haosi\\.android\\avd\\Pixel_6_Pro.avd\" />\r\n          </Key>\r\n        </deviceKey>\r\n      </Target>\r\n      <Target>\r\n        <type value=\"RUNNING_DEVICE_TARGET\" />\r\n        <deviceKey>\r\n          <Key>\r\n            <type value=\"SERIAL_NUMBER\" />\r\n            <value value=\"192.168.1.4:41607\" />\r\n          </Key>\r\n        </deviceKey>\r\n      </Target>\r\n    </runningDeviceTargetsSelectedWithDialog>\r\n  </component>\r\n</project>
+Subsystem: com.intellij.openapi.diff.impl.patch.CharsetEP
+<+>UTF-8
+===================================================================
+diff --git a/.idea/deploymentTargetDropDown.xml b/.idea/deploymentTargetDropDown.xml
+--- a/.idea/deploymentTargetDropDown.xml	
++++ b/.idea/deploymentTargetDropDown.xml	
+@@ -1,18 +1,6 @@
+ <?xml version="1.0" encoding="UTF-8"?>
+ <project version="4">
+   <component name="deploymentTargetDropDown">
+-    <runningDeviceTargetSelectedWithDropDown>
+-      <Target>
+-        <type value="RUNNING_DEVICE_TARGET" />
+-        <deviceKey>
+-          <Key>
+-            <type value="VIRTUAL_DEVICE_PATH" />
+-            <value value="C:\Users\haosi\.android\avd\Pixel_6_Pro.avd" />
+-          </Key>
+-        </deviceKey>
+-      </Target>
+-    </runningDeviceTargetSelectedWithDropDown>
+-    <timeTargetWasSelectedWithDropDown value="2023-07-19T16:47:18.883604900Z" />
+     <runningDeviceTargetsSelectedWithDialog>
+       <Target>
+         <type value="RUNNING_DEVICE_TARGET" />

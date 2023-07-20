@@ -19,9 +19,12 @@ import com.example.fimae.databinding.ItemPostBinding;
 import com.example.fimae.models.Post;
 import com.example.fimae.models.Seed;
 import com.example.fimae.models.Fimaers;
+import com.example.fimae.repository.FollowRepository;
 import com.example.fimae.repository.PostRepository;
 import com.example.fimae.service.TimerService;
+import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.firebase.Timestamp;
+import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.firestore.CollectionReference;
 import com.google.firebase.firestore.DocumentChange;
 import com.google.firebase.firestore.DocumentReference;
@@ -32,6 +35,8 @@ import com.google.firebase.firestore.FirebaseFirestoreException;
 import com.google.type.DateTime;
 import com.google.type.DateTimeOrBuilder;
 import com.squareup.picasso.Picasso;
+
+import org.checkerframework.checker.units.qual.A;
 
 import java.time.LocalDateTime;
 import java.time.ZoneId;
@@ -48,7 +53,7 @@ public class PostAdapter extends RecyclerView.Adapter<PostAdapter.ViewHolder> {
     public List<Post> posts;
     private IClickCardUserListener iClickCardUserListener;
     private PostPhotoAdapter adapter;
-
+    private FollowRepository followRepository = FollowRepository.getInstance();
     public interface IClickCardUserListener {
         void onClickUser(Post post);
     }
@@ -96,7 +101,7 @@ public class PostAdapter extends RecyclerView.Adapter<PostAdapter.ViewHolder> {
             }
         });
 
-        List<String> imageUrls = currentPost.getPostImages();
+        ArrayList<String> imageUrls = new ArrayList<>( currentPost.getPostImages());
         List<Uri> imageUris = new ArrayList<>();
         String description = currentPost.getContent();
 
@@ -109,7 +114,7 @@ public class PostAdapter extends RecyclerView.Adapter<PostAdapter.ViewHolder> {
         }
 
         if(currentPost.getPostImages() != null && !currentPost.getPostImages().isEmpty()){
-            adapter = new PostPhotoAdapter(mContext, imageUris, false);
+            adapter = new PostPhotoAdapter(mContext, imageUrls);
             binding.imageList.setVisibility(View.VISIBLE);
             LinearLayoutManager layoutManager = new GridLayoutManager(mContext, getColumnSpan(imageUris.size()) );
             binding.imageList.setLayoutManager(layoutManager);
@@ -136,7 +141,24 @@ public class PostAdapter extends RecyclerView.Adapter<PostAdapter.ViewHolder> {
                 currentPost.setPostImages(updatePost.getPostImages());
                 adapter.notifyDataSetChanged();
             }
-
+            followRepository.isFollowing(currentPost.getPublisher()).addOnSuccessListener(new OnSuccessListener<Boolean>() {
+                @Override
+                public void onSuccess(Boolean aBoolean) {
+                    if(aBoolean){
+                        binding.follow.setVisibility(View.GONE);
+                        binding.chat.setVisibility(View.VISIBLE);
+                    }
+                }
+            });
+            binding.follow.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View view) {
+                        followRepository.follow(currentPost.getPublisher());
+                        binding.follow.setVisibility(View.GONE);
+                        binding.chat.setVisibility(View.VISIBLE);
+                    }
+                }
+            );
             if(!currentPost.getContent().equals(updatePost.getContent())){
                 binding.content.setText(updatePost.getContent());
             }

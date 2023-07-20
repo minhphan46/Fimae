@@ -12,6 +12,7 @@ public class Message {
     static final public String TEXT = "TEXT";
     static final public String MEDIA = "MEDIA";
     static final public String AUDIO = "AUDIO";
+    static final public String POST_LINK = "POST_LINK";
     static final public String CHANGE_NICKNAME = "CHANGE_NICKNAME";
     static final public String LEAVE_CONVERSATION = "LEAVE_CONVERSATION";
     private String id;
