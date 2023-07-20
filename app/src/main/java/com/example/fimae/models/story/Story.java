@@ -1,5 +1,7 @@
 package com.example.fimae.models.story;
 
+import com.example.fimae.R;
+import com.example.fimae.activities.HomeActivity;
 import com.example.fimae.activities.PostMode;
 import com.google.firebase.firestore.ServerTimestamp;
 
@@ -40,7 +42,7 @@ public class Story {
         ArrayList<Story> stories = new ArrayList<>();
         stories.add(new Story("1", "1", StoryType.IMAGE, "https://picsum.photos/200/300?random=1", new Date(), PostMode.PUBLIC, false, new ArrayList<>(), new ArrayList<>()));
         stories.add(new Story("2", "2", StoryType.IMAGE, "https://picsum.photos/200/300?random=2", new Date(), PostMode.PUBLIC, false, new ArrayList<>(), new ArrayList<>()));
-        stories.add(new Story("3", "3", StoryType.IMAGE, "https://picsum.photos/200/300?random=3", new Date(), PostMode.PUBLIC, false, new ArrayList<>(), new ArrayList<>()));
+        stories.add(new Story("3", "3", StoryType.VIDEO, "android.resource://" + HomeActivity.PACKAGE_NAME + "/" + R.raw.video4, new Date(), PostMode.PUBLIC, false, new ArrayList<>(), new ArrayList<>()));
         stories.add(new Story("4", "4", StoryType.IMAGE, "https://picsum.photos/200/300?random=4", new Date(), PostMode.PUBLIC, false, new ArrayList<>(), new ArrayList<>()));
         stories.add(new Story("5", "5", StoryType.IMAGE, "https://picsum.photos/200/300?random=5", new Date(), PostMode.PUBLIC, false, new ArrayList<>(), new ArrayList<>()));
         stories.add(new Story("6", "6", StoryType.IMAGE, "https://picsum.photos/200/300?random=6", new Date(), PostMode.PUBLIC, false, new ArrayList<>(), new ArrayList<>()));

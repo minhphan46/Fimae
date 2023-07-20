@@ -17,6 +17,7 @@ import androidx.recyclerview.widget.RecyclerView;
 import com.example.fimae.R;
 import com.example.fimae.Story.StoryView;
 import com.example.fimae.Story.callback.StoryClickListeners;
+import com.example.fimae.StoryActivity;
 import com.example.fimae.activities.OnChatActivity;
 import com.example.fimae.activities.SearchUserActivity;
 import com.example.fimae.adapters.ConversationAdapter;
@@ -87,23 +88,8 @@ public class ChatFragment extends Fragment {
             @Override
             public void onStoryClicked(int position) {
                 ArrayList<Fimaers> headerInfoArrayList =Fimaers.dummy;
-                new StoryView.Builder(getChildFragmentManager())
-                        .setStoriesList(Story.getFakeData()) // MyStory's ArrayList
-                        .setStoryDuration(5000) // Optional, default is 2000 Millis
-                        .setHeadingInfoList(headerInfoArrayList) // StoryViewHeaderInfo's ArrayList
-                        .setStoryClickListeners(new StoryClickListeners() {
-                            @Override
-                            public void onDescriptionClickListener(int position) {
-                                // your action
-                            }
-
-                            @Override
-                            public void onTitleIconClickListener(int position) {
-                                // your action
-                            }
-                        }) // Optional Listeners
-                        .build() // Must be called before show method
-                        .show();
+               Intent intent = new Intent(getContext(), StoryActivity.class);
+               startActivity(intent);
             }
         });
         return view;

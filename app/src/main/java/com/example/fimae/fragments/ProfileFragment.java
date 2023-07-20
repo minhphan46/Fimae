@@ -28,7 +28,6 @@ import androidx.fragment.app.Fragment;
 import com.example.fimae.R;
 import com.example.fimae.activities.DetailPostActivity;
 import com.example.fimae.activities.EditProfileActivity;
-import com.example.fimae.adapters.CommentAdapter;
 import com.example.fimae.adapters.PostAdapter;
 import com.example.fimae.adapters.ProfileViewPagerApdater;
 import com.example.fimae.adapters.StoryAdapter;

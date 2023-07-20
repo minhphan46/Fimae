@@ -36,9 +36,11 @@
         android:theme="@style/Theme.Fimae"
         tools:targetApi="31">
         <activity
+            android:name=".StoryActivity"
+            android:exported="false" />
+        <activity
             android:name=".activities.MediaSliderActivity"
             android:exported="false" />
-
         <activity
             android:name=".activities.ShortVideoActivity"
             android:exported="false" />

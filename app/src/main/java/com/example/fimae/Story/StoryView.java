@@ -40,14 +40,13 @@ import java.util.ArrayList;
 import java.util.Calendar;
 
 
-public class StoryView extends DialogFragment implements StoriesProgressView.StoriesListener,
+public class StoryView extends Fragment implements StoriesProgressView.StoriesListener,
         StoryCallbacks,
         PullDismissLayout.Listener,
         TouchCallbacks {
 
     private static final String TAG = StoryView.class.getSimpleName();
 
-    private ArrayList<Story> storiesList = new ArrayList<>();
 
     private final static String IMAGES_KEY = "IMAGES";
 
@@ -91,14 +90,19 @@ public class StoryView extends DialogFragment implements StoriesProgressView.Sto
 
     private boolean isRtl;
 
-    private StoryView() {
+    private Fimaers fimaers;
+    private ArrayList<Story> storiesList = new ArrayList<>();
+
+    public StoryView(Fimaers fimaers, ArrayList<Story> stories) {
+        this.fimaers = fimaers;
+        this.storiesList = stories;
     }
 
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
-        getDialog().getWindow().setBackgroundDrawable(new ColorDrawable(Color.TRANSPARENT));
+        //getDialog().getWindow().setBackgroundDrawable(new ColorDrawable(Color.TRANSPARENT));
         return inflater.inflate(R.layout.dialog_stories, container);
     }
 
@@ -116,19 +120,20 @@ public class StoryView extends DialogFragment implements StoriesProgressView.Sto
 
     }
 
+    private ViewPagerAdapter adapter;
     private void setupStories() {
         storiesProgressView.setStoriesCount(storiesList.size());
         storiesProgressView.setStoryDuration(duration);
         updateHeading();
-        mViewPager.setAdapter(new ViewPagerAdapter(storiesList, getContext(), this));
+        adapter = new ViewPagerAdapter(storiesList, getContext(), this);
+        mViewPager.setAdapter(adapter);
     }
 
     private void readArguments() {
-        assert getArguments() != null;
-        storiesList = new ArrayList<>((ArrayList<Story>) getArguments().getSerializable(IMAGES_KEY));
-        duration = getArguments().getLong(DURATION_KEY, 2000);
-        startingIndex = getArguments().getInt(STARTING_INDEX_TAG, 0);
-        isRtl = getArguments().getBoolean(IS_RTL_TAG, false);
+        //assert getArguments() != null;
+        duration = 5000;
+        startingIndex = 0;
+        isRtl = false;
     }
 
     private void setupViews(View view) {
@@ -143,7 +148,8 @@ public class StoryView extends DialogFragment implements StoriesProgressView.Sto
         closeImageButton = view.findViewById(R.id.imageButton);
         storiesProgressView.setStoriesListener(this);
         mViewPager.setOnTouchListener((v, event) -> true);
-        closeImageButton.setOnClickListener(v -> dismissAllowingStateLoss());
+        //TODO: Add close button
+        //closeImageButton.setOnClickListener(v -> dismissAllowingStateLoss());
         if (storyClickListeners != null) {
             titleCardView.setOnClickListener(v -> storyClickListeners.onTitleIconClickListener(counter));
         }
@@ -176,10 +182,6 @@ public class StoryView extends DialogFragment implements StoriesProgressView.Sto
     @Override
     public void onResume() {
         super.onResume();
-        WindowManager.LayoutParams params = getDialog().getWindow().getAttributes();
-        params.width = ViewGroup.LayoutParams.MATCH_PARENT;
-        params.height = ViewGroup.LayoutParams.MATCH_PARENT;
-        getDialog().getWindow().setAttributes(params);
     }
 
     @Override
@@ -197,7 +199,7 @@ public class StoryView extends DialogFragment implements StoriesProgressView.Sto
 
     @Override
     public void onComplete() {
-        dismissAllowingStateLoss();
+//        dismissAllowingStateLoss();
     }
 
     @Override
@@ -225,7 +227,7 @@ public class StoryView extends DialogFragment implements StoriesProgressView.Sto
     @Override
     public void nextStory() {
         if (counter + 1 >= storiesList.size()) {
-            dismissAllowingStateLoss();
+//            dismissAllowingStateLoss();
             return;
         }
         mViewPager.setCurrentItem(++counter, false);
@@ -248,43 +250,25 @@ public class StoryView extends DialogFragment implements StoriesProgressView.Sto
     }
 
     private void updateHeading() {
-
-        Object object = getArguments().getSerializable(HEADER_INFO_KEY);
-
-        Fimaers storyHeaderInfo = null;
-
-        if (object instanceof Fimaers) {
-            storyHeaderInfo = (Fimaers) object;
-        } else if (object instanceof ArrayList) {
-            ArrayList<Fimaers> arrayList = (ArrayList<Fimaers>) object;
-            int size = arrayList.size();
-//            if(counter >= size - 1)
-                storyHeaderInfo = arrayList.get(0);
-//            storyHeaderInfo = arrayList.get(counter);
-
-        }
-
-        if (storyHeaderInfo == null) return;
-
-        if (storyHeaderInfo.getAvatarUrl() != null) {
+        if (fimaers.getAvatarUrl() != null) {
             titleCardView.setVisibility(View.VISIBLE);
             if (getContext() == null) return;
             Glide.with(getContext())
-                    .load(storyHeaderInfo.getAvatarUrl())
+                    .load(fimaers.getAvatarUrl())
                     .into(titleIconImageView);
         } else {
             titleCardView.setVisibility(View.GONE);
             isHeadlessLogoMode = true;
         }
 
-        String name = storyHeaderInfo.getFirstName() + " " + storyHeaderInfo.getLastName();
+        String name = fimaers.getFirstName() + " " + fimaers.getLastName();
 
         titleTextView.setVisibility(View.VISIBLE);
         titleTextView.setText(name);
 
-        if (storyHeaderInfo.getBio() != null) {
+        if (fimaers.getBio() != null) {
             subtitleTextView.setVisibility(View.VISIBLE);
-            subtitleTextView.setText(storyHeaderInfo.getBio());
+            subtitleTextView.setText(fimaers.getBio());
         } else {
             subtitleTextView.setVisibility(View.GONE);
         }
@@ -353,7 +337,8 @@ public class StoryView extends DialogFragment implements StoriesProgressView.Sto
 
     @Override
     public void onDismissed() {
-        dismissAllowingStateLoss();
+        //TODO: Add listener
+        //dismissAllowingStateLoss();
     }
 
     @Override
@@ -398,27 +383,6 @@ public class StoryView extends DialogFragment implements StoriesProgressView.Sto
                         nextStory();
                     }
                 }
-
-//                if (
-//                        (!TextUtils.isEmpty(storiesList.get(counter).getDescription())
-//                                && ((int) (height - yValue) >= 0.2 * height)
-//                                || TextUtils.isEmpty(storiesList.get(counter).getDescription()))) {
-//                    if ((int) xValue <= (width / 2)) {
-//                        //Left
-//                        if (isRtl) {
-//                            nextStory();
-//                        } else {
-//                            previousStory();
-//                        }
-//                    } else {
-//                        //Right
-//                        if (isRtl) {
-//                            previousStory();
-//                        } else {
-//                            nextStory();
-//                        }
-//                    }
-//                }
             }
         } else {
             stopTimer();
@@ -434,103 +398,6 @@ public class StoryView extends DialogFragment implements StoriesProgressView.Sto
 
     public void setOnStoryChangedCallback(OnStoryChangedCallback onStoryChangedCallback) {
         this.onStoryChangedCallback = onStoryChangedCallback;
-    }
-
-    public static class Builder {
-
-        private StoryView storyView;
-        private FragmentManager fragmentManager;
-        private Bundle bundle;
-        private Fimaers Fimaers;
-        private ArrayList<Fimaers> headingInfoList;
-        private StoryClickListeners storyClickListeners;
-        private OnStoryChangedCallback onStoryChangedCallback;
-
-        public Builder(FragmentManager fragmentManager) {
-            this.fragmentManager = fragmentManager;
-            this.bundle = new Bundle();
-            this.Fimaers = new Fimaers();
-        }
-
-        public Builder setStoriesList(ArrayList<Story> storiesList) {
-            bundle.putSerializable(IMAGES_KEY, storiesList);
-            return this;
-        }
-
-//        public Builder setTitleText(String title) {
-//            Fimaers.setTitle(title);
-//            return this;
-//        }
-//
-//        public Builder setSubtitleText(String subtitle) {
-//            Fimaers.setSubtitle(subtitle);
-//            return this;
-//        }
-//
-//        public Builder setTitleLogoUrl(String url) {
-//            Fimaers.setTitleIconUrl(url);
-//            return this;
-//        }
-
-        public Builder setStoryDuration(long duration) {
-            bundle.putLong(DURATION_KEY, duration);
-            return this;
-        }
-
-        public Builder setStartingIndex(int index) {
-            bundle.putInt(STARTING_INDEX_TAG, index);
-            return this;
-        }
-
-        public Builder build() {
-            if (storyView != null) {
-                Log.e(TAG, "The StoryView has already been built!");
-                return this;
-            }
-            storyView = new StoryView();
-            bundle.putSerializable(HEADER_INFO_KEY, headingInfoList != null ? headingInfoList : Fimaers);
-            storyView.setArguments(bundle);
-            if (storyClickListeners != null) {
-                storyView.setStoryClickListeners(storyClickListeners);
-            }
-            if (onStoryChangedCallback != null) {
-                storyView.setOnStoryChangedCallback(onStoryChangedCallback);
-            }
-            return this;
-        }
-
-        public Builder setOnStoryChangedCallback(OnStoryChangedCallback onStoryChangedCallback) {
-            this.onStoryChangedCallback = onStoryChangedCallback;
-            return this;
-        }
-
-        public Builder setRtl(boolean isRtl) {
-            this.bundle.putBoolean(IS_RTL_TAG, isRtl);
-            return this;
-        }
-
-        public Builder setHeadingInfoList(ArrayList<Fimaers> headingInfoList) {
-            this.headingInfoList = headingInfoList;
-            return this;
-        }
-
-        public Builder setStoryClickListeners(StoryClickListeners storyClickListeners) {
-            this.storyClickListeners = storyClickListeners;
-            return this;
-        }
-
-        public void show() {
-            storyView.show(fragmentManager, TAG);
-        }
-
-        public void dismiss() {
-            storyView.dismiss();
-        }
-
-        public Fragment getFragment() {
-            return storyView;
-        }
-
     }
 
 }
