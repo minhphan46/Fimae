@@ -15,6 +15,8 @@ import android.view.WindowManager;
 import android.widget.ImageButton;
 import android.widget.ImageView;
 import android.widget.TextView;
+import android.widget.Toast;
+import android.widget.VideoView;
 
 import androidx.annotation.Nullable;
 import androidx.cardview.widget.CardView;
@@ -22,6 +24,7 @@ import androidx.fragment.app.DialogFragment;
 import androidx.fragment.app.Fragment;
 import androidx.fragment.app.FragmentManager;
 import androidx.viewpager.widget.ViewPager;
+import androidx.viewpager2.widget.ViewPager2;
 
 import com.bumptech.glide.Glide;
 import com.example.fimae.R;
@@ -35,6 +38,7 @@ import com.example.fimae.Story.utils.PullDismissLayout;
 import com.example.fimae.Story.utils.ViewPagerAdapter;
 import com.example.fimae.models.Fimaers;
 import com.example.fimae.models.story.Story;
+import com.example.fimae.models.story.StoryType;
 
 import java.util.ArrayList;
 import java.util.Calendar;
@@ -60,9 +64,9 @@ public class StoryView extends Fragment implements StoriesProgressView.StoriesLi
 
     private static final String IS_RTL_TAG = "IS_RTL";
 
-    private StoriesProgressView storiesProgressView;
+//    private StoriesProgressView storiesProgressView;
 
-    private ViewPager mViewPager;
+    private ViewPager2 mViewPager;
 
     private int counter = 0;
 
@@ -118,14 +122,15 @@ public class StoryView extends Fragment implements StoriesProgressView.StoriesLi
         setupViews(view);
         setupStories();
 
+        startStories();
     }
 
     private ViewPagerAdapter adapter;
     private void setupStories() {
-        storiesProgressView.setStoriesCount(storiesList.size());
-        storiesProgressView.setStoryDuration(duration);
+//        storiesProgressView.setStoriesCount(storiesList.size());
+//        storiesProgressView.setStoryDuration(duration);
         updateHeading();
-        adapter = new ViewPagerAdapter(storiesList, getContext(), this);
+        adapter = new ViewPagerAdapter(getActivity(),storiesList , getContext());
         mViewPager.setAdapter(adapter);
     }
 
@@ -139,43 +144,32 @@ public class StoryView extends Fragment implements StoriesProgressView.StoriesLi
     private void setupViews(View view) {
         ((PullDismissLayout) view.findViewById(R.id.pull_dismiss_layout)).setListener(this);
         ((PullDismissLayout) view.findViewById(R.id.pull_dismiss_layout)).setmTouchCallbacks(this);
-        storiesProgressView = view.findViewById(R.id.storiesProgressView);
+//        storiesProgressView = view.findViewById(R.id.storiesProgressView);
         mViewPager = view.findViewById(R.id.storiesViewPager);
         titleTextView = view.findViewById(R.id.title_textView);
         subtitleTextView = view.findViewById(R.id.subtitle_textView);
         titleIconImageView = view.findViewById(R.id.title_imageView);
         titleCardView = view.findViewById(R.id.titleCardView);
         closeImageButton = view.findViewById(R.id.imageButton);
-        storiesProgressView.setStoriesListener(this);
+//        storiesProgressView.setStoriesListener(this);
         mViewPager.setOnTouchListener((v, event) -> true);
         //TODO: Add close button
         //closeImageButton.setOnClickListener(v -> dismissAllowingStateLoss());
         if (storyClickListeners != null) {
             titleCardView.setOnClickListener(v -> storyClickListeners.onTitleIconClickListener(counter));
         }
-
-        if (onStoryChangedCallback != null) {
-            mViewPager.addOnPageChangeListener(new ViewPager.OnPageChangeListener() {
-                @Override
-                public void onPageScrolled(int position, float positionOffset, int positionOffsetPixels) {
+        mViewPager.registerOnPageChangeCallback(new ViewPager2.OnPageChangeCallback() {
+            @Override
+            public void onPageSelected(int position) {
+                super.onPageSelected(position);
+                if (onStoryChangedCallback != null)
                     onStoryChangedCallback.storyChanged(position);
-                }
-
-                @Override
-                public void onPageSelected(int position) {
-
-                }
-
-                @Override
-                public void onPageScrollStateChanged(int state) {
-
-                }
-            });
-        }
-
+                Toast.makeText(getContext(), "Page Selected: " + position, Toast.LENGTH_SHORT).show();
+            }
+        });
         if (isRtl) {
-            storiesProgressView.setLayoutDirection(View.LAYOUT_DIRECTION_LTR);
-            storiesProgressView.setRotation(180);
+//            storiesProgressView.setLayoutDirection(View.LAYOUT_DIRECTION_LTR);
+//            storiesProgressView.setRotation(180);
         }
     }
 
@@ -205,22 +199,22 @@ public class StoryView extends Fragment implements StoriesProgressView.StoriesLi
     @Override
     public void startStories() {
         counter = startingIndex;
-        storiesProgressView.startStories(startingIndex);
+//        storiesProgressView.startStories(startingIndex);
         mViewPager.setCurrentItem(startingIndex, false);
         updateHeading();
     }
 
     @Override
     public void pauseStories() {
-        storiesProgressView.pause();
+//        storiesProgressView.pause();
     }
 
     private void previousStory() {
         if (counter - 1 < 0) return;
         mViewPager.setCurrentItem(--counter, false);
-        storiesProgressView.setStoriesCount(storiesList.size());
-        storiesProgressView.setStoryDuration(duration);
-        storiesProgressView.startStories(counter);
+//        storiesProgressView.setStoriesCount(storiesList.size());
+//        storiesProgressView.setStoryDuration(duration);
+//        storiesProgressView.startStories(counter);
         updateHeading();
     }
 
@@ -231,7 +225,7 @@ public class StoryView extends Fragment implements StoriesProgressView.StoriesLi
             return;
         }
         mViewPager.setCurrentItem(++counter, false);
-        storiesProgressView.startStories(counter);
+//        storiesProgressView.startStories(counter);
         updateHeading();
     }
 
@@ -245,7 +239,7 @@ public class StoryView extends Fragment implements StoriesProgressView.StoriesLi
     public void onDestroy() {
         timerThread = null;
         storiesList = null;
-        storiesProgressView.destroy();
+//        storiesProgressView.destroy();
         super.onDestroy();
     }
 
@@ -293,7 +287,7 @@ public class StoryView extends Fragment implements StoriesProgressView.StoriesLi
         }
 
         closeImageButton.setVisibility(visibility);
-        storiesProgressView.setVisibility(visibility);
+//        storiesProgressView.setVisibility(visibility);
     }
 
 
@@ -310,7 +304,7 @@ public class StoryView extends Fragment implements StoriesProgressView.StoriesLi
                     isPaused = true;
                     if (getActivity() == null) return;
                     getActivity().runOnUiThread(() -> {
-                        storiesProgressView.pause();
+//                        storiesProgressView.pause();
                         setHeadingVisibility(View.GONE);
                     });
                 }
@@ -320,7 +314,7 @@ public class StoryView extends Fragment implements StoriesProgressView.StoriesLi
             if (elapsedTime < 500) return;
             getActivity().runOnUiThread(() -> {
                 setHeadingVisibility(View.VISIBLE);
-                storiesProgressView.resume();
+//                storiesProgressView.resume();
             });
         });
     }
@@ -350,7 +344,7 @@ public class StoryView extends Fragment implements StoriesProgressView.StoriesLi
     public void touchPull() {
         elapsedTime = 0;
         stopTimer();
-        storiesProgressView.pause();
+//        storiesProgressView.pause();
     }
 
     @Override
@@ -387,7 +381,7 @@ public class StoryView extends Fragment implements StoriesProgressView.StoriesLi
         } else {
             stopTimer();
             setHeadingVisibility(View.VISIBLE);
-            storiesProgressView.resume();
+//            storiesProgressView.resume();
         }
         elapsedTime = 0;
     }
