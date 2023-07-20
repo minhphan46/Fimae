@@ -18,4 +18,61 @@
     <string name="status_is_active">Đang hoạt động</string>
     <!-- TODO: Remove or change this placeholder text -->
     <string name="hello_blank_fragment">Hello blank fragment</string>
+
+    <string name="remind_to_take_a_break">Remind me to take a break</string>
+    <string name="key_upload_quality">key_upload_quality</string>
+    <string name="remind_me">Remind me to take a break</string>
+    <string name="remind_me_for_bed_time">remind_me_for_bed_time</string>
+    <string name="remind_for_bed_time">Remind me for bed time</string>
+    <string name="limit_data_usage">prefs_limit_data_usage</string>
+    <string name="stream_video">Only stream HD video on Wi-Fi</string>
+    <string name="limit_mobile_usage">Limit mobile data usage</string>
+    <string name="double_tap_to_seek">Double-tap to seek</string>
+    <string name="pref_seek_val">pref_seek_val</string>
+    <string name="seconds">seconds</string>
+    <string name="uploads">Uploads</string>
+    <string name="pref_uploads">pref_uploads</string>
+    <string name="specify_network_prefs">Specify network preferences for uploads</string>
+    <string name="prefs_restricted_mode">prefs_restricted_mode</string>
+    <string name="restricted_mode">Restricted Mode can help to hide videos with potentially mature content.No filter is 100% accurate, but it should help you to avoid most of this type of content.</string>
+    <string name="restricted_mode_description">Restricted Mode</string>
+    <string name="prefs_enable_stats">prefs_enable_stats</string>
+    <string name="enable_stats">Enable stats for nerds</string>
+
+    <string-array name="pref_upload_quality_entries">
+        <item>360p</item>
+        <item>480p</item>
+        <item>720p</item>
+        <item>1080p</item>
+        <item>Original</item>
+    </string-array>
+
+    <string-array name="pref_remind_me_to_take_a_break">
+        <item>1 hours</item>
+        <item>2 hours</item>
+        <item>3 hours</item>
+        <item>5 hours</item>
+        <item>10 hours</item>
+    </string-array>
+
+    <string-array name="pref_seek_values">
+        <item>5</item>
+        <item>10</item>
+        <item>15</item>
+        <item>20</item>
+        <item>30</item>
+    </string-array>
+
+    <string-array name="pref_duration">
+        <item>0</item>
+        <item>1</item>
+        <item>2</item>
+        <item>3</item>
+        <item>4</item>
+    </string-array>
+
+    <string-array name="pref_uploads">
+        <item>Only when on Wi-Fi</item>
+        <item>On any network</item>
+    </string-array>
 </resources>

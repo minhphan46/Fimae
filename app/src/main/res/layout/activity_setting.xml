@@ -1,0 +1,103 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    tools:context=".activities.SettingActivity">
+
+
+        <androidx.appcompat.widget.Toolbar
+            android:id="@+id/settingToolbar"
+            android:layout_width="409dp"
+            android:layout_height="wrap_content"
+            android:background="@android:color/transparent"
+            android:minHeight="?attr/actionBarSize"
+            android:theme="?attr/actionBarTheme"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="parent">
+
+            <ImageButton
+                android:id="@+id/backBtn"
+                android:layout_width="28dp"
+                android:layout_height="28dp"
+                android:background="@android:color/transparent"
+                android:scaleType="fitXY"
+                app:srcCompat="@drawable/ic_arrow_left" />
+
+            <TextView
+                android:id="@+id/editProfileTxt"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_gravity="center"
+                android:text="Cài đặt"
+                style="@style/bold_20"
+                android:textColor="@color/black" />
+
+        </androidx.appcompat.widget.Toolbar>
+
+        <RelativeLayout
+            android:id="@+id/relativeEditProfile"
+            android:layout_width="match_parent"
+            android:layout_height="48dp"
+            android:layout_marginTop="1dp"
+            android:clickable="true"
+            android:background="@drawable/item_color_grey"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@+id/settingToolbar">
+
+            <ImageView
+                android:id="@+id/imageView2"
+                android:layout_width="22dp"
+                android:layout_height="22dp"
+                android:layout_marginRight="10dp"
+                android:layout_alignParentEnd="true"
+                android:layout_centerVertical="true"
+                app:srcCompat="@drawable/ic_chevron_right" />
+
+            <TextView
+                android:id="@+id/nameEditTxt"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_centerVertical="true"
+                android:layout_marginLeft="20dp"
+                android:text="Chỉnh sửa hồ sơ"
+                style="@style/semi_bold_18"
+                android:textColor="@color/black" />
+
+        </RelativeLayout>
+    <RelativeLayout
+        android:id="@+id/relativeLogout"
+        android:layout_width="match_parent"
+        android:layout_height="48dp"
+        android:layout_marginTop="1dp"
+        android:clickable="true"
+        android:background="@drawable/item_color_grey"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/relativeEditProfile">
+
+        <ImageView
+            android:id="@+id/imageView3"
+            android:layout_width="22dp"
+            android:layout_height="22dp"
+            android:layout_marginRight="10dp"
+            android:layout_alignParentEnd="true"
+            android:layout_centerVertical="true"
+            app:srcCompat="@drawable/ic_chevron_right" />
+
+        <TextView
+            android:id="@+id/logOutTxt"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_centerVertical="true"
+            android:layout_marginLeft="20dp"
+            android:text="Đăng xuất"
+            style="@style/semi_bold_18"
+            android:textColor="@color/black" />
+
+    </RelativeLayout>
+
+    </androidx.constraintlayout.widget.ConstraintLayout>
