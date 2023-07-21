@@ -145,10 +145,11 @@ public class PostAdapter extends RecyclerView.Adapter<PostAdapter.ViewHolder> {
             }
             Post updatePost = value.toObject(Post.class);
 
-            if(currentPost.getPostImages().size() != updatePost.getPostImages().size()){
-                currentPost.setPostImages(updatePost.getPostImages());
-                adapter.notifyDataSetChanged();
-            }
+//            if(currentPost.getPostImages().size() != updatePost.getPostImages().size()){
+//                adapter.updateImages(new ArrayList<>(updatePost.getPostImages()));
+////                LinearLayoutManager layoutManager = new GridLayoutManager(mContext, getColumnSpan(updatePost.getPostImages().size()) );
+////                binding.imageList.setLayoutManager(layoutManager);
+//            }
             if(currentPost.getPublisher().equals(FirebaseAuth.getInstance().getUid())){
                 binding.follow.setVisibility(View.GONE);
             }

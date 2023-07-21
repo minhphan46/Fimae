@@ -184,7 +184,7 @@ public class PostActivity extends AppCompatActivity implements View.OnClickListe
                        postMode = postMode1;
                        setStatusPost();
                     }
-                });
+                }, postMode);
                 Bundle bundle = new Bundle();
                 bundle.putSerializable("postmode", postMode);
                 postModeFragment.setArguments(bundle);
