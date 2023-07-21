@@ -40,6 +40,7 @@ import com.example.fimae.models.Post;
 import com.example.fimae.models.Seed;
 import com.example.fimae.repository.PostRepository;
 import com.google.android.gms.tasks.OnCompleteListener;
+import com.google.android.gms.tasks.OnFailureListener;
 import com.google.android.gms.tasks.Task;
 import com.google.firebase.firestore.DocumentSnapshot;
 
@@ -84,16 +85,11 @@ public class PostActivity extends AppCompatActivity implements View.OnClickListe
         postPhotoAdapter.setEditedImageList(new ArrayList<>());
         LinearLayoutManager linearLayoutManager = new GridLayoutManager(getApplicationContext(), 3);
         binding.imageRecyclerView.setLayoutManager(linearLayoutManager);
-        binding.imageRecyclerView.setHasFixedSize(true);
+//        binding.imageRecyclerView.setHasFixedSize(true);
         binding.imageRecyclerView.setAdapter(postPhotoAdapter);
         postPhotoAdapter.setOnItemClickListener(this);
         postRepo = PostRepository.getInstance();
-        binding.close.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                finish();
-            }
-        });
+        binding.close.setOnClickListener(v -> finish());
 
         binding.description.addTextChangedListener(new TextWatcher() {
             @Override
@@ -121,19 +117,61 @@ public class PostActivity extends AppCompatActivity implements View.OnClickListe
             }
         });
 
-        binding.post.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                if(canPost && !isEdit){
-                    postRepo.addNewPost(imageList, binding.description.getText().toString(), postMode, getApplicationContext());
-                    finish();
-                }
-                else{
-                    postRepo.editPost(editedImageList,imageList, binding.description.getText().toString(), postMode, getApplicationContext(), postId);
-                    setResult(REQUEST_EDITPOST_CODE);
-                    finish();
+        binding.post.setOnClickListener(v -> {
+            if(canPost && !isEdit){
+                binding.progressBar.setVisibility(View.VISIBLE);
+                binding.contentLayout.setVisibility(View.GONE);
+               Task<Boolean> task = postRepo.addNewPost(imageList, binding.description.getText().toString(), postMode, getApplicationContext());
+               task.addOnCompleteListener(new OnCompleteListener<Boolean>() {
+                   @Override
+                   public void onComplete(@NonNull Task<Boolean> task) {
+                       if(task.isSuccessful()){
+                           finish();
+                       }
+                       else{
+                           binding.progressBar.setVisibility(View.GONE);
+                           binding.contentLayout.setVisibility(View.VISIBLE);
+                       }
 
-                }
+                   }
+               }).addOnFailureListener(new OnFailureListener() {
+                   @Override
+                   public void onFailure(@NonNull Exception e) {
+                       binding.progressBar.setVisibility(View.GONE);
+                       binding.contentLayout.setVisibility(View.VISIBLE);
+
+                   }
+               });
+            }
+            else{
+                binding.progressBar.setVisibility(View.VISIBLE);
+                binding.contentLayout.setVisibility(View.GONE);
+                Task<Boolean> task =postRepo.editPost(editedImageList,imageList, binding.description.getText().toString(), postMode, getApplicationContext(), postId);
+
+                task.addOnCompleteListener(new OnCompleteListener<Boolean>() {
+                    @Override
+                    public void onComplete(@NonNull Task<Boolean> task) {
+                        if(task.isSuccessful()){
+                            setResult(REQUEST_EDITPOST_CODE);
+                            finish();
+                        }
+                        else{
+                            binding.progressBar.setVisibility(View.GONE);
+                            binding.contentLayout.setVisibility(View.VISIBLE);
+                        }
+
+                    }
+                }).addOnFailureListener(new OnFailureListener() {
+                    @Override
+                    public void onFailure(@NonNull Exception e) {
+                        binding.progressBar.setVisibility(View.GONE);
+                        binding.contentLayout.setVisibility(View.VISIBLE);
+
+                    }
+                });
+
+//                setResult(REQUEST_EDITPOST_CODE);
+//                finish();
             }
         });
 
@@ -184,7 +222,8 @@ public class PostActivity extends AppCompatActivity implements View.OnClickListe
                             imageList.add(imageurl);
                         }
                         postPhotoAdapter.notifyDataSetChanged();
-                    } else {
+                    }
+                    else {
                         Toast.makeText(getApplicationContext(), "You haven't picked Image", Toast.LENGTH_LONG).show();
                     }
                 }

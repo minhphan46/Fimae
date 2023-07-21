@@ -12,6 +12,7 @@ public class Message {
     static final public String TEXT = "TEXT";
     static final public String MEDIA = "MEDIA";
     static final public String AUDIO = "AUDIO";
+    static final public String POST_LINK = "POST_LINK";
     static final public String CHANGE_NICKNAME = "CHANGE_NICKNAME";
     static final public String LEAVE_CONVERSATION = "LEAVE_CONVERSATION";
     private String id;
@@ -62,7 +63,7 @@ public class Message {
     }
 
     public void setType(String type) {
-        //assert Objects.equals(type, TEXT) || Objects.equals(type, MEDIA) || Objects.equals(type, AUDIO) || Objects.equals(type, CHANGE_NICKNAME) || Objects.equals(type, LEAVE_CONVERSATION);
+        assert Objects.equals(type, TEXT) || Objects.equals(type, MEDIA) || Objects.equals(type, AUDIO) ||  Objects.equals(type, POST_LINK) || Objects.equals(type, CHANGE_NICKNAME) || Objects.equals(type, LEAVE_CONVERSATION);
         this.type = type;
     }
 

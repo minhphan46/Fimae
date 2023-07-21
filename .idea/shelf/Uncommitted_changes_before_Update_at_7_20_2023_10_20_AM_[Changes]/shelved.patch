@@ -1,0 +1,41 @@
+Index: .idea/gradle.xml
+IDEA additional info:
+Subsystem: com.intellij.openapi.diff.impl.patch.BaseRevisionTextPatchEP
+<+><?xml version=\"1.0\" encoding=\"UTF-8\"?>\r\n<project version=\"4\">\r\n  <component name=\"GradleMigrationSettings\" migrationVersion=\"1\" />\r\n  <component name=\"GradleSettings\">\r\n    <option name=\"linkedExternalProjectsSettings\">\r\n      <GradleProjectSettings>\r\n        <option name=\"externalProjectPath\" value=\"$PROJECT_DIR$\" />\r\n        <option name=\"gradleJvm\" value=\"#GRADLE_LOCAL_JAVA_HOME\" />\r\n        <option name=\"modules\">\r\n          <set>\r\n            <option value=\"$PROJECT_DIR$\" />\r\n            <option value=\"$PROJECT_DIR$/app\" />\r\n          </set>\r\n        </option>\r\n        <option name=\"resolveExternalAnnotations\" value=\"false\" />\r\n      </GradleProjectSettings>\r\n    </option>\r\n  </component>\r\n</project>
+Subsystem: com.intellij.openapi.diff.impl.patch.CharsetEP
+<+>UTF-8
+===================================================================
+diff --git a/.idea/gradle.xml b/.idea/gradle.xml
+--- a/.idea/gradle.xml	(revision f14398eeff1b1a845d05325185781c8edbe3d976)
++++ b/.idea/gradle.xml	(date 1689820632493)
+@@ -4,8 +4,9 @@
+   <component name="GradleSettings">
+     <option name="linkedExternalProjectsSettings">
+       <GradleProjectSettings>
++        <option name="testRunner" value="GRADLE" />
+         <option name="externalProjectPath" value="$PROJECT_DIR$" />
+-        <option name="gradleJvm" value="#GRADLE_LOCAL_JAVA_HOME" />
++        <option name="gradleJvm" value="Embedded JDK" />
+         <option name="modules">
+           <set>
+             <option value="$PROJECT_DIR$" />
+Index: app/src/main/java/com/example/fimae/adapters/ShortVideoAdapter.java
+IDEA additional info:
+Subsystem: com.intellij.openapi.diff.impl.patch.BaseRevisionTextPatchEP
+<+>package com.example.fimae.adapters;\r\n\r\nimport android.content.Context;\r\nimport android.net.Uri;\r\nimport android.util.Log;\r\nimport android.view.LayoutInflater;\r\nimport android.view.View;\r\nimport android.view.ViewGroup;\r\n\r\nimport androidx.annotation.NonNull;\r\nimport androidx.recyclerview.widget.RecyclerView;\r\n\r\nimport com.example.fimae.R;\r\nimport com.example.fimae.databinding.LayoutReelBinding;\r\nimport com.example.fimae.models.Fimaers;\r\nimport com.example.fimae.models.shorts.ShortMedia;\r\n\r\nimport java.util.ArrayList;\r\n\r\npublic class ShortVideoAdapter extends RecyclerView.Adapter<ShortVideoAdapter.VideoHolder>{\r\n    Context context;\r\n    ArrayList<ShortMedia> shortMedias = new ArrayList<>();\r\n    private ShortVideoAdapter.IClickCardListener iClickCardListener;\r\n    boolean isPlaying = false;\r\n\r\n    public interface IClickCardListener {\r\n        void onClickUser(ShortMedia video);\r\n    }\r\n\r\n    public ShortVideoAdapter(Context context, ArrayList<ShortMedia> shortMedias, IClickCardListener iClickCardListener) {\r\n        this.context = context;\r\n        this.shortMedias = shortMedias;\r\n        this.iClickCardListener = iClickCardListener;\r\n    }\r\n\r\n    @NonNull\r\n    @Override\r\n    public VideoHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {\r\n        View view = LayoutInflater.from(parent.getContext()).inflate(R.layout.layout_reel, parent, false);\r\n        return new ShortVideoAdapter.VideoHolder(view);\r\n    }\r\n\r\n    @Override\r\n    public void onBindViewHolder(@NonNull VideoHolder holder, int position) {\r\n        ShortMedia media = shortMedias.get(position);\r\n        Log.d(\"URL VIDEO\", (String) media.getMediaUrl());\r\n        holder.binding.videoView.setVideoURI(Uri.parse((String) media.getMediaUrl()));\r\n        holder.binding.itemVideoTvName.setText(\"Minh Phan\");\r\n        holder.binding.itemVideoTvDescription.setText(media.getDescription());\r\n        //holder.binding.itemVideoTvLike.setText(media.getUsersLiked().size());\r\n        //holder.binding.itemVideoTvComment.setText(media.getNumOfComments());\r\n        holder.binding.itemVideoIcBack.setOnClickListener(view -> {\r\n            iClickCardListener.onClickUser(media);\r\n        });\r\n        holder.binding.videoView.setOnPreparedListener(mp -> {\r\n            mp.start();\r\n            mp.setLooping(true);\r\n            isPlaying = true;\r\n        });\r\n        holder.binding.videoView.setOnClickListener(view -> {\r\n            if (isPlaying) {\r\n                holder.binding.videoView.pause();\r\n                isPlaying = false;\r\n                holder.binding.itemVideoIcPlay.setVisibility(View.VISIBLE);\r\n            } else {\r\n                holder.binding.videoView.start();\r\n                isPlaying = true;\r\n                holder.binding.itemVideoIcPlay.setVisibility(View.GONE);\r\n            }\r\n        });\r\n        holder.binding.itemVideoIcPlay.setOnClickListener(view -> {\r\n            if (isPlaying) {\r\n                holder.binding.videoView.pause();\r\n                isPlaying = false;\r\n                holder.binding.itemVideoIcPlay.setVisibility(View.VISIBLE);\r\n            } else {\r\n                holder.binding.videoView.start();\r\n                isPlaying = true;\r\n                holder.binding.itemVideoIcPlay.setVisibility(View.GONE);\r\n            }\r\n        });\r\n    }\r\n\r\n    @Override\r\n    public int getItemCount() {\r\n        return shortMedias.size();\r\n    }\r\n\r\n    public class VideoHolder extends RecyclerView.ViewHolder {\r\n        LayoutReelBinding binding;\r\n        public VideoHolder(@NonNull View itemView) {\r\n            super(itemView);\r\n            binding = LayoutReelBinding.bind(itemView);\r\n        }\r\n    }\r\n}\r\n
+Subsystem: com.intellij.openapi.diff.impl.patch.CharsetEP
+<+>UTF-8
+===================================================================
+diff --git a/app/src/main/java/com/example/fimae/adapters/ShortVideoAdapter.java b/app/src/main/java/com/example/fimae/adapters/ShortVideoAdapter.java
+--- a/app/src/main/java/com/example/fimae/adapters/ShortVideoAdapter.java	(revision f14398eeff1b1a845d05325185781c8edbe3d976)
++++ b/app/src/main/java/com/example/fimae/adapters/ShortVideoAdapter.java	(date 1689821523178)
+@@ -55,8 +55,7 @@
+         holder.binding.videoView.setOnPreparedListener(mp -> {
+             mp.start();
+             mp.setLooping(true);
+-            isPlaying = true;
+-        });
++            isPlaying = true;        });
+         holder.binding.videoView.setOnClickListener(view -> {
+             if (isPlaying) {
+                 holder.binding.videoView.pause();

@@ -5,12 +5,14 @@ import android.os.Bundle;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.Adapter;
 import android.widget.ImageView;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.constraintlayout.widget.ConstraintLayout;
 import androidx.recyclerview.widget.LinearLayoutManager;
+import androidx.recyclerview.widget.RecyclerView;
 
 import com.example.fimae.R;
 import com.example.fimae.activities.PostMode;
@@ -31,36 +33,26 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 
-public class LikedPostListFragment extends BottomSheetDialogFragment {
-    // TODO: Rename parameter arguments, choose names that match
-    // the fragment initialization parameters, e.g. ARG_ITEM_NUMBER
+public class ListItemBottomSheetFragment extends BottomSheetDialogFragment {
     private BottomsheetLikedPeopleBinding binding;
-    private Post post;
-    private List<Fimaers> userInfoList = new ArrayList<>();
-    String number;
-    private Map<String, Boolean> userInfo;
-    LikedAdapeter adapeter;
-    private CollectionReference fimaersRef = FirebaseFirestore.getInstance().collection("fimaers");
-    public LikedPostListFragment(Map<String, Boolean> userList, String number, Post post) {
-        this.userInfo = userList;
-        this.number = number;
-        this.post = post;
+    public ListItemBottomSheetFragment(String title, RecyclerView.Adapter adapter) {
+        this.title = title;
+        this.adapter = adapter;
     }
-
+    RecyclerView.Adapter adapter;
+    String title;
     @NonNull
     @Override
     public Dialog onCreateDialog(@Nullable Bundle savedInstanceState) {
 
         return super.onCreateDialog(savedInstanceState);
     }
-
-    private static LikedPostListFragment instance;
-    public static LikedPostListFragment getInstance(Map<String, Boolean> fimaers, String number, Post post) {
-
-            instance = new LikedPostListFragment(fimaers, number, post);
+    
+    private static ListItemBottomSheetFragment instance;
+    public static ListItemBottomSheetFragment getInstance(String title, RecyclerView.Adapter adapter){
+        instance = new ListItemBottomSheetFragment(title, adapter);
         return instance;
     }
-
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -79,21 +71,9 @@ public class LikedPostListFragment extends BottomSheetDialogFragment {
     @Override
     public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
-        userInfoList.clear();
+        binding.title.setText(title);
+        binding.userList.setAdapter(adapter);
         LinearLayoutManager linearLayoutManager = new LinearLayoutManager(getContext());
         binding.userList.setLayoutManager(linearLayoutManager);
-         adapeter = new LikedAdapeter(getContext(), userInfoList);
-        binding.userList.setAdapter(adapeter);
-        for(Map.Entry<String, Boolean> entry: userInfo.entrySet()){
-            if(entry.getValue())
-            {
-                fimaersRef.document(entry.getKey()).get().addOnSuccessListener(documentSnapshot -> {
-                    userInfoList.add(documentSnapshot.toObject(Fimaers.class));
-                    if(adapeter != null) adapeter.notifyDataSetChanged();
-                });
-            }
-        }
-        binding.title.setText("Lượt thích và cảm xúc: " +String.valueOf(number));
-
     }
 }

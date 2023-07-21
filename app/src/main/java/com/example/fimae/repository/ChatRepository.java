@@ -144,4 +144,31 @@ public class ChatRepository{
         });
         return taskCompletionSource.getTask();
     }
+    public Task<Message> sendPostLink(String conversationId, String content){
+        TaskCompletionSource<Message> taskCompletionSource = new TaskCompletionSource<Message>();
+        if(content.isEmpty()){
+            taskCompletionSource.setException(new Exception("Text message has null content"));
+            return taskCompletionSource.getTask();
+        }
+        WriteBatch batch = firestore.batch();
+        DocumentReference currentConversationRef = conversationsRef.document(conversationId);
+        CollectionReference reference = currentConversationRef.collection("messages");
+        DocumentReference messDoc = reference.document();
+        Message message = new Message();
+        message.setId(messDoc.getId());
+        message.setType(Message.POST_LINK);
+        message.setContent(content);
+        message.setIdSender(FirebaseAuth.getInstance().getUid());
+        message.setConversationID(conversationId);
+        batch.set(messDoc, message);
+        batch.update(currentConversationRef, "lastMessage", messDoc);
+        batch.commit().addOnCompleteListener(task -> {
+            if(task.isSuccessful()){
+                taskCompletionSource.setResult(message);
+            } else {
+                taskCompletionSource.setException(Objects.requireNonNull(task.getException()));
+            }
+        });
+        return taskCompletionSource.getTask();
+    }
 }

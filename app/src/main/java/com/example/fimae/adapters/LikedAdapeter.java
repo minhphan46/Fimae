@@ -6,6 +6,7 @@ import android.view.View;
 import android.view.ViewGroup;
 
 import androidx.annotation.NonNull;
+import androidx.annotation.Nullable;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
@@ -15,6 +16,13 @@ import com.example.fimae.databinding.LikedItemUserBinding;
 import com.example.fimae.models.Comment;
 import com.example.fimae.models.Fimaers;
 import com.example.fimae.models.Seed;
+import com.example.fimae.repository.FollowRepository;
+import com.example.fimae.repository.PostRepository;
+import com.google.firebase.auth.FirebaseAuth;
+import com.google.firebase.firestore.DocumentSnapshot;
+import com.google.firebase.firestore.EventListener;
+import com.google.firebase.firestore.FirebaseFirestoreException;
+import com.google.firebase.firestore.QuerySnapshot;
 import com.squareup.picasso.Picasso;
 import com.stringee.messaging.User;
 
@@ -24,7 +32,6 @@ public class LikedAdapeter extends RecyclerView.Adapter<LikedAdapeter.ViewHolder
     private Seed seed = new Seed();
     public Context mContext;
     public List<Fimaers> userInfos;
-    boolean isFollow = false;
     public LikedAdapeter(Context mContext, List<Fimaers> userInfos) {
         this.mContext = mContext;
         this.userInfos = userInfos;
@@ -49,23 +56,38 @@ public class LikedAdapeter extends RecyclerView.Adapter<LikedAdapeter.ViewHolder
             binding.genderAgeIcon.setBackgroundResource(R.drawable.shape_gender_border_pink);
         }
         binding.ageTextView.setText(String.valueOf(userInfo.calculateAge()));
+        if(userInfo.getUid().equals(FirebaseAuth.getInstance().getUid())){
+            binding.follow.setVisibility(View.GONE);
+        }
+        else{
+            FollowRepository.getInstance().followRef.document(FirebaseAuth.getInstance().getUid()+"_"+userInfo.getUid()).addSnapshotListener(new EventListener<DocumentSnapshot>() {
+                @Override
+                public void onEvent(@Nullable DocumentSnapshot value, @Nullable FirebaseFirestoreException error) {
+                    if(error != null ){
+                        return;
+                    }
+                    if(value != null && value.exists()){
+                        binding.follow.setVisibility(View.GONE);
+                        binding.chat.setVisibility(View.VISIBLE);
+                    }
+                    else{
+                        binding.chat.setVisibility(View.GONE);
+                        binding.follow.setVisibility(View.VISIBLE);
+                    }
+                }
+            });
+
+        }
         binding.follow.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                isFollow = true;
-                binding.follow.setVisibility(View.INVISIBLE);
-                binding.chat.setVisibility(View.VISIBLE);
+                FollowRepository.getInstance().follow(userInfo.getUid());
             }
         });
         binding.chat.setOnClickListener(view -> {
-            isFollow = false;
-            binding.chat.setVisibility(View.INVISIBLE);
-            binding.follow.setVisibility(View.VISIBLE);
+            PostRepository.getInstance().goToChatWithUser(userInfo.getUid(), mContext);
         });
-
     }
-
-
 
     @Override
     public int getItemCount() {

@@ -2,19 +2,31 @@ package com.example.fimae.adapters;
 
 import android.content.Context;
 import android.content.Intent;
+import android.nfc.Tag;
+import android.util.Log;
+import android.view.Gravity;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.ImageView;
+import android.widget.LinearLayout;
 import android.widget.TextView;
 
+import androidx.annotation.GravityInt;
 import androidx.annotation.NonNull;
 import androidx.recyclerview.widget.GridLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
+import com.bumptech.glide.Glide;
 import com.example.fimae.R;
+import com.example.fimae.activities.DetailPostActivity;
 import com.example.fimae.activities.MediaSliderActivity;
+import com.example.fimae.activities.PostContentActivity;
 import com.example.fimae.models.Message;
+import com.example.fimae.models.Post;
 import com.example.fimae.repository.ChatRepository;
+import com.example.fimae.repository.PostRepository;
+import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.firestore.DocumentSnapshot;
 import com.google.firebase.firestore.Query;
@@ -27,6 +39,8 @@ public class MessageAdapter extends  FirestoreAdapter{
     Context context;
     final int SENDER_VIEW_HOLDER = 0;
     final int RECEIVER_VIEW_HOLDER = 1;
+    final int SENDER_POST_VIEW_HOLDER = 3;
+    final int RECEIVER_POST_VIEW_HOLDER =4;
     public MessageAdapter(Query query, Context context) {
         super(query);
         this.context = context;
@@ -37,6 +51,14 @@ public class MessageAdapter extends  FirestoreAdapter{
 
     public int getMessageType(int position){
         Message message = getSnapshot(position).toObject(Message.class);
+        Log.i("Tag", message.getType());
+        String x = message.getType();
+        if(message.getType().equals(Message.POST_LINK)){
+            if(!Objects.equals(message.getIdSender(), FirebaseAuth.getInstance().getUid())){
+                return RECEIVER_POST_VIEW_HOLDER;
+            }
+            return  SENDER_POST_VIEW_HOLDER;
+        }
         return  (Objects.equals(message.getIdSender(), FirebaseAuth.getInstance().getUid())) ? SENDER_VIEW_HOLDER : RECEIVER_VIEW_HOLDER;
     }
 
@@ -47,9 +69,18 @@ public class MessageAdapter extends  FirestoreAdapter{
         if (type == SENDER_VIEW_HOLDER) {
             View view = LayoutInflater.from(context).inflate(R.layout.sender_message, parent, false);
             return new OutgoingViewholder(view);
-        } else {
+        } else if(type == RECEIVER_VIEW_HOLDER) {
             View view = LayoutInflater.from(context).inflate(R.layout.receiver_message, parent, false);
             return new IncomingViewholder(view);
+        }
+        else if(type == RECEIVER_POST_VIEW_HOLDER) {
+            View view = LayoutInflater.from(context).inflate(R.layout.post_link, parent, false);
+            return new PostLinkViewHolder(view);
+        }
+        else {
+            View view = LayoutInflater.from(context).inflate(R.layout.post_link_sender, parent, false);
+            return new PostLinkViewHolder(view);
+
         }
     }
     private int calculateGridColumns(int urlsSize) {
@@ -115,6 +146,25 @@ public class MessageAdapter extends  FirestoreAdapter{
                 incomingViewholder.incomingMsg.setVisibility(View.GONE);
             }
         }
+        else if(holder instanceof PostLinkViewHolder){
+            PostLinkViewHolder postLinkViewHolder = (PostLinkViewHolder) holder;
+            assert message != null;
+            PostRepository.getInstance().getPostById(message.getContent().toString()).addOnSuccessListener(post -> {
+                if(post.getPostImages() != null && !post.getPostImages().isEmpty()){
+                    Glide.with(context).load(post.getPostImages().get(0)).into(postLinkViewHolder.imageView);
+                }
+                else{
+                    postLinkViewHolder.imageView.setVisibility(View.GONE);
+                }
+                String content  = "https://"+ message.getIdSender() + "/" + message.getContent().toString();
+                postLinkViewHolder.url.setText(content);
+            });
+            postLinkViewHolder.itemView.setOnClickListener(view -> {
+                Intent intent = new Intent(context, DetailPostActivity.class);
+                intent.putExtra("id", message.getContent().toString());
+                context.startActivity(intent);
+            });
+        }
     }
 
     @Override
@@ -146,6 +196,15 @@ public class MessageAdapter extends  FirestoreAdapter{
             super(itemView);
             incomingMsg = itemView.findViewById(R.id.incoming_msg);
             recyclerView = itemView.findViewById(R.id.list_images);
+        }
+    }
+    public static class PostLinkViewHolder extends RecyclerView.ViewHolder{
+        ImageView imageView;
+        TextView url;
+        public PostLinkViewHolder(@NonNull View itemView){
+            super(itemView);
+            imageView = itemView.findViewById(R.id.post_image);
+            url= itemView.findViewById(R.id.post_link_img);
         }
     }
 }
