@@ -13,6 +13,7 @@ import android.view.View;
 import android.view.ViewGroup;
 
 import com.example.fimae.R;
+import com.example.fimae.activities.AddShortActivity;
 import com.example.fimae.activities.ShortVideoActivity;
 import com.example.fimae.adapters.ShortsReviewAdapter;
 import com.example.fimae.adapters.SpacingItemDecoration;
@@ -78,7 +79,8 @@ public class ShortTabFragment extends Fragment {
                 new ShortsReviewAdapter.IClickCardListener() {
                     @Override
                     public void addShortClicked() {
-
+                        Intent intent = new Intent(getContext(), AddShortActivity.class);
+                        startActivity(intent);
                     }
                     @Override
                     public void onClickUser(ShortMedia video) {

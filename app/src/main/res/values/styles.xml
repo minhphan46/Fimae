@@ -5,6 +5,12 @@
         <item name="bottomSheetDialogTheme">@style/AppBottomSheetDialogTheme</item>
     </style>
 
+    <style name="bold_50">
+        <item name="fontFamily">@font/public_sans_bold</item>
+        <item name="android:textSize">50sp</item>
+        <item name="android:textStyle">bold</item>
+    </style>
+
     <style name="bold_32">
         <item name="fontFamily">@font/public_sans_bold</item>
         <item name="android:textSize">32sp</item>

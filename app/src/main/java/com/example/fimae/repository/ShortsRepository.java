@@ -50,6 +50,7 @@ public class ShortsRepository {
     public Task<ShortMedia> createShortImages(String description, ArrayList<Uri> uris, PostMode postMode, boolean allowComment){
         return createShort(description, ShortMediaType.IMAGES, uris, postMode, allowComment);
     }
+
     private Task<ShortMedia> createShort(String description, ShortMediaType type, ArrayList<Uri> uris, PostMode postMode, boolean allowComment) {
         TaskCompletionSource<ShortMedia> taskCompletionSource = new TaskCompletionSource<>();
         if(type == ShortMediaType.VIDEO && uris.size() != 1){

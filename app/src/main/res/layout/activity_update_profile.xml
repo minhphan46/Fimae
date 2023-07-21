@@ -5,16 +5,17 @@
         xmlns:tools="http://schemas.android.com/tools"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:background="@color/background_dark"
         tools:context=".activities.UpdateProfileActivity">
 
     <ScrollView
             android:layout_width="match_parent"
-            android:layout_height="match_parent">
+            android:layout_height="match_parent"
+            android:background="@drawable/background_gradient"
+            tools:ignore="UselessParent">
 
         <RelativeLayout
                 android:layout_width="match_parent"
-                android:layout_height="match_parent">
+                android:layout_height="wrap_content">
 
             <TextView
                     android:id="@+id/create_profile"
@@ -174,17 +175,19 @@
                     android:alpha="0.6"
             />
 
-            <Button
-                    android:id="@+id/create"
-                    android:layout_width="match_parent"
-                    android:layout_height="70dp"
-                    android:layout_below="@+id/bio"
-                    android:layout_marginLeft="35dp"
-                    android:layout_marginTop="30dp"
-                    android:layout_marginRight="35dp"
-                    android:backgroundTint="#1D2865"
-                    android:text="CREATE"
-                    android:textSize="20dp" />
+            <androidx.appcompat.widget.AppCompatButton
+                android:id="@+id/create"
+                android:layout_width="match_parent"
+                android:layout_height="50dp"
+                android:text="Create"
+                android:layout_below="@+id/bio"
+                android:layout_marginLeft="35dp"
+                android:layout_marginTop="30dp"
+                android:layout_marginRight="35dp"
+                android:textSize="20sp"
+                android:fontFamily="@font/public_sans_semi_bold"
+                style="@style/btn_can_click"
+                android:background="@drawable/shape_rectangle_border_radius_btn_pink"/>
 
             <View
                     android:layout_width="match_parent"
