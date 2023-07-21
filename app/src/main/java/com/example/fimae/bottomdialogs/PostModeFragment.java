@@ -33,14 +33,15 @@ public class PostModeFragment extends BottomSheetDialogFragment {
     private ImageView publicCheck;
     private ImageView privateCheck;
     private ImageView friendCheck;
+    private PostMode postMode;
     private static PostModeFragmentListener postModeFragmentListener;
     public interface PostModeFragmentListener {
         void onSelectItem(PostMode postMode);
     }
 
-    private PostMode postMode;
-    public PostModeFragment() {
+    public PostModeFragment(PostMode postMode) {
         // Required empty public constructor
+        this.postMode = postMode;
     }
 
     @NonNull
@@ -50,11 +51,9 @@ public class PostModeFragment extends BottomSheetDialogFragment {
     }
 
     private static PostModeFragment instance;
-    public static PostModeFragment getInstance(PostModeFragmentListener listener) {
+    public static PostModeFragment getInstance(PostModeFragmentListener listener, PostMode defaultMode) {
         postModeFragmentListener = listener;
-        if(instance == null){
-            instance = new PostModeFragment();
-        }
+            instance = new PostModeFragment(defaultMode);
         return instance;
     }
 
