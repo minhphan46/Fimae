@@ -164,15 +164,20 @@ public class WaitingActivity extends AppCompatActivity {
     // close screen ==============================================================================
     private void closeScreen() {
         // delete user onl then finish
-        if(ConnectRepo.getInstance().getUserLocal() != null){
-            ConnectRepo.getInstance().deleteUserOnl(ConnectRepo.getInstance().getUserLocal(),tableName);
-        }
         ConnectRepo.getInstance().setUserRemote(null);
         if(client != null) {
             client.disconnect();
             client = null;
         }
         finish();
+    }
+
+    @Override
+    protected void onDestroy() {
+        if(ConnectRepo.getInstance().getUserLocal() != null){
+            ConnectRepo.getInstance().deleteUserOnl(ConnectRepo.getInstance().getUserLocal(),tableName);
+        }
+        super.onDestroy();
     }
 
     // connect to ==============================================================================

@@ -92,6 +92,11 @@ public class AuthRepository {
                 });
     }
 
+    public void signOut()
+    {
+        auth.signOut();
+    }
+
     public interface SignInCallback {
         void onSignInSuccess(FirebaseUser user);
         void onSignInError(String errorMessage);
