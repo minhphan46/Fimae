@@ -124,6 +124,33 @@
         <item name="android:background">?android:attr/colorBackground</item>
     </style>
 
+    <style name="non_clickable_chip">
+        <item name="android:textColor">@color/chip_text_color</item>
+        <item name="chipBackgroundColor">@color/white</item>
+        <item name="chipStrokeColor">@color/text_tertiary</item>
+        <item name="chipStrokeWidth">1dp</item>
+    </style>
+
+    <style name="CustomChoiceChipStyle" parent="@style/Widget.MaterialComponents.Chip.Choice">
+        <!-- Customize the background color (inside color) -->
+        <item name="android:textColor">@color/chip_text_color</item>
+        <item name="chipBackgroundColor">@color/white</item>
+        <item name="android:textAppearance">@style/AppTheme.ChipText</item>
+        <!-- Customize the stroke color (border color) -->
+        <item name="chipStrokeColor">@color/chip_border_color</item>
+        <item name="chipStrokeWidth">2dp</item>
+    </style>
+
+    <style name="CustomInputChipStyle" parent="Widget.MaterialComponents.Chip.Entry">
+        <item name="chipBackgroundColor">@color/input_chip_background</item>
+        <item name="android:textColor">@color/primary_1</item>
+        <item name="closeIconTint">@color/text_secondary</item>
+    </style>
+
+    <style name="AppTheme.ChipText" parent="TextAppearance.MaterialComponents.Chip">
+        <item name="android:textStyle">bold</item>
+    </style>
+
     <style name="Widget.Fimae.AppWidget.InnerView" parent="android:Widget">
         <item name="android:background">?android:attr/colorBackground</item>
         <item name="android:textColor">?android:attr/textColorPrimary</item>

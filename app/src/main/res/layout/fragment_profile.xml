@@ -138,18 +138,6 @@
         android:textColor="#000000"
         android:textSize="16sp" />
 
-    <ImageButton
-        android:id="@+id/editChipBtn"
-        android:layout_width="18dp"
-        android:layout_height="18dp"
-        android:layout_marginStart="7dp"
-        android:layout_marginTop="24dp"
-        android:background="@android:color/transparent"
-        android:scaleType="fitXY"
-        app:layout_constraintStart_toEndOf="@+id/chipGroup"
-        app:layout_constraintBottom_toBottomOf="@id/chipGroup"
-        app:layout_constraintTop_toTopOf="@+id/chipGroup"
-        app:srcCompat="@drawable/ic_edit" />
 
     <ImageButton
         android:id="@+id/joinDateIcon"
@@ -176,15 +164,98 @@
 
     <com.google.android.material.chip.ChipGroup
         android:id="@+id/chipGroup"
-        android:layout_width="wrap_content"
+        android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_marginStart="22dp"
         android:layout_marginTop="12dp"
+        android:layout_marginRight="18dp"
         app:layout_constraintStart_toStartOf="parent"
+        app:chipSpacingHorizontal="5dp"
+        app:chipSpacingVertical="5dp"
         app:chipsData="@{viewmodel.user.chip}"
+        app:layout_constraintBottom_toTopOf="@id/followLayout"
         app:layout_constraintTop_toBottomOf="@+id/joinDateIcon">
 
     </com.google.android.material.chip.ChipGroup>
+
+    <LinearLayout
+        android:id="@+id/followLayout"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:orientation="horizontal"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/chipGroup"
+        >
+        <TextView
+            android:id="@+id/followingNum"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="22dp"
+            android:layout_marginTop="22dp"
+            android:textColor="@color/black"
+            android:textStyle="bold"
+            android:text="0"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@+id/chipGroup" />
+
+        <TextView
+            android:id="@+id/followingTxt"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="6dp"
+            android:layout_marginTop="22dp"
+            android:textColor="@color/text_secondary"
+            android:text="Đang theo dõi"
+            app:layout_constraintStart_toEndOf="@id/followingNum"
+            app:layout_constraintTop_toBottomOf="@+id/chipGroup" />
+
+        <TextView
+            android:id="@+id/followerNum"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="13dp"
+            android:layout_marginTop="22dp"
+            android:textColor="@color/black"
+            android:textStyle="bold"
+            android:text="2"
+            app:layout_constraintStart_toEndOf="@id/followingTxt"
+            app:layout_constraintTop_toBottomOf="@+id/chipGroup" />
+
+        <TextView
+            android:id="@+id/followerTxt"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="6dp"
+            android:layout_marginTop="22dp"
+            android:textColor="@color/text_secondary"
+            android:text="Người theo dõi"
+            app:layout_constraintStart_toEndOf="@id/followerNum"
+            app:layout_constraintTop_toBottomOf="@+id/chipGroup" />
+
+        <TextView
+            android:id="@+id/visitorNum"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="13dp"
+            android:layout_marginTop="22dp"
+            android:textColor="@color/black"
+            android:textStyle="bold"
+            android:text="12"
+            app:layout_constraintStart_toEndOf="@id/followerTxt"
+            app:layout_constraintTop_toBottomOf="@+id/chipGroup" />
+
+        <TextView
+            android:id="@+id/visitorTxt"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="6dp"
+            android:layout_marginTop="22dp"
+            android:textColor="@color/text_secondary"
+            android:text="Ghé thăm"
+            app:layout_constraintStart_toEndOf="@id/visitorNum"
+            app:layout_constraintTop_toBottomOf="@+id/chipGroup" />
+    </LinearLayout>
+
 
     <View
         android:id="@+id/lineBreak"
@@ -192,84 +263,15 @@
         android:layout_width="match_parent"
         android:layout_height="1dp"
         android:background="@color/text_tertiary"
-        app:layout_constraintTop_toBottomOf="@+id/followingTxt"
+        app:layout_constraintTop_toBottomOf="@+id/followLayout"
         tools:layout_editor_absoluteX="-16dp" />
-
-    <TextView
-        android:id="@+id/followingNum"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_marginStart="22dp"
-        android:layout_marginTop="22dp"
-        android:textColor="@color/black"
-        android:textStyle="bold"
-        android:text="0"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/chipGroup" />
-
-    <TextView
-        android:id="@+id/followingTxt"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_marginStart="6dp"
-        android:layout_marginTop="22dp"
-        android:textColor="@color/text_secondary"
-        android:text="Đang theo dõi"
-        app:layout_constraintStart_toEndOf="@id/followingNum"
-        app:layout_constraintTop_toBottomOf="@+id/chipGroup" />
-
-    <TextView
-        android:id="@+id/followerNum"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_marginStart="13dp"
-        android:layout_marginTop="22dp"
-        android:textColor="@color/black"
-        android:textStyle="bold"
-        android:text="2"
-        app:layout_constraintStart_toEndOf="@id/followingTxt"
-        app:layout_constraintTop_toBottomOf="@+id/chipGroup" />
-
-    <TextView
-        android:id="@+id/followerTxt"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_marginStart="6dp"
-        android:layout_marginTop="22dp"
-        android:textColor="@color/text_secondary"
-        android:text="Người theo dõi"
-        app:layout_constraintStart_toEndOf="@id/followerNum"
-        app:layout_constraintTop_toBottomOf="@+id/chipGroup" />
-
-    <TextView
-        android:id="@+id/visitorNum"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_marginStart="13dp"
-        android:layout_marginTop="22dp"
-        android:textColor="@color/black"
-        android:textStyle="bold"
-        android:text="12"
-        app:layout_constraintStart_toEndOf="@id/followerTxt"
-        app:layout_constraintTop_toBottomOf="@+id/chipGroup" />
-
-    <TextView
-        android:id="@+id/visitorTxt"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_marginStart="6dp"
-        android:layout_marginTop="22dp"
-        android:textColor="@color/text_secondary"
-        android:text="Ghé thăm"
-        app:layout_constraintStart_toEndOf="@id/visitorNum"
-        app:layout_constraintTop_toBottomOf="@+id/chipGroup" />
-
 
     <com.google.android.material.tabs.TabLayout
         android:id="@+id/tabView"
         android:layout_width="400dp"
         android:layout_height="wrap_content"
         android:layout_marginHorizontal="0dp"
+        app:tabIndicatorFullWidth="false"
         app:layout_constraintTop_toBottomOf="@id/lineBreak"
         app:layout_constraintLeft_toLeftOf="@id/lineBreak"
         app:layout_constraintRight_toRightOf="@id/lineBreak">
