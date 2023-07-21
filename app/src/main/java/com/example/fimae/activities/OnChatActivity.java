@@ -9,7 +9,6 @@ import android.view.MenuItem;
 import android.view.View;
 import android.widget.*;
 
-import androidx.annotation.NonNull;
 import androidx.appcompat.app.ActionBar;
 import androidx.appcompat.app.AppCompatActivity;
 import android.os.Bundle;
@@ -20,25 +19,20 @@ import androidx.recyclerview.widget.RecyclerView;
 import com.example.fimae.adapters.MessageAdapter;
 import com.example.fimae.fragments.MediaListDialogFragment;
 import com.example.fimae.R;
-import com.example.fimae.fragments.ChatBottomSheetFragment;
+import com.example.fimae.fragments.FimaeBottomSheet;
 import com.example.fimae.models.BottomSheetItem;
 import com.example.fimae.models.Message;
-import com.example.fimae.models.shorts.ShortMedia;
-import com.example.fimae.models.shorts.ShortMediaType;
 import com.example.fimae.repository.ChatRepository;
-import com.example.fimae.repository.ShortsRepository;
 import com.example.fimae.service.FirebaseService;
 import com.example.fimae.utils.FileUtils;
 import com.example.fimae.utils.FirebaseHelper;
-import com.google.android.gms.tasks.OnCompleteListener;
-import com.google.android.gms.tasks.Task;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.firestore.*;
 
 import java.util.*;
 import java.util.function.BiConsumer;
 
-public class OnChatActivity extends AppCompatActivity implements MediaListDialogFragment.OnMediaSelectedListener {
+public class OnChatActivity extends AppCompatActivity{
     private static final int REQUEST_IMAGE_CAPTURE = 1;
     private static final int REQUEST_IMAGE_GALLERY = 2;
 
@@ -97,12 +91,12 @@ public class OnChatActivity extends AppCompatActivity implements MediaListDialog
     private void initBottomSheetItems() {
         bottomSheetItemList = new ArrayList<BottomSheetItem>() {
             {
-                add(new BottomSheetItem(R.drawable.ic_share, "Chia sẽ liên hệ"));
-                add(new BottomSheetItem(R.drawable.ic_gallery, "Tất cả ảnh"));
-                add(new BottomSheetItem(R.drawable.ic_edit, "Chỉnh sửa biệt danh"));
-                add(new BottomSheetItem(R.drawable.ic_search, "Tìm kiếm lịch sử cuộc trò chuyện"));
-                add(new BottomSheetItem(R.drawable.ic_user_block, "Chặn"));
-                add(new BottomSheetItem(R.drawable.ic_chat_dots, "Báo cáo"));
+                add(new BottomSheetItem("Share",R.drawable.ic_share, "Chia sẽ liên hệ", "Chia sẽ ngay cho bạn bè"));
+                add(new BottomSheetItem("Media",R.drawable.ic_gallery, "Tất cả ảnh", R.drawable.ic_mic_on ));
+                add(new BottomSheetItem("Media",R.drawable.ic_edit, "Chỉnh sửa biệt danh"));
+                add(new BottomSheetItem("Media", R.drawable.ic_search, "Tìm kiếm lịch sử cuộc trò chuyện"));
+                add(new BottomSheetItem("Media", R.drawable.ic_user_block, "Chặn"));
+                add(new BottomSheetItem("Media", R.drawable.ic_chat_dots, "Báo cáo"));
             }
         };
     }
@@ -126,6 +120,16 @@ public class OnChatActivity extends AppCompatActivity implements MediaListDialog
         ImageView btnGallery = findViewById(R.id.btn_galllery);
         btnGallery.setOnClickListener(v -> {
             MediaListDialogFragment mediaListDialogFragment = new MediaListDialogFragment();
+            mediaListDialogFragment.setOnMediaSelectedListener(new MediaListDialogFragment.OnMediaSelectedListener() {
+                @Override
+                public void OnMediaSelected(boolean isSelected, ArrayList<String> data) {
+                    if (isSelected) {
+                        ArrayList<Uri> uris = new ArrayList<>();
+                        data.forEach(e -> uris.add(Uri.parse(e)));
+                        sendMediaMessage(uris);
+                    }
+                }
+            });
             mediaListDialogFragment.show(getSupportFragmentManager(), "dialog");
         });
 
@@ -137,9 +141,9 @@ public class OnChatActivity extends AppCompatActivity implements MediaListDialog
             int id = item.getItemId();
             switch (id) {
                 case R.id.option_more:
-                    ChatBottomSheetFragment chatBottomSheetFragment = new ChatBottomSheetFragment(bottomSheetItemList,
+                    FimaeBottomSheet fimaeBottomSheet = new FimaeBottomSheet(bottomSheetItemList,
                             bottomSheetItem -> Toast.makeText(this, bottomSheetItem.getTitle(), Toast.LENGTH_SHORT).show());
-                    chatBottomSheetFragment.show(getSupportFragmentManager(), chatBottomSheetFragment.getTag());
+                    fimaeBottomSheet.show(getSupportFragmentManager(), fimaeBottomSheet.getTag());
                     return true;
                 case R.id.option_call:
                     FirebaseAuth.getInstance().signOut();
@@ -258,9 +262,9 @@ public class OnChatActivity extends AppCompatActivity implements MediaListDialog
             onBackPressed();
             return true;
         } else if (id == R.id.option_more) {
-            ChatBottomSheetFragment chatBottomSheetFragment = new ChatBottomSheetFragment(bottomSheetItemList,
+            FimaeBottomSheet fimaeBottomSheet = new FimaeBottomSheet(bottomSheetItemList,
                     bottomSheetItem -> Toast.makeText(getBaseContext(), bottomSheetItem.getTitle(), Toast.LENGTH_SHORT).show());
-            chatBottomSheetFragment.show(getSupportFragmentManager(), chatBottomSheetFragment.getTag());
+            fimaeBottomSheet.show(getSupportFragmentManager(), fimaeBottomSheet.getTag());
         } else if (id == R.id.option_call) {
             FirebaseAuth.getInstance().signOut();
             System.out.println("Click success");
@@ -269,14 +273,7 @@ public class OnChatActivity extends AppCompatActivity implements MediaListDialog
         return super.onOptionsItemSelected(item);
     }
 
-    @Override
-    public void OnMediaSelected(boolean isSelected, ArrayList<String> data) {
-        if (isSelected) {
-            ArrayList<Uri> uris = new ArrayList<>();
-            data.forEach(e -> uris.add(Uri.parse(e)));
-            sendMediaMessage(uris);
-        }
-    }
+
 
     @Override
     protected void onDestroy() {

@@ -26,6 +26,8 @@ import com.example.fimae.adapters.SpacingItemDecoration;
 import com.example.fimae.adapters.StoryAdapter.StoryAdapter;
 import com.example.fimae.adapters.StoryAdapter.StoryAdapterItem;
 import com.example.fimae.bottomdialogs.PickImageBottomSheetFragment;
+import com.example.fimae.models.BottomSheetItem;
+import com.example.fimae.models.Fimaers;
 import com.example.fimae.models.story.Story;
 import com.example.fimae.repository.ChatRepository;
 import com.example.fimae.repository.StoryRepository;
@@ -77,35 +79,65 @@ public class ChatFragment extends Fragment {
         storyAdapter.setStoryListener(new StoryAdapter.StoryListener() {
             @Override
             public void addStoryClicked() {
-                PickImageBottomSheetFragment pickImageBottomSheetFragment = new PickImageBottomSheetFragment();
-                pickImageBottomSheetFragment.show(getChildFragmentManager(), "pickImage");
-                pickImageBottomSheetFragment.setCallBack(new PickImageBottomSheetFragment.PickImageCallBack() {
-                    @Override
-                    public void pickImageComplete(Uri uri) {
-                        Uri fileUri = Uri.parse(FileUtils.getFilePathFromContentUri(getContext(), uri));
-                        File file = new File(fileUri.getPath());
-                        if(!file.exists()) {
-                            Toast.makeText(getContext(), "File not found", Toast.LENGTH_SHORT).show();
-                            return;
-                        }
-                        long maxSize = 50000000;
-                        if(file.length() > maxSize) {
-                            Toast.makeText(getContext(), "Kích thước ảnh hoặc video lớn hơn 50mb", Toast.LENGTH_SHORT).show();
-                            return;
-                        }
-                        StoryRepository.getInstance().createStory(fileUri).addOnCompleteListener(new OnCompleteListener<Story>() {
-                            @Override
-                            public void onComplete(@NonNull Task<Story> task) {
-                                if(task.isSuccessful()) {
-                                    Story story = task.getResult();
-                                } else {
-                                    Toast.makeText(getContext(), "Error", Toast.LENGTH_SHORT).show();
-                                    task.getException().printStackTrace();
-                                }
-                            }
-                        });
-                    }
-                });
+                ArrayList<BottomSheetItem> bottomSheetItems = new ArrayList<BottomSheetItem>(){{
+                    add(new BottomSheetItem("Camera", R.drawable.ic_camera, "Chụp ảnh"));
+                    add(new BottomSheetItem("Gallery", R.drawable.ic_gallery, "Chọn ảnh từ thư viện"));
+                }};
+                FimaeBottomSheet fimaeBottomSheetDialogFragment = new FimaeBottomSheet(bottomSheetItems);
+
+
+
+//                MediaListDialogFragment mediaListDialogFragment = new MediaListDialogFragment();
+//                mediaListDialogFragment.setOnMediaSelectedListener(new MediaListDialogFragment.OnMediaSelectedListener() {
+//                    @Override
+//                    public void OnMediaSelected(boolean isSelected, ArrayList<String> data) {
+//                        if(isSelected){
+//                            StoryRepository.getInstance().createStory(Uri.parse(data.get(0))).addOnCompleteListener(new OnCompleteListener<Story>() {
+//                                @Override
+//                                public void onComplete(@NonNull Task<Story> task) {
+//                                    if(task.isSuccessful()) {
+//                                        Story story = task.getResult();
+//                                    } else {
+//                                        Toast.makeText(getContext(), "Error", Toast.LENGTH_SHORT).show();
+//                                        task.getException().printStackTrace();
+//                                    }
+//                                }
+//                            });
+//                        }
+//                    }
+//                });
+//                mediaListDialogFragment.show(getChildFragmentManager(), "mediaList");
+
+
+//                PickImageBottomSheetFragment pickImageBottomSheetFragment = new PickImageBottomSheetFragment();
+//                pickImageBottomSheetFragment.show(getChildFragmentManager(), "pickImage");
+//                pickImageBottomSheetFragment.setCallBack(new PickImageBottomSheetFragment.PickImageCallBack() {
+//                    @Override
+//                    public void pickImageComplete(Uri uri) {
+//                        Uri fileUri = Uri.parse(FileUtils.getFilePathFromContentUri(getContext(), uri));
+//                        File file = new File(fileUri.getPath());
+//                        if(!file.exists()) {
+//                            Toast.makeText(getContext(), "File not found", Toast.LENGTH_SHORT).show();
+//                            return;
+//                        }
+//                        long maxSize = 50000000;
+//                        if(file.length() > maxSize) {
+//                            Toast.makeText(getContext(), "Kích thước ảnh hoặc video lớn hơn 50mb", Toast.LENGTH_SHORT).show();
+//                            return;
+//                        }
+//                        StoryRepository.getInstance().createStory(fileUri).addOnCompleteListener(new OnCompleteListener<Story>() {
+//                            @Override
+//                            public void onComplete(@NonNull Task<Story> task) {
+//                                if(task.isSuccessful()) {
+//                                    Story story = task.getResult();
+//                                } else {
+//                                    Toast.makeText(getContext(), "Error", Toast.LENGTH_SHORT).show();
+//                                    task.getException().printStackTrace();
+//                                }
+//                            }
+//                        });
+//                    }
+//                });
             }
 
             @Override
