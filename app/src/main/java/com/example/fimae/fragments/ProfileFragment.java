@@ -40,11 +40,13 @@ import com.example.fimae.models.Fimaers;
 import com.example.fimae.models.Post;
 import com.example.fimae.models.shorts.ShortMedia;
 import com.example.fimae.repository.FimaerRepository;
+import com.example.fimae.repository.ShortsRepository;
 import com.example.fimae.viewmodels.ProfileViewModel;
 import com.google.android.material.tabs.TabLayout;
 import com.google.firebase.firestore.CollectionReference;
 import com.google.firebase.firestore.DocumentChange;
 import com.google.firebase.firestore.FirebaseFirestore;
+import com.google.firebase.firestore.Query;
 
 import androidx.databinding.DataBindingUtil;
 import androidx.fragment.app.FragmentManager;
@@ -167,11 +169,23 @@ public class ProfileFragment extends Fragment {
                     binding.postList.setLayoutManager(linearLayoutManager);
                 } else if (position == 1) {
                     ArrayList<ShortMedia> shortMedias = ShortMedia.getFakeData();
-                    ShortsReviewAdapter shortAdapter = new ShortsReviewAdapter(video -> {
-                        Intent intent = new Intent(getContext(), ShortVideoActivity.class);
-                        //intent.putExtra("idVideo", video.getId());  // Truyền một String
-                        startActivity(intent);
-                    });
+                    Query shortQuery = ShortsRepository.getInstance().getShortQuery();
+                    ShortsReviewAdapter shortAdapter = new ShortsReviewAdapter(
+                            shortQuery,
+                            true,
+                            new ShortsReviewAdapter.IClickCardListener() {
+                                @Override
+                                public void addShortClicked() {
+
+                                }
+                                @Override
+                                public void onClickUser(ShortMedia video) {
+                                    Intent intent = new Intent(getContext(), ShortVideoActivity.class);
+                                    intent.putExtra("idVideo", video.getId());  // Truyền một String
+                                    startActivity(intent);
+                                }
+                            }
+                    );
                     binding.postList.setAdapter(shortAdapter);
                     GridAutoFitLayoutManager gridLayoutManager = new GridAutoFitLayoutManager(getContext(), 80);
                     binding.postList.setLayoutManager(gridLayoutManager);

@@ -39,7 +39,7 @@
             android:name=".SettingActivity"
             android:exported="false" />
         <activity
-            android:name=".StoryActivity"
+            android:name=".activities.StoryActivity"
             android:exported="false" />
         <activity
             android:name=".activities.MediaSliderActivity"

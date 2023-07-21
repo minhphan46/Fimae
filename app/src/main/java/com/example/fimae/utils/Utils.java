@@ -1,4 +1,4 @@
-package com.example.fimae;
+package com.example.fimae.utils;
 
 import android.content.Context;
 import android.content.res.AssetManager;

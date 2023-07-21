@@ -1,5 +1,6 @@
 package com.example.fimae.fragments;
 
+import android.app.DownloadManager;
 import android.content.Intent;
 import android.os.Bundle;
 
@@ -15,6 +16,10 @@ import com.example.fimae.R;
 import com.example.fimae.activities.ShortVideoActivity;
 import com.example.fimae.adapters.ShortsReviewAdapter;
 import com.example.fimae.adapters.SpacingItemDecoration;
+import com.example.fimae.models.shorts.ShortMedia;
+import com.example.fimae.repository.ShortsRepository;
+import com.example.fimae.repository.StoryRepository;
+import com.google.firebase.firestore.Query;
 
 /**
  * A simple {@link Fragment} subclass.
@@ -66,11 +71,23 @@ public class ShortTabFragment extends Fragment {
         storyRecyclerView.setLayoutManager(storyLinearLayoutManager);
         SpacingItemDecoration itemDecoration = new SpacingItemDecoration(16, 16, 8, 8);
         storyRecyclerView.addItemDecoration(itemDecoration);
-        ShortsReviewAdapter shortAdapter = new ShortsReviewAdapter(video -> {
-            Intent intent = new Intent(getContext(), ShortVideoActivity.class);
-            //intent.putExtra("idVideo", video.getId());  // Truyền một String
-            startActivity(intent);
-        });
+        Query shortQuery = ShortsRepository.getInstance().getShortQuery();
+        ShortsReviewAdapter shortAdapter = new ShortsReviewAdapter(
+                shortQuery,
+                false,
+                new ShortsReviewAdapter.IClickCardListener() {
+                    @Override
+                    public void addShortClicked() {
+
+                    }
+                    @Override
+                    public void onClickUser(ShortMedia video) {
+                        Intent intent = new Intent(getContext(), ShortVideoActivity.class);
+                        intent.putExtra("idVideo", video.getId());  // Truyền một String
+                        startActivity(intent);
+                    }
+                }
+        );
         storyRecyclerView.setAdapter(shortAdapter);
 
         return view;

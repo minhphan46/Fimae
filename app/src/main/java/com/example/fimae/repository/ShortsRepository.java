@@ -12,6 +12,7 @@ import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.firestore.CollectionReference;
 import com.google.firebase.firestore.DocumentReference;
 import com.google.firebase.firestore.FirebaseFirestore;
+import com.google.firebase.firestore.Query;
 import com.google.firebase.storage.FirebaseStorage;
 import com.google.firebase.storage.StorageReference;
 
@@ -19,10 +20,6 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.function.BiConsumer;
 
-
-/**
- * Repository for managing short video and image posts.
- */
 public class ShortsRepository {
     public final static String ShortsStoragePath = "shorts";
     static private ShortsRepository instance;
@@ -44,32 +41,12 @@ public class ShortsRepository {
         storageReference = FirebaseStorage.getInstance().getReference("shorts");
     }
 
-
-
-    /**
-     * Creates a short video post with the provided description, video URI, post mode, and comment settings.
-     *
-     * @param description The description or caption for the video post.
-     * @param uri The URI of the video file.
-     * @param postMode The post mode for the video post (e.g., PUBLIC, PRIVATE, FRIENDS).
-     * @param allowComment Determines whether comments are allowed on the video post.
-     * @return A Task that represents the asynchronous operation, which resolves to a ShortMedia object representing the created video post.
-     */
     public Task<ShortMedia> createShortVideo(String description, Uri uri, PostMode postMode, boolean allowComment){
         ArrayList<Uri> uris = new ArrayList<>();
         uris.add(uri);
         return createShort(description, ShortMediaType.VIDEO, uris, postMode, allowComment);
     }
 
-    /**
-     * Creates a short image post with the provided description, image URIs, post mode, and comment settings.
-     *
-     * @param description The description or caption for the image post.
-     * @param uris The URIs of the image files.
-     * @param postMode The post mode for the image post (e.g., PUBLIC, PRIVATE, FRIENDS).
-     * @param allowComment Determines whether comments are allowed on the image post.
-     * @return A Task that represents the asynchronous operation, which resolves to a ShortMedia object representing the created image post.
-     */
     public Task<ShortMedia> createShortImages(String description, ArrayList<Uri> uris, PostMode postMode, boolean allowComment){
         return createShort(description, ShortMediaType.IMAGES, uris, postMode, allowComment);
     }
@@ -105,4 +82,8 @@ public class ShortsRepository {
         });
         return taskCompletionSource.getTask();
     };
+
+    public Query getShortQuery() {
+        return shortsRef.orderBy("timeCreated", Query.Direction.DESCENDING);
+    }
 }

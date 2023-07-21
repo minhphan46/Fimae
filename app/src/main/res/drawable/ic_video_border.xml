@@ -1,16 +1,13 @@
 <layer-list xmlns:android="http://schemas.android.com/apk/res/android">
     <item>
         <shape android:shape="oval">
-            <solid android:color="@color/primary_2" /> <!-- Màu nền tím -->
-            <stroke
-                android:width="2dp"
-                android:color="@color/white" />
+            <solid android:color="@color/white" />
         </shape>
     </item>
     <item
-        android:gravity="center"
-        android:drawable="@drawable/baseline_add_24"
-        android:width="24dp"
-        android:height="24dp" />
-
+        android:width="180dp"
+        android:height="180dp" >
+        <bitmap android:src="@drawable/ic_play_video"
+            android:gravity="center_vertical|center_horizontal" />
+    </item>
 </layer-list>

@@ -18,7 +18,7 @@ import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.example.fimae.R;
-import com.example.fimae.StoryActivity;
+import com.example.fimae.activities.StoryActivity;
 import com.example.fimae.activities.OnChatActivity;
 import com.example.fimae.activities.SearchUserActivity;
 import com.example.fimae.adapters.ConversationAdapter;
@@ -26,7 +26,6 @@ import com.example.fimae.adapters.SpacingItemDecoration;
 import com.example.fimae.adapters.StoryAdapter.StoryAdapter;
 import com.example.fimae.adapters.StoryAdapter.StoryAdapterItem;
 import com.example.fimae.bottomdialogs.PickImageBottomSheetFragment;
-import com.example.fimae.models.Fimaers;
 import com.example.fimae.models.story.Story;
 import com.example.fimae.repository.ChatRepository;
 import com.example.fimae.repository.StoryRepository;
@@ -38,7 +37,6 @@ import com.google.firebase.firestore.FirebaseFirestore;
 import com.google.firebase.firestore.Query;
 
 import java.io.File;
-import java.util.*;
 
 public class ChatFragment extends Fragment {
     private FirebaseFirestore firestore;
