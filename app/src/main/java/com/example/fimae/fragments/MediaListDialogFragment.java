@@ -22,6 +22,9 @@ public class MediaListDialogFragment extends BottomSheetDialogFragment {
     MediaAdapter mediaAdapter;
     private FragmentItemListDialogListDialogBinding binding;
     private OnMediaSelectedListener onMediaSelectedListener;
+    public void setOnMediaSelectedListener(OnMediaSelectedListener onMediaSelectedListener) {
+        this.onMediaSelectedListener = onMediaSelectedListener;
+    }
 
     @Nullable
     @Override
@@ -29,12 +32,9 @@ public class MediaListDialogFragment extends BottomSheetDialogFragment {
                              @Nullable Bundle savedInstanceState) {
 
         binding = FragmentItemListDialogListDialogBinding.inflate(inflater, container, false);
-        binding.btnSend.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                sendMediaSelectedToParent(true, mediaAdapter.getSelectedMedias());
-                dismiss();
-            }
+        binding.btnSend.setOnClickListener(v -> {
+            sendMediaSelectedToParent(true, mediaAdapter.getSelectedMedias());
+            dismiss();
         });
         return binding.getRoot();
 
@@ -46,17 +46,6 @@ public class MediaListDialogFragment extends BottomSheetDialogFragment {
         recyclerView.setLayoutManager(new GridLayoutManager(getContext(), 3));
         mediaAdapter = new MediaAdapter(getContext());
         recyclerView.setAdapter(mediaAdapter);
-    }
-
-    @Override
-    public void onAttach(@NonNull @NotNull Context context) {
-        super.onAttach(context);
-        if (context instanceof OnMediaSelectedListener) {
-            onMediaSelectedListener = (OnMediaSelectedListener) context;
-        } else {
-            throw new ClassCastException(context.toString()
-                    + " must implement OnDataSelectedListener");
-        }
     }
 
     private void sendMediaSelectedToParent(boolean isSelected, ArrayList<String> data) {

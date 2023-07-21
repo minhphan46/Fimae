@@ -35,7 +35,6 @@ public class StoryRepository {
         Story story = new Story();
         story.setId(storyRef.getId());
         story.setUid(FirebaseAuth.getInstance().getUid());
-        story.setUrl(uri.toString());
         story.setPostMode(PostMode.PUBLIC);
         if(FileUtils.isImageFile(uri.toString()))
             story.setType(StoryType.IMAGE);
@@ -43,11 +42,17 @@ public class StoryRepository {
             story.setType(StoryType.VIDEO);
         String path = "stories/" + story.getId();
         FirebaseService.getInstance().uploadFile(path, uri).addOnSuccessListener(taskSnapshot -> {
-            storyRef.set(story).addOnSuccessListener(aVoid -> {
-                taskCompletionSource.setResult(story);
+            taskSnapshot.getStorage().getDownloadUrl().addOnSuccessListener(uri1 -> {
+                story.setUrl(uri1.toString());
+                storyRef.set(story).addOnSuccessListener(aVoid -> {
+                    taskCompletionSource.setResult(story);
+                }).addOnFailureListener(e -> {
+                    taskCompletionSource.setException(e);
+                });
             }).addOnFailureListener(e -> {
                 taskCompletionSource.setException(e);
             });
+
         }).addOnFailureListener(e -> {
             taskCompletionSource.setException(e);
         });
