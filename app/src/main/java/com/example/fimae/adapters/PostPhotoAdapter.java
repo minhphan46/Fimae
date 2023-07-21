@@ -49,6 +49,7 @@ public class PostPhotoAdapter extends RecyclerView.Adapter<RecyclerView.ViewHold
         for (int i = 0; i < mImageUrls.size(); i++){
             mImages.add(Uri.parse(mImageUrls.get(i)));
         }
+        notifyDataSetChanged();
     }
     public PostPhotoAdapter(Context context, List<Uri> mImages,  boolean isEdit){
         this.context = context;
