@@ -11,16 +11,12 @@ import androidx.recyclerview.widget.GridLayoutManager;
 import androidx.recyclerview.widget.LinearLayoutManager;
 
 import android.content.Intent;
-import android.net.Uri;
 import android.os.Bundle;
 import android.text.Editable;
 import android.text.TextWatcher;
-import android.util.Log;
 import android.view.View;
-import android.widget.Adapter;
 
 import com.example.fimae.R;
-import com.example.fimae.adapters.LikedAdapeter;
 import com.example.fimae.adapters.NewCommentAdapter;
 import com.example.fimae.adapters.PostAdapter;
 import com.example.fimae.adapters.PostPhotoAdapter;
@@ -28,7 +24,7 @@ import com.example.fimae.adapters.ShareAdapter;
 import com.example.fimae.bottomdialogs.LikedPostListFragment;
 import com.example.fimae.bottomdialogs.ListItemBottomSheetFragment;
 import com.example.fimae.databinding.DetailPostBinding;
-import com.example.fimae.fragments.ChatBottomSheetFragment;
+import com.example.fimae.fragments.FimaeBottomSheet;
 import com.example.fimae.fragments.CommentEditFragment;
 import com.example.fimae.models.BottomSheetItem;
 import com.example.fimae.models.Comment;
@@ -56,7 +52,6 @@ import com.squareup.picasso.Picasso;
 
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Map;
 import java.util.Objects;
 
 public class DetailPostActivity extends AppCompatActivity {
@@ -85,7 +80,7 @@ public class DetailPostActivity extends AppCompatActivity {
     List<BottomSheetItem> commentSheetItemList;
     List<BottomSheetItem> postSheetItemList;
     List<BottomSheetItem> reportSheetItemList;
-    ChatBottomSheetFragment chatBottomSheetFragment;
+    FimaeBottomSheet fimaeBottomSheet;
     ListItemBottomSheetFragment listShareItemBottomSheetFragment;
 
     public interface BottomItemClickCallback{
@@ -394,48 +389,48 @@ public class DetailPostActivity extends AppCompatActivity {
 
     }
     private void showReportDialog(){
-        chatBottomSheetFragment = new ChatBottomSheetFragment(reportSheetItemList,
+        fimaeBottomSheet = new FimaeBottomSheet(reportSheetItemList,
                 bottomSheetItem -> {
                     if(bottomSheetItem.getTitle().equals("Báo cáo")){
-                        chatBottomSheetFragment.dismiss();
+                        fimaeBottomSheet.dismiss();
                     }
                 });
-        chatBottomSheetFragment.show(getSupportFragmentManager(), chatBottomSheetFragment.getTag());
+        fimaeBottomSheet.show(getSupportFragmentManager(), fimaeBottomSheet.getTag());
     }
 
     private void showPostDialog(){
-        chatBottomSheetFragment = new ChatBottomSheetFragment(postSheetItemList,
+        fimaeBottomSheet = new FimaeBottomSheet(postSheetItemList,
                 bottomSheetItem -> {
                     if(bottomSheetItem.getTitle().equals("Chỉnh sửa bài đăng")){
                         Intent intent = new Intent(getApplicationContext(), PostActivity.class );
                         intent.putExtra("id", post.getPostId());
 
                         mStartForResult.launch(intent);
-                        chatBottomSheetFragment.dismiss();
+                        fimaeBottomSheet.dismiss();
                     }
                     else if(bottomSheetItem.getTitle().equals("Xóa bài đăng")){
-                        chatBottomSheetFragment.dismiss();
+                        fimaeBottomSheet.dismiss();
                     }
                 });
-        chatBottomSheetFragment.show(getSupportFragmentManager(), chatBottomSheetFragment.getTag());
+        fimaeBottomSheet.show(getSupportFragmentManager(), fimaeBottomSheet.getTag());
 
     }
     private void showEditCommentDialog(Comment comment){
         CommentEditFragment commentEditFragment = new CommentEditFragment(comment, post.getPostId());
         commentEditFragment.show(getSupportFragmentManager(), commentEditFragment.getTag());
-        chatBottomSheetFragment.dismiss();
+        fimaeBottomSheet.dismiss();
     }
     public void showCommentDialog(Comment comment){
-            chatBottomSheetFragment = new ChatBottomSheetFragment(commentSheetItemList,
+            fimaeBottomSheet = new FimaeBottomSheet(commentSheetItemList,
                     bottomSheetItem -> {
                         if(bottomSheetItem.getTitle().equals("Chỉnh sửa bình luận"))
                             showEditCommentDialog(comment);
                         else if(bottomSheetItem.getTitle().equals("Xóa bình luận")){
                             commentRepository.deleteComment(post.getPostId(), comment);
-                            chatBottomSheetFragment.dismiss();
+                            fimaeBottomSheet.dismiss();
                         }
                     });
-        chatBottomSheetFragment.show(getSupportFragmentManager(), chatBottomSheetFragment.getTag());
+        fimaeBottomSheet.show(getSupportFragmentManager(), fimaeBottomSheet.getTag());
     }
     private void showMoreDialog(){
         if(Objects.equals(FirebaseAuth.getInstance().getUid(), post.getPublisher())){
