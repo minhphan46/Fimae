@@ -28,6 +28,7 @@ import com.google.firebase.firestore.QueryDocumentSnapshot;
 import com.squareup.picasso.Picasso;
 
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.concurrent.ExecutionException;
 
 import de.hdodenhof.circleimageview.CircleImageView;
@@ -105,6 +106,7 @@ public class ConversationAdapter extends FirestoreAdapter<ConversationAdapter.Vi
                 holder.mTextName.setText(user.getFirstName() + " " + user.getLastName());
                 if (conversation.getLastMessage() != null) {
                     conversation.getLastMessage().get().addOnCompleteListener(task -> {
+                        HashMap map = (HashMap) task.getResult().getData();
                         Message message = task.getResult().toObject(Message.class);
                         assert message != null;
                         holder.mTextDes.setText(message.getContent().toString());

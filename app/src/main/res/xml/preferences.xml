@@ -1,0 +1,68 @@
+<?xml version="1.0" encoding="utf-8"?>
+<PreferenceScreen
+    android:divider="@android:color/darker_gray"
+    android:dividerHeight="1dp"
+    xmlns:android="http://schemas.android.com/apk/res/android">
+
+    <!--below line is to create preference category-->
+    <PreferenceCategory>
+
+        <ListPreference
+            android:defaultValue="3"
+            android:dialogTitle="@string/remind_to_take_a_break"
+            android:entries="@array/pref_remind_me_to_take_a_break"
+            android:entryValues="@array/pref_duration"
+            android:key="@string/key_upload_quality"
+            android:summary="@string/remind_me"
+            android:title="@string/remind_me" />
+
+        <!--on below line we are creating a switch preference
+            default value is use to set switch on or off
+            key is use to set key
+            title is use to add title to our switch-->
+        <!--this switch preference option is to remind for a bed time-->
+        <SwitchPreference
+            android:defaultValue="false"
+            android:key="@string/remind_me_for_bed_time"
+            android:title="@string/remind_for_bed_time" />
+
+        <!--below switch preference is
+            use for mobile data usage-->
+        <SwitchPreference
+            android:defaultValue="false"
+            android:key="@string/limit_data_usage"
+            android:summary="@string/stream_video"
+            android:title="@string/limit_mobile_usage" />
+
+        <!--below list preference is use for
+            double tap to seek option-->
+        <ListPreference
+            android:defaultValue="1"
+            android:dialogTitle="@string/double_tap_to_seek"
+            android:entries="@array/pref_seek_values"
+            android:entryValues="@array/pref_duration"
+            android:key="@string/pref_seek_val"
+            android:summary="@string/seconds"
+            android:title="@string/double_tap_to_seek" />
+
+        <!--below option is use to create a list
+            preference for Upload preferences-->
+        <ListPreference
+            android:defaultValue="1"
+            android:dialogTitle="@string/uploads"
+            android:entries="@array/pref_uploads"
+            android:entryValues="@array/pref_duration"
+            android:key="@string/pref_uploads"
+            android:summary="@string/specify_network_prefs"
+            android:title="Uploads" />
+
+
+        <!--below switch pref is use for enable stats option-->
+        <SwitchPreference
+            android:defaultValue="false"
+            android:key="@string/prefs_enable_stats"
+            android:title="@string/enable_stats" />
+
+    </PreferenceCategory>
+
+</PreferenceScreen>

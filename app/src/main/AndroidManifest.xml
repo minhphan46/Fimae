@@ -42,6 +42,8 @@
                 android:name="android.app.lib_name"
                 android:value="" />
         </activity>
+            android:name=".SettingActivity"
+            android:exported="false" />
         <activity
             android:name=".StoryActivity"
             android:exported="false" />
@@ -56,9 +58,6 @@
 
         <activity
             android:name=".activities.SearchUserActivity"
-            android:exported="false" />
-        <activity
-            android:name=".activities.ChatRandomActivity"
             android:exported="false" />
 
         <provider
@@ -100,12 +99,16 @@
             android:name=".activities.OnChatActivity"
             android:exported="false" />
         <activity
+            android:name=".activities.SettingActivity"
+            android:exported="false" />
+        <activity
             android:name=".activities.DetailPostActivity"
             android:exported="false">
             <meta-data
                 android:name="android.app.lib_name"
                 android:value="" />
         </activity>
+        <activity android:name=".activities.ChatRandomActivity" />
         <activity
             android:name=".activities.PostActivity"
             android:exported="false">
