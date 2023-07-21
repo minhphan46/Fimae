@@ -79,34 +79,27 @@ public class ChatFragment extends Fragment {
         storyAdapter.setStoryListener(new StoryAdapter.StoryListener() {
             @Override
             public void addStoryClicked() {
-                ArrayList<BottomSheetItem> bottomSheetItems = new ArrayList<BottomSheetItem>(){{
-                    add(new BottomSheetItem("Camera", R.drawable.ic_camera, "Chụp ảnh"));
-                    add(new BottomSheetItem("Gallery", R.drawable.ic_gallery, "Chọn ảnh từ thư viện"));
-                }};
-                FimaeBottomSheet fimaeBottomSheetDialogFragment = new FimaeBottomSheet(bottomSheetItems);
 
-
-
-//                MediaListDialogFragment mediaListDialogFragment = new MediaListDialogFragment();
-//                mediaListDialogFragment.setOnMediaSelectedListener(new MediaListDialogFragment.OnMediaSelectedListener() {
-//                    @Override
-//                    public void OnMediaSelected(boolean isSelected, ArrayList<String> data) {
-//                        if(isSelected){
-//                            StoryRepository.getInstance().createStory(Uri.parse(data.get(0))).addOnCompleteListener(new OnCompleteListener<Story>() {
-//                                @Override
-//                                public void onComplete(@NonNull Task<Story> task) {
-//                                    if(task.isSuccessful()) {
-//                                        Story story = task.getResult();
-//                                    } else {
-//                                        Toast.makeText(getContext(), "Error", Toast.LENGTH_SHORT).show();
-//                                        task.getException().printStackTrace();
-//                                    }
-//                                }
-//                            });
-//                        }
-//                    }
-//                });
-//                mediaListDialogFragment.show(getChildFragmentManager(), "mediaList");
+                MediaListDialogFragment mediaListDialogFragment = new MediaListDialogFragment();
+                mediaListDialogFragment.setOnMediaSelectedListener(new MediaListDialogFragment.OnMediaSelectedListener() {
+                    @Override
+                    public void OnMediaSelected(boolean isSelected, ArrayList<String> data) {
+                        if(isSelected){
+                            StoryRepository.getInstance().createStory(Uri.parse(data.get(0))).addOnCompleteListener(new OnCompleteListener<Story>() {
+                                @Override
+                                public void onComplete(@NonNull Task<Story> task) {
+                                    if(task.isSuccessful()) {
+                                        Story story = task.getResult();
+                                    } else {
+                                        Toast.makeText(getContext(), "Error", Toast.LENGTH_SHORT).show();
+                                        task.getException().printStackTrace();
+                                    }
+                                }
+                            });
+                        }
+                    }
+                });
+                mediaListDialogFragment.show(getChildFragmentManager(), "mediaList");
 
 
 //                PickImageBottomSheetFragment pickImageBottomSheetFragment = new PickImageBottomSheetFragment();
