@@ -39,6 +39,7 @@ import com.google.firebase.firestore.FirebaseFirestore;
 import com.google.firebase.firestore.Query;
 
 import java.io.File;
+import java.util.ArrayList;
 
 public class ChatFragment extends Fragment {
     private FirebaseFirestore firestore;

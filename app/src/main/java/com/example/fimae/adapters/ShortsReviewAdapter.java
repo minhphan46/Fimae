@@ -6,6 +6,7 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ImageView;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import androidx.annotation.NonNull;
 import androidx.recyclerview.widget.RecyclerView;
@@ -13,8 +14,10 @@ import androidx.recyclerview.widget.RecyclerView;
 import com.bumptech.glide.Glide;
 import com.example.fimae.R;
 import com.example.fimae.adapters.StoryAdapter.StoryAdapter;
+import com.example.fimae.adapters.StoryAdapter.StoryAdapterItem;
 import com.example.fimae.models.shorts.ShortMedia;
 import com.example.fimae.models.story.Story;
+import com.google.firebase.firestore.DocumentChange;
 import com.google.firebase.firestore.DocumentSnapshot;
 import com.google.firebase.firestore.Query;
 import com.google.firebase.storage.FirebaseStorage;
@@ -26,8 +29,8 @@ import de.hdodenhof.circleimageview.CircleImageView;
 
 public class ShortsReviewAdapter extends FirestoreAdapter<ShortsReviewAdapter.ShortsReviewHolder>{
 
-    ArrayList<ShortMedia> shortMedias = ShortMedia.getFakeData();
-
+    //ArrayList<ShortMedia> shortMedias = ShortMedia.getFakeData();
+    ArrayList<ShortMedia> shortMedias = new ArrayList<>();
     private ShortsReviewAdapter.IClickCardListener iClickCardListener;
 
     private boolean isInProfile = false;
@@ -93,6 +96,20 @@ public class ShortsReviewAdapter extends FirestoreAdapter<ShortsReviewAdapter.Sh
     @Override
     public void OnSuccessQueryListener(ArrayList<DocumentSnapshot> queryDocumentSnapshots) {
 
+    }
+
+    @Override
+    public void OnSuccessQueryListener(ArrayList<DocumentSnapshot> queryDocumentSnapshots, ArrayList<DocumentChange> documentChanges) {
+        if(shortMedias == null){
+            shortMedias = new ArrayList<>();
+        } else {
+            shortMedias.clear();
+        }
+        for(DocumentSnapshot documentSnapshot : queryDocumentSnapshots){
+            ShortMedia shortMedia = documentSnapshot.toObject(ShortMedia.class);
+            shortMedias.add(shortMedia);
+        }
+        notifyDataSetChanged();
     }
 
     @Override
