@@ -134,6 +134,8 @@ public class DetailPostActivity extends AppCompatActivity {
             if(adapter != null){
                 adapter.updateImages(imageUrls);
                 adapter.notifyDataSetChanged();
+                LinearLayoutManager layoutManager = new GridLayoutManager(this, PostAdapter.getColumnSpan(imageUrls.size()) );
+                binding.imageList.setLayoutManager(layoutManager);
             }
 
         if(!post.getContent().equals(updatePost.getContent())){

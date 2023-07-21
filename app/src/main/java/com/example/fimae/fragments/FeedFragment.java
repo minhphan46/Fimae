@@ -26,6 +26,7 @@ import com.google.firebase.firestore.DocumentChange;
 import com.google.firebase.firestore.EventListener;
 import com.google.firebase.firestore.FirebaseFirestore;
 import com.google.firebase.firestore.FirebaseFirestoreException;
+import com.google.firebase.firestore.Query;
 import com.google.firebase.firestore.QueryDocumentSnapshot;
 import com.google.firebase.firestore.QuerySnapshot;
 
@@ -58,10 +59,10 @@ public class FeedFragment extends Fragment {
     @Override
     public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
         binding = FragmentFeedBinding.inflate(inflater, container, false);
-        binding.postList.setHasFixedSize(true);
+//        binding.postList.setHasFixedSize(true);
         LinearLayoutManager linearLayoutManager = new LinearLayoutManager(getContext());
-        linearLayoutManager.setReverseLayout(true);
-        linearLayoutManager.setStackFromEnd(true);
+//        linearLayoutManager.setReverseLayout(true);
+//        linearLayoutManager.setStackFromEnd(true);
         binding.postList.setLayoutManager(linearLayoutManager);
         postAdapter = new PostAdapter();
         posts.clear();
@@ -72,7 +73,7 @@ public class FeedFragment extends Fragment {
         });
         binding.postList.setAdapter(postAdapter);
         CollectionReference postRef = FirebaseFirestore.getInstance().collection("posts");
-        postRef.addSnapshotListener((value, error) -> {
+        postRef.orderBy("timeCreated", Query.Direction.DESCENDING).addSnapshotListener((value, error) -> {
             if (error != null) {
                 return;
             }
@@ -81,19 +82,27 @@ public class FeedFragment extends Fragment {
                 switch (dc.getType()) {
                     case ADDED:
                         posts.add(post);
-                        postAdapter.addUpdate();
+                        if(posts.size() <=1){
+                            postAdapter.addUpdate();
+                        }
+                        else postAdapter.notifyItemInserted(posts.size() - 1);
                         break;
                     case MODIFIED:
                         for(Post item : posts){
                             if(item.getPostId().equals(post.getPostId())){
                                 if(!post.getContent().equals(item.getContent()) || post.getPostImages().size() != item.getPostImages().size()){
                                     posts.set(posts.indexOf(item), post);
-                                    postAdapter.notifyItemChanged(posts.indexOf(item));
+//                                    item = post;
+//                                    postAdapter.notifyItemChanged(posts.indexOf(item));
+//                                    postAdapter.notifyItemChanged(posts.indexOf(item) + 1);
+                                    postAdapter.notifyItemChanged(posts.indexOf(item) + 1);
                                 }
                             }
                         }
                         break;
                     case REMOVED:
+                        posts.remove(post);
+                        postAdapter.notifyItemRemoved(posts.indexOf(post));
                         break;
                 }
             }
