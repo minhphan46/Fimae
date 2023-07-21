@@ -156,7 +156,7 @@ public class MessageAdapter extends  FirestoreAdapter{
                 else{
                     postLinkViewHolder.imageView.setVisibility(View.GONE);
                 }
-                String content  = message.getIdSender() + "/" + message.getContent().toString();
+                String content  = "https://"+ message.getIdSender() + "/" + message.getContent().toString();
                 postLinkViewHolder.url.setText(content);
             });
             postLinkViewHolder.itemView.setOnClickListener(view -> {

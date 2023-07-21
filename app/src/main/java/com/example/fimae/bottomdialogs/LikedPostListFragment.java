@@ -32,7 +32,6 @@ import java.util.List;
 import java.util.Map;
 
 public class LikedPostListFragment extends BottomSheetDialogFragment {
-    Seed seed = new Seed();
     // TODO: Rename parameter arguments, choose names that match
     // the fragment initialization parameters, e.g. ARG_ITEM_NUMBER
     private BottomsheetLikedPeopleBinding binding;
@@ -42,9 +41,10 @@ public class LikedPostListFragment extends BottomSheetDialogFragment {
     private Map<String, Boolean> userInfo;
     LikedAdapeter adapeter;
     private CollectionReference fimaersRef = FirebaseFirestore.getInstance().collection("fimaers");
-    public LikedPostListFragment(Map<String, Boolean> userList, String number) {
+    public LikedPostListFragment(Map<String, Boolean> userList, String number, Post post) {
         this.userInfo = userList;
         this.number = number;
+        this.post = post;
     }
 
     @NonNull
@@ -55,9 +55,9 @@ public class LikedPostListFragment extends BottomSheetDialogFragment {
     }
 
     private static LikedPostListFragment instance;
-    public static LikedPostListFragment getInstance(Map<String, Boolean> fimaers, String number) {
+    public static LikedPostListFragment getInstance(Map<String, Boolean> fimaers, String number, Post post) {
 
-            instance = new LikedPostListFragment(fimaers, number);
+            instance = new LikedPostListFragment(fimaers, number, post);
         return instance;
     }
 
@@ -94,5 +94,6 @@ public class LikedPostListFragment extends BottomSheetDialogFragment {
             }
         }
         binding.title.setText("Lượt thích và cảm xúc: " +String.valueOf(number));
+
     }
 }

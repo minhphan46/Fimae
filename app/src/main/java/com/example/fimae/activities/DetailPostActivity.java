@@ -20,6 +20,7 @@ import android.view.View;
 import android.widget.Adapter;
 
 import com.example.fimae.R;
+import com.example.fimae.adapters.LikedAdapeter;
 import com.example.fimae.adapters.NewCommentAdapter;
 import com.example.fimae.adapters.PostAdapter;
 import com.example.fimae.adapters.PostPhotoAdapter;
@@ -55,6 +56,7 @@ import com.squareup.picasso.Picasso;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Map;
 import java.util.Objects;
 
 public class DetailPostActivity extends AppCompatActivity {
@@ -63,6 +65,7 @@ public class DetailPostActivity extends AppCompatActivity {
     public PostMode postMode;
     public String selectedCommentId = "";
     private Boolean isShowShareDialog;
+    private Boolean isShowMoreDialog;
     public Fimaers selectedFimaers;
     private Post post;
     private Fimaers fimaers;
@@ -83,7 +86,8 @@ public class DetailPostActivity extends AppCompatActivity {
     List<BottomSheetItem> postSheetItemList;
     List<BottomSheetItem> reportSheetItemList;
     ChatBottomSheetFragment chatBottomSheetFragment;
-    ListItemBottomSheetFragment listItemBottomSheetFragment;
+    ListItemBottomSheetFragment listShareItemBottomSheetFragment;
+
     public interface BottomItemClickCallback{
         void onClick(Fimaers userInfo);
     }
@@ -103,6 +107,7 @@ public class DetailPostActivity extends AppCompatActivity {
         postId = intent.getStringExtra("id");
         getPost(postId);
         isShowShareDialog = intent.getBooleanExtra("share", false);
+        isShowMoreDialog = intent.getBooleanExtra("more", false);
     }
     private void getPost(String postId){
         postRef.document(postId).addSnapshotListener((value, e) -> {
@@ -145,7 +150,7 @@ public class DetailPostActivity extends AppCompatActivity {
         binding.numberOfComment.setText(String.valueOf(updatePost.getNumberOfComments()));
         binding.numberofLike.setText(String.valueOf(updatePost.getNumberTrue()));
         binding.numberofLike.setOnClickListener(view -> {
-            LikedPostListFragment likedPostListFragment = LikedPostListFragment.getInstance(updatePost.getLikes(), updatePost.getNumberTrue());
+            LikedPostListFragment likedPostListFragment = LikedPostListFragment.getInstance(updatePost.getLikes(), updatePost.getNumberTrue(), post);
             likedPostListFragment.show(getSupportFragmentManager(), "likelist");
         });
     }
@@ -153,12 +158,7 @@ public class DetailPostActivity extends AppCompatActivity {
         TimerService.setDuration(binding.activeTime, post.getTimeCreated());
         binding.content.setText(post.getContent());
         binding.icMore.setOnClickListener(view -> {
-            if(Objects.equals(FirebaseAuth.getInstance().getUid(), post.getPublisher())){
-                showPostDialog();
-            }
-            else {
-                showReportDialog();
-            }
+            showMoreDialog();
         });
         Picasso.get().load(fimaers.getAvatarUrl()).placeholder(R.drawable.ic_default_avatar).into(binding.imageAvatar);
         binding.userName.setText(fimaers.getLastName());
@@ -204,6 +204,10 @@ public class DetailPostActivity extends AppCompatActivity {
         if(isShowShareDialog){
             showSharePostDialog();
         }
+        createCommentDialog();
+        if(isShowMoreDialog){
+            showMoreDialog();
+        }
     }
     private void showSharePostDialog(){
         FollowRepository.getInstance().getFollowers(post.getPublisher()).addOnSuccessListener(new OnSuccessListener<ArrayList<Fimaers>>() {
@@ -212,8 +216,8 @@ public class DetailPostActivity extends AppCompatActivity {
                 ShareAdapter adapter = new ShareAdapter(DetailPostActivity.this, fimaers, new BottomItemClickCallback() {
                     @Override
                     public void onClick(Fimaers userInfo) {
-                        if(listItemBottomSheetFragment != null){
-                            listItemBottomSheetFragment.dismiss();
+                        if(listShareItemBottomSheetFragment != null){
+                            listShareItemBottomSheetFragment.dismiss();
                         }
 //                        binding.progressBar.setVisibility(View.VISIBLE);
 //                        binding.contentLayout.setVisibility(View.GONE);
@@ -233,13 +237,12 @@ public class DetailPostActivity extends AppCompatActivity {
                     }
                 });
                 String title = "Chia sẻ bài viết";
-                listItemBottomSheetFragment = ListItemBottomSheetFragment.getInstance(title,  adapter);
-                listItemBottomSheetFragment.show(getSupportFragmentManager(), "shareList");
+                listShareItemBottomSheetFragment = ListItemBottomSheetFragment.getInstance(title,  adapter);
+                listShareItemBottomSheetFragment.show(getSupportFragmentManager(), "shareList");
             }
         });
     }
     private void initListener(){
-        createCommentDialog();
         //go back
         /*binding.goBack.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -325,6 +328,12 @@ public class DetailPostActivity extends AppCompatActivity {
             });
 
         }
+        binding.edit.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                postRepository.goToChatWithUser(post.getPublisher(), DetailPostActivity.this);
+            }
+        });
         binding.follow.setOnClickListener(view -> FollowRepository.getInstance().follow(post.getPublisher()).addOnCompleteListener(new OnCompleteListener<Boolean>() {
             @Override
             public void onComplete(@NonNull Task<Boolean> task) {
@@ -385,9 +394,9 @@ public class DetailPostActivity extends AppCompatActivity {
 
     }
     private void showReportDialog(){
-        chatBottomSheetFragment = new ChatBottomSheetFragment(postSheetItemList,
+        chatBottomSheetFragment = new ChatBottomSheetFragment(reportSheetItemList,
                 bottomSheetItem -> {
-                    if(bottomSheetItem.getTitle().equals("Xóa bài đăng")){
+                    if(bottomSheetItem.getTitle().equals("Báo cáo")){
                         chatBottomSheetFragment.dismiss();
                     }
                 });
@@ -428,5 +437,12 @@ public class DetailPostActivity extends AppCompatActivity {
                     });
         chatBottomSheetFragment.show(getSupportFragmentManager(), chatBottomSheetFragment.getTag());
     }
-
+    private void showMoreDialog(){
+        if(Objects.equals(FirebaseAuth.getInstance().getUid(), post.getPublisher())){
+            showPostDialog();
+        }
+        else {
+            showReportDialog();
+        }
+    }
 }

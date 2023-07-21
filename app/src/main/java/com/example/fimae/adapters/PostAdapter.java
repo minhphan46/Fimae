@@ -207,6 +207,12 @@ public class PostAdapter extends RecyclerView.Adapter<PostAdapter.ViewHolder> {
                     );
                 });
             }
+            binding.chat.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View view) {
+                    PostRepository.getInstance().goToChatWithUser(currentPost.getPublisher(), mContext);
+                }
+            });
             binding.icShare.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View view) {
@@ -214,6 +220,16 @@ public class PostAdapter extends RecyclerView.Adapter<PostAdapter.ViewHolder> {
                     intent.putExtra("id", currentPost.getPostId());
                     intent.putExtra("share",true);
                     mContext.startActivity(intent);
+                }
+            });
+            binding.icMore.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View view) {
+                    Intent intent = new Intent(mContext, DetailPostActivity.class);
+                    intent.putExtra("id", currentPost.getPostId());
+                    intent.putExtra("more",true);
+                    mContext.startActivity(intent);
+
                 }
             });
         });

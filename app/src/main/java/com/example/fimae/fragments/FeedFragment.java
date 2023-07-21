@@ -69,7 +69,6 @@ public class FeedFragment extends Fragment {
             Intent intent = new Intent(getContext(), DetailPostActivity.class);
             intent.putExtra("id", post.getPostId());
             startActivity(intent);
-
         });
         binding.postList.setAdapter(postAdapter);
         CollectionReference postRef = FirebaseFirestore.getInstance().collection("posts");

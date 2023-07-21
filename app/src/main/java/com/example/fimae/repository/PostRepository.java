@@ -12,8 +12,11 @@ import android.widget.Toast;
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 
+import com.example.fimae.activities.DetailPostActivity;
+import com.example.fimae.activities.OnChatActivity;
 import com.example.fimae.activities.PostMode;
 import com.example.fimae.adapters.PostAdapter;
+import com.example.fimae.models.Conversation;
 import com.example.fimae.models.Fimaers;
 import com.example.fimae.models.Post;
 import com.google.android.gms.tasks.OnCompleteListener;
@@ -102,6 +105,18 @@ public class PostRepository {
             public void onSuccess(DocumentSnapshot documentSnapshot) {
                   Fimaers fimaers = documentSnapshot.toObject(Fimaers.class);
                   callBack.onSuccess(fimaers);
+            }
+        });
+    }
+    public void goToChatWithUser(String userId, Context context){
+        ChatRepository.getInstance().getOrCreateFriendConversation(userId).addOnCompleteListener(new OnCompleteListener<Conversation>() {
+            @Override
+            public void onComplete(@NonNull Task<Conversation> task) {
+                if(task.getResult() != null){
+                    Intent intent = new Intent(context, OnChatActivity.class);
+                    intent.putExtra("conversationID", task.getResult().getId());
+                    context.startActivity(intent);
+                }
             }
         });
     }
