@@ -73,6 +73,7 @@ public class PostActivity extends AppCompatActivity implements View.OnClickListe
                     editPost  = task.getResult().toObject(Post.class);
                     if(editPost == null) return;
                     postMode = editPost.getPostMode();
+                    setStatusPost();
                     binding.description.setText(editPost.getContent());
                     editedImageList = new ArrayList<>(editPost.getPostImages());
                     postPhotoAdapter.setEditedImageList(editedImageList);
