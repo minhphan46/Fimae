@@ -87,17 +87,12 @@ public class LikedPostListFragment extends BottomSheetDialogFragment {
         for(Map.Entry<String, Boolean> entry: userInfo.entrySet()){
             if(entry.getValue())
             {
-                fimaersRef.document(entry.getKey()).get().addOnSuccessListener(new OnSuccessListener<DocumentSnapshot>() {
-                    @Override
-                    public void onSuccess(DocumentSnapshot documentSnapshot) {
-                        userInfoList.add(documentSnapshot.toObject(Fimaers.class));
-                        if(adapeter != null) adapeter.notifyDataSetChanged();
-                    }
+                fimaersRef.document(entry.getKey()).get().addOnSuccessListener(documentSnapshot -> {
+                    userInfoList.add(documentSnapshot.toObject(Fimaers.class));
+                    if(adapeter != null) adapeter.notifyDataSetChanged();
                 });
             }
         }
         binding.title.setText("Lượt thích và cảm xúc: " +String.valueOf(number));
-
-
     }
 }

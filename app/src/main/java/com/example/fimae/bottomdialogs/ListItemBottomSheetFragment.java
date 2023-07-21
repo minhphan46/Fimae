@@ -35,11 +35,11 @@ import java.util.Map;
 
 public class ListItemBottomSheetFragment extends BottomSheetDialogFragment {
     private BottomsheetLikedPeopleBinding binding;
-    public ListItemBottomSheetFragment(String title, Adapter adapter) {
+    public ListItemBottomSheetFragment(String title, RecyclerView.Adapter adapter) {
         this.title = title;
         this.adapter = adapter;
     }
-    Adapter adapter;
+    RecyclerView.Adapter adapter;
     String title;
     @NonNull
     @Override
@@ -49,7 +49,7 @@ public class ListItemBottomSheetFragment extends BottomSheetDialogFragment {
     }
     
     private static ListItemBottomSheetFragment instance;
-    public static ListItemBottomSheetFragment getInstance(String title, Adapter adapter){
+    public static ListItemBottomSheetFragment getInstance(String title, RecyclerView.Adapter adapter){
         instance = new ListItemBottomSheetFragment(title, adapter);
         return instance;
     }
@@ -72,6 +72,8 @@ public class ListItemBottomSheetFragment extends BottomSheetDialogFragment {
     public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
         binding.title.setText(title);
-        binding.userList.setAdapter((RecyclerView.Adapter) adapter);
+        binding.userList.setAdapter(adapter);
+        LinearLayoutManager linearLayoutManager = new LinearLayoutManager(getContext());
+        binding.userList.setLayoutManager(linearLayoutManager);
     }
 }

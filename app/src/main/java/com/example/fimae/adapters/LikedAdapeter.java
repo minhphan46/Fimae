@@ -62,7 +62,6 @@ public class LikedAdapeter extends RecyclerView.Adapter<LikedAdapeter.ViewHolder
             binding.chat.setVisibility(View.INVISIBLE);
             binding.follow.setVisibility(View.VISIBLE);
         });
-
     }
 
 

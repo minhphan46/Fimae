@@ -2,17 +2,24 @@ package com.example.fimae.adapters;
 
 import android.content.Context;
 import android.content.Intent;
+import android.nfc.Tag;
+import android.util.Log;
+import android.view.Gravity;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.ImageView;
+import android.widget.LinearLayout;
 import android.widget.TextView;
 
+import androidx.annotation.GravityInt;
 import androidx.annotation.NonNull;
 import androidx.recyclerview.widget.GridLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.bumptech.glide.Glide;
 import com.example.fimae.R;
+import com.example.fimae.activities.DetailPostActivity;
 import com.example.fimae.activities.MediaSliderActivity;
 import com.example.fimae.activities.PostContentActivity;
 import com.example.fimae.models.Message;
@@ -33,6 +40,7 @@ public class MessageAdapter extends  FirestoreAdapter{
     final int SENDER_VIEW_HOLDER = 0;
     final int RECEIVER_VIEW_HOLDER = 1;
     final int SENDER_POST_VIEW_HOLDER = 3;
+    final int RECEIVER_POST_VIEW_HOLDER =4;
     public MessageAdapter(Query query, Context context) {
         super(query);
         this.context = context;
@@ -43,7 +51,12 @@ public class MessageAdapter extends  FirestoreAdapter{
 
     public int getMessageType(int position){
         Message message = getSnapshot(position).toObject(Message.class);
-        if(message.getType() == Message.POST_LINK){
+        Log.i("Tag", message.getType());
+        String x = message.getType();
+        if(message.getType().equals(Message.POST_LINK)){
+            if(!Objects.equals(message.getIdSender(), FirebaseAuth.getInstance().getUid())){
+                return RECEIVER_POST_VIEW_HOLDER;
+            }
             return  SENDER_POST_VIEW_HOLDER;
         }
         return  (Objects.equals(message.getIdSender(), FirebaseAuth.getInstance().getUid())) ? SENDER_VIEW_HOLDER : RECEIVER_VIEW_HOLDER;
@@ -60,8 +73,12 @@ public class MessageAdapter extends  FirestoreAdapter{
             View view = LayoutInflater.from(context).inflate(R.layout.receiver_message, parent, false);
             return new IncomingViewholder(view);
         }
-        else {
+        else if(type == RECEIVER_POST_VIEW_HOLDER) {
             View view = LayoutInflater.from(context).inflate(R.layout.post_link, parent, false);
+            return new PostLinkViewHolder(view);
+        }
+        else {
+            View view = LayoutInflater.from(context).inflate(R.layout.post_link_sender, parent, false);
             return new PostLinkViewHolder(view);
 
         }
@@ -135,12 +152,17 @@ public class MessageAdapter extends  FirestoreAdapter{
             PostRepository.getInstance().getPostById(message.getContent().toString()).addOnSuccessListener(post -> {
                 if(post.getPostImages() != null && !post.getPostImages().isEmpty()){
                     Glide.with(context).load(post.getPostImages().get(0)).into(postLinkViewHolder.imageView);
-                    String content = message.getContent().toString();
-                    if(content.length() > 20){
-                       content = content.substring(20);
-                    }
-                    postLinkViewHolder.url.setText(content);
                 }
+                else{
+                    postLinkViewHolder.imageView.setVisibility(View.GONE);
+                }
+                String content  = message.getIdSender() + "/" + message.getContent().toString();
+                postLinkViewHolder.url.setText(content);
+            });
+            postLinkViewHolder.itemView.setOnClickListener(view -> {
+                Intent intent = new Intent(context, DetailPostActivity.class);
+                intent.putExtra("id", message.getContent().toString());
+                context.startActivity(intent);
             });
         }
     }
@@ -177,7 +199,7 @@ public class MessageAdapter extends  FirestoreAdapter{
         }
     }
     public static class PostLinkViewHolder extends RecyclerView.ViewHolder{
-        SquareImageView imageView;
+        ImageView imageView;
         TextView url;
         public PostLinkViewHolder(@NonNull View itemView){
             super(itemView);

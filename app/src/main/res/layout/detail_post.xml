@@ -1,354 +1,366 @@
 <layout xmlns:android="http://schemas.android.com/apk/res/android">
-    <RelativeLayout
-        xmlns:app="http://schemas.android.com/apk/res-auto"
-        xmlns:tools="http://schemas.android.com/tools"
+    <FrameLayout
         android:layout_width="match_parent"
-        android:layout_marginBottom="5dp"
-        android:layout_height="match_parent"
-        tools:context=".activities.DetailPostActivity"
-        >
-        <com.google.android.material.appbar.AppBarLayout
-            android:id="@+id/appbar"
+        android:layout_height="match_parent">
+        <RelativeLayout
+            xmlns:app="http://schemas.android.com/apk/res-auto"
+            xmlns:tools="http://schemas.android.com/tools"
             android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            app:elevation="0dp"
-            android:theme="@style/Theme.Fimae.NoActionBar"
-            app:layout_constraintTop_toTopOf="parent"
-            app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintEnd_toEndOf="parent">
-            <androidx.appcompat.widget.Toolbar
-                android:id="@+id/toolbar"
-                android:layout_width="match_parent"
-                android:layout_height="?attr/actionBarSize"
-                android:background="@color/text_white"
-                app:popupTheme="@style/Theme.Fimae.PopupOverlay"
-                app:navigationIcon="?attr/homeAsUpIndicator"
-                app:titleTextColor="@color/text_white">
-                <TextView
-                    android:id="@+id/toolbar_title"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:layout_gravity="center"
-                    android:text="Chi tiết"
-                    style="@style/bold_20"
-                    android:textColor="@color/text_primary"
-                    />
-            </androidx.appcompat.widget.Toolbar>
-        </com.google.android.material.appbar.AppBarLayout>
-
-        <androidx.core.widget.NestedScrollView
-            android:layout_marginTop="5dp"
-            android:id="@+id/detailPost"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:layout_above="@+id/bottom"
-            android:layout_below="@+id/appbar"
+            android:layout_marginBottom="5dp"
+            android:layout_height="match_parent"
+            tools:context=".activities.DetailPostActivity"
+            android:id="@+id/content_layout"
             >
-            <androidx.constraintlayout.widget.ConstraintLayout
+            <com.google.android.material.appbar.AppBarLayout
+                android:id="@+id/appbar"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:paddingBottom="40dp"
+                app:elevation="0dp"
+                android:theme="@style/Theme.Fimae.NoActionBar"
+                app:layout_constraintTop_toTopOf="parent"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintEnd_toEndOf="parent">
+                <androidx.appcompat.widget.Toolbar
+                    android:id="@+id/toolbar"
+                    android:layout_width="match_parent"
+                    android:layout_height="?attr/actionBarSize"
+                    android:background="@color/text_white"
+                    app:popupTheme="@style/Theme.Fimae.PopupOverlay"
+                    app:navigationIcon="?attr/homeAsUpIndicator"
+                    app:titleTextColor="@color/text_white">
+                    <TextView
+                        android:id="@+id/toolbar_title"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_gravity="center"
+                        android:text="Chi tiết"
+                        style="@style/bold_20"
+                        android:textColor="@color/text_primary"
+                        />
+                </androidx.appcompat.widget.Toolbar>
+            </com.google.android.material.appbar.AppBarLayout>
+
+            <androidx.core.widget.NestedScrollView
+                android:layout_marginTop="5dp"
+                android:id="@+id/detailPost"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_above="@+id/bottom"
+                android:layout_below="@+id/appbar"
                 >
                 <androidx.constraintlayout.widget.ConstraintLayout
-                    android:id="@+id/layout_post"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    app:layout_constraintStart_toStartOf="parent"
-                    app:layout_constraintTop_toTopOf="parent"
-                    android:layout_marginStart="10dp"
-                    android:layout_marginEnd="10dp"
+                    android:paddingBottom="40dp"
                     >
-                    <de.hdodenhof.circleimageview.CircleImageView
-                        android:id="@+id/image_avatar"
-                        android:layout_width="44dp"
-                        android:layout_height="44dp"
-                        android:src="@drawable/ic_default_avatar"
+                    <androidx.constraintlayout.widget.ConstraintLayout
+                        android:id="@+id/layout_post"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
                         app:layout_constraintStart_toStartOf="parent"
                         app:layout_constraintTop_toTopOf="parent"
-                        />
-                    <TextView
-                        android:id="@+id/user_name"
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
                         android:layout_marginStart="10dp"
-                        style="@style/bold_14"
-                        android:textColor="#000000"
-                        android:text="Minh Phan"
-                        app:layout_constraintStart_toEndOf="@+id/image_avatar"
-                        app:layout_constraintTop_toTopOf="@+id/image_avatar" />
-                    <LinearLayout
-                        android:id="@+id/gender_age_icon"
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:background="@drawable/shape_gender_border_blue"
-                        android:gravity="center"
-                        android:paddingVertical="2.5dp"
-                        android:paddingHorizontal="5dp"
-                        android:layout_marginStart="10dp"
-                        app:layout_constraintLeft_toRightOf="@+id/user_name"
-                        app:layout_constraintTop_toTopOf="@id/user_name"
+                        android:layout_marginEnd="10dp"
                         >
-                        <ImageView
-                            android:id="@+id/item_user_ic_gender"
-                            android:layout_width="10dp"
-                            android:layout_height="10dp"
-                            android:src="@drawable/ic_male"
-                            android:layout_marginEnd="2dp"
-                            app:tint="@color/text_white"
-                            android:contentDescription="Gender Icon"/>
-                        <TextView
-                            android:id="@+id/age_text_view"
-                            android:layout_width="wrap_content"
-                            android:layout_height="wrap_content"
-                            android:text="31"
-                            android:textSize="10sp"
-                            android:textColor="@color/text_white" />
-                    </LinearLayout>
-
-                    <TextView
-                        android:id="@+id/active_time"
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:layout_marginLeft="10dp"
-                        android:text="1 phút trước"
-                        android:textSize="12sp"
-                        app:layout_constraintStart_toEndOf="@+id/image_avatar"
-                        android:layout_marginBottom="10dp"
-                        app:layout_constraintTop_toBottomOf="@+id/user_name"  />
-                    <LinearLayout
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:orientation="horizontal"
-                        android:gravity="center_vertical"
-                        app:layout_constraintBottom_toBottomOf="@+id/active_time"
-                        app:layout_constraintEnd_toEndOf="parent"
-                        app:layout_constraintHorizontal_bias="0.926"
-                        app:layout_constraintTop_toTopOf="@+id/user_name"
-                        >
-                        <TextView
-                            android:id="@+id/follow"
-                            android:visibility="visible"
-                            android:layout_width="wrap_content"
-                            android:layout_height="wrap_content"
-                            android:background="@drawable/shape_retangle_border_radius_purple"
-                            android:text="Theo dõi"
-                            android:layout_marginEnd="5dp"
-                            android:textColor="@color/primary_2"
-                            android:textSize="12sp"
-                            android:paddingHorizontal="10dp"
-                            android:paddingVertical="2dp"/>
-                        <TextView
-                            android:id="@+id/edit"
-                            android:layout_marginEnd="5dp"
-                            android:layout_width="wrap_content"
-                            android:layout_height="wrap_content"
-                            android:background="@drawable/cancel_button_background"
-                            android:text="Trò chuyện"
-                            android:visibility="gone"
-                            android:textColor="@color/primary_2"
-                            android:textSize="12sp"
-                            android:paddingHorizontal="10dp"
-                            android:paddingVertical="2dp"/>
-                        <ImageView
-                            android:id="@+id/ic_more"
-                            android:layout_width="10dp"
-                            android:layout_height="10dp"
-                            android:src="@drawable/ic_more"
+                        <de.hdodenhof.circleimageview.CircleImageView
+                            android:id="@+id/image_avatar"
+                            android:layout_width="44dp"
+                            android:layout_height="44dp"
+                            android:src="@drawable/ic_default_avatar"
+                            app:layout_constraintStart_toStartOf="parent"
+                            app:layout_constraintTop_toTopOf="parent"
                             />
-                    </LinearLayout>
+                        <TextView
+                            android:id="@+id/user_name"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:layout_marginStart="10dp"
+                            style="@style/bold_14"
+                            android:textColor="#000000"
+                            android:text="Minh Phan"
+                            app:layout_constraintStart_toEndOf="@+id/image_avatar"
+                            app:layout_constraintTop_toTopOf="@+id/image_avatar" />
+                        <LinearLayout
+                            android:id="@+id/gender_age_icon"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:background="@drawable/shape_gender_border_blue"
+                            android:gravity="center"
+                            android:paddingVertical="2.5dp"
+                            android:paddingHorizontal="5dp"
+                            android:layout_marginStart="10dp"
+                            app:layout_constraintLeft_toRightOf="@+id/user_name"
+                            app:layout_constraintTop_toTopOf="@id/user_name"
+                            >
+                            <ImageView
+                                android:id="@+id/item_user_ic_gender"
+                                android:layout_width="10dp"
+                                android:layout_height="10dp"
+                                android:src="@drawable/ic_male"
+                                android:layout_marginEnd="2dp"
+                                app:tint="@color/text_white"
+                                android:contentDescription="Gender Icon"/>
+                            <TextView
+                                android:id="@+id/age_text_view"
+                                android:layout_width="wrap_content"
+                                android:layout_height="wrap_content"
+                                android:text="31"
+                                android:textSize="10sp"
+                                android:textColor="@color/text_white" />
+                        </LinearLayout>
 
-                    <TextView
-                        android:id="@+id/content"
-                        android:layout_width="0dp"
-                        android:layout_height="wrap_content"
-                        android:text="Nội dung bài đăng"
-                        app:layout_constraintEnd_toEndOf="parent"
-                        app:layout_constraintStart_toStartOf="@+id/active_time"
-                        app:layout_constraintTop_toBottomOf="@+id/active_time"
-                        tools:layout_marginTop="10dp" />
+                        <TextView
+                            android:id="@+id/active_time"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:layout_marginLeft="10dp"
+                            android:text="1 phút trước"
+                            android:textSize="12sp"
+                            app:layout_constraintStart_toEndOf="@+id/image_avatar"
+                            android:layout_marginBottom="10dp"
+                            app:layout_constraintTop_toBottomOf="@+id/user_name"  />
+                        <LinearLayout
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:orientation="horizontal"
+                            android:gravity="center_vertical"
+                            app:layout_constraintBottom_toBottomOf="@+id/active_time"
+                            app:layout_constraintEnd_toEndOf="parent"
+                            app:layout_constraintHorizontal_bias="0.926"
+                            app:layout_constraintTop_toTopOf="@+id/user_name"
+                            >
+                            <TextView
+                                android:id="@+id/follow"
+                                android:visibility="visible"
+                                android:layout_width="wrap_content"
+                                android:layout_height="wrap_content"
+                                android:background="@drawable/shape_retangle_border_radius_purple"
+                                android:text="Theo dõi"
+                                android:layout_marginEnd="5dp"
+                                android:textColor="@color/primary_2"
+                                android:textSize="12sp"
+                                android:paddingHorizontal="10dp"
+                                android:paddingVertical="2dp"/>
+                            <TextView
+                                android:id="@+id/edit"
+                                android:layout_marginEnd="5dp"
+                                android:layout_width="wrap_content"
+                                android:layout_height="wrap_content"
+                                android:background="@drawable/cancel_button_background"
+                                android:text="Trò chuyện"
+                                android:visibility="gone"
+                                android:textColor="@color/primary_2"
+                                android:textSize="12sp"
+                                android:paddingHorizontal="10dp"
+                                android:paddingVertical="2dp"/>
+                            <ImageView
+                                android:id="@+id/ic_more"
+                                android:layout_width="10dp"
+                                android:layout_height="10dp"
+                                android:src="@drawable/ic_more"
+                                />
+                        </LinearLayout>
+
+                        <TextView
+                            android:id="@+id/content"
+                            android:layout_width="0dp"
+                            android:layout_height="wrap_content"
+                            android:text="Nội dung bài đăng"
+                            app:layout_constraintEnd_toEndOf="parent"
+                            app:layout_constraintStart_toStartOf="@+id/active_time"
+                            app:layout_constraintTop_toBottomOf="@+id/active_time"
+                            tools:layout_marginTop="10dp" />
+                        <androidx.recyclerview.widget.RecyclerView
+                            android:id="@+id/image_list"
+                            android:layout_marginTop="10dp"
+                            android:layout_width="0dp"
+                            android:layout_height="wrap_content"
+                            app:layout_constraintTop_toBottomOf="@+id/content"
+                            app:layout_constraintLeft_toLeftOf="@id/content"
+                            android:layout_marginRight="30dp"
+                            app:layout_constraintRight_toRightOf="parent"
+                            />
+                        <LinearLayout
+                            android:id="@+id/layout_icon"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:orientation="horizontal"
+                            app:layout_constraintTop_toBottomOf="@id/image_list"
+                            app:layout_constraintRight_toRightOf="parent"
+                            android:gravity="center_vertical"
+                            android:layout_marginTop="10dp"
+                            >
+                            <ImageView
+                                android:id="@+id/ic_like"
+                                android:layout_width="20dp"
+                                android:layout_height="20dp"
+                                android:src="@drawable/ic_heart_gray"
+                                />
+                            <TextView
+                                android:id="@+id/like_number"
+                                android:layout_width="wrap_content"
+                                android:layout_height="wrap_content"
+                                android:textColor="@color/black"
+                                android:text="20"
+                                android:textSize="12sp"
+                                android:layout_marginStart="10dp"
+                                />
+                            <ImageView
+                                android:id="@+id/ic_comment"
+                                android:layout_width="20dp"
+                                android:layout_height="20dp"
+                                android:src="@drawable/ic_comment"
+                                android:layout_marginStart="20dp"
+                                />
+                            <TextView
+                                android:id="@+id/comment_number"
+                                android:layout_width="wrap_content"
+                                android:layout_height="wrap_content"
+                                android:textColor="@color/black"
+                                android:text="20"
+                                android:textSize="12sp"
+                                android:layout_marginStart="10dp"
+                                />
+                            <ImageView
+                                android:id="@+id/ic_share"
+                                android:layout_width="20dp"
+                                android:layout_height="20dp"
+                                android:src="@drawable/ic_share"
+                                android:layout_marginStart="20dp"
+                                />
+                        </LinearLayout>
+                    </androidx.constraintlayout.widget.ConstraintLayout>
+
+                    <ImageView
+                        android:layout_width="match_parent"
+                        android:layout_height="0.5dp"
+                        android:background="@drawable/divided_shape"
+                        app:layout_constraintTop_toBottomOf="@id/layout_post"
+                        android:layout_marginBottom="6dp"
+                        android:layout_marginTop="10dp"
+                        app:layout_constraintLeft_toLeftOf="parent"
+                        />
+
+                    <LinearLayout
+                        android:layout_marginTop="20dp"
+                        android:id="@+id/comment_layout"
+                        app:layout_constraintLeft_toLeftOf="parent"
+                        app:layout_constraintTop_toBottomOf="@id/layout_post"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content">
+                        <TextView
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:layout_marginLeft="14dp"
+                            style="@style/bold_14"
+                            android:textColor="@color/text_primary"
+                            android:paddingRight="0dp"
+                            android:text="Bình luận:" />
+                        <TextView
+                            android:id="@+id/numberOfComment"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:layout_marginLeft="10dp"
+                            style="@style/bold_14"
+                            android:textColor="@color/text_primary"
+                            android:text="10" />
+                        <TextView
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:layout_marginLeft="14dp"
+                            style="@style/bold_14"
+                            android:textColor="@color/text_secondary"
+                            android:paddingRight="0dp"
+                            android:text="Lượt thích và cảm xúc:" />
+                        <TextView
+                            android:id="@+id/numberofLike"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:layout_marginLeft="10dp"
+                            style="@style/bold_14"
+                            android:textColor="@color/text_secondary"
+                            android:text="10" />
+                    </LinearLayout>
                     <androidx.recyclerview.widget.RecyclerView
-                        android:id="@+id/image_list"
-                        android:layout_marginTop="10dp"
-                        android:layout_width="0dp"
+                        android:id="@+id/comment_recycler"
+                        android:layout_width="match_parent"
                         android:layout_height="wrap_content"
-                        app:layout_constraintTop_toBottomOf="@+id/content"
-                        app:layout_constraintLeft_toLeftOf="@id/content"
-                        android:layout_marginRight="30dp"
+                        android:layout_marginTop="10dp"
                         app:layout_constraintRight_toRightOf="parent"
+                        app:layout_constraintTop_toBottomOf="@id/comment_layout"
                         />
-                    <LinearLayout
-                        android:id="@+id/layout_icon"
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:orientation="horizontal"
-                        app:layout_constraintTop_toBottomOf="@id/image_list"
-                        app:layout_constraintRight_toRightOf="parent"
-                        android:gravity="center_vertical"
-                        android:layout_marginTop="10dp"
-                        >
-                        <ImageView
-                            android:id="@+id/ic_like"
-                            android:layout_width="20dp"
-                            android:layout_height="20dp"
-                            android:src="@drawable/ic_heart_gray"
-                            />
-                        <TextView
-                            android:id="@+id/like_number"
-                            android:layout_width="wrap_content"
-                            android:layout_height="wrap_content"
-                            android:textColor="@color/black"
-                            android:text="20"
-                            android:textSize="12sp"
-                            android:layout_marginStart="10dp"
-                            />
-                        <ImageView
-                            android:id="@+id/ic_comment"
-                            android:layout_width="20dp"
-                            android:layout_height="20dp"
-                            android:src="@drawable/ic_comment"
-                            android:layout_marginStart="20dp"
-                            />
-                        <TextView
-                            android:id="@+id/comment_number"
-                            android:layout_width="wrap_content"
-                            android:layout_height="wrap_content"
-                            android:textColor="@color/black"
-                            android:text="20"
-                            android:textSize="12sp"
-                            android:layout_marginStart="10dp"
-                            />
-                        <ImageView
-                            android:id="@+id/ic_share"
-                            android:layout_width="20dp"
-                            android:layout_height="20dp"
-                            android:src="@drawable/ic_share"
-                            android:layout_marginStart="20dp"
-                            />
-                    </LinearLayout>
                 </androidx.constraintlayout.widget.ConstraintLayout>
 
+            </androidx.core.widget.NestedScrollView>
+
+            <ImageView
+                android:layout_width="match_parent"
+                android:layout_height="0.5dp"
+                android:background="@drawable/divided_shape"
+                android:layout_marginBottom="6dp"
+                android:layout_above="@id/bottom"
+                />
+
+            <androidx.constraintlayout.widget.ConstraintLayout
+                android:id="@+id/bottom"
+                android:layout_marginBottom="0dp"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:paddingBottom="0dp"
+                android:layout_alignParentBottom="true"
+
+                >
+
                 <ImageView
-                    android:layout_width="match_parent"
-                    android:layout_height="0.5dp"
-                    android:background="@drawable/divided_shape"
-                    app:layout_constraintTop_toBottomOf="@id/layout_post"
-                    android:layout_marginBottom="6dp"
-                    android:layout_marginTop="10dp"
+                    android:id="@+id/icon_emoji"
+                    android:layout_width="25dp"
+                    android:layout_height="25dp"
+                    android:layout_marginLeft="14dp"
+                    android:src="@drawable/smile"
                     app:layout_constraintLeft_toLeftOf="parent"
+                    app:layout_constraintBottom_toBottomOf="parent"
                     />
-
-                <LinearLayout
-                    android:layout_marginTop="20dp"
-                    android:id="@+id/comment_layout"
-                    app:layout_constraintLeft_toLeftOf="parent"
-                    app:layout_constraintTop_toBottomOf="@id/layout_post"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content">
-                    <TextView
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:layout_marginLeft="14dp"
-                        style="@style/bold_14"
-                        android:textColor="@color/text_primary"
-                        android:paddingRight="0dp"
-                        android:text="Bình luận:" />
-                    <TextView
-                        android:id="@+id/numberOfComment"
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:layout_marginLeft="10dp"
-                        style="@style/bold_14"
-                        android:textColor="@color/text_primary"
-                        android:text="10" />
-                    <TextView
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:layout_marginLeft="14dp"
-                        style="@style/bold_14"
-                        android:textColor="@color/text_secondary"
-                        android:paddingRight="0dp"
-                        android:text="Lượt thích và cảm xúc:" />
-                    <TextView
-                        android:id="@+id/numberofLike"
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:layout_marginLeft="10dp"
-                        style="@style/bold_14"
-                        android:textColor="@color/text_secondary"
-                        android:text="10" />
-                </LinearLayout>
-                <androidx.recyclerview.widget.RecyclerView
-                    android:id="@+id/comment_recycler"
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:layout_marginTop="10dp"
+                <ImageView
+                    android:id="@+id/icon_image"
+                    android:layout_width="25dp"
+                    android:layout_height="25dp"
+                    android:layout_marginLeft="17dp"
+                    android:src="@drawable/ic_aplus"
+                    app:layout_constraintTop_toTopOf="@id/icon_emoji"
+                    app:layout_constraintLeft_toRightOf="@id/icon_emoji"
+                    app:layout_constraintBottom_toBottomOf="parent"
+                    />
+                <EditText
+                    android:id="@+id/add_comment"
+                    android:layout_width="210dp"
+                    android:layout_height="40dp"
+                    android:hint="Để lại một bình luận"
+                    android:paddingHorizontal="20dp"
+                    android:layout_marginLeft="20dp"
+                    android:textColor="@color/text_secondary"
+                    style="@style/medium_16"
+                    android:gravity="center"
+                    app:layout_constraintBottom_toBottomOf="@id/icon_emoji"
+                    app:layout_constraintLeft_toRightOf="@id/icon_image"
+                    android:background="@drawable/add_comment_background"
+                    />
+                <ImageView
+                    android:id="@+id/post"
+                    android:layout_width="65dp"
+                    android:layout_height="40dp"
+                    android:scaleType="fitStart"
+                    android:layout_marginEnd="10dp"
+                    app:layout_constraintBottom_toBottomOf="@id/icon_emoji"
                     app:layout_constraintRight_toRightOf="parent"
-                    app:layout_constraintTop_toBottomOf="@id/comment_layout"
-                    />
+                    android:background="@drawable/cantpost" />
             </androidx.constraintlayout.widget.ConstraintLayout>
-
-        </androidx.core.widget.NestedScrollView>
-
-        <ImageView
-            android:layout_width="match_parent"
-            android:layout_height="0.5dp"
-            android:background="@drawable/divided_shape"
-            android:layout_marginBottom="6dp"
-            android:layout_above="@id/bottom"
-            />
-
-        <androidx.constraintlayout.widget.ConstraintLayout
-            android:id="@+id/bottom"
-            android:layout_marginBottom="0dp"
-            android:layout_width="match_parent"
+        </RelativeLayout>
+        <ProgressBar
+            android:id="@+id/progressBar"
+            android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:paddingBottom="0dp"
-            android:layout_alignParentBottom="true"
+            android:layout_gravity="center"
+            android:visibility="gone" /> <!-- Initially set to gone -->
+    </FrameLayout>
 
-            >
-
-            <ImageView
-                android:id="@+id/icon_emoji"
-                android:layout_width="25dp"
-                android:layout_height="25dp"
-                android:layout_marginLeft="14dp"
-                android:src="@drawable/smile"
-                app:layout_constraintLeft_toLeftOf="parent"
-                app:layout_constraintBottom_toBottomOf="parent"
-                />
-            <ImageView
-                android:id="@+id/icon_image"
-                android:layout_width="25dp"
-                android:layout_height="25dp"
-                android:layout_marginLeft="17dp"
-                android:src="@drawable/ic_aplus"
-                app:layout_constraintTop_toTopOf="@id/icon_emoji"
-                app:layout_constraintLeft_toRightOf="@id/icon_emoji"
-                app:layout_constraintBottom_toBottomOf="parent"
-                />
-            <EditText
-                android:id="@+id/add_comment"
-                android:layout_width="210dp"
-                android:layout_height="40dp"
-                android:hint="Để lại một bình luận"
-                android:paddingHorizontal="20dp"
-                android:layout_marginLeft="20dp"
-                android:textColor="@color/text_secondary"
-                style="@style/medium_16"
-                android:gravity="center"
-                app:layout_constraintBottom_toBottomOf="@id/icon_emoji"
-                app:layout_constraintLeft_toRightOf="@id/icon_image"
-                android:background="@drawable/add_comment_background"
-                />
-            <ImageView
-                android:id="@+id/post"
-                android:layout_width="65dp"
-                android:layout_height="40dp"
-                android:scaleType="fitStart"
-                android:layout_marginEnd="10dp"
-                app:layout_constraintBottom_toBottomOf="@id/icon_emoji"
-                app:layout_constraintRight_toRightOf="parent"
-                android:background="@drawable/cantpost" />
-        </androidx.constraintlayout.widget.ConstraintLayout>
-    </RelativeLayout>
 </layout>

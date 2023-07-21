@@ -1,6 +1,7 @@
 package com.example.fimae.adapters;
 
 import android.content.Context;
+import android.content.Intent;
 import android.net.Uri;
 import android.util.Log;
 import android.view.LayoutInflater;
@@ -15,14 +16,18 @@ import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.example.fimae.R;
+import com.example.fimae.activities.DetailPostActivity;
 import com.example.fimae.databinding.ItemPostBinding;
+import com.example.fimae.models.Follows;
 import com.example.fimae.models.Post;
 import com.example.fimae.models.Seed;
 import com.example.fimae.models.Fimaers;
 import com.example.fimae.repository.FollowRepository;
 import com.example.fimae.repository.PostRepository;
 import com.example.fimae.service.TimerService;
+import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.OnSuccessListener;
+import com.google.android.gms.tasks.Task;
 import com.google.firebase.Timestamp;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.firestore.CollectionReference;
@@ -56,6 +61,9 @@ public class PostAdapter extends RecyclerView.Adapter<PostAdapter.ViewHolder> {
     private FollowRepository followRepository = FollowRepository.getInstance();
     public interface IClickCardUserListener {
         void onClickUser(Post post);
+    }
+    public interface IShareCardUserListener{
+        void onClick(Post post);
     }
 
     public interface CallBack<T> {
@@ -141,15 +149,29 @@ public class PostAdapter extends RecyclerView.Adapter<PostAdapter.ViewHolder> {
                 currentPost.setPostImages(updatePost.getPostImages());
                 adapter.notifyDataSetChanged();
             }
-            followRepository.isFollowing(currentPost.getPublisher()).addOnSuccessListener(new OnSuccessListener<Boolean>() {
-                @Override
-                public void onSuccess(Boolean aBoolean) {
-                    if(aBoolean){
-                        binding.follow.setVisibility(View.GONE);
-                        binding.chat.setVisibility(View.VISIBLE);
+            if(currentPost.getPublisher().equals(FirebaseAuth.getInstance().getUid())){
+                binding.follow.setVisibility(View.GONE);
+            }
+            else{
+                followRepository.followRef.document(FirebaseAuth.getInstance().getUid()+"_"+currentPost.getPublisher()).addSnapshotListener(new EventListener<DocumentSnapshot>() {
+                    @Override
+                    public void onEvent(@Nullable DocumentSnapshot value, @Nullable FirebaseFirestoreException error) {
+                        if(error != null ){
+                            return;
+                        }
+                        if(value != null && value.exists()){
+                            binding.follow.setVisibility(View.GONE);
+                            binding.chat.setVisibility(View.VISIBLE);
+                        }
+                        else{
+                            binding.follow.setVisibility(View.VISIBLE);
+                            binding.chat.setVisibility(View.GONE);
+                        }
                     }
-                }
-            });
+                });
+            }
+
+
             binding.follow.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View view) {
@@ -185,6 +207,15 @@ public class PostAdapter extends RecyclerView.Adapter<PostAdapter.ViewHolder> {
                     );
                 });
             }
+            binding.icShare.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View view) {
+                    Intent intent = new Intent(mContext, DetailPostActivity.class);
+                    intent.putExtra("id", currentPost.getPostId());
+                    intent.putExtra("share",true);
+                    mContext.startActivity(intent);
+                }
+            });
         });
         //go back
         //like
