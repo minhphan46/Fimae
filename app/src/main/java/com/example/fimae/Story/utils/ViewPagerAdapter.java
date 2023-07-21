@@ -7,6 +7,8 @@ import androidx.fragment.app.Fragment;
 import androidx.fragment.app.FragmentActivity;
 import androidx.viewpager2.adapter.FragmentStateAdapter;
 
+import com.example.fimae.Story.callback.StoryCallbacks;
+import com.example.fimae.Story.progress.StoriesProgressView;
 import com.example.fimae.fragments.StoryItemFragment;
 import com.example.fimae.models.story.Story;
 
@@ -15,15 +17,17 @@ import java.util.ArrayList;
 public class ViewPagerAdapter extends FragmentStateAdapter {
         private ArrayList<Story> stories;
     private Context context;
-    public ViewPagerAdapter(@NonNull FragmentActivity fragmentActivity, ArrayList<Story> stories, Context context) {
+    private StoriesProgressView.StoriesListener storiesListener;
+    public ViewPagerAdapter(@NonNull FragmentActivity fragmentActivity, ArrayList<Story> stories, Context context, StoriesProgressView.StoriesListener storiesListener) {
         super(fragmentActivity);
         this.stories = stories;
         context = context;
+        this.storiesListener = storiesListener;
     }
     @NonNull
     @Override
     public Fragment createFragment(int position) {
-        return new StoryItemFragment(stories.get(position), position, stories.size());
+        return new StoryItemFragment(stories.get(position), position, stories.size(), storiesListener);
     }
 
     @Override

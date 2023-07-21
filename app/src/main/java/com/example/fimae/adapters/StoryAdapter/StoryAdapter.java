@@ -1,4 +1,4 @@
-package com.example.fimae.adapters;
+package com.example.fimae.adapters.StoryAdapter;
 
 import android.annotation.SuppressLint;
 import android.util.Log;
@@ -12,27 +12,63 @@ import androidx.cardview.widget.CardView;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.bumptech.glide.Glide;
-import com.bumptech.glide.load.engine.DiskCacheStrategy;
 import com.example.fimae.R;
+import com.example.fimae.adapters.FirestoreAdapter;
 import com.example.fimae.models.story.Story;
+import com.google.firebase.firestore.DocumentChange;
+import com.google.firebase.firestore.DocumentSnapshot;
+import com.google.firebase.firestore.Query;
 import com.google.firebase.storage.FirebaseStorage;
-import com.squareup.picasso.Picasso;
 
 import java.util.ArrayList;
 
 import de.hdodenhof.circleimageview.CircleImageView;
 
-public class StoryAdapter extends RecyclerView.Adapter<StoryAdapter.StoryViewHolder> {
+public class StoryAdapter extends FirestoreAdapter<StoryAdapter.StoryViewHolder> {
+    public StoryAdapter(Query query) {
+        super(query);
+    }
 
     public interface  StoryListener {
         void addStoryClicked();
-        void onStoryClicked(int position);
+        void onStoryClicked(StoryAdapterItem storyAdapterItem);
     }
-    ArrayList<Story> stories = Story.getFakeData();
+//    ArrayList<Story> stories = Story.getFakeData();
     private  StoryListener storyListener;
     public void setStoryListener(StoryListener storyListener){
         this.storyListener = storyListener;
     }
+
+    ArrayList< StoryAdapterItem> storyAdapterItems;
+    @Override
+    public void OnSuccessQueryListener(ArrayList<DocumentSnapshot> queryDocumentSnapshots) {
+
+    }
+
+    @Override
+    public void OnSuccessQueryListener(ArrayList<DocumentSnapshot> queryDocumentSnapshots, ArrayList<DocumentChange> documentChanges) {
+        if(storyAdapterItems == null || storyAdapterItems.size() == 0){
+            storyAdapterItems = new ArrayList<>();
+            for(DocumentSnapshot documentSnapshot : queryDocumentSnapshots){
+                Story story = documentSnapshot.toObject(Story.class);
+                boolean isFound = false;
+                for (StoryAdapterItem storyAdapterItem : storyAdapterItems) {
+                    if(storyAdapterItem.getUid().equals(story.getUid())){
+                        storyAdapterItem.getStories().add(story);
+                        isFound = true;
+                        break;
+                    }
+                }
+                if (!isFound){
+                    StoryAdapterItem storyAdapterItem = new StoryAdapterItem(story.getUid());
+                    storyAdapterItem.getStories().add(story);
+                    storyAdapterItems.add(storyAdapterItem);
+                }
+            }
+        }
+        notifyDataSetChanged();
+    }
+
     @Override
     public int getItemViewType(int position) {
         return position;
@@ -55,7 +91,7 @@ public class StoryAdapter extends RecyclerView.Adapter<StoryAdapter.StoryViewHol
         if (position != 0){
             int storyPosition = position - 1;
             // Get the data at the specified position
-            Story story = stories.get(storyPosition);
+            Story story = storyAdapterItems.get(storyPosition).getStories().get(0);
 //        Picasso.get().load(story.getUrl()).placeholder(R.drawable.ic_default_avatar).into(holder.storyImage);
             Glide.with(holder.itemView)
                     .load(story.getUrl())
@@ -70,7 +106,7 @@ public class StoryAdapter extends RecyclerView.Adapter<StoryAdapter.StoryViewHol
                     if(position == 0){
                         storyListener.addStoryClicked();
                     }else{
-                        storyListener.onStoryClicked(position - 1);
+                        storyListener.onStoryClicked(storyAdapterItems.get(position - 1));
                     }
                 }
             }
@@ -80,7 +116,10 @@ public class StoryAdapter extends RecyclerView.Adapter<StoryAdapter.StoryViewHol
 
     @Override
     public int getItemCount() {
-        return stories.size() + 1;
+        if(storyAdapterItems == null){
+            return 1;
+        }
+        return storyAdapterItems.size() + 1;
     }
 
     public class StoryViewHolder extends RecyclerView.ViewHolder {

@@ -93,4 +93,26 @@ public class FileUtils {
         String path = uri.getPath();
         return path.substring(path.lastIndexOf("/") + 1);
     }
+    public static String getFilePathFromContentUri(Context context, Uri contentUri) {
+        String[] projection = {MediaStore.Images.Media.DATA};
+        Cursor cursor = null;
+
+        try {
+            ContentResolver contentResolver = context.getContentResolver();
+            cursor = contentResolver.query(contentUri, projection, null, null, null);
+
+            if (cursor != null && cursor.moveToFirst()) {
+                int columnIndex = cursor.getColumnIndexOrThrow(MediaStore.Images.Media.DATA);
+                return cursor.getString(columnIndex);
+            }
+        } catch (Exception e) {
+            // Handle the exception, if any
+        } finally {
+            if (cursor != null) {
+                cursor.close();
+            }
+        }
+
+        return null;
+    }
 }

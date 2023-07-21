@@ -130,7 +130,7 @@ public class StoryView extends Fragment implements StoriesProgressView.StoriesLi
 //        storiesProgressView.setStoriesCount(storiesList.size());
 //        storiesProgressView.setStoryDuration(duration);
         updateHeading();
-        adapter = new ViewPagerAdapter(getActivity(),storiesList , getContext());
+        adapter = new ViewPagerAdapter(getActivity(),storiesList , getContext(), this);
         mViewPager.setAdapter(adapter);
     }
 

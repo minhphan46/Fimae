@@ -15,7 +15,6 @@ import com.example.fimae.R;
 import com.example.fimae.activities.ShortVideoActivity;
 import com.example.fimae.adapters.ShortsReviewAdapter;
 import com.example.fimae.adapters.SpacingItemDecoration;
-import com.example.fimae.adapters.StoryAdapter;
 
 /**
  * A simple {@link Fragment} subclass.

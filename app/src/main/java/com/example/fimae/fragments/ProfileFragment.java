@@ -32,11 +32,8 @@ import com.example.fimae.activities.SettingActivity;
 import com.example.fimae.activities.ShortVideoActivity;
 import com.example.fimae.adapters.GridAutoFitLayoutManager;
 import com.example.fimae.adapters.PostAdapter;
-import com.example.fimae.adapters.ProfileViewPagerApdater;
 import com.example.fimae.adapters.ShortsReviewAdapter;
 import com.example.fimae.adapters.SpacingItemDecoration;
-import com.example.fimae.adapters.StoryAdapter;
-import com.example.fimae.adapters.UserAdapter;
 import com.example.fimae.bottomdialogs.AvatarBottomSheetFragment;
 import com.example.fimae.databinding.FragmentProfileBinding;
 import com.example.fimae.models.Fimaers;
@@ -50,15 +47,10 @@ import com.google.firebase.firestore.DocumentChange;
 import com.google.firebase.firestore.FirebaseFirestore;
 
 import androidx.databinding.DataBindingUtil;
-import androidx.fragment.app.FragmentContainerView;
 import androidx.fragment.app.FragmentManager;
-import androidx.fragment.app.FragmentPagerAdapter;
-import androidx.fragment.app.FragmentTransaction;
 import androidx.lifecycle.Observer;
 import androidx.lifecycle.ViewModelProvider;
-import androidx.recyclerview.widget.GridLayoutManager;
 import androidx.recyclerview.widget.LinearLayoutManager;
-import androidx.viewpager.widget.ViewPager;
 
 import java.util.ArrayList;
 import java.util.List;

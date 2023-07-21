@@ -5,10 +5,11 @@ import com.example.fimae.activities.HomeActivity;
 import com.example.fimae.activities.PostMode;
 import com.google.firebase.firestore.ServerTimestamp;
 
+import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.Date;
 
-public class Story {
+public class Story implements Serializable {
     private String id;
     private String uid;
     private StoryType type;
@@ -40,6 +41,7 @@ public class Story {
     }
     public static ArrayList<Story> getFakeData(){
         ArrayList<Story> stories = new ArrayList<>();
+        stories.add(new Story("3", "3", StoryType.VIDEO, "android.resource://" + HomeActivity.PACKAGE_NAME + "/" + R.raw.video4, new Date(), PostMode.PUBLIC, false, new ArrayList<>(), new ArrayList<>()));
         stories.add(new Story("1", "1", StoryType.IMAGE, "https://picsum.photos/200/300?random=1", new Date(), PostMode.PUBLIC, false, new ArrayList<>(), new ArrayList<>()));
         stories.add(new Story("2", "2", StoryType.IMAGE, "https://picsum.photos/200/300?random=2", new Date(), PostMode.PUBLIC, false, new ArrayList<>(), new ArrayList<>()));
         stories.add(new Story("3", "3", StoryType.VIDEO, "android.resource://" + HomeActivity.PACKAGE_NAME + "/" + R.raw.video4, new Date(), PostMode.PUBLIC, false, new ArrayList<>(), new ArrayList<>()));

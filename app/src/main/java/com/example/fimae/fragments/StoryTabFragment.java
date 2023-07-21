@@ -12,7 +12,8 @@ import android.view.ViewGroup;
 
 import com.example.fimae.R;
 import com.example.fimae.adapters.SpacingItemDecoration;
-import com.example.fimae.adapters.StoryAdapter;
+import com.example.fimae.adapters.StoryAdapter.StoryAdapter;
+import com.example.fimae.repository.StoryRepository;
 
 /**
  * A simple {@link Fragment} subclass.
@@ -72,7 +73,7 @@ public class StoryTabFragment extends Fragment {
         storyRecyclerView.setLayoutManager(storyLinearLayoutManager);
         SpacingItemDecoration itemDecoration = new SpacingItemDecoration(16, 16, 8, 8);
         storyRecyclerView.addItemDecoration(itemDecoration);
-        StoryAdapter storyAdapter = new StoryAdapter();
+        StoryAdapter storyAdapter = new StoryAdapter(StoryRepository.getInstance().getStoryQuery());
         storyRecyclerView.setAdapter(storyAdapter);
 
         return view;

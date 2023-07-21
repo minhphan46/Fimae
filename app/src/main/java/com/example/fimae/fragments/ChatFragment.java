@@ -1,6 +1,7 @@
 package com.example.fimae.fragments;
 
 import android.content.Intent;
+import android.net.Uri;
 import android.os.Bundle;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -8,42 +9,36 @@ import android.view.ViewGroup;
 
 import android.widget.LinearLayout;
 import android.widget.Toast;
+
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.fragment.app.Fragment;
 
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
+
 import com.example.fimae.R;
-import com.example.fimae.Story.StoryView;
-import com.example.fimae.Story.callback.StoryClickListeners;
 import com.example.fimae.StoryActivity;
 import com.example.fimae.activities.OnChatActivity;
 import com.example.fimae.activities.SearchUserActivity;
 import com.example.fimae.adapters.ConversationAdapter;
 import com.example.fimae.adapters.SpacingItemDecoration;
-import com.example.fimae.adapters.StoryAdapter;
-import com.example.fimae.adapters.UserHomeViewAdapter;
-import com.example.fimae.models.Conversation;
+import com.example.fimae.adapters.StoryAdapter.StoryAdapter;
+import com.example.fimae.adapters.StoryAdapter.StoryAdapterItem;
+import com.example.fimae.bottomdialogs.PickImageBottomSheetFragment;
 import com.example.fimae.models.Fimaers;
-import com.example.fimae.models.Participant;
 import com.example.fimae.models.story.Story;
 import com.example.fimae.repository.ChatRepository;
+import com.example.fimae.repository.StoryRepository;
+import com.example.fimae.utils.FileUtils;
 import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.Task;
-import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.firestore.CollectionReference;
-import com.google.firebase.firestore.DocumentReference;
 import com.google.firebase.firestore.FirebaseFirestore;
 import com.google.firebase.firestore.Query;
-import com.google.firebase.firestore.QueryDocumentSnapshot;
-import com.google.firebase.firestore.WriteBatch;
 
-import org.jetbrains.annotations.NotNull;
-
+import java.io.File;
 import java.util.*;
-import java.util.function.BiConsumer;
-import java.util.function.Consumer;
 
 public class ChatFragment extends Fragment {
     private FirebaseFirestore firestore;
@@ -51,6 +46,7 @@ public class ChatFragment extends Fragment {
     private CollectionReference conversationRef;
 
     private LinearLayout searchbar;
+
     @Nullable
     @Override
     public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
@@ -77,19 +73,48 @@ public class ChatFragment extends Fragment {
         storyRecyclerView.setLayoutManager(storyLinearLayoutManager);
         SpacingItemDecoration itemDecoration = new SpacingItemDecoration(16, 16, 8, 8);
         storyRecyclerView.addItemDecoration(itemDecoration);
-        StoryAdapter storyAdapter = new StoryAdapter();
+        Query storyQuery = StoryRepository.getInstance().getStoryQuery();
+        StoryAdapter storyAdapter = new StoryAdapter(storyQuery);
         storyRecyclerView.setAdapter(storyAdapter);
         storyAdapter.setStoryListener(new StoryAdapter.StoryListener() {
             @Override
             public void addStoryClicked() {
-
+                PickImageBottomSheetFragment pickImageBottomSheetFragment = new PickImageBottomSheetFragment();
+                pickImageBottomSheetFragment.show(getChildFragmentManager(), "pickImage");
+                pickImageBottomSheetFragment.setCallBack(new PickImageBottomSheetFragment.PickImageCallBack() {
+                    @Override
+                    public void pickImageComplete(Uri uri) {
+                        Uri fileUri = Uri.parse(FileUtils.getFilePathFromContentUri(getContext(), uri));
+                        File file = new File(fileUri.getPath());
+                        if(!file.exists()) {
+                            Toast.makeText(getContext(), "File not found", Toast.LENGTH_SHORT).show();
+                            return;
+                        }
+                        long maxSize = 50000000;
+                        if(file.length() > maxSize) {
+                            Toast.makeText(getContext(), "Kích thước ảnh hoặc video lớn hơn 50mb", Toast.LENGTH_SHORT).show();
+                            return;
+                        }
+                        StoryRepository.getInstance().createStory(fileUri).addOnCompleteListener(new OnCompleteListener<Story>() {
+                            @Override
+                            public void onComplete(@NonNull Task<Story> task) {
+                                if(task.isSuccessful()) {
+                                    Story story = task.getResult();
+                                } else {
+                                    Toast.makeText(getContext(), "Error", Toast.LENGTH_SHORT).show();
+                                    task.getException().printStackTrace();
+                                }
+                            }
+                        });
+                    }
+                });
             }
 
             @Override
-            public void onStoryClicked(int position) {
-                ArrayList<Fimaers> headerInfoArrayList =Fimaers.dummy;
-               Intent intent = new Intent(getContext(), StoryActivity.class);
-               startActivity(intent);
+            public void onStoryClicked(StoryAdapterItem storyAdapterItem) {
+                Intent intent = new Intent(getContext(), StoryActivity.class);
+                intent.putExtra("storyAdapterItem", storyAdapterItem);
+                startActivity(intent);
             }
         });
         return view;
