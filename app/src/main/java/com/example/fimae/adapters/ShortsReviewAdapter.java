@@ -15,8 +15,10 @@ import com.bumptech.glide.Glide;
 import com.example.fimae.R;
 import com.example.fimae.adapters.StoryAdapter.StoryAdapter;
 import com.example.fimae.adapters.StoryAdapter.StoryAdapterItem;
+import com.example.fimae.models.Fimaers;
 import com.example.fimae.models.shorts.ShortMedia;
 import com.example.fimae.models.story.Story;
+import com.example.fimae.repository.FimaerRepository;
 import com.google.firebase.firestore.DocumentChange;
 import com.google.firebase.firestore.DocumentSnapshot;
 import com.google.firebase.firestore.Query;
@@ -81,7 +83,17 @@ public class ShortsReviewAdapter extends FirestoreAdapter<ShortsReviewAdapter.Sh
             // Get the data at the specified position
             int shortPosition = position - 1;
             ShortMedia shortMedia = shortMedias.get(shortPosition);
-            //Picasso.get().load(shortMedia.getURL()).placeholder(R.drawable.ic_default_avatar).into(holder.shortAvatar);
+            // get user avatar
+            FimaerRepository.getInstance().getFimaerById(shortMedia.getUid()).addOnCompleteListener(
+                task -> {
+                    if(task.isSuccessful()){
+                        Fimaers fimaers = task.getResult();
+                        if(fimaers != null){
+                            Picasso.get().load(fimaers.getAvatarUrl()).placeholder(R.drawable.ic_default_avatar).into(holder.shortAvatar);
+                        }
+                    }
+                }
+            );
             Glide.with(holder.itemView)
                     .load(shortMedia.getMediaUrl())
                     .into(holder.shortImage);
@@ -119,7 +131,7 @@ public class ShortsReviewAdapter extends FirestoreAdapter<ShortsReviewAdapter.Sh
         if(shortMedias == null){
             return 1;
         }
-        else  return shortMedias.size() + 1;
+        else return shortMedias.size() + 1;
     }
     @Override
     public int getItemViewType(int position) {

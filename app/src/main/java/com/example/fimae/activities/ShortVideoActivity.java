@@ -10,6 +10,8 @@ import com.example.fimae.R;
 import com.example.fimae.adapters.ShortVideoAdapter;
 import com.example.fimae.databinding.ActivityShortVideoBinding;
 import com.example.fimae.models.shorts.ShortMedia;
+import com.example.fimae.repository.ShortsRepository;
+import com.google.firebase.firestore.Query;
 
 import java.util.ArrayList;
 
@@ -25,8 +27,8 @@ public class ShortVideoActivity extends AppCompatActivity {
         binding = ActivityShortVideoBinding.inflate(getLayoutInflater());
         setContentView(binding.getRoot());
         this.getTheme().applyStyle(R.style.FullScreen, false);
-
-        shortVideoAdapter = new ShortVideoAdapter(this, shortMedias, new ShortVideoAdapter.IClickCardListener() {
+        Query shortQuery = ShortsRepository.getInstance().getShortQuery();
+        shortVideoAdapter = new ShortVideoAdapter(shortQuery, this, shortMedias, new ShortVideoAdapter.IClickCardListener() {
             @Override
             public void onClickUser(ShortMedia video) {
                 finish();

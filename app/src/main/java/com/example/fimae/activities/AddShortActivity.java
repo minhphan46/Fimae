@@ -25,8 +25,9 @@ import java.util.ArrayList;
 public class AddShortActivity extends AppCompatActivity {
 
     ActivityAddShortBinding binding;
-    ImageView imageVideo;
     private String urlVideo;
+
+    private boolean isLoading = false;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -39,8 +40,7 @@ public class AddShortActivity extends AppCompatActivity {
                 finish();
             }
         });
-        imageVideo = findViewById(R.id.image_video);
-        imageVideo.setOnClickListener(new View.OnClickListener() {
+        binding.imageVideo.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
                 MediaListDialogFragment mediaListDialogFragment = new MediaListDialogFragment();
@@ -49,8 +49,7 @@ public class AddShortActivity extends AppCompatActivity {
                     public void OnMediaSelected(boolean isSelected, ArrayList<String> data) {
                         if(isSelected){
                             urlVideo = data.get(0);
-                            Glide.with(AddShortActivity.this).load(data.get(0)).into(imageVideo);
-                            Toast.makeText(getBaseContext(), urlVideo, Toast.LENGTH_SHORT).show();
+                            Glide.with(AddShortActivity.this).load(data.get(0)).into(binding.imageVideo);
                         }
                     }
                 });
@@ -60,9 +59,12 @@ public class AddShortActivity extends AppCompatActivity {
 
         binding.btnFinish.setOnClickListener(view -> {
             String description = binding.tvDescription.getText().toString();
+            binding.loading.setVisibility(View.VISIBLE);
+            binding.btnFinish.setEnabled(false);
             ShortsRepository.getInstance().createShortVideo(description, Uri.parse(urlVideo), PostMode.PUBLIC, true).addOnCompleteListener(new OnCompleteListener<ShortMedia>() {
                 @Override
                 public void onComplete(@NonNull Task<ShortMedia> task) {
+                    binding.loading.setVisibility(View.GONE);
                     if(task.isSuccessful()) {
                         ShortMedia shortMedia = task.getResult();
                         Toast.makeText(getBaseContext(), "Short create successful", Toast.LENGTH_SHORT).show();
