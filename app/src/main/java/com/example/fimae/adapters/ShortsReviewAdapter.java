@@ -25,6 +25,7 @@ import com.google.firebase.firestore.Query;
 import com.google.firebase.storage.FirebaseStorage;
 import com.squareup.picasso.Picasso;
 
+import java.text.DecimalFormat;
 import java.util.ArrayList;
 
 import de.hdodenhof.circleimageview.CircleImageView;
@@ -65,14 +66,24 @@ public class ShortsReviewAdapter extends FirestoreAdapter<ShortsReviewAdapter.Sh
         if(isInProfile){
             // Get the data at the specified position
             ShortMedia shortMedia = shortMedias.get(position);
-            //Picasso.get().load(shortMedia.getURL()).placeholder(R.drawable.ic_default_avatar).into(holder.shortAvatar);
+            // get user avatar
+            FimaerRepository.getInstance().getFimaerById(shortMedia.getUid()).addOnCompleteListener(
+                    task -> {
+                        if(task.isSuccessful()){
+                            Fimaers fimaers = task.getResult();
+                            if(fimaers != null){
+                                Picasso.get().load(fimaers.getAvatarUrl()).placeholder(R.drawable.ic_default_avatar).into(holder.shortAvatar);
+                            }
+                        }
+                    }
+            );
             Glide.with(holder.itemView)
                     .load(shortMedia.getMediaUrl())
                     .into(holder.shortImage);
             holder.shortImage.setOnClickListener(view -> {
                 iClickCardListener.onClickUser(shortMedia);
             });
-            holder.shortViewCount.setText("120K");
+            holder.shortViewCount.setText(formatNumber(125200));
         }
         else if( position == 0) {
             holder.shortImage.setOnClickListener(view -> {
@@ -100,10 +111,26 @@ public class ShortsReviewAdapter extends FirestoreAdapter<ShortsReviewAdapter.Sh
             holder.shortImage.setOnClickListener(view -> {
                 iClickCardListener.onClickUser(shortMedia);
             });
-            holder.shortViewCount.setText("120K");
+            holder.shortViewCount.setText(formatNumber(125000));
         }
     }
 
+    public static String formatNumber(int number) {
+        if (number < 1000) {
+            return String.valueOf(number).replace(",", ".");
+        } else if (number < 1000000) {
+            return formatWithDot(number / 1000.0, "k");
+        } else {
+            return formatWithDot(number / 1000000.0, "M");
+        }
+    }
+
+    private static String formatWithDot(double value, String unit) {
+        DecimalFormat decimalFormat = new DecimalFormat("#0.#");
+        decimalFormat.setDecimalSeparatorAlwaysShown(false);
+        String formattedValue = decimalFormat.format(value).replace(",", ".");
+        return formattedValue.endsWith(".0") ? formattedValue.substring(0, formattedValue.length() - 2) : formattedValue + unit;
+    }
 
     @Override
     public void OnSuccessQueryListener(ArrayList<DocumentSnapshot> queryDocumentSnapshots) {

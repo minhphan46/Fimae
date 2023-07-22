@@ -87,4 +87,44 @@ public class ShortsRepository {
     public Query getShortQuery() {
         return shortsRef.orderBy("timeCreated", Query.Direction.DESCENDING);
     }
+
+    public Task<ShortMedia> updateShort(ShortMedia shortMedia) {
+        TaskCompletionSource<ShortMedia> taskCompletionSource = new TaskCompletionSource<>();
+        shortsRef.document(shortMedia.getId()).set(shortMedia).addOnCompleteListener(task -> {
+            if(task.isSuccessful()){
+                taskCompletionSource.setResult(shortMedia);
+            }else{
+                taskCompletionSource.setException(task.getException());
+            }
+        });
+        return taskCompletionSource.getTask();
+    }
+
+    // hàm likeShort, truyền vào là uid người like, id của short, trả về là short đã like
+    // kiểm tra xem người đó đã like hay chưa, nếu chưa thì like, nếu rồi thì unlike
+    // like thì thêm uid của người đó vào list like, unlike thì xóa uid của người đó khỏi list like
+    // sau đó update short đó lên firestore
+    public Task<ShortMedia> handleLikeShort(String uid, ShortMedia shortMedia) {
+        TaskCompletionSource<ShortMedia> taskCompletionSource = new TaskCompletionSource<>();
+        if(shortMedia.getUsersLiked().contains(uid)){
+            shortMedia.getUsersLiked().remove(uid);
+        }else{
+            shortMedia.getUsersLiked().add(uid);
+        }
+        shortsRef.document(shortMedia.getId()).set(shortMedia).addOnCompleteListener(task -> {
+            if(task.isSuccessful()){
+                taskCompletionSource.setResult(shortMedia);
+            }else{
+                taskCompletionSource.setException(task.getException());
+            }
+        });
+        return taskCompletionSource.getTask();
+    }
+
+    // hàm kiểm tra user đã like bài post hay chưa, truyền vào là uid của user và ShortMedia shortMedia
+    // trả về là true nếu user đã like, false nếu chưa like
+    public boolean checkUserLiked(String uid, ShortMedia shortMedia) {
+        if(shortMedia.getUsersLiked() == null) return false;
+        return shortMedia.getUsersLiked().contains(uid);
+    }
 }

@@ -18,7 +18,6 @@
         <ImageView
             android:id="@+id/short_add_image"
             app:layout_constraintDimensionRatio="H,2:3"
-            android:background="@color/black"
             android:layout_width="0dp"
             android:layout_height="0dp"
             android:scaleType="centerCrop"

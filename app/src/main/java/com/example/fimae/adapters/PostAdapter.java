@@ -188,7 +188,7 @@ public class PostAdapter extends RecyclerView.Adapter<PostAdapter.ViewHolder> {
             binding.commentNumber.setText(String.valueOf(updatePost.getNumberOfComments()));
             binding.likeNumber.setText(updatePost.getNumberTrue());
 
-            if(updatePost.getLikes().containsKey(currentPost.getPublisher()) && updatePost.getLikes().get(currentPost.getPublisher())){
+            if(updatePost.getLikes().containsKey(currentPost.getPublisher()) && Boolean.TRUE.equals(updatePost.getLikes().get(currentPost.getPublisher()))){
                 binding.icLike.setImageResource(R.drawable.ic_heart1);
                 binding.icLike.setOnClickListener(view -> {
                     String path = "likes." + fimaers.getUid();

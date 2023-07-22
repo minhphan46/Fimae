@@ -1,7 +1,9 @@
 package com.example.fimae.adapters;
 
+import android.annotation.SuppressLint;
 import android.content.Context;
 import android.net.Uri;
+import android.os.Handler;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -9,6 +11,7 @@ import android.view.ViewGroup;
 import android.widget.Toast;
 import java.util.concurrent.TimeUnit;
 import androidx.annotation.NonNull;
+import androidx.core.content.ContextCompat;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.bumptech.glide.Glide;
@@ -17,9 +20,13 @@ import com.example.fimae.R;
 import com.example.fimae.databinding.LayoutReelBinding;
 import com.example.fimae.models.Fimaers;
 import com.example.fimae.models.shorts.ShortMedia;
+import com.example.fimae.repository.FimaerRepository;
+import com.example.fimae.repository.ShortsRepository;
+import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.firestore.DocumentChange;
 import com.google.firebase.firestore.DocumentSnapshot;
 import com.google.firebase.firestore.Query;
+import com.squareup.picasso.Picasso;
 
 import java.util.ArrayList;
 
@@ -28,6 +35,8 @@ public class ShortVideoAdapter extends FirestoreAdapter<ShortVideoAdapter.VideoH
     ArrayList<ShortMedia> shortMedias = new ArrayList<>();
     private ShortVideoAdapter.IClickCardListener iClickCardListener;
     boolean isPlaying = true;
+
+    String uidCurrentUser = FirebaseAuth.getInstance().getUid();
 
     public interface IClickCardListener {
         void onClickUser(ShortMedia video);
@@ -47,20 +56,51 @@ public class ShortVideoAdapter extends FirestoreAdapter<ShortVideoAdapter.VideoH
         return new ShortVideoAdapter.VideoHolder(view);
     }
 
+    @SuppressLint("SetTextI18n")
     @Override
     public void onBindViewHolder(@NonNull VideoHolder holder, int position) {
         ShortMedia media = shortMedias.get(position);
+        uidCurrentUser = FirebaseAuth.getInstance().getUid();
         onBeginPlayVideo(holder, media);
+        // get user avatar
+        FimaerRepository.getInstance().getFimaerById(media.getUid()).addOnCompleteListener(
+                task -> {
+                    if(task.isSuccessful()){
+                        Fimaers fimaers = task.getResult();
+                        if(fimaers != null){
+                            // set name and avatar
+                            holder.binding.itemVideoTvName.setText(fimaers.getName());
+                            Picasso.get().load(fimaers.getAvatarUrl()).placeholder(R.drawable.ic_default_avatar).into(holder.binding.shortAvatar);
 
+                            // check follow
+
+                            // check like
+                            if(ShortsRepository.getInstance().checkUserLiked(uidCurrentUser, media)){
+                                holder.binding.itemVideoIcLike.setColorFilter(ContextCompat.getColor(context, R.color.red));
+                            } else {
+                                holder.binding.itemVideoIcLike.setColorFilter(ContextCompat.getColor(context, R.color.white));
+                            }
+                        }
+                    }
+                }
+        );
+        // set video
         holder.binding.videoView.setVideoURI(Uri.parse((String) media.getMediaUrl()));
-        holder.binding.itemVideoTvName.setText("Minh Phan");
         holder.binding.itemVideoTvDescription.setText(media.getDescription());
-        //holder.binding.itemVideoTvLike.setText(media.getUsersLiked().size());
-        //holder.binding.itemVideoTvComment.setText(media.getNumOfComments());
-
+        // set text like
+        if(media.getUsersLiked() != null) {
+            holder.binding.itemVideoTvLike.setText(getStringNumber(media.getUsersLiked().size()));
+        } else {
+            holder.binding.itemVideoTvLike.setText("0");
+        }
+        // set text comment
+        String numOfComments = getStringNumber(media.getNumOfComments());
+        holder.binding.itemVideoTvComment.setText(numOfComments);
+        // click icon back
         holder.binding.itemVideoIcBack.setOnClickListener(view -> {
             iClickCardListener.onClickUser(media);
         });
+        // video playing
         holder.binding.videoView.setOnPreparedListener(mp -> {
             mp.start();
             mp.setLooping(true);
@@ -70,13 +110,51 @@ public class ShortVideoAdapter extends FirestoreAdapter<ShortVideoAdapter.VideoH
             holder.binding.imageThumb.setVisibility(View.GONE);
             holder.binding.loading.setVisibility(View.GONE);
         });
-        holder.binding.videoView.setOnClickListener(view -> {
-            togglePlaying(holder);
+        // click in video
+        holder.binding.videoView.setOnClickListener(new DoubleClickListener() {
+            @Override
+            public void onDoubleClick(View v) {
+                handleLikeShort(media, holder);
+            }
+            @Override
+            public void onClick(View v) {
+                super.onClick(v);
+                togglePlaying(holder);
+            }
         });
         holder.binding.itemVideoIcPlay.setOnClickListener(view -> {
             togglePlaying(holder);
         });
 
+        // follow
+
+        // like
+        holder.binding.itemVideoIcLike.setOnClickListener(view -> {
+            handleLikeShort(media, holder);
+        });
+        // comment
+
+        // share
+    }
+
+    private void handleLikeShort(ShortMedia media, VideoHolder holder) {
+        if(ShortsRepository.getInstance().checkUserLiked(uidCurrentUser, media)){
+            holder.binding.itemVideoIcLike.setColorFilter(ContextCompat.getColor(context, R.color.white));
+            holder.binding.itemVideoTvLike.setText(getStringNumber(media.getUsersLiked().size() - 1));
+        } else {
+            holder.binding.itemVideoIcLike.setColorFilter(ContextCompat.getColor(context, R.color.red));
+            holder.binding.itemVideoTvLike.setText(getStringNumber(media.getUsersLiked().size() + 1));
+        }
+        ShortsRepository.getInstance().handleLikeShort(uidCurrentUser, media);
+    }
+    private String getStringNumber(int num) {
+        if (num < 1000) {
+            return String.valueOf(num);
+        } else if (num < 1000000) {
+            return String.format("%.1fK", num / 1000.0);
+        } else {
+            return String.format("%.1fM", num / 1000000.0);
+        }
     }
 
     private void onBeginPlayVideo(@NonNull VideoHolder holder, ShortMedia media) {
@@ -139,6 +217,7 @@ public class ShortVideoAdapter extends FirestoreAdapter<ShortVideoAdapter.VideoH
             shortMedias.add(shortMedia);
         }
         notifyDataSetChanged();
+        stopListening();
     }
 
     @Override
@@ -157,5 +236,22 @@ public class ShortVideoAdapter extends FirestoreAdapter<ShortVideoAdapter.VideoH
             super(itemView);
             binding = LayoutReelBinding.bind(itemView);
         }
+    }
+
+    public abstract class DoubleClickListener implements View.OnClickListener {
+        private long lastClickTime = 0;
+
+        @Override
+        public void onClick(View v) {
+            long clickTime = System.currentTimeMillis();
+            if (clickTime - lastClickTime < DOUBLE_CLICK_TIME_DELTA) {
+                onDoubleClick(v);
+            }
+            lastClickTime = clickTime;
+        }
+
+        public abstract void onDoubleClick(View v);
+
+        private static final long DOUBLE_CLICK_TIME_DELTA = 300; // milliseconds
     }
 }
