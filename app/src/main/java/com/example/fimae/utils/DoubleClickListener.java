@@ -5,12 +5,11 @@ import android.view.View;
 import android.view.View.OnClickListener;
 
 public abstract class DoubleClickListener implements View.OnClickListener {
-    private static final long DEFAULT_QUALIFICATION_SPAN = 500;
+    private static final long DEFAULT_QUALIFICATION_SPAN = 200;
     private long delta;
     private long deltaClick;
     private Handler han = new Handler();
     private boolean isDoubleClick = false;
-    private long lastClickTime = 0;
 
     public DoubleClickListener() {
         delta = DEFAULT_QUALIFICATION_SPAN;
@@ -19,25 +18,24 @@ public abstract class DoubleClickListener implements View.OnClickListener {
 
     @Override
     public void onClick(View v) {
-        long currentTime = SystemClock.elapsedRealtime();
-        if (currentTime - lastClickTime < delta) {
+        han.removeCallbacksAndMessages(null);
+
+        if (isDoubleClick) {
+            isDoubleClick = false;
+            han.removeCallbacksAndMessages(null);
             onDoubleClick();
-            // Reset the lastClickTime to prevent consecutive double click
-            lastClickTime = 0;
         } else {
-            lastClickTime = currentTime;
-            Handler handler = new Handler();
-            handler.postDelayed(new Runnable() {
+            isDoubleClick = true;
+            han.postDelayed(new Runnable() {
                 @Override
                 public void run() {
-                    // If lastClickTime is not reset by double click,
-                    // it means this is a single click event
-                    if (lastClickTime != 0) {
-                        onSingleClick();
-                    }
+                    isDoubleClick = false;
+                    onSingleClick();
                 }
             }, delta);
         }
+
+        deltaClick = SystemClock.elapsedRealtime();
     }
 
     public abstract void onDoubleClick();

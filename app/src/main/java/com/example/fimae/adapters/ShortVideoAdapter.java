@@ -22,6 +22,7 @@ import com.example.fimae.models.Fimaers;
 import com.example.fimae.models.shorts.ShortMedia;
 import com.example.fimae.repository.FimaerRepository;
 import com.example.fimae.repository.ShortsRepository;
+import com.example.fimae.utils.DoubleClickListener;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.firestore.DocumentChange;
 import com.google.firebase.firestore.DocumentSnapshot;
@@ -89,7 +90,8 @@ public class ShortVideoAdapter extends FirestoreAdapter<ShortVideoAdapter.VideoH
         holder.binding.itemVideoTvDescription.setText(media.getDescription());
         // set text like
         if(media.getUsersLiked() != null) {
-            holder.binding.itemVideoTvLike.setText(getStringNumber(media.getUsersLiked().size()));
+            int likeCount = ShortsRepository.getInstance().getLikeCount(media);
+            holder.binding.itemVideoTvLike.setText(getStringNumber(likeCount));
         } else {
             holder.binding.itemVideoTvLike.setText("0");
         }
@@ -113,12 +115,12 @@ public class ShortVideoAdapter extends FirestoreAdapter<ShortVideoAdapter.VideoH
         // click in video
         holder.binding.videoView.setOnClickListener(new DoubleClickListener() {
             @Override
-            public void onDoubleClick(View v) {
+            public void onDoubleClick() {
                 handleLikeShort(media, holder);
             }
+
             @Override
-            public void onClick(View v) {
-                super.onClick(v);
+            public void onSingleClick() {
                 togglePlaying(holder);
             }
         });
@@ -140,10 +142,11 @@ public class ShortVideoAdapter extends FirestoreAdapter<ShortVideoAdapter.VideoH
     private void handleLikeShort(ShortMedia media, VideoHolder holder) {
         if(ShortsRepository.getInstance().checkUserLiked(uidCurrentUser, media)){
             holder.binding.itemVideoIcLike.setColorFilter(ContextCompat.getColor(context, R.color.white));
-            holder.binding.itemVideoTvLike.setText(getStringNumber(media.getUsersLiked().size() - 1));
+            //holder.binding.itemVideoTvLike.setText(getStringNumber(media.getUsersLiked().size() - 1));
+            holder.binding.itemVideoTvLike.setText(getStringNumber(ShortsRepository.getInstance().getLikeCount(media) - 1));
         } else {
             holder.binding.itemVideoIcLike.setColorFilter(ContextCompat.getColor(context, R.color.red));
-            holder.binding.itemVideoTvLike.setText(getStringNumber(media.getUsersLiked().size() + 1));
+            holder.binding.itemVideoTvLike.setText(getStringNumber(ShortsRepository.getInstance().getLikeCount(media) + 1));
         }
         ShortsRepository.getInstance().handleLikeShort(uidCurrentUser, media);
     }
@@ -236,22 +239,5 @@ public class ShortVideoAdapter extends FirestoreAdapter<ShortVideoAdapter.VideoH
             super(itemView);
             binding = LayoutReelBinding.bind(itemView);
         }
-    }
-
-    public abstract class DoubleClickListener implements View.OnClickListener {
-        private long lastClickTime = 0;
-
-        @Override
-        public void onClick(View v) {
-            long clickTime = System.currentTimeMillis();
-            if (clickTime - lastClickTime < DOUBLE_CLICK_TIME_DELTA) {
-                onDoubleClick(v);
-            }
-            lastClickTime = clickTime;
-        }
-
-        public abstract void onDoubleClick(View v);
-
-        private static final long DOUBLE_CLICK_TIME_DELTA = 300; // milliseconds
     }
 }

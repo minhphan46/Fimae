@@ -11,6 +11,7 @@ import com.google.firebase.storage.FirebaseStorage;
 
 import java.util.ArrayList;
 import java.util.Date;
+import java.util.HashMap;
 
 public class ShortMedia {
     private String id;
@@ -23,9 +24,13 @@ public class ShortMedia {
     private Date timeCreated;
     private boolean allowComment;
     private int numOfComments;
-    private ArrayList<String> usersLiked;
+    private HashMap<String, Boolean> usersLiked;
+
+    private HashMap<String, Boolean> usersWatched;
 
     public ShortMedia() {
+        setUsersLiked(new HashMap<String, Boolean>());
+        setUsersWatched(new HashMap<String, Boolean>());
     }
     public static ShortMedia createShortVideo(String id, String description, String videoPath, PostMode postMode, boolean allowComment) {
         ShortMedia shortMedia = new ShortMedia();
@@ -36,7 +41,8 @@ public class ShortMedia {
         shortMedia.setType(ShortMediaType.VIDEO);
         shortMedia.setPostMode(postMode);
         shortMedia.setAllowComment(allowComment);
-        shortMedia.setUsersLiked(new ArrayList<>());
+        shortMedia.setUsersLiked(new HashMap<String, Boolean>());
+        shortMedia.setUsersWatched(new HashMap<String, Boolean>());
         return shortMedia;
     }
     public static ShortMedia createShortImages(String id, String description, ArrayList<String> imagesPath, PostMode postMode, boolean allowComment) {
@@ -48,7 +54,8 @@ public class ShortMedia {
         shortMedia.setType(ShortMediaType.IMAGES);
         shortMedia.setPostMode(postMode);
         shortMedia.setAllowComment(allowComment);
-        shortMedia.setUsersLiked(new ArrayList<>());
+        shortMedia.setUsersLiked(new HashMap<String, Boolean>());
+        shortMedia.setUsersWatched(new HashMap<String, Boolean>());
         return shortMedia;
     }
     public static ArrayList<ShortMedia> getFakeData(){
@@ -139,11 +146,19 @@ public class ShortMedia {
         this.numOfComments = numOfComments;
     }
 
-    public ArrayList<String> getUsersLiked() {
+    public HashMap<String, Boolean>getUsersLiked() {
         return usersLiked;
     }
 
-    public void setUsersLiked(ArrayList<String> usersLiked) {
+    public void setUsersLiked(HashMap<String, Boolean> usersLiked) {
         this.usersLiked = usersLiked;
+    }
+
+    public HashMap<String, Boolean> getUsersWatched() {
+        return usersWatched;
+    }
+
+    public void setUsersWatched(HashMap<String, Boolean> usersWatched) {
+        this.usersWatched = usersWatched;
     }
 }

@@ -18,6 +18,7 @@ import com.google.firebase.storage.StorageReference;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Objects;
 import java.util.function.BiConsumer;
 
 public class ShortsRepository {
@@ -106,16 +107,13 @@ public class ShortsRepository {
     // sau đó update short đó lên firestore
     public Task<ShortMedia> handleLikeShort(String uid, ShortMedia shortMedia) {
         TaskCompletionSource<ShortMedia> taskCompletionSource = new TaskCompletionSource<>();
-        if(shortMedia.getUsersLiked().contains(uid)){
-            shortMedia.getUsersLiked().remove(uid);
-        }else{
-            shortMedia.getUsersLiked().add(uid);
-        }
-        shortsRef.document(shortMedia.getId()).set(shortMedia).addOnCompleteListener(task -> {
+        boolean isLiked = checkUserLiked(uid, shortMedia);
+        shortsRef.document(shortMedia.getId()).update("usersLiked." + uid, !isLiked).addOnCompleteListener(task -> {
             if(task.isSuccessful()){
+                shortMedia.getUsersLiked().put(uid, !isLiked);
                 taskCompletionSource.setResult(shortMedia);
             }else{
-                taskCompletionSource.setException(task.getException());
+                taskCompletionSource.setException(Objects.requireNonNull(task.getException()));
             }
         });
         return taskCompletionSource.getTask();
@@ -125,6 +123,18 @@ public class ShortsRepository {
     // trả về là true nếu user đã like, false nếu chưa like
     public boolean checkUserLiked(String uid, ShortMedia shortMedia) {
         if(shortMedia.getUsersLiked() == null) return false;
-        return shortMedia.getUsersLiked().contains(uid);
+        return shortMedia.getUsersLiked().containsKey(uid) && Boolean.TRUE.equals(shortMedia.getUsersLiked().get(uid));
+    }
+
+    // hàm lấy số lượng like, đếm value là true trong map usersLiked
+    public int getLikeCount(ShortMedia shortMedia) {
+        if(shortMedia.getUsersLiked() == null) return 0;
+        int count = 0;
+        for (Boolean value : shortMedia.getUsersLiked().values()) {
+            if (Boolean.TRUE.equals(value)) {
+                count++;
+            }
+        }
+        return count;
     }
 }

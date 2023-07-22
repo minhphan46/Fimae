@@ -197,6 +197,7 @@ public class PostAdapter extends RecyclerView.Adapter<PostAdapter.ViewHolder> {
                             path, false
                     );
                 });
+
             }
             else {
                 binding.icLike.setImageResource(R.drawable.ic_heart_gray);
