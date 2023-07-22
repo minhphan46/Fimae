@@ -20,6 +20,5 @@ public class StoryActivity extends AppCompatActivity {
         viewPager2 = findViewById(R.id.viewPager2);
         MyStoryAdapter myStoryAdapter = new MyStoryAdapter(this, storyAdapterItem);
         viewPager2.setAdapter(myStoryAdapter);
-
     }
 }

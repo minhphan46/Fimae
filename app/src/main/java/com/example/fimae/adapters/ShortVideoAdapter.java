@@ -139,6 +139,10 @@ public class ShortVideoAdapter extends FirestoreAdapter<ShortVideoAdapter.VideoH
         // share
     }
 
+    private void handleWatchedShort(ShortMedia media, String uidCurrentUser) {
+        ShortsRepository.getInstance().addUserWatched(uidCurrentUser, media);
+    }
+
     private void handleLikeShort(ShortMedia media, VideoHolder holder) {
         if(ShortsRepository.getInstance().checkUserLiked(uidCurrentUser, media)){
             holder.binding.itemVideoIcLike.setColorFilter(ContextCompat.getColor(context, R.color.white));

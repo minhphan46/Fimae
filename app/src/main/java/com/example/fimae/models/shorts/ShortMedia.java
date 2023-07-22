@@ -161,4 +161,8 @@ public class ShortMedia {
     public void setUsersWatched(HashMap<String, Boolean> usersWatched) {
         this.usersWatched = usersWatched;
     }
+
+    public boolean checkIsWatched(String uid){
+        return usersWatched.containsKey(uid);
+    }
 }

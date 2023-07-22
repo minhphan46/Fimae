@@ -137,4 +137,18 @@ public class ShortsRepository {
         }
         return count;
     }
+
+    // hàm thêm user watched vào list usersWatched
+    public Task<ShortMedia> addUserWatched(String uidUser, ShortMedia shortMedia){
+        TaskCompletionSource<ShortMedia> taskCompletionSource = new TaskCompletionSource<>();
+        shortsRef.document(shortMedia.getId()).update("usersWatched." + uidUser, true).addOnCompleteListener(task -> {
+            if(task.isSuccessful()){
+                shortMedia.getUsersWatched().put(uidUser, true);
+                taskCompletionSource.setResult(shortMedia);
+            }else{
+                taskCompletionSource.setException(Objects.requireNonNull(task.getException()));
+            }
+        });
+        return taskCompletionSource.getTask();
+    }
 }
