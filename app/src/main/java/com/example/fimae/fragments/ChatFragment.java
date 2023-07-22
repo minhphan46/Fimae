@@ -136,8 +136,9 @@ public class ChatFragment extends Fragment {
 
             @Override
             public void onStoryClicked(StoryAdapterItem storyAdapterItem) {
+
                 Intent intent = new Intent(getContext(), StoryActivity.class);
-                intent.putExtra("storyAdapterItem", storyAdapterItem);
+                intent.putExtra("storyAdapterItems", storyAdapter.getStoryAdapterItems());
                 startActivity(intent);
             }
         });

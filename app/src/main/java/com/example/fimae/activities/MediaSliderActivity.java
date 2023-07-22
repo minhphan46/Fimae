@@ -6,6 +6,7 @@ import androidx.media3.common.Player;
 import androidx.media3.exoplayer.ExoPlayer;
 import androidx.media3.ui.PlayerView;
 import androidx.viewpager.widget.ViewPager;
+import androidx.viewpager2.widget.ViewPager2;
 
 import android.net.Uri;
 import android.os.Bundle;
@@ -19,14 +20,11 @@ import com.example.fimae.utils.FileUtils;
 import java.util.ArrayList;
 
 public class MediaSliderActivity extends AppCompatActivity {
-
-
-
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_media_slider);
-        ViewPager viewPager = findViewById(R.id.view_paper);
+        ViewPager2 viewPager = findViewById(R.id.view_paper);
         int currentIndex = getIntent().getIntExtra("currentIndex", 0);
         ArrayList<String> urls = getIntent().getStringArrayListExtra("urls");
         ArrayList<MediaSliderItem> items = new ArrayList<>();
@@ -43,7 +41,7 @@ public class MediaSliderActivity extends AppCompatActivity {
 
         MediaSliderAdapter adapter = new MediaSliderAdapter(this, items);
         viewPager.setAdapter(adapter);
-        viewPager.setCurrentItem(currentIndex);
+        viewPager.setCurrentItem(currentIndex, false);
     }
 
 }
