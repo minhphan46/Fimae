@@ -3,6 +3,7 @@ package com.example.fimae.activities;
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
 
+import android.annotation.SuppressLint;
 import android.net.Uri;
 import android.os.Bundle;
 import android.view.View;
@@ -28,6 +29,7 @@ public class AddShortActivity extends AppCompatActivity {
     private String urlVideo;
 
     private boolean isLoading = false;
+    @SuppressLint("UseCompatLoadingForColorStateLists")
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -49,6 +51,7 @@ public class AddShortActivity extends AppCompatActivity {
                     public void OnMediaSelected(boolean isSelected, ArrayList<String> data) {
                         if(isSelected){
                             urlVideo = data.get(0);
+                            binding.icAdd.setVisibility(View.GONE);
                             Glide.with(AddShortActivity.this).load(data.get(0)).into(binding.imageVideo);
                         }
                     }
@@ -59,8 +62,13 @@ public class AddShortActivity extends AppCompatActivity {
 
         binding.btnFinish.setOnClickListener(view -> {
             String description = binding.tvDescription.getText().toString();
+            if(description.isEmpty() || urlVideo == null){
+                Toast.makeText(getBaseContext(), "Please fill all fields", Toast.LENGTH_SHORT).show();
+                return;
+            }
             binding.loading.setVisibility(View.VISIBLE);
             binding.btnFinish.setEnabled(false);
+            binding.btnFinish.setBackgroundTintList(this.getResources().getColorStateList(R.color.gray_400));
             ShortsRepository.getInstance().createShortVideo(description, Uri.parse(urlVideo), PostMode.PUBLIC, true).addOnCompleteListener(new OnCompleteListener<ShortMedia>() {
                 @Override
                 public void onComplete(@NonNull Task<ShortMedia> task) {

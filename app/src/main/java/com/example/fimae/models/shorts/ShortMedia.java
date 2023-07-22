@@ -26,11 +26,11 @@ public class ShortMedia {
     private int numOfComments;
     private HashMap<String, Boolean> usersLiked;
 
-    private HashMap<String, Boolean> usersWatched;
+    private HashMap<String, Date> usersWatched;
 
     public ShortMedia() {
         setUsersLiked(new HashMap<String, Boolean>());
-        setUsersWatched(new HashMap<String, Boolean>());
+        setUsersWatched(new HashMap<String, Date>());
     }
     public static ShortMedia createShortVideo(String id, String description, String videoPath, PostMode postMode, boolean allowComment) {
         ShortMedia shortMedia = new ShortMedia();
@@ -42,7 +42,7 @@ public class ShortMedia {
         shortMedia.setPostMode(postMode);
         shortMedia.setAllowComment(allowComment);
         shortMedia.setUsersLiked(new HashMap<String, Boolean>());
-        shortMedia.setUsersWatched(new HashMap<String, Boolean>());
+        shortMedia.setUsersWatched(new HashMap<String, Date>());
         return shortMedia;
     }
     public static ShortMedia createShortImages(String id, String description, ArrayList<String> imagesPath, PostMode postMode, boolean allowComment) {
@@ -55,7 +55,7 @@ public class ShortMedia {
         shortMedia.setPostMode(postMode);
         shortMedia.setAllowComment(allowComment);
         shortMedia.setUsersLiked(new HashMap<String, Boolean>());
-        shortMedia.setUsersWatched(new HashMap<String, Boolean>());
+        shortMedia.setUsersWatched(new HashMap<String, Date>());
         return shortMedia;
     }
     public static ArrayList<ShortMedia> getFakeData(){
@@ -154,11 +154,11 @@ public class ShortMedia {
         this.usersLiked = usersLiked;
     }
 
-    public HashMap<String, Boolean> getUsersWatched() {
+    public HashMap<String, Date> getUsersWatched() {
         return usersWatched;
     }
 
-    public void setUsersWatched(HashMap<String, Boolean> usersWatched) {
+    public void setUsersWatched(HashMap<String, Date> usersWatched) {
         this.usersWatched = usersWatched;
     }
 

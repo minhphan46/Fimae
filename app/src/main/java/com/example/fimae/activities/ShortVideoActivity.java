@@ -42,6 +42,7 @@ public class ShortVideoActivity extends AppCompatActivity {
             public void onPageSelected(int position) {
                 //binding.viewPagerVideoShort.setCurrentItem(position);
                 shortVideoAdapter.onBeginPlayVideo(position);
+                shortVideoAdapter.addWatched(position);
                 super.onPageSelected(position);
             }
         });

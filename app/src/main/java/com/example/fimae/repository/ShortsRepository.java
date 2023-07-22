@@ -17,6 +17,7 @@ import com.google.firebase.storage.FirebaseStorage;
 import com.google.firebase.storage.StorageReference;
 
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.List;
 import java.util.Objects;
 import java.util.function.BiConsumer;
@@ -139,16 +140,21 @@ public class ShortsRepository {
     }
 
     // hàm thêm user watched vào list usersWatched
-    public void addUserWatched(String uidUser, ShortMedia shortMedia){
+    public void handleWatchedShort(String uidUser, ShortMedia shortMedia){
         TaskCompletionSource<ShortMedia> taskCompletionSource = new TaskCompletionSource<>();
-        shortsRef.document(shortMedia.getId()).update("usersWatched." + uidUser, true).addOnCompleteListener(task -> {
+        shortsRef.document(shortMedia.getId()).update("usersWatched." + uidUser, new Date()).addOnCompleteListener(task -> {
             if(task.isSuccessful()){
-                shortMedia.getUsersWatched().put(uidUser, true);
+            shortMedia.getUsersWatched().put(uidUser, new Date());
                 taskCompletionSource.setResult(shortMedia);
             }else{
                 taskCompletionSource.setException(Objects.requireNonNull(task.getException()));
             }
         });
         taskCompletionSource.getTask();
+    }
+
+    public int getNumOfWatched(ShortMedia shortMedia){
+        if(shortMedia.getUsersWatched() == null) return 0;
+        return shortMedia.getUsersWatched().values().size();
     }
 }

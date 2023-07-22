@@ -140,10 +140,6 @@ public class ShortVideoAdapter extends FirestoreAdapter<ShortVideoAdapter.VideoH
         // share
     }
 
-    private void handleWatchedShort(ShortMedia media, String uidCurrentUser) {
-        ShortsRepository.getInstance().addUserWatched(uidCurrentUser, media);
-    }
-
     private void handleLikeShort(ShortMedia media, VideoHolder holder) {
         if(ShortsRepository.getInstance().checkUserLiked(uidCurrentUser, media)){
             holder.binding.itemVideoIcLike.setColorFilter(ContextCompat.getColor(context, R.color.white));
@@ -211,11 +207,17 @@ public class ShortVideoAdapter extends FirestoreAdapter<ShortVideoAdapter.VideoH
         }
     }
 
+    public void addWatched(int position) {
+        ShortMedia media = shortMedias.get(position);
+        ShortsRepository.getInstance().handleWatchedShort(uidCurrentUser, media);
+    }
+
     @Override
     public void OnSuccessQueryListener(ArrayList<DocumentSnapshot> queryDocumentSnapshots) {
 
     }
 
+    @SuppressLint("NotifyDataSetChanged")
     @Override
     public void OnSuccessQueryListener(ArrayList<DocumentSnapshot> queryDocumentSnapshots, ArrayList<DocumentChange> documentChanges) {
         if(shortMedias == null){
