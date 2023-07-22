@@ -36,7 +36,7 @@ public class ShortVideoAdapter extends FirestoreAdapter<ShortVideoAdapter.VideoH
     ArrayList<ShortMedia> shortMedias = new ArrayList<>();
     private ShortVideoAdapter.IClickCardListener iClickCardListener;
     boolean isPlaying = true;
-
+    ArrayList<VideoHolder> holders = new ArrayList<>();
     String uidCurrentUser = FirebaseAuth.getInstance().getUid();
 
     public interface IClickCardListener {
@@ -61,8 +61,9 @@ public class ShortVideoAdapter extends FirestoreAdapter<ShortVideoAdapter.VideoH
     @Override
     public void onBindViewHolder(@NonNull VideoHolder holder, int position) {
         ShortMedia media = shortMedias.get(position);
-        uidCurrentUser = FirebaseAuth.getInstance().getUid();
-        onBeginPlayVideo(holder, media);
+        //uidCurrentUser = FirebaseAuth.getInstance().getUid();
+        holders.add(position, holder);
+        onBeginPlayVideo(position);
         // get user avatar
         FimaerRepository.getInstance().getFimaerById(media.getUid()).addOnCompleteListener(
                 task -> {
@@ -154,6 +155,7 @@ public class ShortVideoAdapter extends FirestoreAdapter<ShortVideoAdapter.VideoH
         }
         ShortsRepository.getInstance().handleLikeShort(uidCurrentUser, media);
     }
+    @SuppressLint("DefaultLocale")
     private String getStringNumber(int num) {
         if (num < 1000) {
             return String.valueOf(num);
@@ -164,17 +166,19 @@ public class ShortVideoAdapter extends FirestoreAdapter<ShortVideoAdapter.VideoH
         }
     }
 
-    private void onBeginPlayVideo(@NonNull VideoHolder holder, ShortMedia media) {
+    public void onBeginPlayVideo(int position) {
+        ShortMedia media = shortMedias.get(position);
+        VideoHolder holderPlaying = holders.get(position);
         // anh thumbnail
         long interval = 0;
         RequestOptions options = new RequestOptions().frame(interval);
-        Glide.with(holder.itemView)
+        Glide.with(holderPlaying.itemView)
                 .load(Uri.parse((String) media.getMediaUrl()))
                 .apply(options)
-                .into(holder.binding.imageThumb);
-        holder.binding.imageThumb.setVisibility(View.VISIBLE);
-        holder.binding.loading.setVisibility(View.VISIBLE);
-        holder.binding.itemVideoIcPlay.setVisibility(View.GONE);
+                .into(holderPlaying.binding.imageThumb);
+        holderPlaying.binding.imageThumb.setVisibility(View.VISIBLE);
+        holderPlaying.binding.loading.setVisibility(View.VISIBLE);
+        holderPlaying.binding.itemVideoIcPlay.setVisibility(View.GONE);
     }
     public static void wait(int ms)
     {

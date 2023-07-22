@@ -5,6 +5,7 @@ import androidx.appcompat.app.AppCompatActivity;
 import android.os.Bundle;
 import android.view.Window;
 import android.view.WindowManager;
+import android.widget.Toast;
 
 import com.example.fimae.R;
 import com.example.fimae.adapters.ShortVideoAdapter;
@@ -35,5 +36,14 @@ public class ShortVideoActivity extends AppCompatActivity {
             }
         });
         binding.viewPagerVideoShort.setAdapter(shortVideoAdapter);
+
+        binding.viewPagerVideoShort.registerOnPageChangeCallback(new androidx.viewpager2.widget.ViewPager2.OnPageChangeCallback() {
+            @Override
+            public void onPageSelected(int position) {
+                //binding.viewPagerVideoShort.setCurrentItem(position);
+                shortVideoAdapter.onBeginPlayVideo(position);
+                super.onPageSelected(position);
+            }
+        });
     }
 }

@@ -139,7 +139,7 @@ public class ShortsRepository {
     }
 
     // hàm thêm user watched vào list usersWatched
-    public Task<ShortMedia> addUserWatched(String uidUser, ShortMedia shortMedia){
+    public void addUserWatched(String uidUser, ShortMedia shortMedia){
         TaskCompletionSource<ShortMedia> taskCompletionSource = new TaskCompletionSource<>();
         shortsRef.document(shortMedia.getId()).update("usersWatched." + uidUser, true).addOnCompleteListener(task -> {
             if(task.isSuccessful()){
@@ -149,6 +149,6 @@ public class ShortsRepository {
                 taskCompletionSource.setException(Objects.requireNonNull(task.getException()));
             }
         });
-        return taskCompletionSource.getTask();
+        taskCompletionSource.getTask();
     }
 }
