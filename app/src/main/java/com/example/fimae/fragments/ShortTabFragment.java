@@ -1,6 +1,5 @@
 package com.example.fimae.fragments;
 
-import android.app.DownloadManager;
 import android.content.Intent;
 import android.os.Bundle;
 
@@ -15,11 +14,10 @@ import android.view.ViewGroup;
 import com.example.fimae.R;
 import com.example.fimae.activities.AddShortActivity;
 import com.example.fimae.activities.ShortVideoActivity;
-import com.example.fimae.adapters.ShortsReviewAdapter;
+import com.example.fimae.adapters.ShortAdapter.ShortsReviewAdapter;
 import com.example.fimae.adapters.SpacingItemDecoration;
 import com.example.fimae.models.shorts.ShortMedia;
 import com.example.fimae.repository.ShortsRepository;
-import com.example.fimae.repository.StoryRepository;
 import com.google.firebase.firestore.Query;
 
 /**

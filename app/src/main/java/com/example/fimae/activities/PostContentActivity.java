@@ -2,7 +2,6 @@ package com.example.fimae.activities;
 
 import androidx.appcompat.app.AppCompatActivity;
 
-import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
         import android.view.Window;
@@ -10,12 +9,9 @@ import android.os.Bundle;
 
         import com.example.fimae.R;
 import com.example.fimae.adapters.PostContentAdapter;
-import com.example.fimae.adapters.ShortVideoAdapter;
 import com.example.fimae.databinding.ActivityPostContentBinding;
-import com.example.fimae.databinding.ActivityShortVideoBinding;
-        import com.example.fimae.models.shorts.ShortMedia;
 
-        import java.util.ArrayList;
+import java.util.ArrayList;
 
 public class PostContentActivity extends AppCompatActivity {
     ActivityPostContentBinding binding;

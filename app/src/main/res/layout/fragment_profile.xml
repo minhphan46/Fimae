@@ -277,12 +277,13 @@
         <com.google.android.material.tabs.TabItem
             android:layout_width="match_parent"
             android:layout_height="match_parent"
-            android:icon="@drawable/ic_post" />
+
+            android:icon="@drawable/ic_document"/>
 
         <com.google.android.material.tabs.TabItem
             android:layout_width="match_parent"
             android:layout_height="match_parent"
-            android:icon="@drawable/ic_short"/>
+            android:icon="@drawable/ic_category"/>
 
     </com.google.android.material.tabs.TabLayout>
 

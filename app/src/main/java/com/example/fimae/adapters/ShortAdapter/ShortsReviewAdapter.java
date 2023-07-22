@@ -1,30 +1,24 @@
-package com.example.fimae.adapters;
+package com.example.fimae.adapters.ShortAdapter;
 
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ImageView;
 import android.widget.TextView;
-import android.widget.Toast;
 
 import androidx.annotation.NonNull;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.bumptech.glide.Glide;
 import com.example.fimae.R;
-import com.example.fimae.activities.ShortVideoActivity;
-import com.example.fimae.adapters.StoryAdapter.StoryAdapter;
-import com.example.fimae.adapters.StoryAdapter.StoryAdapterItem;
+import com.example.fimae.adapters.FirestoreAdapter;
 import com.example.fimae.models.Fimaers;
 import com.example.fimae.models.shorts.ShortMedia;
-import com.example.fimae.models.story.Story;
 import com.example.fimae.repository.FimaerRepository;
 import com.example.fimae.repository.ShortsRepository;
 import com.google.firebase.firestore.DocumentChange;
 import com.google.firebase.firestore.DocumentSnapshot;
 import com.google.firebase.firestore.Query;
-import com.google.firebase.storage.FirebaseStorage;
 import com.squareup.picasso.Picasso;
 
 import java.text.DecimalFormat;
@@ -32,7 +26,7 @@ import java.util.ArrayList;
 
 import de.hdodenhof.circleimageview.CircleImageView;
 
-public class ShortsReviewAdapter extends FirestoreAdapter<ShortsReviewAdapter.ShortsReviewHolder>{
+public class ShortsReviewAdapter extends FirestoreAdapter<ShortsReviewAdapter.ShortsReviewHolder> {
 
     //ArrayList<ShortMedia> shortMedias = ShortMedia.getFakeData();
     ArrayList<ShortMedia> shortMedias = new ArrayList<>();

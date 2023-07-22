@@ -5,10 +5,9 @@ import androidx.appcompat.app.AppCompatActivity;
 import android.os.Bundle;
 import android.view.Window;
 import android.view.WindowManager;
-import android.widget.Toast;
 
 import com.example.fimae.R;
-import com.example.fimae.adapters.ShortVideoAdapter;
+import com.example.fimae.adapters.ShortAdapter.ShortVideoAdapter;
 import com.example.fimae.databinding.ActivityShortVideoBinding;
 import com.example.fimae.models.shorts.ShortMedia;
 import com.example.fimae.repository.ShortsRepository;

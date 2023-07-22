@@ -1,8 +1,6 @@
 package com.example.fimae.adapters;
 
 import android.content.Context;
-import android.net.Uri;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -12,11 +10,9 @@ import androidx.recyclerview.widget.RecyclerView;
 
 import com.bumptech.glide.Glide;
 import com.example.fimae.R;
-import com.example.fimae.databinding.LayoutReelBinding;
+import com.example.fimae.adapters.ShortAdapter.ShortVideoAdapter;
 import com.example.fimae.databinding.PostImageItemBinding;
-import com.example.fimae.models.Fimaers;
 import com.example.fimae.models.shorts.ShortMedia;
-import com.squareup.picasso.Picasso;
 
 import java.util.ArrayList;
 

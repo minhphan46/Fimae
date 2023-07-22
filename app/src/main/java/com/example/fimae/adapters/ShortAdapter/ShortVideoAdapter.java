@@ -1,15 +1,12 @@
-package com.example.fimae.adapters;
+package com.example.fimae.adapters.ShortAdapter;
 
 import android.annotation.SuppressLint;
 import android.content.Context;
 import android.net.Uri;
-import android.os.Handler;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.Toast;
-import java.util.concurrent.TimeUnit;
+
 import androidx.annotation.NonNull;
 import androidx.core.content.ContextCompat;
 import androidx.recyclerview.widget.RecyclerView;
@@ -17,6 +14,7 @@ import androidx.recyclerview.widget.RecyclerView;
 import com.bumptech.glide.Glide;
 import com.bumptech.glide.request.RequestOptions;
 import com.example.fimae.R;
+import com.example.fimae.adapters.FirestoreAdapter;
 import com.example.fimae.databinding.LayoutReelBinding;
 import com.example.fimae.models.Fimaers;
 import com.example.fimae.models.shorts.ShortMedia;
@@ -31,7 +29,7 @@ import com.squareup.picasso.Picasso;
 
 import java.util.ArrayList;
 
-public class ShortVideoAdapter extends FirestoreAdapter<ShortVideoAdapter.VideoHolder>{
+public class ShortVideoAdapter extends FirestoreAdapter<ShortVideoAdapter.VideoHolder> {
     Context context;
     ArrayList<ShortMedia> shortMedias = new ArrayList<>();
     private ShortVideoAdapter.IClickCardListener iClickCardListener;
