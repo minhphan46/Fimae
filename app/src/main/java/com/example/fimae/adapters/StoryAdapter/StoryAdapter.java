@@ -33,13 +33,16 @@ public class StoryAdapter extends FirestoreAdapter<StoryAdapter.StoryViewHolder>
         void addStoryClicked();
         void onStoryClicked(StoryAdapterItem storyAdapterItem);
     }
-//    ArrayList<Story> stories = Story.getFakeData();
     private  StoryListener storyListener;
     public void setStoryListener(StoryListener storyListener){
         this.storyListener = storyListener;
     }
 
     ArrayList< StoryAdapterItem> storyAdapterItems;
+    //Get storyAdapterItems
+    public ArrayList<StoryAdapterItem> getStoryAdapterItems() {
+        return storyAdapterItems;
+    }
     @Override
     public void OnSuccessQueryListener(ArrayList<DocumentSnapshot> queryDocumentSnapshots) {
 

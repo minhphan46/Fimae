@@ -164,7 +164,6 @@ public class StoryView extends Fragment implements StoriesProgressView.StoriesLi
                 super.onPageSelected(position);
                 if (onStoryChangedCallback != null)
                     onStoryChangedCallback.storyChanged(position);
-                Toast.makeText(getContext(), "Page Selected: " + position, Toast.LENGTH_SHORT).show();
             }
         });
         if (isRtl) {
