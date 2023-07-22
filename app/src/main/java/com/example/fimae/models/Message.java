@@ -34,6 +34,15 @@ public class Message {
         message.setConversationID(conversationID);
         return message;
     }
+    public static Message media(String id, String conversationID, ArrayList<String> urls){
+        Message message = new Message();
+        message.setId(id);
+        message.setType(Message.MEDIA);
+        message.setContent(urls);
+        message.setIdSender(FirebaseAuth.getInstance().getUid());
+        message.setConversationID(conversationID);
+        return message;
+    }
     public String getId() {
         return id;
     }

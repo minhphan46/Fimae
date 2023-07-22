@@ -113,7 +113,7 @@ public class NewCommentAdapter extends FirestoreAdapter<NewCommentAdapter.ViewHo
                 case ADDED:
                     if (comment.getParentId() == null || comment.getParentId().isEmpty()) {
                         commentItemAdapters.add(new CommentItemAdapter(comment));
-                        notifyItemRemoved(commentItemAdapters.size() - 1);
+                        notifyItemInserted(commentItemAdapters.size() - 1);
                         continue;
                     } else {
                         for (int i = 0; i < commentItemAdapters.size(); i++) {

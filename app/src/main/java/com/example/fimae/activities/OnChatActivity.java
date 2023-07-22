@@ -159,13 +159,6 @@ public class OnChatActivity extends AppCompatActivity{
         Query query = messagesCol.orderBy("sentAt", Query.Direction.ASCENDING);
         messageAdapter = new MessageAdapter(query, this);
         recyclerView.setAdapter(messageAdapter);
-        messageAdapter.registerAdapterDataObserver(new RecyclerView.AdapterDataObserver() {
-            @Override
-            public void onChanged() {
-                super.onChanged();
-                recyclerView.scrollToPosition(messageAdapter.getItemCount() - 1);
-            }
-        });
     }
 
     private void sendTextMessage() {
@@ -175,27 +168,18 @@ public class OnChatActivity extends AppCompatActivity{
         Message message = createTextMessage(messDoc.getId(), textInput.getText().toString());
         ChatRepository.getInstance().sendTextMessage(conversationId, String.valueOf(textInput.getText()));
         textInput.setText("");
+        recyclerView.scrollToPosition(messageAdapter.getItemCount() - 1);
     }
 
     private void sendMediaMessage(ArrayList<Uri> uris) {
         inputMediaLayout.setVisibility(View.GONE);
-        FirebaseService.getInstance().uploadTaskFiles("conversation-medias" + "/" + conversationId, uris).whenComplete(new BiConsumer<List<String>, Throwable>() {
-            @Override
-            public void accept(List<String> strings, Throwable throwable) {
-                if (throwable != null) {
-                    Toast.makeText(OnChatActivity.this, "Error: " + throwable.getMessage(), Toast.LENGTH_SHORT).show();
-                    return;
-                }
-                handleMediaMessageUpload((ArrayList<String>) strings);
-            }
+        ChatRepository.getInstance().sendMediaMessage(conversationId, uris).addOnCompleteListener(task -> {
+            recyclerView.scrollToPosition(messageAdapter.getItemCount() - 1);
         });
-//        FirebaseHelper firebaseHelper = new FirebaseHelper();
-//        firebaseHelper.uploadMultipleFiles(uris, this::handleMediaMessageUpload, "conversation-medias", conversationId);
     }
 
     private void sendMediaMessage(byte[] bytes) {
         inputMediaLayout.setVisibility(View.GONE);
-
         FirebaseHelper firebaseHelper = new FirebaseHelper();
         firebaseHelper.uploadBytesToFirebase(bytes, this::handleMediaMessageUpload, "conversation-medias", conversationId);
     }
@@ -231,12 +215,6 @@ public class OnChatActivity extends AppCompatActivity{
                     recyclerView.scrollToPosition(messageAdapter.getItemCount() - 1);
                 });
     }
-
-    private void sendMessage(Message message, DocumentReference messDoc) {
-        recyclerView.scrollToPosition(messageAdapter.getItemCount() - 1);
-        messDoc.set(message);
-    }
-
     private void dispatchTakePictureIntent() {
         Intent takePictureIntent = new Intent(MediaStore.ACTION_IMAGE_CAPTURE);
         startActivityForResult(takePictureIntent, REQUEST_IMAGE_CAPTURE);
