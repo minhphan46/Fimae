@@ -31,9 +31,9 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import com.example.fimae.R;
-import com.example.fimae.Utils;
 import com.example.fimae.databinding.ActivityEditProfileBinding;
 import com.example.fimae.models.Fimaers;
+import com.example.fimae.utils.Utils;
 import com.example.fimae.viewmodels.EditProfileViewModel;
 import com.example.fimae.viewmodels.ProfileViewModel;
 import com.google.android.gms.tasks.OnCompleteListener;

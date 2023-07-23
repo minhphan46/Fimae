@@ -104,11 +104,6 @@ public class ShortsReviewAdapter extends FirestoreAdapter<ShortsReviewAdapter.Sh
         return formattedValue.endsWith(".0") ? formattedValue.substring(0, formattedValue.length() - 2) : formattedValue + unit;
     }
 
-    @Override
-    public void OnSuccessQueryListener(ArrayList<DocumentSnapshot> queryDocumentSnapshots) {
-
-    }
-
     @SuppressLint("NotifyDataSetChanged")
     @Override
     public void OnSuccessQueryListener(ArrayList<DocumentSnapshot> queryDocumentSnapshots, ArrayList<DocumentChange> documentChanges) {

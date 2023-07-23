@@ -17,6 +17,8 @@ public class PostContentActivity extends AppCompatActivity {
     ActivityPostContentBinding binding;
     ArrayList<String> imageUrls;
     PostContentAdapter contentAdapter;
+    String idPublisher;
+    String description;
     private int index;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -24,12 +26,21 @@ public class PostContentActivity extends AppCompatActivity {
         Intent intent = this.getIntent();
         imageUrls= getIntent().getStringArrayListExtra("urls");
         index = getIntent().getIntExtra("index", 0);
+
+        idPublisher= getIntent().getStringExtra("idUser");
+        description= getIntent().getStringExtra("description");
+
         requestWindowFeature(Window.FEATURE_NO_TITLE);
         this.getWindow().setFlags(WindowManager.LayoutParams.FLAG_FULLSCREEN, WindowManager.LayoutParams.FLAG_FULLSCREEN);
         binding = ActivityPostContentBinding.inflate(getLayoutInflater());
         setContentView(binding.getRoot());
         this.getTheme().applyStyle(R.style.FullScreen, false);
-        contentAdapter = new PostContentAdapter(this, imageUrls );
+        contentAdapter = new PostContentAdapter(this, imageUrls, idPublisher, description,new PostContentAdapter.IClickListener() {
+            @Override
+            public void onClickClose() {
+                onBackPressed();
+            }
+        });
 
         binding.viewPagerVideoShort.setAdapter(contentAdapter);
         binding.viewPagerVideoShort.setCurrentItem(index);

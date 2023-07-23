@@ -77,11 +77,6 @@ public class ShortsReviewProfileAdapter extends FirestoreAdapter<ShortsReviewPro
     }
 
     @Override
-    public void OnSuccessQueryListener(ArrayList<DocumentSnapshot> queryDocumentSnapshots) {
-
-    }
-
-    @Override
     public void OnSuccessQueryListener(ArrayList<DocumentSnapshot> queryDocumentSnapshots, ArrayList<DocumentChange> documentChanges) {
         if(shortMedias == null){
             shortMedias = new ArrayList<>();

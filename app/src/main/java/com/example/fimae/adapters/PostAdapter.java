@@ -22,6 +22,7 @@ import com.example.fimae.models.Follows;
 import com.example.fimae.models.Post;
 import com.example.fimae.models.Seed;
 import com.example.fimae.models.Fimaers;
+import com.example.fimae.repository.FimaerRepository;
 import com.example.fimae.repository.FollowRepository;
 import com.example.fimae.repository.PostRepository;
 import com.example.fimae.service.TimerService;
@@ -122,7 +123,7 @@ public class PostAdapter extends RecyclerView.Adapter<PostAdapter.ViewHolder> {
         }
 
         if(currentPost.getPostImages() != null && !currentPost.getPostImages().isEmpty()){
-            adapter = new PostPhotoAdapter(mContext, imageUrls);
+            adapter = new PostPhotoAdapter(mContext, currentPost.getPublisher(), currentPost.getContent(),imageUrls);
             binding.imageList.setVisibility(View.VISIBLE);
             LinearLayoutManager layoutManager = new GridLayoutManager(mContext, getColumnSpan(imageUris.size()) );
             binding.imageList.setLayoutManager(layoutManager);

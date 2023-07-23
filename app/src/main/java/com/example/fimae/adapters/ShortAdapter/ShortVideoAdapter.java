@@ -243,11 +243,6 @@ public class ShortVideoAdapter extends FirestoreAdapter<ShortVideoAdapter.VideoH
         ShortsRepository.getInstance().handleWatchedShort(uidCurrentUser, media);
     }
 
-    @Override
-    public void OnSuccessQueryListener(ArrayList<DocumentSnapshot> queryDocumentSnapshots) {
-
-    }
-
     @SuppressLint("NotifyDataSetChanged")
     @Override
     public void OnSuccessQueryListener(ArrayList<DocumentSnapshot> queryDocumentSnapshots, ArrayList<DocumentChange> documentChanges) {
@@ -298,7 +293,7 @@ public class ShortVideoAdapter extends FirestoreAdapter<ShortVideoAdapter.VideoH
                             @Override
                             public void onComplete(@NonNull Task<Conversation> task) {
                                 if(task.getResult() != null){
-                                    ChatRepository.getInstance().sendPostLink(task.getResult().getId(), media.getId());
+                                    ChatRepository.getInstance().sendShortMessage(task.getResult().getId(), media.getId());
                                     Intent intent = new Intent(context, OnChatActivity.class);
                                     intent.putExtra("conversationID", task.getResult().getId());
                                     context.startActivity(intent);
