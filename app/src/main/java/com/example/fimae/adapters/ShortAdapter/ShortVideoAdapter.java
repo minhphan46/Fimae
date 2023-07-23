@@ -19,6 +19,7 @@ import com.example.fimae.databinding.LayoutReelBinding;
 import com.example.fimae.models.Fimaers;
 import com.example.fimae.models.shorts.ShortMedia;
 import com.example.fimae.repository.FimaerRepository;
+import com.example.fimae.repository.FollowRepository;
 import com.example.fimae.repository.ShortsRepository;
 import com.example.fimae.utils.DoubleClickListener;
 import com.google.firebase.auth.FirebaseAuth;
@@ -36,7 +37,6 @@ public class ShortVideoAdapter extends FirestoreAdapter<ShortVideoAdapter.VideoH
     boolean isPlaying = true;
     ArrayList<VideoHolder> holders = new ArrayList<>();
     String uidCurrentUser = FirebaseAuth.getInstance().getUid();
-
     String idVideoFirst;
 
     public interface IClickCardListener {
@@ -76,7 +76,18 @@ public class ShortVideoAdapter extends FirestoreAdapter<ShortVideoAdapter.VideoH
                             Picasso.get().load(fimaers.getAvatarUrl()).placeholder(R.drawable.ic_default_avatar).into(holder.binding.shortAvatar);
 
                             // check follow
-
+                            ShortsRepository.getInstance().checkUserFollowed(uidCurrentUser, media, new FollowRepository.FollowCheckListener() {
+                                @Override
+                                public void onFollowCheckResult(boolean isFollowed) {
+                                    if (isFollowed) {
+                                        // User đã follow
+                                        holder.binding.icFollow.setVisibility(View.GONE);
+                                    } else {
+                                        // User chưa follow
+                                        holder.binding.icFollow.setVisibility(View.VISIBLE);
+                                    }
+                                }
+                            });
                             // check like
                             if(ShortsRepository.getInstance().checkUserLiked(uidCurrentUser, media)){
                                 holder.binding.itemVideoIcLike.setColorFilter(ContextCompat.getColor(context, R.color.red));
@@ -131,7 +142,10 @@ public class ShortVideoAdapter extends FirestoreAdapter<ShortVideoAdapter.VideoH
         });
 
         // follow
-
+        holder.binding.icFollow.setOnClickListener(view -> {
+            FollowRepository.getInstance().follow(media.getUid());
+            holder.binding.icFollow.setVisibility(View.GONE);
+        });
         // like
         holder.binding.itemVideoIcLike.setOnClickListener(view -> {
             handleLikeShort(media, holder);

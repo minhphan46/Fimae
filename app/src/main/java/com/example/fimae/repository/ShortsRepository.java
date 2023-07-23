@@ -1,6 +1,9 @@
 package com.example.fimae.repository;
 
 import android.net.Uri;
+import android.view.View;
+
+import androidx.annotation.Nullable;
 
 import com.example.fimae.activities.PostMode;
 import com.example.fimae.models.shorts.ShortMedia;
@@ -11,7 +14,10 @@ import com.google.android.gms.tasks.TaskCompletionSource;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.firestore.CollectionReference;
 import com.google.firebase.firestore.DocumentReference;
+import com.google.firebase.firestore.DocumentSnapshot;
+import com.google.firebase.firestore.EventListener;
 import com.google.firebase.firestore.FirebaseFirestore;
+import com.google.firebase.firestore.FirebaseFirestoreException;
 import com.google.firebase.firestore.Query;
 import com.google.firebase.storage.FirebaseStorage;
 import com.google.firebase.storage.StorageReference;
@@ -25,6 +31,7 @@ import java.util.function.BiConsumer;
 public class ShortsRepository {
     public final static String ShortsStoragePath = "shorts";
     static private ShortsRepository instance;
+    private FollowRepository followRepository = FollowRepository.getInstance();
 
     static public ShortsRepository getInstance() {
         if (instance == null) {
@@ -160,5 +167,31 @@ public class ShortsRepository {
     public int getNumOfWatched(ShortMedia shortMedia){
         if(shortMedia.getUsersWatched() == null) return 0;
         return shortMedia.getUsersWatched().values().size();
+    }
+
+    // check user is followed or not
+    public void checkUserFollowed(String uidCurrenUser, ShortMedia shortMedia, FollowRepository.FollowCheckListener followCheckListener) {
+        // nếu là post của chính user thì trả về true
+        if (shortMedia.getUid().equals(uidCurrenUser)) {
+            followCheckListener.onFollowCheckResult(true);
+            return;
+        }
+
+        // nếu không phải, kiểm tra xem user có trong list followers của user khác hay không
+        followRepository.followRef.document(uidCurrenUser + "_" + shortMedia.getUid()).addSnapshotListener(new EventListener<DocumentSnapshot>() {
+            @Override
+            public void onEvent(@Nullable DocumentSnapshot value, @Nullable FirebaseFirestoreException error) {
+                if (error != null) {
+                    followCheckListener.onFollowCheckResult(false);
+                    return;
+                }
+
+                if (value != null && value.exists()) {
+                    followCheckListener.onFollowCheckResult(true);
+                } else {
+                    followCheckListener.onFollowCheckResult(false);
+                }
+            }
+        });
     }
 }

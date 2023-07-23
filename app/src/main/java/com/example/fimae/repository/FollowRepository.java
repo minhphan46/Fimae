@@ -45,6 +45,11 @@ public class FollowRepository {
         currentUser = firebaseAuth.getUid();
     };
     private static  FollowRepository followRepository;
+
+    public interface FollowCheckListener {
+        void onFollowCheckResult(boolean isFollowed);
+    }
+
     public static FollowRepository getInstance(){
         if(followRepository == null) followRepository = new FollowRepository();
         return followRepository;
