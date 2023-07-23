@@ -2,6 +2,7 @@ package com.example.fimae.adapters.ShortAdapter;
 
 import android.annotation.SuppressLint;
 import android.content.Context;
+import android.content.Intent;
 import android.net.Uri;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -9,19 +10,29 @@ import android.view.ViewGroup;
 
 import androidx.annotation.NonNull;
 import androidx.core.content.ContextCompat;
+import androidx.fragment.app.FragmentManager;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.bumptech.glide.Glide;
 import com.bumptech.glide.request.RequestOptions;
 import com.example.fimae.R;
+import com.example.fimae.activities.DetailPostActivity;
+import com.example.fimae.activities.OnChatActivity;
 import com.example.fimae.adapters.FirestoreAdapter;
+import com.example.fimae.adapters.ShareAdapter;
+import com.example.fimae.bottomdialogs.ListItemBottomSheetFragment;
 import com.example.fimae.databinding.LayoutReelBinding;
+import com.example.fimae.models.Conversation;
 import com.example.fimae.models.Fimaers;
 import com.example.fimae.models.shorts.ShortMedia;
+import com.example.fimae.repository.ChatRepository;
 import com.example.fimae.repository.FimaerRepository;
 import com.example.fimae.repository.FollowRepository;
 import com.example.fimae.repository.ShortsRepository;
 import com.example.fimae.utils.DoubleClickListener;
+import com.google.android.gms.tasks.OnCompleteListener;
+import com.google.android.gms.tasks.OnSuccessListener;
+import com.google.android.gms.tasks.Task;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.firestore.DocumentChange;
 import com.google.firebase.firestore.DocumentSnapshot;
@@ -33,14 +44,16 @@ import java.util.ArrayList;
 public class ShortVideoAdapter extends FirestoreAdapter<ShortVideoAdapter.VideoHolder> {
     Context context;
     ArrayList<ShortMedia> shortMedias = new ArrayList<>();
-    private ShortVideoAdapter.IClickCardListener iClickCardListener;
+    private final ShortVideoAdapter.IClickCardListener iClickCardListener;
     boolean isPlaying = true;
     ArrayList<VideoHolder> holders = new ArrayList<>();
     String uidCurrentUser = FirebaseAuth.getInstance().getUid();
     String idVideoFirst;
+    ListItemBottomSheetFragment listShareItemBottomSheetFragment;
 
     public interface IClickCardListener {
         void onClickUser(ShortMedia video);
+        FragmentManager getFragmentManager();
     }
 
     public ShortVideoAdapter(Query query, Context context, ArrayList<ShortMedia> shortMedias, String idVideoFirst, IClickCardListener iClickCardListener) {
@@ -153,6 +166,9 @@ public class ShortVideoAdapter extends FirestoreAdapter<ShortVideoAdapter.VideoH
         // comment
 
         // share
+        holder.binding.itemVideoIcShare.setOnClickListener(view -> {
+            showSharePostDialog(media);
+        });
     }
 
     private void handleLikeShort(ShortMedia media, VideoHolder holder) {
@@ -266,5 +282,35 @@ public class ShortVideoAdapter extends FirestoreAdapter<ShortVideoAdapter.VideoH
             super(itemView);
             binding = LayoutReelBinding.bind(itemView);
         }
+    }
+
+    private void showSharePostDialog(ShortMedia media){
+        FollowRepository.getInstance().getFollowers(uidCurrentUser).addOnSuccessListener(new OnSuccessListener<ArrayList<Fimaers>>() {
+            @Override
+            public void onSuccess(ArrayList<Fimaers> fimaers) {
+                ShareAdapter adapter = new ShareAdapter(context, fimaers, new DetailPostActivity.BottomItemClickCallback() {
+                    @Override
+                    public void onClick(Fimaers userInfo) {
+                        if(listShareItemBottomSheetFragment != null){
+                            listShareItemBottomSheetFragment.dismiss();
+                        }
+                        ChatRepository.getInstance().getOrCreateFriendConversation(userInfo.getUid()).addOnCompleteListener(new OnCompleteListener<Conversation>() {
+                            @Override
+                            public void onComplete(@NonNull Task<Conversation> task) {
+                                if(task.getResult() != null){
+                                    ChatRepository.getInstance().sendPostLink(task.getResult().getId(), media.getId());
+                                    Intent intent = new Intent(context, OnChatActivity.class);
+                                    intent.putExtra("conversationID", task.getResult().getId());
+                                    context.startActivity(intent);
+                                }
+                            }
+                        });
+                    }
+                });
+                String title = "Chia sẻ video";
+                listShareItemBottomSheetFragment = ListItemBottomSheetFragment.getInstance(title,  adapter);
+                listShareItemBottomSheetFragment.show(iClickCardListener.getFragmentManager(), "shareList");
+            }
+        });
     }
 }

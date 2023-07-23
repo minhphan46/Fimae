@@ -1,6 +1,7 @@
 package com.example.fimae.activities;
 
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.fragment.app.FragmentManager;
 
 import android.content.Intent;
 import android.os.Bundle;
@@ -41,11 +42,15 @@ public class ShortVideoActivity extends AppCompatActivity {
         } else {
             shortQuery = ShortsRepository.getInstance().getShortQuery();
         }
-
         shortVideoAdapter = new ShortVideoAdapter(shortQuery, this, shortMedias, idFirstVideo, new ShortVideoAdapter.IClickCardListener() {
             @Override
             public void onClickUser(ShortMedia video) {
                 finish();
+            }
+
+            @Override
+            public FragmentManager getFragmentManager() {
+                return getSupportFragmentManager();
             }
         });
         binding.viewPagerVideoShort.setAdapter(shortVideoAdapter);
