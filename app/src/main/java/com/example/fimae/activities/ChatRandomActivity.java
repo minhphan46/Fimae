@@ -8,6 +8,7 @@ import android.os.Bundle;
 import android.view.View;
 import android.widget.EditText;
 import android.widget.ImageButton;
+import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.TextView;
 import android.widget.Toast;
@@ -38,8 +39,10 @@ public class ChatRandomActivity extends AppCompatActivity {
     // Appbar
     private ImageButton btnClose;
     private ImageButton btnReport;
+    private ImageView btnSend;
     private LinearLayout layoutTimer;
     private TimerService timerService;
+    EditText textInputEditText;
     private String to;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -54,6 +57,7 @@ public class ChatRandomActivity extends AppCompatActivity {
         btnLike.setOnClickListener(v -> {
             onLiked();
         });
+
 
         // appbar ==================================================================
         btnClose = findViewById(R.id.btn_close_appbar);
@@ -96,6 +100,10 @@ public class ChatRandomActivity extends AppCompatActivity {
         );
         timerService.setTimeInit();
         timerService.startTimerSetUp();
+        //==========================================================================
+        btnSend = findViewById(R.id.random_chat_btn_send);
+        textInputEditText = findViewById(R.id.random_chat_edt_message);
+
     }
 
     private void onClose(){

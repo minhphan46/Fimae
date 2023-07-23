@@ -43,10 +43,6 @@ public class StoryAdapter extends FirestoreAdapter<StoryAdapter.StoryViewHolder>
     public ArrayList<StoryAdapterItem> getStoryAdapterItems() {
         return storyAdapterItems;
     }
-    @Override
-    public void OnSuccessQueryListener(ArrayList<DocumentSnapshot> queryDocumentSnapshots) {
-
-    }
 
     @Override
     public void OnSuccessQueryListener(ArrayList<DocumentSnapshot> queryDocumentSnapshots, ArrayList<DocumentChange> documentChanges) {

@@ -1,10 +1,13 @@
 package com.example.fimae.repository;
 
+import android.net.Uri;
+
 import androidx.annotation.NonNull;
 
 import com.example.fimae.models.Conversation;
 import com.example.fimae.models.Message;
 import com.example.fimae.models.Participant;
+import com.example.fimae.service.FirebaseService;
 import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.Task;
 import com.google.android.gms.tasks.TaskCompletionSource;
@@ -23,34 +26,43 @@ import com.google.firebase.firestore.WriteBatch;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Date;
+import java.util.List;
 import java.util.Objects;
+import java.util.function.BiConsumer;
+import java.util.stream.Collectors;
 
-public class ChatRepository{
+public class ChatRepository {
     FirebaseFirestore firestore = FirebaseFirestore.getInstance();
     private static ChatRepository instance;
     CollectionReference conversationsRef = firestore.collection("conversations");
+
     private ChatRepository() {
     }
+
     public static synchronized ChatRepository getInstance() {
         if (instance == null) {
             instance = new ChatRepository();
         }
         return instance;
     }
-    public ListenerRegistration getConversationsRef(@NotNull EventListener<QuerySnapshot> listener){
+
+    public ListenerRegistration getConversationsRef(@NotNull EventListener<QuerySnapshot> listener) {
 
         return conversationsRef.addSnapshotListener(listener);
     }
-    public Query getConversationQuery(){
+
+    public Query getConversationQuery() {
         return conversationsRef.whereArrayContains("participantIds", Objects.requireNonNull(FirebaseAuth.getInstance().getUid()));
     }
-    public Task<Conversation> getOrCreateFriendConversation(String id){
-        ArrayList<String> arrayList = new ArrayList(){{
+
+    public Task<Conversation> getOrCreateFriendConversation(String id) {
+        ArrayList<String> arrayList = new ArrayList() {{
             add(id);
             add(FirebaseAuth.getInstance().getUid());
         }};
         return getOrCreateConversation(arrayList, Conversation.FRIEND_CHAT);
     }
+
     public Task<Conversation> getOrCreateConversation(ArrayList<String> participantIds, String type) {
 
         TaskCompletionSource<Conversation> taskCompletionSource = new TaskCompletionSource<>();
@@ -94,9 +106,10 @@ public class ChatRepository{
         });
         return taskCompletionSource.getTask();
     }
-    public Task<Message> sendTextMessage(String conversationId, String content){
+
+    public Task<Message> sendTextMessage(String conversationId, String content) {
         TaskCompletionSource<Message> taskCompletionSource = new TaskCompletionSource<Message>();
-        if(content.isEmpty()){
+        if (content.isEmpty()) {
             taskCompletionSource.setException(new Exception("Text message has null content"));
             return taskCompletionSource.getTask();
         }
@@ -108,7 +121,7 @@ public class ChatRepository{
         batch.set(messDoc, message);
         batch.update(currentConversationRef, "lastMessage", messDoc);
         batch.commit().addOnCompleteListener(task -> {
-            if(task.isSuccessful()){
+            if (task.isSuccessful()) {
                 taskCompletionSource.setResult(message);
             } else {
                 taskCompletionSource.setException(Objects.requireNonNull(task.getException()));
@@ -116,11 +129,12 @@ public class ChatRepository{
         });
         return taskCompletionSource.getTask();
     }
-    public Task<Boolean> updateReadLastMessageAt(String conversationId, Date timeStamp){
+
+    public Task<Boolean> updateReadLastMessageAt(String conversationId, Date timeStamp) {
         TaskCompletionSource taskCompletionSource = new TaskCompletionSource();
         DocumentReference participantRef = conversationsRef.document(conversationId).collection("participants").document(FirebaseAuth.getInstance().getUid());
         participantRef.update("readLastMessageAt", timeStamp).addOnCompleteListener(task -> {
-            if(task.isSuccessful()){
+            if (task.isSuccessful()) {
                 taskCompletionSource.setResult(true);
             } else {
                 taskCompletionSource.setException(Objects.requireNonNull(task.getException()));
@@ -128,11 +142,12 @@ public class ChatRepository{
         });
         return taskCompletionSource.getTask();
     }
-    public Task<Participant> getParticipantInConversation(String conversationId, String participantId){
+
+    public Task<Participant> getParticipantInConversation(String conversationId, String participantId) {
         TaskCompletionSource<Participant> taskCompletionSource = new TaskCompletionSource<>();
         DocumentReference participantRef = conversationsRef.document(conversationId).collection("participants").document(participantId);
         participantRef.get().addOnCompleteListener(task -> {
-            if(task.isSuccessful()){
+            if (task.isSuccessful()) {
                 DocumentSnapshot documentSnapshot = task.getResult();
                 assert documentSnapshot != null;
                 Participant participant = documentSnapshot.toObject(Participant.class);
@@ -144,9 +159,10 @@ public class ChatRepository{
         });
         return taskCompletionSource.getTask();
     }
-    public Task<Message> sendPostLink(String conversationId, String content){
+
+    public Task<Message> sendPostLink(String conversationId, String content) {
         TaskCompletionSource<Message> taskCompletionSource = new TaskCompletionSource<Message>();
-        if(content.isEmpty()){
+        if (content.isEmpty()) {
             taskCompletionSource.setException(new Exception("Text message has null content"));
             return taskCompletionSource.getTask();
         }
@@ -163,10 +179,44 @@ public class ChatRepository{
         batch.set(messDoc, message);
         batch.update(currentConversationRef, "lastMessage", messDoc);
         batch.commit().addOnCompleteListener(task -> {
-            if(task.isSuccessful()){
+            if (task.isSuccessful()) {
                 taskCompletionSource.setResult(message);
             } else {
                 taskCompletionSource.setException(Objects.requireNonNull(task.getException()));
+            }
+        });
+        return taskCompletionSource.getTask();
+    }
+
+    public Task<Message> sendMediaMessage(String conversationId, ArrayList<Uri> uris) {
+        TaskCompletionSource<Message> taskCompletionSource = new TaskCompletionSource<Message>();
+        if (uris.isEmpty()) {
+            taskCompletionSource.setException(new Exception("Media message has null content"));
+            return taskCompletionSource.getTask();
+        }
+        WriteBatch batch = firestore.batch();
+        DocumentReference currentConversationRef = conversationsRef.document(conversationId);
+        CollectionReference reference = currentConversationRef.collection("messages");
+        DocumentReference messDoc = reference.document();
+
+        FirebaseService.getInstance().uploadTaskFiles("conversation-medias/" + conversationId + "/messages/" + messDoc.getId(), uris).whenComplete(new BiConsumer<List<String>, Throwable>() {
+            @Override
+            public void accept(List<String> strings, Throwable throwable) {
+                if (throwable != null) {
+                    taskCompletionSource.setException((Exception) throwable);
+                } else {
+                    Message message = Message.media(messDoc.getId(), conversationId, (ArrayList<String>) strings);
+                    batch.set(messDoc, message);
+                    batch.update(currentConversationRef, "lastMessage", messDoc);
+                    batch.update(messDoc, "content", strings);
+                    batch.commit().addOnCompleteListener(task -> {
+                        if (task.isSuccessful()) {
+                            taskCompletionSource.setResult(message);
+                        } else {
+                            taskCompletionSource.setException(Objects.requireNonNull(task.getException()));
+                        }
+                    });
+                }
             }
         });
         return taskCompletionSource.getTask();

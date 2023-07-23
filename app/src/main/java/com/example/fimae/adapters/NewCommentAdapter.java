@@ -58,30 +58,6 @@ public class NewCommentAdapter extends FirestoreAdapter<NewCommentAdapter.ViewHo
 //        commentRepository = CommentRepository.getInstance();
     }
 
-    @Override
-    public void OnSuccessQueryListener(ArrayList<DocumentSnapshot> queryDocumentSnapshots) {
-//        if (mCommentItem == null) {
-//            mCommentItem = new ArrayList<>();
-//        }
-//        mCommentItem.clear();
-//        for (DocumentSnapshot documentSnapshot : queryDocumentSnapshots) {
-//            Comment comment = documentSnapshot.toObject(Comment.class);
-//            assert comment != null;
-//            if (comment.getParentId() == null || comment.getParentId().isEmpty()) {
-//                mCommentItem.add(new CommentItemAdapter(comment));
-//            }
-//        }
-//        for (CommentItemAdapter commentItemAdapter : mCommentItem) {
-//            for (DocumentSnapshot documentSnapshot : queryDocumentSnapshots) {
-//                Comment comment = documentSnapshot.toObject(Comment.class);
-//                if (comment.getParentId() != null && comment.getParentId().equals(commentItemAdapter.getComment().getId())) {
-//                    commentItemAdapter.getSubComment().add(new CommentItemAdapter(comment));
-//                }
-//            }
-//        }
-//        notifyDataSetChanged();
-    }
-
     ArrayList<CommentItemAdapter> commentItemAdapters;
     HashMap<String, SubCommentAdapter> subCommentAdapters = new HashMap<>();
 
@@ -113,7 +89,7 @@ public class NewCommentAdapter extends FirestoreAdapter<NewCommentAdapter.ViewHo
                 case ADDED:
                     if (comment.getParentId() == null || comment.getParentId().isEmpty()) {
                         commentItemAdapters.add(new CommentItemAdapter(comment));
-                        notifyItemRemoved(commentItemAdapters.size() - 1);
+                        notifyItemInserted(commentItemAdapters.size() - 1);
                         continue;
                     } else {
                         for (int i = 0; i < commentItemAdapters.size(); i++) {

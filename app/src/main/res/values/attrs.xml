@@ -15,4 +15,12 @@
     <declare-styleable name="StoriesProgressView">
         <attr name="progressCount" format="integer|reference" />
     </declare-styleable>
+
+    <declare-styleable name="PostMessage">
+        <attr name="title" format="string" />
+        <attr name="label_button" format="string" />
+        <attr name="image" format="string" />
+        <attr name="link" format="string" />
+        <attr name="isSender" format="boolean" />
+    </declare-styleable>
 </resources>

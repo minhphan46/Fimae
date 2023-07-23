@@ -1,6 +1,7 @@
 package com.example.fimae.utils;
 
 import android.content.Context;
+import android.content.DialogInterface;
 import android.content.res.AssetManager;
 import android.content.res.Resources;
 import android.graphics.Point;
@@ -9,6 +10,8 @@ import android.util.DisplayMetrics;
 import android.util.Log;
 import android.view.Display;
 import android.view.WindowManager;
+
+import androidx.appcompat.app.AlertDialog;
 
 import com.example.fimae.models.dating.Profile;
 import com.google.gson.Gson;
@@ -24,6 +27,15 @@ import java.util.List;
 public class Utils {
 
     private static final String TAG = "Utils";
+
+    public static void showConfirmationDialog(Context context, DialogInterface.OnClickListener positiveClickListener) {
+        AlertDialog.Builder builder = new AlertDialog.Builder(context);
+        builder.setTitle("Discard Changes");
+        builder.setMessage("Are you sure you want to discard all changes?");
+        builder.setPositiveButton("Discard", positiveClickListener);
+        builder.setNegativeButton("Cancel", null);
+        builder.show();
+    }
 
     public static List<Profile> loadProfiles(Context context){
         try{

@@ -87,7 +87,7 @@
                     android:clickable="true" android:focusable="true"/>
 
             <EditText
-                    android:id="@+id/et_input"
+                    android:id="@+id/random_chat_et_input"
                     android:background="@drawable/shape_rectangle_border_radius_text"
                     android:padding="10dp"
                     android:backgroundTint="@color/background_button_1"

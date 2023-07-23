@@ -13,31 +13,27 @@ import androidx.recyclerview.widget.RecyclerView;
 
 import com.example.fimae.R;
 import com.example.fimae.models.Conversation;
-import com.example.fimae.models.Fimaers;
 import com.example.fimae.models.Message;
 import com.example.fimae.repository.ChatRepository;
 import com.example.fimae.repository.FimaerRepository;
-import com.google.android.gms.tasks.OnCompleteListener;
-import com.google.android.gms.tasks.OnSuccessListener;
-import com.google.android.gms.tasks.Task;
-import com.google.android.gms.tasks.Tasks;
 import com.google.firebase.auth.FirebaseAuth;
+import com.google.firebase.firestore.DocumentChange;
 import com.google.firebase.firestore.DocumentSnapshot;
 import com.google.firebase.firestore.Query;
-import com.google.firebase.firestore.QueryDocumentSnapshot;
 import com.squareup.picasso.Picasso;
 
 import java.util.ArrayList;
 import java.util.HashMap;
-import java.util.concurrent.ExecutionException;
+import java.util.Objects;
 
 import de.hdodenhof.circleimageview.CircleImageView;
 
 public class ConversationAdapter extends FirestoreAdapter<ConversationAdapter.ViewHolder> {
 
 
+
     @Override
-    public void OnSuccessQueryListener(ArrayList<DocumentSnapshot> queryDocumentSnapshots) {
+    public void OnSuccessQueryListener(ArrayList<DocumentSnapshot> queryDocumentSnapshots, ArrayList<DocumentChange> documentChanges) {
         snapshots = queryDocumentSnapshots;
         notifyDataSetChanged();
     }
@@ -108,10 +104,44 @@ public class ConversationAdapter extends FirestoreAdapter<ConversationAdapter.Vi
                     conversation.getLastMessage().get().addOnCompleteListener(task -> {
                         HashMap map = (HashMap) task.getResult().getData();
                         Message message = task.getResult().toObject(Message.class);
-                        assert message != null;
-                        holder.mTextDes.setText(message.getContent().toString());
+                        if(message == null){
+                            holder.mTextDes.setText("Bắt đầu cuộc trò chuyện");
+                        }
+                        else{
+                            String start;
+                            if(message.getIdSender() == FirebaseAuth.getInstance().getUid()){
+                                start = "Bạn: ";
+                            }
+                            else{
+                                start = user.getFirstName() + ": ";
+                            }
+                            if(Objects.equals(message.getType(), Message.TEXT)){
+                                String content = message.getContent().toString();
+                                if(Objects.equals(message.getIdSender(), FirebaseAuth.getInstance().getUid())){
+                                    content = "Bạn: "+content;
+                                }
+                                holder.mTextDes.setText(content);
+                            } else if(Objects.equals(message.getType(), Message.MEDIA)){
+                                String content = "Đã gửi "+ ((ArrayList)message.getContent()).size() +" hình ảnh";
+                                if(Objects.equals(message.getIdSender(), FirebaseAuth.getInstance().getUid())){
+                                    content = "Bạn: "+content;
+                                }
+                                holder.mTextDes.setText(content);
+                            } else if(Objects.equals(message.getType(), Message.POST_LINK)){
+                                String content = "Đã gửi một bài viết";
+                                if(Objects.equals(message.getIdSender(), FirebaseAuth.getInstance().getUid())){
+                                    content = "Bạn: "+content;
+                                }
+                                holder.mTextDes.setText(content);
+                            }
+
+                        }
+
                         ChatRepository.getInstance().getParticipantInConversation(conversation.getId(), FirebaseAuth.getInstance().getUid()).addOnSuccessListener(participant -> {
-                            if (participant.getReadLastMessageAt() != null && participant.getReadLastMessageAt().after(message.getSentAt())) {
+                            if(participant == null || message == null){
+                                holder.mTextDes.setTypeface(Typeface.defaultFromStyle(Typeface.BOLD));
+                            }
+                            else if (participant.getReadLastMessageAt() != null && participant.getReadLastMessageAt().after(message.getSentAt())) {
                                 //set holder.mTextDes fontweight to bold
                                 holder.mTextDes.setTypeface(Typeface.defaultFromStyle(Typeface.BOLD));
                             } else {

@@ -16,7 +16,7 @@
         <deviceKey>
           <Key>
             <type value="SERIAL_NUMBER" />
-            <value value="192.168.1.4:41607" />
+            <value value="192.168.1.4:41039" />
           </Key>
         </deviceKey>
       </Target>
@@ -26,5 +26,16 @@
         <State />
       </entry>
     </value>
+    <targetsSelectedWithDialog>
+      <Target>
+        <type value="QUICK_BOOT_TARGET" />
+        <deviceKey>
+          <Key>
+            <type value="VIRTUAL_DEVICE_PATH" />
+            <value value="C:\Users\haosi\.android\avd\Pixel_6_Pro.avd" />
+          </Key>
+        </deviceKey>
+      </Target>
+    </targetsSelectedWithDialog>
   </component>
 </project>

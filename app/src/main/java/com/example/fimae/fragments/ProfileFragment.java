@@ -64,7 +64,7 @@ import de.hdodenhof.circleimageview.CircleImageView;
 public class ProfileFragment extends Fragment {
 
     FimaerRepository userRepo = FimaerRepository.getInstance();
-    ImageButton btnEditProfile, editBioBtn, editChipBtn, copyLitId;
+    ImageButton btnEditProfile, copyLitId;
     ImageView backgroundImg;
     CircleImageView avatarBtn;
     TextView bioTextView;
@@ -104,14 +104,12 @@ public class ProfileFragment extends Fragment {
         TabLayout tabLayout = view.findViewById(R.id.tabView);
         bioTextView = view.findViewById(R.id.bioTxt);
         btnEditProfile = view.findViewById(R.id.editProfileBtn);
-        editChipBtn = view.findViewById(R.id.editChipBtn);
         avatarBtn = view.findViewById(R.id.avatarBtn);
         backgroundImg = view.findViewById(R.id.backgroundImage);
         copyLitId = view.findViewById(R.id.copyBtn);
         if (getArguments() != null) {
             String uid = getArguments().getString("uid");
             viewModel.setUid(uid);
-            editChipBtn.setVisibility(View.GONE);
         }
         else {
             viewModel.fetchUser();
@@ -200,7 +198,6 @@ public class ProfileFragment extends Fragment {
         });
 
         initListener();
-
         return view;
     }
 
@@ -219,12 +216,6 @@ public class ProfileFragment extends Fragment {
             @Override
             public void onClick(View view) {
                 copyLitId();
-            }
-        });
-        editChipBtn.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                navToEditProfile();
             }
         });
         btnEditProfile.setOnClickListener(new View.OnClickListener() {
