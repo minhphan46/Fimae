@@ -129,8 +129,29 @@ public class MessageView extends ConstraintLayout {
                 intent.putExtra("id", message.getContent().toString());
                 getContext().startActivity(intent);
             });
+        } else if (Objects.equals(message.getType(), Message.SHORT_VIDEO)) {
+            this.textView.setVisibility(GONE);
+            this.postMessage.setVisibility(VISIBLE);
+            this.recyclerView.setVisibility(GONE);
+            throw new RuntimeException("Thêm video vào đây");
+//            PostRepository.getInstance().getPostById(message.getContent().toString()).addOnSuccessListener(post -> {
+//                if (post.getPostImages() != null && !post.getPostImages().isEmpty()) {
+//                    postMessage.setImage(post.getPostImages().get(0));
+//                } else {
+//                    postMessage.setImageVisibility(View.GONE);
+//                }
+//                String content = post.getContent();
+//                postMessage.setTitle(content);
+//            });
+//            postMessage.setLabelButton("XEM VIDEO");
+//            postMessage.setOnClickListener(v -> {
+//                Intent intent = new Intent(getContext(), DetailPostActivity.class);
+//                intent.putExtra("id", message.getContent().toString());
+//                getContext().startActivity(intent);
+//            });
+            }
         }
-    }
+
 
     public void setFimaers(Fimaers fimaers) {
         this.fimaers = fimaers;

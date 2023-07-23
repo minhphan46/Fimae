@@ -15,6 +15,7 @@ public class Message {
     static final public String POST_LINK = "POST_LINK";
     static final public String CHANGE_NICKNAME = "CHANGE_NICKNAME";
     static final public String LEAVE_CONVERSATION = "LEAVE_CONVERSATION";
+    static final public String SHORT_VIDEO = "SHORT_VIDEO";
     private String id;
     private String conversationID;
     private String idSender; // người gửi tin nhắn
