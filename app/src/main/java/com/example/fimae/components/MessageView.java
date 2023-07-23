@@ -133,7 +133,7 @@ public class MessageView extends ConstraintLayout {
             this.textView.setVisibility(GONE);
             this.postMessage.setVisibility(VISIBLE);
             this.recyclerView.setVisibility(GONE);
-            throw new RuntimeException("Thêm video vào đây");
+            //throw new RuntimeException("Thêm video vào đây");
 
             }
         }
