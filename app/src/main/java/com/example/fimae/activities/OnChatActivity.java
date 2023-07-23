@@ -162,14 +162,14 @@ public class OnChatActivity extends AppCompatActivity{
     private void sendTextMessage() {
         if(textInput.getText().toString().trim().isEmpty())
             return;
-        ChatRepository.getInstance().sendTextMessage(conversationId, String.valueOf(textInput.getText()));
+        ChatRepository.getDefaultChatInstance().sendTextMessage(conversationId, String.valueOf(textInput.getText()));
         textInput.setText("");
         recyclerView.scrollToPosition(messageAdapter.getItemCount() - 1);
     }
 
     private void sendMediaMessage(ArrayList<Uri> uris) {
         inputMediaLayout.setVisibility(View.GONE);
-        ChatRepository.getInstance().sendMediaMessage(conversationId, uris).addOnCompleteListener(task -> {
+        ChatRepository.getDefaultChatInstance().sendMediaMessage(conversationId, uris).addOnCompleteListener(task -> {
             recyclerView.scrollToPosition(messageAdapter.getItemCount() - 1);
         });
     }

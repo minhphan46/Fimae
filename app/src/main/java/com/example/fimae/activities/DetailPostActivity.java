@@ -66,7 +66,7 @@ public class DetailPostActivity extends AppCompatActivity {
     private Fimaers fimaers;
     DetailPostBinding binding;
     private PostPhotoAdapter adapter;
-    private ChatRepository chatRepository = ChatRepository.getInstance();
+    private ChatRepository chatRepository = ChatRepository.getDefaultChatInstance();
     ArrayList<String> imageUrls = new ArrayList<>();
 //    List<Uri> imageUris = new ArrayList<>();
     List<Comment> comments;

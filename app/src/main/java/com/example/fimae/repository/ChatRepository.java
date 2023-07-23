@@ -32,22 +32,46 @@ import java.util.function.BiConsumer;
 
 public class ChatRepository {
     FirebaseFirestore firestore = FirebaseFirestore.getInstance();
-    private static ChatRepository instance;
-    CollectionReference conversationsRef = firestore.collection("conversations");
+    private static ChatRepository defaultChatInstance;
+    private static ChatRepository randomChatInstance;
+    CollectionReference conversationsRef;
 
-    private ChatRepository() {
+    private ChatRepository(CollectionReference reference) {
+        this.conversationsRef = reference;
     }
 
-    public static synchronized ChatRepository getInstance() {
-        if (instance == null) {
-            instance = new ChatRepository();
+    public static synchronized ChatRepository getDefaultChatInstance() {
+        if (defaultChatInstance == null) {
+            defaultChatInstance = new ChatRepository(FirebaseFirestore.getInstance().collection("conversations"));
         }
-        return instance;
+        return defaultChatInstance;
     }
-
+    public static synchronized ChatRepository getRandomChatInstance() {
+        if (defaultChatInstance == null) {
+            defaultChatInstance = new ChatRepository(FirebaseFirestore.getInstance().collection("chats"));
+        }
+        return defaultChatInstance;
+    }
     public ListenerRegistration getConversationsRef(@NotNull EventListener<QuerySnapshot> listener) {
 
         return conversationsRef.addSnapshotListener(listener);
+    }
+
+    public Query getRandomMessageQuery(String id) {
+        return conversationsRef.document(id).collection("messages").orderBy("sentAt", Query.Direction.ASCENDING);
+    }
+    public Task<Void> likeFimaerInRandomChat(String id) {
+        TaskCompletionSource<Void> taskCompletionSource = new TaskCompletionSource<>();
+         conversationsRef.document(id).update("like." + FirebaseAuth.getInstance().getUid(), true).addOnCompleteListener(
+                 task -> {
+                        if (task.isSuccessful()) {
+                            taskCompletionSource.setResult(null);
+                        } else {
+                            taskCompletionSource.setException(Objects.requireNonNull(task.getException()));
+                        }
+                 }
+         );
+         return taskCompletionSource.getTask();
     }
 
     public Query getConversationQuery() {
