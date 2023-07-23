@@ -29,7 +29,6 @@ import java.util.Date;
 import java.util.List;
 import java.util.Objects;
 import java.util.function.BiConsumer;
-import java.util.stream.Collectors;
 
 public class ChatRepository {
     FirebaseFirestore firestore = FirebaseFirestore.getInstance();
@@ -107,28 +106,7 @@ public class ChatRepository {
         return taskCompletionSource.getTask();
     }
 
-    public Task<Message> sendTextMessage(String conversationId, String content) {
-        TaskCompletionSource<Message> taskCompletionSource = new TaskCompletionSource<Message>();
-        if (content.isEmpty()) {
-            taskCompletionSource.setException(new Exception("Text message has null content"));
-            return taskCompletionSource.getTask();
-        }
-        WriteBatch batch = firestore.batch();
-        DocumentReference currentConversationRef = conversationsRef.document(conversationId);
-        CollectionReference reference = currentConversationRef.collection("messages");
-        DocumentReference messDoc = reference.document();
-        Message message = Message.text(messDoc.getId(), conversationId, content);
-        batch.set(messDoc, message);
-        batch.update(currentConversationRef, "lastMessage", messDoc);
-        batch.commit().addOnCompleteListener(task -> {
-            if (task.isSuccessful()) {
-                taskCompletionSource.setResult(message);
-            } else {
-                taskCompletionSource.setException(Objects.requireNonNull(task.getException()));
-            }
-        });
-        return taskCompletionSource.getTask();
-    }
+
 
     public Task<Boolean> updateReadLastMessageAt(String conversationId, Date timeStamp) {
         TaskCompletionSource taskCompletionSource = new TaskCompletionSource();
@@ -160,10 +138,10 @@ public class ChatRepository {
         return taskCompletionSource.getTask();
     }
 
-    public Task<Message> sendPostLink(String conversationId, String content) {
+    public Task<Message> sendMessage(String conversationId, Object content, String type){
         TaskCompletionSource<Message> taskCompletionSource = new TaskCompletionSource<Message>();
-        if (content.isEmpty()) {
-            taskCompletionSource.setException(new Exception("Text message has null content"));
+        if (content instanceof String && ((String) content).isEmpty()) {
+            taskCompletionSource.setException(new Exception("Message has null content"));
             return taskCompletionSource.getTask();
         }
         WriteBatch batch = firestore.batch();
@@ -172,7 +150,7 @@ public class ChatRepository {
         DocumentReference messDoc = reference.document();
         Message message = new Message();
         message.setId(messDoc.getId());
-        message.setType(Message.POST_LINK);
+        message.setType(type);
         message.setContent(content);
         message.setIdSender(FirebaseAuth.getInstance().getUid());
         message.setConversationID(conversationId);
@@ -188,32 +166,35 @@ public class ChatRepository {
         return taskCompletionSource.getTask();
     }
 
+    public Task<Message> sendPostLink(String conversationId, String content) {
+        return sendMessage(conversationId, content, Message.POST_LINK);
+    }
+    public Task<Message> sendTextMessage(String conversationId, String content) {
+        return sendMessage(conversationId, content, Message.TEXT);
+    }
+    public Task<Message> sendShortMessage(String conversationId, String content) {
+        return sendMessage(conversationId, content, Message.SHORT_VIDEO);
+    }
     public Task<Message> sendMediaMessage(String conversationId, ArrayList<Uri> uris) {
         TaskCompletionSource<Message> taskCompletionSource = new TaskCompletionSource<Message>();
         if (uris.isEmpty()) {
             taskCompletionSource.setException(new Exception("Media message has null content"));
             return taskCompletionSource.getTask();
         }
-        WriteBatch batch = firestore.batch();
-        DocumentReference currentConversationRef = conversationsRef.document(conversationId);
-        CollectionReference reference = currentConversationRef.collection("messages");
-        DocumentReference messDoc = reference.document();
-
-        FirebaseService.getInstance().uploadTaskFiles("conversation-medias/" + conversationId + "/messages/" + messDoc.getId(), uris).whenComplete(new BiConsumer<List<String>, Throwable>() {
+        FirebaseService.getInstance().uploadTaskFiles("conversation-medias/" + conversationId , uris).whenComplete(new BiConsumer<List<String>, Throwable>() {
             @Override
             public void accept(List<String> strings, Throwable throwable) {
                 if (throwable != null) {
                     taskCompletionSource.setException((Exception) throwable);
                 } else {
-                    Message message = Message.media(messDoc.getId(), conversationId, (ArrayList<String>) strings);
-                    batch.set(messDoc, message);
-                    batch.update(currentConversationRef, "lastMessage", messDoc);
-                    batch.update(messDoc, "content", strings);
-                    batch.commit().addOnCompleteListener(task -> {
-                        if (task.isSuccessful()) {
-                            taskCompletionSource.setResult(message);
-                        } else {
-                            taskCompletionSource.setException(Objects.requireNonNull(task.getException()));
+                    sendMessage(conversationId, strings, Message.MEDIA).addOnCompleteListener(new OnCompleteListener<Message>() {
+                        @Override
+                        public void onComplete(@NonNull Task<Message> task) {
+                            if (task.isSuccessful()) {
+                                taskCompletionSource.setResult(task.getResult());
+                            } else {
+                                taskCompletionSource.setException(Objects.requireNonNull(task.getException()));
+                            }
                         }
                     });
                 }

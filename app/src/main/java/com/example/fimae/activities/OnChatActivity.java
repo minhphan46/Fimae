@@ -162,8 +162,6 @@ public class OnChatActivity extends AppCompatActivity{
     private void sendTextMessage() {
         if(textInput.getText().toString().trim().isEmpty())
             return;
-        DocumentReference messDoc = messagesCol.document();
-        Message message = createTextMessage(messDoc.getId(), textInput.getText().toString());
         ChatRepository.getInstance().sendTextMessage(conversationId, String.valueOf(textInput.getText()));
         textInput.setText("");
         recyclerView.scrollToPosition(messageAdapter.getItemCount() - 1);
@@ -186,15 +184,6 @@ public class OnChatActivity extends AppCompatActivity{
         Message message = createMediaMessage(downloadUrls);
         sendMessage(message);
         textInput.setText("");
-    }
-
-    private Message createTextMessage(String messageId, String content) {
-        Message message = new Message();
-        message.setId(messageId);
-        message.setType(Message.TEXT);
-        message.setContent(content);
-        message.setIdSender(FirebaseAuth.getInstance().getUid());
-        return message;
     }
 
     private Message createMediaMessage(ArrayList<String> downloadUrls) {
@@ -242,9 +231,6 @@ public class OnChatActivity extends AppCompatActivity{
                     bottomSheetItem -> Toast.makeText(getBaseContext(), bottomSheetItem.getTitle(), Toast.LENGTH_SHORT).show());
             fimaeBottomSheet.show(getSupportFragmentManager(), fimaeBottomSheet.getTag());
         } else if (id == R.id.option_call) {
-            FirebaseAuth.getInstance().signOut();
-            System.out.println("Click success");
-            startActivity(new Intent(this, AuthenticationActivity.class));
         }
         return super.onOptionsItemSelected(item);
     }
