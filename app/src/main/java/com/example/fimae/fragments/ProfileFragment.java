@@ -32,7 +32,8 @@ import com.example.fimae.activities.SettingActivity;
 import com.example.fimae.activities.ShortVideoActivity;
 import com.example.fimae.adapters.GridAutoFitLayoutManager;
 import com.example.fimae.adapters.PostAdapter;
-import com.example.fimae.adapters.ShortsReviewAdapter;
+import com.example.fimae.adapters.ShortAdapter.ShortsReviewAdapter;
+import com.example.fimae.adapters.ShortAdapter.ShortsReviewProfileAdapter;
 import com.example.fimae.adapters.SpacingItemDecoration;
 import com.example.fimae.bottomdialogs.AvatarBottomSheetFragment;
 import com.example.fimae.databinding.FragmentProfileBinding;
@@ -40,12 +41,15 @@ import com.example.fimae.models.Fimaers;
 import com.example.fimae.models.Post;
 import com.example.fimae.models.shorts.ShortMedia;
 import com.example.fimae.repository.FimaerRepository;
+import com.example.fimae.repository.ShortsRepository;
 import com.example.fimae.viewmodels.ProfileViewModel;
 import com.example.fimae.viewmodels.ProfileViewModelFactory;
 import com.google.android.material.tabs.TabLayout;
+import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.firestore.CollectionReference;
 import com.google.firebase.firestore.DocumentChange;
 import com.google.firebase.firestore.FirebaseFirestore;
+import com.google.firebase.firestore.Query;
 
 import androidx.databinding.DataBindingUtil;
 import androidx.fragment.app.FragmentManager;
@@ -126,7 +130,7 @@ public class ProfileFragment extends Fragment {
         LinearLayoutManager linearLayoutManager = new LinearLayoutManager(getContext());
         linearLayoutManager.setReverseLayout(true);
         linearLayoutManager.setStackFromEnd(true);
-        SpacingItemDecoration itemDecoration = new SpacingItemDecoration(16, 16, 8, 8);
+        SpacingItemDecoration itemDecoration = new SpacingItemDecoration(1, 1, 1, 1);
         binding.postList.addItemDecoration(itemDecoration);
         binding.postList.setAdapter(postAdapter);
         binding.postList.setLayoutManager(linearLayoutManager);
@@ -165,19 +169,25 @@ public class ProfileFragment extends Fragment {
             @Override
             public void onTabSelected(TabLayout.Tab tab) {
                 int position = tab.getPosition();
-
                 if (position == 0) {
                     binding.postList.setAdapter(postAdapter);
                     binding.postList.setLayoutManager(linearLayoutManager);
                 } else if (position == 1) {
-                    ArrayList<ShortMedia> shortMedias = ShortMedia.getFakeData();
-                    ShortsReviewAdapter shortAdapter = new ShortsReviewAdapter(video -> {
-                        Intent intent = new Intent(getContext(), ShortVideoActivity.class);
-                        //intent.putExtra("idVideo", video.getId());  // Truyền một String
-                        startActivity(intent);
-                    });
-                    binding.postList.setAdapter(shortAdapter);
-                    GridAutoFitLayoutManager gridLayoutManager = new GridAutoFitLayoutManager(getContext(), 80);
+                    Query shortQuery = ShortsRepository.getInstance().getShortUserQuery(FirebaseAuth.getInstance().getUid());
+                    ShortsReviewProfileAdapter shortsReviewProfileAdapter = new ShortsReviewProfileAdapter(
+                            shortQuery,
+                            new ShortsReviewProfileAdapter.IClickCardListener() {
+                                @Override
+                                public void onClickUser(ShortMedia video) {
+                                    Intent intent = new Intent(getContext(), ShortVideoActivity.class);
+                                    intent.putExtra("idVideo", video.getId()); // send id video
+                                    intent.putExtra("isProfile", true);
+                                    startActivity(intent);
+                                }
+                            }
+                    );
+                    binding.postList.setAdapter(shortsReviewProfileAdapter);
+                    GridAutoFitLayoutManager gridLayoutManager = new GridAutoFitLayoutManager(getContext(), 120);
                     binding.postList.setLayoutManager(gridLayoutManager);
                 }
             }

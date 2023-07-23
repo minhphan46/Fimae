@@ -6,12 +6,28 @@
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         tools:context=".activities.SplashActivity">
-<TextView android:layout_width="match_parent" android:layout_height="match_parent"
-          android:text="HELLO😍"
-          android:textSize="68sp"
-          android:textAlignment="center"
-          android:gravity="center"
-          android:textStyle="bold"
-          android:textColor="@color/black"
-/>
+
+        <ImageView
+            android:id="@+id/imageView3"
+            android:layout_width="150dp"
+            android:layout_height="150dp"
+            android:layout_marginBottom="100dp"
+            android:background="@drawable/circular"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="parent"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:srcCompat="@drawable/logo_app" />
+
+        <TextView
+            android:id="@+id/appNameTxt"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="Fimae"
+            style="@style/bold_50"
+            android:layout_marginTop="10dp"
+            android:textColor="@color/primary_1"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@+id/imageView3" />
 </androidx.constraintlayout.widget.ConstraintLayout>

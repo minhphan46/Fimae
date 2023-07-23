@@ -8,34 +8,15 @@
             android:layout_width="match_parent"
             android:layout_height="match_parent"
             android:orientation="vertical">
-            <com.google.android.material.appbar.AppBarLayout
-                android:id="@+id/appbar"
+            <include
+                android:id="@+id/appbar_layout"
+                layout="@layout/appbar_post" />
+            <ImageView
                 android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:elevation="2dp"
-                android:theme="@style/Theme.Fimae.NoActionBar"
-                app:layout_constraintTop_toTopOf="parent"
-                app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintEnd_toEndOf="parent">
-                <androidx.appcompat.widget.Toolbar
-                    android:id="@+id/toolbar"
-                    android:layout_width="match_parent"
-                    android:layout_height="?attr/actionBarSize"
-                    android:background="@color/text_white"
-                    app:popupTheme="@style/Theme.Fimae.PopupOverlay"
-                    android:elevation="10dp"
-                    app:titleTextColor="@color/text_white">
-                    <TextView
-                        android:id="@+id/toolbar_title"
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:layout_gravity="center"
-                        android:text="@string/app_name"
-                        android:textColor="@color/primary_1"
-                        style="@style/bold_24"
-                        />
-                </androidx.appcompat.widget.Toolbar>
-            </com.google.android.material.appbar.AppBarLayout>
+                android:layout_height="0.5dp"
+                android:background="@drawable/divided_shape"
+                app:layout_constraintTop_toBottomOf="@id/view_pager_video"
+                />
             <androidx.core.widget.NestedScrollView
                 android:fillViewport="true"
                 android:layout_width="match_parent"

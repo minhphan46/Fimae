@@ -46,23 +46,25 @@ public class StoryAdapter extends FirestoreAdapter<StoryAdapter.StoryViewHolder>
 
     @Override
     public void OnSuccessQueryListener(ArrayList<DocumentSnapshot> queryDocumentSnapshots, ArrayList<DocumentChange> documentChanges) {
-        if(storyAdapterItems == null || storyAdapterItems.size() == 0){
+        if(storyAdapterItems == null){
             storyAdapterItems = new ArrayList<>();
-            for(DocumentSnapshot documentSnapshot : queryDocumentSnapshots){
-                Story story = documentSnapshot.toObject(Story.class);
-                boolean isFound = false;
-                for (StoryAdapterItem storyAdapterItem : storyAdapterItems) {
-                    if(storyAdapterItem.getUid().equals(story.getUid())){
-                        storyAdapterItem.getStories().add(story);
-                        isFound = true;
-                        break;
-                    }
-                }
-                if (!isFound){
-                    StoryAdapterItem storyAdapterItem = new StoryAdapterItem(story.getUid());
+        } else {
+            storyAdapterItems.clear();
+        }
+        for(DocumentSnapshot documentSnapshot : queryDocumentSnapshots){
+            Story story = documentSnapshot.toObject(Story.class);
+            boolean isFound = false;
+            for (StoryAdapterItem storyAdapterItem : storyAdapterItems) {
+                if(storyAdapterItem.getUid().equals(story.getUid())){
                     storyAdapterItem.getStories().add(story);
-                    storyAdapterItems.add(storyAdapterItem);
+                    isFound = true;
+                    break;
                 }
+            }
+            if (!isFound){
+                StoryAdapterItem storyAdapterItem = new StoryAdapterItem(story.getUid());
+                storyAdapterItem.getStories().add(story);
+                storyAdapterItems.add(storyAdapterItem);
             }
         }
         notifyDataSetChanged();

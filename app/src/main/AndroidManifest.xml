@@ -26,6 +26,7 @@
     <uses-permission android:name="android.permission.READ_EXTERNAL_STORAGE" />
 
     <application
+        android:requestLegacyExternalStorage="true"
         android:allowBackup="true"
         android:dataExtractionRules="@xml/data_extraction_rules"
         android:fullBackupContent="@xml/backup_rules"
@@ -35,6 +36,9 @@
         android:supportsRtl="true"
         android:theme="@style/Theme.Fimae"
         tools:targetApi="31">
+        <activity
+            android:name=".activities.AddShortActivity"
+            android:exported="false" />
         <activity
             android:name=".activities.PostContentActivity"
             android:exported="false">
@@ -46,7 +50,7 @@
             android:name=".activities.CreateProfileActivity"
             android:exported="false" />
         <activity
-            android:name=".StoryActivity"
+            android:name=".activities.StoryActivity"
             android:exported="false" />
         <activity
             android:name=".activities.MediaSliderActivity"

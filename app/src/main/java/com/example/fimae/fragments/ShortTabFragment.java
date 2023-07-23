@@ -12,23 +12,17 @@ import android.view.View;
 import android.view.ViewGroup;
 
 import com.example.fimae.R;
+import com.example.fimae.activities.AddShortActivity;
 import com.example.fimae.activities.ShortVideoActivity;
-import com.example.fimae.adapters.ShortsReviewAdapter;
+import com.example.fimae.adapters.ShortAdapter.ShortsReviewAdapter;
 import com.example.fimae.adapters.SpacingItemDecoration;
-
-/**
- * A simple {@link Fragment} subclass.
- * Use the {@link ShortTabFragment#newInstance} factory method to
- * create an instance of this fragment.
- */
+import com.example.fimae.models.shorts.ShortMedia;
+import com.example.fimae.repository.ShortsRepository;
+import com.google.firebase.firestore.Query;
 public class ShortTabFragment extends Fragment {
-
-    // TODO: Rename parameter arguments, choose names that match
-    // the fragment initialization parameters, e.g. ARG_ITEM_NUMBER
     private static final String ARG_PARAM1 = "param1";
     private static final String ARG_PARAM2 = "param2";
 
-    // TODO: Rename and change types of parameters
     private String mParam1;
     private String mParam2;
 
@@ -64,13 +58,26 @@ public class ShortTabFragment extends Fragment {
         LinearLayoutManager storyLinearLayoutManager = new LinearLayoutManager(this.getContext());
         storyLinearLayoutManager.setOrientation(RecyclerView.HORIZONTAL);
         storyRecyclerView.setLayoutManager(storyLinearLayoutManager);
-        SpacingItemDecoration itemDecoration = new SpacingItemDecoration(16, 16, 8, 8);
+        SpacingItemDecoration itemDecoration = new SpacingItemDecoration(16, 16, 10, 0);
         storyRecyclerView.addItemDecoration(itemDecoration);
-        ShortsReviewAdapter shortAdapter = new ShortsReviewAdapter(video -> {
-            Intent intent = new Intent(getContext(), ShortVideoActivity.class);
-            //intent.putExtra("idVideo", video.getId());  // Truyền một String
-            startActivity(intent);
-        });
+        Query shortQuery = ShortsRepository.getInstance().getShortQuery();
+        ShortsReviewAdapter shortAdapter = new ShortsReviewAdapter(
+                shortQuery,
+                new ShortsReviewAdapter.IClickCardListener() {
+                    @Override
+                    public void addShortClicked() {
+                        Intent intent = new Intent(getContext(), AddShortActivity.class);
+                        startActivity(intent);
+                    }
+                    @Override
+                    public void onClickUser(ShortMedia video) {
+                        Intent intent = new Intent(getContext(), ShortVideoActivity.class);
+                        intent.putExtra("idVideo", video.getId());  // send id video
+                        intent.putExtra("isProfile", false);
+                        startActivity(intent);
+                    }
+                }
+        );
         storyRecyclerView.setAdapter(shortAdapter);
 
         return view;

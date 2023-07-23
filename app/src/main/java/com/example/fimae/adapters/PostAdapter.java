@@ -22,6 +22,7 @@ import com.example.fimae.models.Follows;
 import com.example.fimae.models.Post;
 import com.example.fimae.models.Seed;
 import com.example.fimae.models.Fimaers;
+import com.example.fimae.repository.FimaerRepository;
 import com.example.fimae.repository.FollowRepository;
 import com.example.fimae.repository.PostRepository;
 import com.example.fimae.service.TimerService;
@@ -122,7 +123,7 @@ public class PostAdapter extends RecyclerView.Adapter<PostAdapter.ViewHolder> {
         }
 
         if(currentPost.getPostImages() != null && !currentPost.getPostImages().isEmpty()){
-            adapter = new PostPhotoAdapter(mContext, imageUrls);
+            adapter = new PostPhotoAdapter(mContext, currentPost.getPublisher(), currentPost.getContent(),imageUrls);
             binding.imageList.setVisibility(View.VISIBLE);
             LinearLayoutManager layoutManager = new GridLayoutManager(mContext, getColumnSpan(imageUris.size()) );
             binding.imageList.setLayoutManager(layoutManager);
@@ -188,7 +189,7 @@ public class PostAdapter extends RecyclerView.Adapter<PostAdapter.ViewHolder> {
             binding.commentNumber.setText(String.valueOf(updatePost.getNumberOfComments()));
             binding.likeNumber.setText(updatePost.getNumberTrue());
 
-            if(updatePost.getLikes().containsKey(currentPost.getPublisher()) && updatePost.getLikes().get(currentPost.getPublisher())){
+            if(updatePost.getLikes().containsKey(currentPost.getPublisher()) && Boolean.TRUE.equals(updatePost.getLikes().get(currentPost.getPublisher()))){
                 binding.icLike.setImageResource(R.drawable.ic_heart1);
                 binding.icLike.setOnClickListener(view -> {
                     String path = "likes." + fimaers.getUid();
@@ -197,6 +198,7 @@ public class PostAdapter extends RecyclerView.Adapter<PostAdapter.ViewHolder> {
                             path, false
                     );
                 });
+
             }
             else {
                 binding.icLike.setImageResource(R.drawable.ic_heart_gray);

@@ -12,6 +12,8 @@
         app:layout_constraintTop_toTopOf="parent"
         android:background="@color/black"
         >
+
+
         <VideoView
             android:id="@+id/videoView"
             android:layout_width="match_parent"
@@ -21,6 +23,31 @@
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toTopOf="parent" />
+
+        <ImageView
+            android:id="@+id/image_thumb"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:layout_gravity="center"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="parent"/>
+
+        <ProgressBar
+            android:id="@+id/loading"
+            android:layout_width="match_parent"
+            android:layout_height="6dp"
+            android:layout_gravity="bottom"
+            android:layout_marginBottom="5dp"
+            android:indeterminate="true"
+            style="?android:attr/progressBarStyleHorizontal"
+            android:indeterminateTintMode="src_atop"
+            android:indeterminateTint="@color/text_white"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="parent"/>
 
         <ImageButton
             android:id="@+id/item_video_ic_play"
@@ -51,7 +78,7 @@
         app:layout_constraintTop_toTopOf="parent"
         app:tint="@color/text_white" />
 
-    <ImageButton
+    <!--<ImageButton
         android:id="@+id/item_video_ic_search"
         android:layout_width="25dp"
         android:layout_height="25dp"
@@ -63,24 +90,43 @@
         android:src="@drawable/ic_search"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintTop_toTopOf="parent"
-        app:tint="@color/text_white" />
+        app:tint="@color/text_white" />-->
 
     <LinearLayout
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:orientation="vertical"
         android:gravity="center_horizontal"
-        android:layout_marginBottom="100dp"
+        android:layout_marginBottom="90dp"
         android:layout_marginEnd="10dp"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent">
-        <de.hdodenhof.circleimageview.CircleImageView
-            android:id="@+id/story_avatar"
-            android:layout_width="40dp"
-            android:layout_height="40dp"
-            android:src="@drawable/ic_default_avatar"
+        <FrameLayout
+            android:layout_width="wrap_content"
+            android:layout_height="60dp"
             app:layout_constraintBottom_toBottomOf="parent"
-            app:layout_constraintStart_toStartOf="parent" />
+            app:layout_constraintStart_toStartOf="parent">
+            <de.hdodenhof.circleimageview.CircleImageView
+                android:layout_width="42dp"
+                android:layout_height="42dp"
+                android:src="@color/white"
+                android:layout_gravity="center"
+                />
+            <de.hdodenhof.circleimageview.CircleImageView
+                android:id="@+id/short_avatar"
+                android:layout_width="40dp"
+                android:layout_height="40dp"
+                android:layout_gravity="center"
+                android:src="@drawable/ic_default_avatar"
+                />
+            <de.hdodenhof.circleimageview.CircleImageView
+                android:id="@+id/ic_follow"
+                android:layout_width="18dp"
+                android:layout_height="18dp"
+                android:layout_gravity="bottom|center"
+                android:src="@drawable/ic_follow"
+                />
+        </FrameLayout>
         <LinearLayout
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
@@ -94,13 +140,14 @@
                 android:src="@drawable/ic_heart_video"
                 android:adjustViewBounds="true"
                 android:background="@null"
+                app:tint="@color/white"
                 android:scaleType="fitCenter"/>
             <TextView
                 android:id="@+id/item_video_tv_like"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:textAlignment="center"
-                android:text="120.7K"
+                android:text=""
                 android:textColor="@color/text_white"
                 style="@style/bold_14" />
         </LinearLayout>
@@ -124,7 +171,7 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:textAlignment="center"
-                android:text="120"
+                android:text=""
                 android:textColor="@color/text_white"
                 style="@style/bold_14" />
         </LinearLayout>
@@ -143,14 +190,6 @@
                 android:adjustViewBounds="true"
                 android:background="@null"
                 android:scaleType="fitCenter"/>
-            <TextView
-                android:id="@+id/item_video_tv_share"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:textAlignment="center"
-                android:text="50"
-                android:textColor="@color/text_white"
-                style="@style/bold_14" />
         </LinearLayout>
     </LinearLayout>
 
@@ -168,7 +207,7 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:gravity="start"
-            android:text="Chuyện nhà mèo"
+            android:text=""
             android:textColor="@color/text_white"
             style="@style/bold_20" />
         <TextView
@@ -177,7 +216,7 @@
             android:layout_height="wrap_content"
             android:gravity="start"
             android:layout_marginTop="5dp"
-            android:text="Bộ sưu tập những cảnh quay đáng yêu và đầy hài hước về các chú mèo dễ thương."
+            android:text=""
             android:textColor="@color/text_white"
             style="@style/regular_16" />
     </LinearLayout>

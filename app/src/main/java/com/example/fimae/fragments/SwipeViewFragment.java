@@ -15,7 +15,7 @@ import android.view.View;
 import android.view.ViewGroup;
 
 import com.example.fimae.R;
-import com.example.fimae.Utils;
+import com.example.fimae.utils.Utils;
 import com.example.fimae.models.dating.Profile;
 import com.example.fimae.models.dating.TinderCard;
 import com.google.android.material.floatingactionbutton.FloatingActionButton;

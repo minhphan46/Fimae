@@ -1,0 +1,13 @@
+<layer-list xmlns:android="http://schemas.android.com/apk/res/android">
+    <item>
+        <shape android:shape="oval">
+            <solid android:color="@color/white" />
+        </shape>
+    </item>
+    <item
+        android:width="180dp"
+        android:height="180dp" >
+        <bitmap android:src="@drawable/ic_play_video"
+            android:gravity="center_vertical|center_horizontal" />
+    </item>
+</layer-list>
