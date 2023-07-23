@@ -44,6 +44,7 @@ public class AuthenticationActivity extends AppCompatActivity {
     FirebaseDatabase database = FirebaseDatabase.getInstance();
     CollectionReference fimaeUsersRefer = firestore.collection("fimae-users");
     DatabaseReference usersRef = database.getReference("fimae-users");
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -98,7 +99,7 @@ public class AuthenticationActivity extends AppCompatActivity {
         startActivity(intent);
     }
     void navToUpdateProfile(){
-        Intent intent = new Intent(AuthenticationActivity.this, UpdateProfileActivity.class);
+        Intent intent = new Intent(AuthenticationActivity.this, CreateProfileActivity.class);
         intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TASK | Intent.FLAG_ACTIVITY_NEW_TASK);
         startActivity(intent);
     }

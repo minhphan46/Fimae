@@ -118,10 +118,7 @@ public class FimaerRepository {
     public Task<Void> updateProfile(Fimaers user)
     {
         String uid = user.getUid();
-        if(uid == currentUser.getValue().getUid())
-        {
-            currentUser.setValue(user);
-        }
+        currentUser.setValue(user);
         return fimaersRef.document(uid).set(user);
     }
     public void uploadAvatar(String uid, Uri imageURI, final UploadAvatarCallback callback) {

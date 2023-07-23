@@ -32,11 +32,22 @@ public class ProfileViewModel  extends ViewModel {
 
     private FimaerRepository userRepo;
 
+    public boolean isOther()
+    {
+        return (uid != userRepo.getCurrentUserUid());
+    }
 
     public ProfileViewModel(){
         userRepo = FimaerRepository.getInstance();
         uid = userRepo.getCurrentUserUid();
         fetchUser();
+    }
+
+    public ProfileViewModel(String uid)
+    {
+        userRepo = FimaerRepository.getInstance();
+        this.uid = uid;
+        fetchUser(uid);
     }
 
     @Nullable
@@ -53,15 +64,17 @@ public class ProfileViewModel  extends ViewModel {
     public MutableLiveData<Fimaers> fetchUser()
     {
         Log.i("PROFILEVM", "fetchUser: ");
-        if(user == null)
-        {
+        if(user == null || uid != userRepo.getCurrentUserUid())
             user = userRepo.getCurrentUser();
-        }
         return user;
     }
     public MutableLiveData<Fimaers> fetchUser(String uid)
     {
         Log.i("PROFILEVM", "fetchUser: ");
+        if(user == null)
+        {
+            user = new MutableLiveData<Fimaers>();
+        }
         userRepo.getFimaerById(uid).addOnCompleteListener(new OnCompleteListener<Fimaers>() {
                 @Override
                 public void onComplete(@NonNull Task<Fimaers> task) {

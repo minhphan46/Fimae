@@ -8,11 +8,12 @@
             type="com.example.fimae.viewmodels.ProfileViewModel" />
     </data>
 <androidx.core.widget.NestedScrollView
-    android:layout_width="wrap_content"
+    android:fillViewport="true"
+    android:layout_width="match_parent"
     android:layout_height="wrap_content">
 <androidx.constraintlayout.widget.ConstraintLayout
     android:layout_width="match_parent"
-    android:layout_height="match_parent">
+    android:layout_height="wrap_content">
 
 
     <ImageView
@@ -173,6 +174,7 @@
         app:chipSpacingHorizontal="5dp"
         app:chipSpacingVertical="5dp"
         app:chipsData="@{viewmodel.user.chip}"
+        app:viewModel="@{viewmodel}"
         app:layout_constraintBottom_toTopOf="@id/followLayout"
         app:layout_constraintTop_toBottomOf="@+id/joinDateIcon">
 
@@ -291,7 +293,9 @@
     <androidx.recyclerview.widget.RecyclerView
         android:id="@+id/post_list"
         android:layout_width="match_parent"
-        android:layout_height="wrap_content"
+        android:layout_height="0dp"
+        android:nestedScrollingEnabled="false"
+        app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintTop_toBottomOf="@id/tabView"
         app:layout_constraintLeft_toLeftOf="parent"
         app:layout_constraintRight_toRightOf="parent"

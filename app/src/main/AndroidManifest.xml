@@ -43,6 +43,7 @@
                 android:value="" />
         </activity>
             android:name=".SettingActivity"
+            android:name=".activities.CreateProfileActivity"
             android:exported="false" />
         <activity
             android:name=".StoryActivity"
@@ -75,9 +76,6 @@
             android:exported="false" />
         <activity
             android:name=".activities.EditProfileActivity"
-            android:exported="false" />
-        <activity
-            android:name=".activities.UpdateProfileActivity"
             android:exported="false" />
         <activity
             android:name=".activities.ProfileActivity"
