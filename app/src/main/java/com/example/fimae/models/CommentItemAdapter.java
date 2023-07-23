@@ -12,9 +12,9 @@ public class CommentItemAdapter{
     }
     private SubCommentAdapter adapter;
 
-    public CommentItemAdapter(Comment comment){
+    public CommentItemAdapter(Comment comment, String collection){
         this.comment = comment;
-        adapter = new SubCommentAdapter();
+        adapter = new SubCommentAdapter(collection);
     }
     public void addNewSubComment(Comment comment){
         subComment().add(comment);

@@ -39,11 +39,11 @@ public class CommentEditFragment extends BottomSheetDialogFragment {
         String content = binding.tvEdit.getText().toString();
         if(!content.isEmpty() && !content.trim().isEmpty()){
 //            comment.setContent(content);
-            commentRepository.editComment(postId, comment, content);
+            commentRepository.editComment(postId, comment, content, CommentRepository.POST_COLLECTION);
         }
     }
     private void deleteComment(){
-        commentRepository.deleteComment(postId, comment);
+        commentRepository.deleteComment(postId, comment, CommentRepository.POST_COLLECTION);
     }
     @Override
     public void onCreate(Bundle savedInstanceState) {

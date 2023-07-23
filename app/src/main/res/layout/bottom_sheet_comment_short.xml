@@ -4,10 +4,14 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:background="@drawable/shape_rectangle_border_radius_white"
     android:layout_width="match_parent"
-    android:layout_height="match_parent">
+    android:layout_height="wrap_content"
+    app:behavior_hideable="true"
+    app:behavior_peekHeight="0dp"
+    android:minHeight="500dp"
+    app:layout_behavior="android.support.design.widget.BottomSheetBehavior">
 
     <TextView
-        android:id="@+id/title"
+        android:id="@+id/title_comment"
         style="@style/bold_18"
         android:text="10 bình luận"
         android:layout_width="wrap_content"
@@ -30,12 +34,12 @@
         app:layout_constraintTop_toTopOf="parent"/>
 
     <androidx.recyclerview.widget.RecyclerView
-        android:id="@+id/comment_recycler"
+        android:id="@+id/rv_comments"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_marginTop="10dp"
         app:layout_constraintRight_toRightOf="parent"
-        app:layout_constraintTop_toBottomOf="@id/title"
+        app:layout_constraintTop_toBottomOf="@id/title_comment"
         />
 
     <ImageView
@@ -50,7 +54,6 @@
         android:id="@+id/bottom"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_alignParentBottom="true"
         android:paddingTop="5dp"
         android:paddingBottom="5dp"
         app:layout_constraintBottom_toBottomOf="parent"
@@ -59,7 +62,7 @@
         >
 
         <EditText
-            android:id="@+id/add_comment"
+            android:id="@+id/edt_comment"
             style="@style/medium_16"
             android:layout_width="match_parent"
             android:layout_height="40dp"
@@ -78,7 +81,7 @@
             />
 
         <ImageView
-            android:id="@+id/post"
+            android:id="@+id/btn_send_comment"
             android:layout_width="65dp"
             android:layout_height="40dp"
             android:background="@drawable/cantpost"

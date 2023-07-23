@@ -194,4 +194,8 @@ public class ShortsRepository {
             }
         });
     }
+    // comment
+    public Query getShortCommentQuery(String idShort) {
+        return shortsRef.document(idShort).collection("comments").orderBy("timeCreated", Query.Direction.ASCENDING);
+    }
 }

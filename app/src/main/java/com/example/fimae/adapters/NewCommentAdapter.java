@@ -47,9 +47,12 @@ public class NewCommentAdapter extends FirestoreAdapter<NewCommentAdapter.ViewHo
     private IClickMyCommentItem iClickMyCommentItem;
     private IClickMyCommentItem iClickCommentItem;
 
-    public NewCommentAdapter(Context mContext, Query query, IClickMyCommentItem listener, String postId, IClickMyCommentItem longClickListener) {
+    String collection;
+
+    public NewCommentAdapter(Context mContext, String collection, Query query, IClickMyCommentItem listener, String postId, IClickMyCommentItem longClickListener) {
         super(query);
         this.mContext = mContext;
+        this.collection = collection;
         this.iClickCommentItem = listener;
         this.postId = postId;
         this.iClickMyCommentItem = longClickListener;
@@ -69,7 +72,7 @@ public class NewCommentAdapter extends FirestoreAdapter<NewCommentAdapter.ViewHo
                 Comment comment = documentSnapshot.toObject(Comment.class);
                 assert comment != null;
                 if (comment.getParentId() == null || comment.getParentId().isEmpty()) {
-                    commentItemAdapters.add(new CommentItemAdapter(comment));
+                    commentItemAdapters.add(new CommentItemAdapter(comment, collection));
                 }
             }
             for (CommentItemAdapter commentItemAdapter : commentItemAdapters) {
@@ -88,7 +91,7 @@ public class NewCommentAdapter extends FirestoreAdapter<NewCommentAdapter.ViewHo
             switch (dc.getType()) {
                 case ADDED:
                     if (comment.getParentId() == null || comment.getParentId().isEmpty()) {
-                        commentItemAdapters.add(new CommentItemAdapter(comment));
+                        commentItemAdapters.add(new CommentItemAdapter(comment, collection));
                         notifyItemInserted(commentItemAdapters.size() - 1);
                         continue;
                     } else {
@@ -157,7 +160,7 @@ public class NewCommentAdapter extends FirestoreAdapter<NewCommentAdapter.ViewHo
         CommentItemAdapter currentCommentItem = commentItemAdapters.get(position);
         Comment currentComment = currentCommentItem.getComment();
         PostRepository.getInstance().getUserById(currentComment.getPublisher(), userInfo -> {
-            binding(binding, position, userInfo);
+            binding(binding, position, userInfo, collection);
         });
     }
 
@@ -190,7 +193,7 @@ public class NewCommentAdapter extends FirestoreAdapter<NewCommentAdapter.ViewHo
         return position;
     }
 
-    private void binding(CommentItemBinding binding, int position, Fimaers userInfo) {
+    private void binding(CommentItemBinding binding, int position, Fimaers userInfo, String collection) {
 
         CommentItemAdapter commentItemAdapter = commentItemAdapters.get(position);
         Comment currentComment = commentItemAdapter.getComment();
@@ -201,7 +204,7 @@ public class NewCommentAdapter extends FirestoreAdapter<NewCommentAdapter.ViewHo
         }
 
         String uid = userInfo.getUid();
-        DocumentReference reference = CommentRepository.getInstance().getCommentRef(currentComment.getPostId(), CommentRepository.POST_COLLECTION).document(currentComment.getId());
+        DocumentReference reference = CommentRepository.getInstance().getCommentRef(currentComment.getPostId(), collection).document(currentComment.getId());
         binding.likeNumber.setText(String.valueOf(PostService.getInstance().getNumberOfLikes(currentComment.getLikes())));
         boolean isLike = currentComment.getLikes().containsKey(currentComment.getPublisher()) && Boolean.TRUE.equals(currentComment.getLikes().get(uid));
         binding.heart.setImageResource(isLike ? R.drawable.ic_heart1 : R.drawable.ic_heart_gray);
@@ -209,9 +212,7 @@ public class NewCommentAdapter extends FirestoreAdapter<NewCommentAdapter.ViewHo
             boolean oldValue = isLike;
             String path = "likes." + uid;
             binding.heart.setImageResource(!oldValue ? R.drawable.ic_heart1 : R.drawable.ic_heart_gray);
-            reference.update(
-                    path, !oldValue
-            )
+            reference.update(path, !oldValue)
                     .addOnFailureListener(e -> {
                 binding.heart.setImageResource(oldValue ? R.drawable.ic_heart1 : R.drawable.ic_heart_gray);
             });

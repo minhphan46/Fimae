@@ -22,6 +22,7 @@ import com.example.fimae.adapters.FirestoreAdapter;
 import com.example.fimae.adapters.ShareAdapter;
 import com.example.fimae.bottomdialogs.ListItemBottomSheetFragment;
 import com.example.fimae.databinding.LayoutReelBinding;
+import com.example.fimae.models.Comment;
 import com.example.fimae.models.Conversation;
 import com.example.fimae.models.Fimaers;
 import com.example.fimae.models.shorts.ShortMedia;
@@ -54,6 +55,8 @@ public class ShortVideoAdapter extends FirestoreAdapter<ShortVideoAdapter.VideoH
     public interface IClickCardListener {
         void onClickUser(ShortMedia video);
         FragmentManager getFragmentManager();
+
+        void showComment(ShortMedia video, Fimaers fimaers);
     }
 
     public ShortVideoAdapter(Query query, Context context, ArrayList<ShortMedia> shortMedias, String idVideoFirst, IClickCardListener iClickCardListener) {
@@ -107,6 +110,10 @@ public class ShortVideoAdapter extends FirestoreAdapter<ShortVideoAdapter.VideoH
                             } else {
                                 holder.binding.itemVideoIcLike.setColorFilter(ContextCompat.getColor(context, R.color.white));
                             }
+                            // comment
+                            holder.binding.itemVideoIcComment.setOnClickListener(view -> {
+                                iClickCardListener.showComment(media, fimaers);
+                            });
                         }
                     }
                 }
@@ -163,8 +170,6 @@ public class ShortVideoAdapter extends FirestoreAdapter<ShortVideoAdapter.VideoH
         holder.binding.itemVideoIcLike.setOnClickListener(view -> {
             handleLikeShort(media, holder);
         });
-        // comment
-
         // share
         holder.binding.itemVideoIcShare.setOnClickListener(view -> {
             showSharePostDialog(media);
