@@ -289,11 +289,11 @@ public class ShortVideoAdapter extends FirestoreAdapter<ShortVideoAdapter.VideoH
                         if(listShareItemBottomSheetFragment != null){
                             listShareItemBottomSheetFragment.dismiss();
                         }
-                        ChatRepository.getInstance().getOrCreateFriendConversation(userInfo.getUid()).addOnCompleteListener(new OnCompleteListener<Conversation>() {
+                        ChatRepository.getDefaultChatInstance().getOrCreateFriendConversation(userInfo.getUid()).addOnCompleteListener(new OnCompleteListener<Conversation>() {
                             @Override
                             public void onComplete(@NonNull Task<Conversation> task) {
                                 if(task.getResult() != null){
-                                    ChatRepository.getInstance().sendShortMessage(task.getResult().getId(), media.getId());
+                                    ChatRepository.getDefaultChatInstance().sendShortMessage(task.getResult().getId(), media.getId());
                                     Intent intent = new Intent(context, OnChatActivity.class);
                                     intent.putExtra("conversationID", task.getResult().getId());
                                     context.startActivity(intent);

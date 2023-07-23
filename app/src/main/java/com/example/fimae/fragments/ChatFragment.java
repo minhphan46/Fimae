@@ -18,9 +18,9 @@ import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.example.fimae.R;
-import com.example.fimae.StoryActivity;
 import com.example.fimae.activities.OnChatActivity;
 import com.example.fimae.activities.SearchUserActivity;
+import com.example.fimae.activities.StoryActivity;
 import com.example.fimae.adapters.ConversationAdapter;
 import com.example.fimae.adapters.SpacingItemDecoration;
 import com.example.fimae.adapters.StoryAdapter.StoryAdapter;

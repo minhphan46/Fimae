@@ -46,7 +46,7 @@
                 android:name="android.app.lib_name"
                 android:value="" />
         </activity>
-            android:name=".SettingActivity"
+        <activity
             android:name=".activities.CreateProfileActivity"
             android:exported="false" />
         <activity
