@@ -23,14 +23,12 @@ import com.example.fimae.fragments.FimaeBottomSheet;
 import com.example.fimae.models.BottomSheetItem;
 import com.example.fimae.models.Message;
 import com.example.fimae.repository.ChatRepository;
-import com.example.fimae.service.FirebaseService;
 import com.example.fimae.utils.FileUtils;
 import com.example.fimae.utils.FirebaseHelper;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.firestore.*;
 
 import java.util.*;
-import java.util.function.BiConsumer;
 
 public class OnChatActivity extends AppCompatActivity{
     private static final int REQUEST_IMAGE_CAPTURE = 1;
@@ -82,7 +80,7 @@ public class OnChatActivity extends AppCompatActivity{
         inputMediaLayout = findViewById(R.id.input_media_layout);
         inputMediaLayout.setVisibility(View.GONE);
         ImageView btnSend = findViewById(R.id.btn_send);
-        textInput = findViewById(R.id.et_input);
+        textInput = findViewById(R.id.random_chat_et_input);
         ImageView btnCamera = findViewById(R.id.btn_camera);
         ImageView btnGallery = findViewById(R.id.btn_galllery);
         ImageView btnMicro = findViewById(R.id.btn_micro);

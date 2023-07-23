@@ -14,10 +14,8 @@ public abstract class FirestoreAdapter<VH extends RecyclerView.ViewHolder> exten
     private ListenerRegistration registration;
     protected ArrayList<DocumentSnapshot> snapshots;
     private static final String TAG = "FirestoreAdapter";
-    public abstract void OnSuccessQueryListener(ArrayList<DocumentSnapshot> queryDocumentSnapshots);
-    public void OnSuccessQueryListener(ArrayList<DocumentSnapshot> queryDocumentSnapshots, ArrayList<DocumentChange> documentChanges){
 
-    }
+    public abstract void OnSuccessQueryListener(ArrayList<DocumentSnapshot> queryDocumentSnapshots, ArrayList<DocumentChange> documentChanges);
 
     public FirestoreAdapter(Query query) {
         this.query = query;
@@ -29,7 +27,6 @@ public abstract class FirestoreAdapter<VH extends RecyclerView.ViewHolder> exten
             if(value!= null){
                 snapshots = (ArrayList<DocumentSnapshot>) value.getDocuments();
                 ArrayList<DocumentChange> documentChanges = new ArrayList<>(value.getDocumentChanges());
-                OnSuccessQueryListener(snapshots);
                 OnSuccessQueryListener(snapshots,  documentChanges);
             }
         });

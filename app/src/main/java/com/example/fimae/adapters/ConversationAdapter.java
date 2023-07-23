@@ -17,6 +17,7 @@ import com.example.fimae.models.Message;
 import com.example.fimae.repository.ChatRepository;
 import com.example.fimae.repository.FimaerRepository;
 import com.google.firebase.auth.FirebaseAuth;
+import com.google.firebase.firestore.DocumentChange;
 import com.google.firebase.firestore.DocumentSnapshot;
 import com.google.firebase.firestore.Query;
 import com.squareup.picasso.Picasso;
@@ -30,8 +31,9 @@ import de.hdodenhof.circleimageview.CircleImageView;
 public class ConversationAdapter extends FirestoreAdapter<ConversationAdapter.ViewHolder> {
 
 
+
     @Override
-    public void OnSuccessQueryListener(ArrayList<DocumentSnapshot> queryDocumentSnapshots) {
+    public void OnSuccessQueryListener(ArrayList<DocumentSnapshot> queryDocumentSnapshots, ArrayList<DocumentChange> documentChanges) {
         snapshots = queryDocumentSnapshots;
         notifyDataSetChanged();
     }

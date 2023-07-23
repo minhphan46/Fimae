@@ -176,11 +176,6 @@ public class MessageAdapter extends FirestoreAdapter {
         }
     }
 
-    @Override
-    public void OnSuccessQueryListener(ArrayList queryDocumentSnapshots) {
-
-
-    }
 
 
     @Override
