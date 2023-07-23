@@ -1,0 +1,92 @@
+package com.example.fimae.viewmodels;
+
+public class ChipData {
+    public static String[] tinhCach = {
+            "Hài hước",
+            "Ga lăng",
+            "Dễ gần",
+            "Dễ thương",
+            "Lãng mạn",
+            "Truyền thống",
+            "Gen Z",
+            "Thể thao",
+            "Đeo bám",
+            "Cú đêm",
+            "Cô đơn",
+            "Ngầu",
+            "Xấu hổ",
+            "Yên tĩnh",
+            "Thích ở nhà",
+            "Hoạt ngôn",
+            "Nhạt nhẽo"
+    };
+    public static String[] chomSao = {
+            "Bạch Dương",
+            "Kim Ngưu",
+            "Song Tử",
+            "Cự Giải",
+            "Sư Tử",
+            "Xử Nữ",
+            "Thiên Bình",
+            "Bọ Cạp",
+            "Nhân Mã",
+            "Ma Kết",
+            "Bảo Bình",
+            "Song Ngư"
+    };
+    public static String[] thuCung = {
+            "Chó",
+            "Mèo",
+            "Hamster",
+            "Thỏ",
+            "Cá",
+            "Chim",
+            "Rùa",
+            "Nhím",
+            "Bò sát",
+            "Khỉ",
+            "Côn trùng",
+    };
+    public static String[] amNhac = {
+            "Guitar",
+            "K-pop",
+            "J-pop",
+            "Nhạc pop",
+            "Nhạc rock",
+            "Nhạc đồng quê",
+            "Nhạc jazz",
+            "Nhạc không lời",
+            "R&B",
+            "Rap",
+            "Metal",
+            "Nhạc cổ điển",
+            "Nhạc điện tử",
+    };
+    public static String[] theThao = {
+            "Bóng đá",
+            "Bóng rổ",
+            "Cầu lông",
+            "Bơi lội",
+            "Bắn cung",
+            "Bóng chuyền",
+            "Điền kinh",
+            "Đua xe",
+            "Tenis",
+            "Bóng bàn",
+            "Muay Thái",
+            "Karate",
+            "Thể dục dụng cụ",
+            "Leo núi",
+            "Thể hình",
+            "Võ thuật",
+            "Trượt băng",
+            "Nhảy cao",
+            "Cờ vua",
+            "Cờ tướng",
+            "Taekwondo",
+            "Bi-a",
+            "Đấu vật",
+            "Bóng ném",
+            "Quần vợt"
+    };
+}

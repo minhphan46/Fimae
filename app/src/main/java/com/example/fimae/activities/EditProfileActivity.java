@@ -57,8 +57,9 @@ public class EditProfileActivity extends AppCompatActivity {
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        EditProfileViewModel viewModel = new ViewModelProvider(this).get(EditProfileViewModel.class);
         binding = DataBindingUtil.setContentView(this,R.layout.activity_edit_profile);
+        EditProfileViewModel viewModel = new ViewModelProvider(this).get(EditProfileViewModel.class);
+
         binding.setLifecycleOwner(this);
         binding.setViewmodel(viewModel);
         confirmBtn = findViewById(R.id.confirmBtn);
@@ -70,11 +71,18 @@ public class EditProfileActivity extends AppCompatActivity {
         litIdTxt = findViewById(R.id.litIdTxt);
         bioTxt = findViewById(R.id.editText);
 
+        viewModel.getMessage().observe(this , new Observer<String>() {
+            @Override
+            public void onChanged(String s) {
+                Log.i("TAG", "onChanged: "+ s);
+                if(!s.equals(""))
+                    Toast.makeText(EditProfileActivity.this, s, Toast.LENGTH_SHORT).show();
+            }
+        });
 
         binding.tabView.addOnTabSelectedListener(new TabLayout.OnTabSelectedListener() {
             @Override
             public void onTabSelected(TabLayout.Tab tab) {
-                Log.i("TAG", "onTabSelected: ");
                 viewModel.setChip(tab.getPosition());
             }
 

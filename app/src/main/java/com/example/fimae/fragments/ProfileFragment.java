@@ -101,7 +101,8 @@ public class ProfileFragment extends Fragment {
         viewModel.getUser().observe(getViewLifecycleOwner(), new Observer<Fimaers>() {
             @Override
             public void onChanged(Fimaers fimaers) {
-                setTextSpan();
+                if(fimaers.getBio() != null)
+                    setTextSpan();
                 Log.i("PROFILE", "onChanged: " + fimaers.getName());
             }
         });

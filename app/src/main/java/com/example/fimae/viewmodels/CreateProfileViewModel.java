@@ -1,27 +1,23 @@
 package com.example.fimae.viewmodels;
 
+import android.net.Uri;
 import android.util.Log;
 
 import androidx.lifecycle.LiveData;
 import androidx.lifecycle.MutableLiveData;
 import androidx.lifecycle.ViewModel;
 
+import com.example.fimae.activities.CreateProfileActivity;
 import com.example.fimae.models.Fimaers;
 import com.example.fimae.repository.FimaerRepository;
 import com.google.android.gms.tasks.Task;
 
-import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Arrays;
 
-public class EditProfileViewModel extends ViewModel {
-
-    private MutableLiveData<Fimaers> user;
-
-    public MutableLiveData<Fimaers> getUser() {
-        return user;
-    }
-
+public class CreateProfileViewModel extends ViewModel {
+    public Fimaers user = new Fimaers();
+    FimaerRepository repository = FimaerRepository.getInstance();
     private MutableLiveData<String> toastMessage = new MutableLiveData<>("");
 
     public LiveData<String> getMessage()
@@ -29,33 +25,20 @@ public class EditProfileViewModel extends ViewModel {
         return toastMessage;
     }
 
-    private FimaerRepository userRepo;
-
-    public Boolean hasChange = false;
-
     MutableLiveData<ArrayList<String>> chips = new MutableLiveData<>(new ArrayList<>(Arrays.asList(ChipData.tinhCach)));
 
-
-    public EditProfileViewModel(){
-
-        userRepo = FimaerRepository.getInstance();
-        fetchUser();
+    public CreateProfileViewModel(){
+        Log.i("TAG", "CreateProfileViewModel: ");
+        user.setUid(repository.getCurrentUserUid());
     }
-
-    public MutableLiveData<Fimaers> fetchUser()
+    public void uploadAvatar(Uri uri, FimaerRepository.UploadAvatarCallback callback)
     {
-        user = userRepo.getCurrentUser();
-        return user;
+        repository.uploadAvatar(user.getUid(), uri, callback);
     }
-
-    public void setName(String value)
+    public Task<Void> updateUser()
     {
-        Fimaers tset = user.getValue();
-        tset.setName(value);
-        user.setValue(tset);
+        return repository.updateProfile(user);
     }
-
-
     public MutableLiveData<ArrayList<String>> getChip()
     {
         return chips;
@@ -93,13 +76,13 @@ public class EditProfileViewModel extends ViewModel {
     {
         if(b)
         {
-            if(user.getValue().getChip()== null) {
-                user.getValue().setChip(new ArrayList<>());
+            if(user.getChip()== null) {
+                user.setChip(new ArrayList<>());
 
             }
-            if(user.getValue().getChip().size() < 9)
+            if(user.getChip().size() < 9)
             {
-                user.getValue().addChip(text);
+                user.addChip(text);
             }else
             {
                 b = false;
@@ -108,15 +91,8 @@ public class EditProfileViewModel extends ViewModel {
         }
         else
         {
-            user.getValue().removeChip(text);
+            user.removeChip(text);
         }
         return b;
     }
-
-    public Task<Void> updateUser()
-    {
-        return userRepo.updateProfile(user.getValue());
-    }
-
-
 }

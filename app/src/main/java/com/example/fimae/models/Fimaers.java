@@ -19,6 +19,10 @@ import java.util.Locale;
 import java.util.Map;
 
 public class Fimaers extends BaseObservable implements Serializable {
+    public void setUid(String uid) {
+        this.uid = uid;
+    }
+
     private String uid;
 
     public void setLastName(String lastName) {
@@ -79,6 +83,7 @@ public class Fimaers extends BaseObservable implements Serializable {
         this.timeCreated = timeCreated;
     }
 
+    @ServerTimestamp
     private Date timeCreated;
 
     public void setDob(Date dob) {
@@ -146,6 +151,8 @@ public class Fimaers extends BaseObservable implements Serializable {
     @Bindable
     public String getName()
     {
+        if(lastName == null)
+            return firstName;
         return firstName + " " + lastName;
     }
 
@@ -159,6 +166,10 @@ public class Fimaers extends BaseObservable implements Serializable {
 
     public String getAvatarUrl() {
         return avatarUrl;
+    }
+
+    public void setGender(boolean gender) {
+        this.gender = gender;
     }
 
     @Bindable
@@ -185,6 +196,10 @@ public class Fimaers extends BaseObservable implements Serializable {
     @Exclude
     @Bindable
     public String getJD() {
+        if(timeCreated == null)
+        {
+            return "";
+        }
         SimpleDateFormat sdf = new SimpleDateFormat("MMMM, yyyy", new Locale("vi", "VN"));
         return sdf.format(timeCreated);
     }
@@ -237,6 +252,10 @@ public class Fimaers extends BaseObservable implements Serializable {
 
     public void setBackgroundUrl(@Nullable String backgroundUrl) {
         this.backgroundUrl = backgroundUrl;
+    }
+
+    public void setAvatarUrl(String avatarUrl) {
+        this.avatarUrl = avatarUrl;
     }
 
     public void setName(String fullName)
