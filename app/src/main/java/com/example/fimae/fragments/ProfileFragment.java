@@ -176,7 +176,8 @@ public class ProfileFragment extends Fragment {
                                 @Override
                                 public void onClickUser(ShortMedia video) {
                                     Intent intent = new Intent(getContext(), ShortVideoActivity.class);
-                                    intent.putExtra("idVideo", video.getId());  // Truyền một String
+                                    intent.putExtra("idVideo", video.getId()); // send id video
+                                    intent.putExtra("isProfile", true);
                                     startActivity(intent);
                                 }
                             }

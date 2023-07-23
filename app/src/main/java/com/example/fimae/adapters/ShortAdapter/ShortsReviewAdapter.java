@@ -1,5 +1,6 @@
 package com.example.fimae.adapters.ShortAdapter;
 
+import android.annotation.SuppressLint;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -30,25 +31,22 @@ public class ShortsReviewAdapter extends FirestoreAdapter<ShortsReviewAdapter.Sh
 
     //ArrayList<ShortMedia> shortMedias = ShortMedia.getFakeData();
     ArrayList<ShortMedia> shortMedias = new ArrayList<>();
-    private ShortsReviewAdapter.IClickCardListener iClickCardListener;
-
-    private boolean isInProfile = false;
+    private final ShortsReviewAdapter.IClickCardListener iClickCardListener;
 
     public interface IClickCardListener {
         void addShortClicked();
         void onClickUser(ShortMedia video);
     }
 
-    public ShortsReviewAdapter(Query query, boolean isInProfile,IClickCardListener iClickCardListener) {
+    public ShortsReviewAdapter(Query query, IClickCardListener iClickCardListener) {
         super(query);
-        this.isInProfile = isInProfile;
         this.iClickCardListener = iClickCardListener;
     }
 
     @NonNull
     @Override
     public ShortsReviewHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
-          if (viewType == 0 && !isInProfile) {
+        if (viewType == 0) {
             View view = LayoutInflater.from(parent.getContext()).inflate(R.layout.add_short_item, parent, false);
             return new ShortsReviewHolder(view, true);
         } else {
@@ -59,29 +57,7 @@ public class ShortsReviewAdapter extends FirestoreAdapter<ShortsReviewAdapter.Sh
 
     @Override
     public void onBindViewHolder(@NonNull ShortsReviewHolder holder, int position) {
-        if(isInProfile){
-            // Get the data at the specified position
-            ShortMedia shortMedia = shortMedias.get(position);
-            // get user avatar
-            FimaerRepository.getInstance().getFimaerById(shortMedia.getUid()).addOnCompleteListener(
-                task -> {
-                    if(task.isSuccessful()){
-                        Fimaers fimaers = task.getResult();
-                        if(fimaers != null){
-                            Picasso.get().load(fimaers.getAvatarUrl()).placeholder(R.drawable.ic_default_avatar).into(holder.shortAvatar);
-                        }
-                    }
-                }
-            );
-            Glide.with(holder.itemView)
-                    .load(shortMedia.getMediaUrl())
-                    .into(holder.shortImage);
-            holder.shortImage.setOnClickListener(view -> {
-                iClickCardListener.onClickUser(shortMedia);
-            });
-            holder.shortViewCount.setText(formatNumber(ShortsRepository.getInstance().getNumOfWatched(shortMedia)));
-        }
-        else if( position == 0) {
+        if( position == 0) {
             holder.shortImage.setOnClickListener(view -> {
                 iClickCardListener.addShortClicked();
             });
@@ -133,6 +109,7 @@ public class ShortsReviewAdapter extends FirestoreAdapter<ShortsReviewAdapter.Sh
 
     }
 
+    @SuppressLint("NotifyDataSetChanged")
     @Override
     public void OnSuccessQueryListener(ArrayList<DocumentSnapshot> queryDocumentSnapshots, ArrayList<DocumentChange> documentChanges) {
         if(shortMedias == null){
@@ -149,18 +126,13 @@ public class ShortsReviewAdapter extends FirestoreAdapter<ShortsReviewAdapter.Sh
 
     @Override
     public int getItemCount() {
-        if(isInProfile) return shortMedias.size();
-        else
         if(shortMedias == null){
             return 1;
         }
         else return shortMedias.size() + 1;
     }
-    @Override
-    public int getItemViewType(int position) {
-        return position;
-    }
-    public class ShortsReviewHolder extends RecyclerView.ViewHolder {
+
+    public static class ShortsReviewHolder extends RecyclerView.ViewHolder {
         ImageView shortImage;
         CircleImageView shortAvatar;
         TextView shortViewCount;

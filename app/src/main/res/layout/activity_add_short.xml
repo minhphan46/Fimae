@@ -92,6 +92,8 @@
                 android:layout_marginTop="5dp"
                 android:layout_marginStart="10dp"
                 android:layout_marginEnd="10dp"
+                android:minHeight="150dp"
+                android:gravity="start|top"
                 android:hint="Mô tả thước phim tại đây..."
                 style="@style/regular_14"
                 android:background="@color/background_button_2"

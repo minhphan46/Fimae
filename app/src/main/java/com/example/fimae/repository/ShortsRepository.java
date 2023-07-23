@@ -90,12 +90,8 @@ public class ShortsRepository {
         return shortsRef.orderBy("timeCreated", Query.Direction.DESCENDING);
     }
 
-    public Query getShortCustomQuery(String idVideo) {
-        return shortsRef.orderBy("timeCreated", Query.Direction.DESCENDING);
-    }
-
     public Query getShortUserQuery(String uid) {
-        return shortsRef.orderBy("timeCreated", Query.Direction.DESCENDING);
+        return shortsRef.whereEqualTo("uid", uid).orderBy("timeCreated", Query.Direction.DESCENDING);
     }
 
     public Task<ShortMedia> updateShort(ShortMedia shortMedia) {

@@ -37,14 +37,17 @@ public class ShortVideoAdapter extends FirestoreAdapter<ShortVideoAdapter.VideoH
     ArrayList<VideoHolder> holders = new ArrayList<>();
     String uidCurrentUser = FirebaseAuth.getInstance().getUid();
 
+    String idVideoFirst;
+
     public interface IClickCardListener {
         void onClickUser(ShortMedia video);
     }
 
-    public ShortVideoAdapter(Query query, Context context, ArrayList<ShortMedia> shortMedias, IClickCardListener iClickCardListener) {
+    public ShortVideoAdapter(Query query, Context context, ArrayList<ShortMedia> shortMedias, String idVideoFirst, IClickCardListener iClickCardListener) {
         super(query);
         this.context = context;
         this.shortMedias = shortMedias;
+        this.idVideoFirst = idVideoFirst;
         this.iClickCardListener = iClickCardListener;
     }
 
@@ -225,7 +228,9 @@ public class ShortVideoAdapter extends FirestoreAdapter<ShortVideoAdapter.VideoH
         }
         for(DocumentSnapshot documentSnapshot : queryDocumentSnapshots){
             ShortMedia shortMedia = documentSnapshot.toObject(ShortMedia.class);
-            shortMedias.add(shortMedia);
+            assert shortMedia != null;
+            if(shortMedia.getId().equals(idVideoFirst)) shortMedias.add(0, shortMedia);
+            else shortMedias.add(shortMedia);
         }
         notifyDataSetChanged();
         stopListening();
