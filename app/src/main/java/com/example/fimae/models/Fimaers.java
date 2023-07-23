@@ -40,10 +40,36 @@ public class Fimaers extends BaseObservable implements Serializable {
     private String phone;
     private String avatarUrl;
 
+    public void setChip(ArrayList<String> chip) {
+        this.chip = chip;
+        notifyPropertyChanged(BR.chip);
+    }
+
+    public void addChip(String value)
+    {
+        if(chip == null)
+        {
+            chip = new ArrayList<>();
+        }
+        chip.add(value);
+        notifyPropertyChanged(BR.chip);
+    }
+
+    public void removeChip(String value)
+    {
+        while (chip.contains(value)) {
+            chip.remove(value);
+        }
+        notifyPropertyChanged(BR.chip);
+    }
+
+    private ArrayList<String> chip;
+
     @Nullable private String backgroundUrl;
 
     public void setBio(String bio) {
         this.bio = bio;
+        notifyPropertyChanged(BR.bio);
     }
 
     private String bio;
@@ -135,6 +161,7 @@ public class Fimaers extends BaseObservable implements Serializable {
         return avatarUrl;
     }
 
+    @Bindable
     public String getBio() {
         return bio;
     }
@@ -245,14 +272,10 @@ public class Fimaers extends BaseObservable implements Serializable {
         return String.valueOf(calculateAge());
     }
 
-    @Exclude
     @Bindable
     public ArrayList<String> getChip()
     {
-        ArrayList<String> chips = new ArrayList<>();
-        chips.add("Chế này hài");
-        chips.add("Đm lập trình");
-        return chips;
+        return this.chip;
     }
     private Fimaers(String id, String name, String avatarUrl, int age, boolean gender, String bio, String tk) {
         this.uid = id;
