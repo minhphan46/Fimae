@@ -44,6 +44,7 @@ import com.example.fimae.models.Post;
 import com.example.fimae.models.shorts.ShortMedia;
 import com.example.fimae.repository.FimaerRepository;
 import com.example.fimae.viewmodels.ProfileViewModel;
+import com.example.fimae.viewmodels.ProfileViewModelFactory;
 import com.google.android.material.tabs.TabLayout;
 import com.google.firebase.firestore.CollectionReference;
 import com.google.firebase.firestore.DocumentChange;
@@ -55,6 +56,7 @@ import androidx.fragment.app.FragmentManager;
 import androidx.fragment.app.FragmentPagerAdapter;
 import androidx.fragment.app.FragmentTransaction;
 import androidx.lifecycle.Observer;
+import androidx.lifecycle.ViewModel;
 import androidx.lifecycle.ViewModelProvider;
 import androidx.recyclerview.widget.GridLayoutManager;
 import androidx.recyclerview.widget.LinearLayoutManager;
@@ -74,6 +76,7 @@ public class ProfileFragment extends Fragment {
     TextView bioTextView;
     FragmentProfileBinding binding;
     ProfileViewModel viewModel;
+
     private List<Post> posts = new ArrayList<>();
 
     private PostAdapter postAdapter;
@@ -90,9 +93,18 @@ public class ProfileFragment extends Fragment {
     @Nullable
     @Override
     public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
-        viewModel = new ViewModelProvider(this).get(ProfileViewModel.class);
         binding = DataBindingUtil.inflate(inflater,R.layout.fragment_profile,container,false);
         View view = binding.getRoot();
+        if (getArguments() != null) {
+            String uid = getArguments().getString("uid");
+            ProfileViewModelFactory factory = new ProfileViewModelFactory(uid);
+            binding.editProfileBtn.setVisibility(View.GONE);
+            viewModel = new ViewModelProvider(this, factory).get(ProfileViewModel.class);
+        }
+        else
+        {
+            viewModel = new ViewModelProvider(this).get(ProfileViewModel.class);
+        }
         binding.setLifecycleOwner(this.getViewLifecycleOwner());
         binding.setViewmodel(viewModel);
         posts.clear();
@@ -112,13 +124,6 @@ public class ProfileFragment extends Fragment {
         avatarBtn = view.findViewById(R.id.avatarBtn);
         backgroundImg = view.findViewById(R.id.backgroundImage);
         copyLitId = view.findViewById(R.id.copyBtn);
-        if (getArguments() != null) {
-            String uid = getArguments().getString("uid");
-            viewModel.setUid(uid);
-        }
-        else {
-            viewModel.fetchUser();
-        }
         binding.postList.setHasFixedSize(true);
         postAdapter = new PostAdapter();
         postAdapter.setData(getContext(), posts, post -> {
@@ -246,26 +251,29 @@ public class ProfileFragment extends Fragment {
         String text = binding.getViewmodel().getUser().getValue().getBio();
         // Create a SpannableString with the text and the edit icon
         SpannableString spannableString = new SpannableString( text + " "); // Add some extra space after text for the icon
+        if(!viewModel.isOther())
+        {
+            // Get the drawable for the edit icon
+            int iconSize = (int) TypedValue.applyDimension(TypedValue.COMPLEX_UNIT_DIP, 18,
+                    getResources().getDisplayMetrics());
+            Drawable icon = getResources().getDrawable(R.drawable.ic_edit);
+            icon.setBounds(0, 0, iconSize, iconSize);
 
-        // Get the drawable for the edit icon
-        int iconSize = (int) TypedValue.applyDimension(TypedValue.COMPLEX_UNIT_DIP, 18,
-                getResources().getDisplayMetrics());
-        Drawable icon = getResources().getDrawable(R.drawable.ic_edit);
-        icon.setBounds(0, 0, iconSize, iconSize);
+            // Create an ImageSpan with the edit icon and add it to the SpannableString
+            ImageSpan imageSpan = new ImageSpan(icon, ImageSpan.ALIGN_BASELINE);
+            spannableString.setSpan(imageSpan, text.length(), text.length() + 1, Spannable.SPAN_INCLUSIVE_EXCLUSIVE);
+            // Create a ClickableSpan for the icon
+            ClickableSpan clickableSpan = new ClickableSpan() {
+                @Override
+                public void onClick(View widget) {
+                    // Handle the click event here
+                    navToEditProfile();
+                }
+            };
+            // Set the ClickableSpan to the ImageSpan
+            spannableString.setSpan(clickableSpan, text.length(), text.length() + 1, Spannable.SPAN_INCLUSIVE_EXCLUSIVE);
 
-        // Create an ImageSpan with the edit icon and add it to the SpannableString
-        ImageSpan imageSpan = new ImageSpan(icon, ImageSpan.ALIGN_BASELINE);
-        spannableString.setSpan(imageSpan, text.length(), text.length() + 1, Spannable.SPAN_INCLUSIVE_EXCLUSIVE);
-        // Create a ClickableSpan for the icon
-        ClickableSpan clickableSpan = new ClickableSpan() {
-            @Override
-            public void onClick(View widget) {
-                // Handle the click event here
-                navToEditProfile();
-            }
-        };
-        // Set the ClickableSpan to the ImageSpan
-        spannableString.setSpan(clickableSpan, text.length(), text.length() + 1, Spannable.SPAN_INCLUSIVE_EXCLUSIVE);
+        }
 
         Log.i("TAG", "setTextSpan: " + spannableString.toString());
         // Set the SpannableString to the TextView
