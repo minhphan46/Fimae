@@ -19,10 +19,12 @@ import com.bumptech.glide.Glide;
 import com.example.fimae.R;
 import com.example.fimae.activities.DetailPostActivity;
 import com.example.fimae.activities.MediaSliderActivity;
+import com.example.fimae.activities.ShortVideoActivity;
 import com.example.fimae.adapters.ImageMessageAdapter;
 import com.example.fimae.models.Fimaers;
 import com.example.fimae.models.Message;
 import com.example.fimae.repository.PostRepository;
+import com.example.fimae.repository.ShortsRepository;
 import com.google.firebase.auth.FirebaseAuth;
 
 import java.util.ArrayList;
@@ -133,8 +135,22 @@ public class MessageView extends ConstraintLayout {
             this.textView.setVisibility(GONE);
             this.postMessage.setVisibility(VISIBLE);
             this.recyclerView.setVisibility(GONE);
-            //throw new RuntimeException("Thêm video vào đây");
-
+            ShortsRepository.getInstance().getShortById(message.getContent().toString()).addOnSuccessListener(shortMedia -> {
+                if (shortMedia.getMediaUrl() != null) {
+                    postMessage.setImage((String) shortMedia.getMediaUrl());
+                } else {
+                    postMessage.setImageVisibility(View.GONE);
+                }
+                String content = shortMedia.getDescription();
+                postMessage.setTitle(content);
+            });
+            postMessage.setLabelButton("XEM VIDEO");
+            postMessage.setOnClickListener(v -> {
+                Intent intent = new Intent(getContext(), ShortVideoActivity.class);
+                intent.putExtra("idVideo", message.getContent().toString());  // send id video
+                intent.putExtra("isProfile", false);
+                getContext().startActivity(intent);
+            });
             }
         }
 

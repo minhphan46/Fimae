@@ -16,12 +16,15 @@ import androidx.recyclerview.widget.RecyclerView;
 
 import com.bumptech.glide.Glide;
 import com.bumptech.glide.request.RequestOptions;
+import com.example.fimae.Constant.ReportContents;
 import com.example.fimae.R;
 import com.example.fimae.activities.DetailPostActivity;
 import com.example.fimae.activities.OnChatActivity;
 import com.example.fimae.adapters.FirestoreAdapter;
+import com.example.fimae.adapters.Report.ReportAdapterItem;
 import com.example.fimae.adapters.ShareAdapter;
 import com.example.fimae.bottomdialogs.ListItemBottomSheetFragment;
+import com.example.fimae.bottomdialogs.ReportDialog;
 import com.example.fimae.databinding.LayoutReelBinding;
 import com.example.fimae.models.Comment;
 import com.example.fimae.models.Conversation;
@@ -30,8 +33,10 @@ import com.example.fimae.models.shorts.ShortMedia;
 import com.example.fimae.repository.ChatRepository;
 import com.example.fimae.repository.FimaerRepository;
 import com.example.fimae.repository.FollowRepository;
+import com.example.fimae.repository.ReportRepository;
 import com.example.fimae.repository.ShortsRepository;
 import com.example.fimae.utils.DoubleClickListener;
+import com.example.fimae.utils.ReportItem;
 import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.android.gms.tasks.Task;
@@ -176,6 +181,28 @@ public class ShortVideoAdapter extends FirestoreAdapter<ShortVideoAdapter.VideoH
         // share
         holder.binding.itemVideoIcShare.setOnClickListener(view -> {
             showSharePostDialog(media);
+        });
+        // report
+        holder.binding.itemVideoIcReport.setOnClickListener(view -> {
+            ReportDialog.builder()
+                    .setTitle("Báo cáo video") //must
+                    .setSubtitle("Chọn lý do báo cáo và mô tả ngắn  gọn") //optional
+                    .setReportAdapterItems(ReportContents.getPostReportAdapterItems()) //must
+                    .setOnReportDialogListener(new ReportDialog.OnReportDialogListener() {
+                        @Override
+                        public void onReportDialog(ReportAdapterItem reportAdapterItem, String description) {
+                            ReportRepository.getInstance().addNewReport(media.getId(), ReportItem.USER_ITEM ,reportAdapterItem.getTitle(), description)
+                                    .addOnCompleteListener(task -> {
+                                        if (task.isSuccessful()) {
+                                            Toast.makeText(context, "Báo cáo thành công", Toast.LENGTH_SHORT).show();
+                                        } else {
+                                            Toast.makeText(context, "Báo cáo thất bại", Toast.LENGTH_SHORT).show();
+                                        }
+                                    });
+                        }
+                    })
+                    .build()
+                    .show(iClickCardListener.getFragmentManager(), "report");
         });
     }
 
