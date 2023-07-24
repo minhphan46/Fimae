@@ -32,6 +32,7 @@ import com.example.fimae.repository.ChatRepository;
 import com.example.fimae.repository.ReportRepository;
 import com.example.fimae.utils.FileUtils;
 import com.example.fimae.utils.FirebaseHelper;
+import com.example.fimae.utils.ReportItem;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.firestore.*;
 
@@ -157,7 +158,7 @@ public class OnChatActivity extends AppCompatActivity{
                                             .setOnReportDialogListener(new ReportDialog.OnReportDialogListener() {
                                                 @Override
                                                 public void onReportDialog(ReportAdapterItem reportAdapterItem, String description) {
-                                                    ReportRepository.getReportRepository(ReportType.POST).report("reportedId", reportAdapterItem.getTitle(), description)
+                                                    ReportRepository.getInstance().addNewReport("docId", ReportItem.USER_ITEM ,reportAdapterItem.getTitle(), description)
                                                             .addOnCompleteListener(task -> {
                                                                 if (task.isSuccessful()) {
                                                                     Toast.makeText(OnChatActivity.this, "Báo cáo thành công", Toast.LENGTH_SHORT).show();
