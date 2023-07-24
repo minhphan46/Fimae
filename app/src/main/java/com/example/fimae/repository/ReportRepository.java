@@ -14,14 +14,17 @@ import java.util.HashMap;
 public class ReportRepository {
     FirebaseFirestore firestore;
     CollectionReference collectionReference;
+
     private ReportRepository(ReportType reportType) {
         firestore = FirebaseFirestore.getInstance();
-        collectionReference = firestore.collection("reports" + reportType.toString().toLowerCase());
+        collectionReference = firestore.collection("reports" + "/" + reportType.toString().toLowerCase());
     }
+
     public static ReportRepository getReportRepository(ReportType reportType) {
         return new ReportRepository(reportType);
     }
-    public Task<Boolean> report(String reportedId, String reason , String description) {
+
+    public Task<Boolean> report(String reportedId, String reason, String description) {
         TaskCompletionSource<Boolean> taskCompletionSource = new TaskCompletionSource<>();
         DocumentReference documentReference = collectionReference.document();
         HashMap<String, Object> hashMap = new HashMap<>();

@@ -151,9 +151,9 @@ public class OnChatActivity extends AppCompatActivity{
                                 @Override
                                 public void onClick(BottomSheetItem bottomSheetItem) {
                                     ReportDialog.builder()
-                                            .setTitle("Báo cáo bài viết")
-                                            .setSubtitle("Chọn lý do báo cáo và mô tả ngắn  gọn")
-                                            .setReportAdapterItems(ReportContents.getPostReportAdapterItems())
+                                            .setTitle("Báo cáo bài viết") //must
+                                            .setSubtitle("Chọn lý do báo cáo và mô tả ngắn  gọn") //optional
+                                            .setReportAdapterItems(ReportContents.getPostReportAdapterItems()) //must
                                             .setOnReportDialogListener(new ReportDialog.OnReportDialogListener() {
                                                 @Override
                                                 public void onReportDialog(ReportAdapterItem reportAdapterItem, String description) {
