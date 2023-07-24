@@ -1,6 +1,5 @@
 package com.example.fimae.activities;
 
-import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.appcompat.widget.SearchView;
 import androidx.recyclerview.widget.LinearLayoutManager;
@@ -13,15 +12,10 @@ import android.widget.Toast;
 
 import com.example.fimae.R;
 import com.example.fimae.adapters.UserHomeViewAdapter;
-import com.example.fimae.models.Conversation;
 import com.example.fimae.models.Fimaers;
 import com.example.fimae.repository.ChatRepository;
-import com.google.android.gms.tasks.OnCompleteListener;
-import com.google.android.gms.tasks.OnSuccessListener;
-import com.google.android.gms.tasks.Task;
 import com.google.firebase.firestore.CollectionReference;
 import com.google.firebase.firestore.FirebaseFirestore;
-import com.google.firebase.firestore.QuerySnapshot;
 
 public class SearchUserActivity extends AppCompatActivity implements SearchView.OnQueryTextListener {
     SearchView searchView;
@@ -45,7 +39,7 @@ public class SearchUserActivity extends AppCompatActivity implements SearchView.
         recyclerViewRes.setAdapter(adapter);
         fimaeUserRef.get().addOnCompleteListener(task -> adapter.setData(task.getResult().toObjects(Fimaers.class), user -> {
             Log.d("SearchUserActivity", "onCreateOrGetConversationWith : " + user.getUid());
-            ChatRepository.getInstance().getOrCreateFriendConversation(user.getUid()).addOnSuccessListener(conversation -> {
+            ChatRepository.getDefaultChatInstance().getOrCreateFriendConversation(user.getUid()).addOnSuccessListener(conversation -> {
                 if(task.isSuccessful()){
                     Intent intent = new Intent(SearchUserActivity.this, OnChatActivity.class);
                     intent.putExtra("conversationID", conversation.getId());

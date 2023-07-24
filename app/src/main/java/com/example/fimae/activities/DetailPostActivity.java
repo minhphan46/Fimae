@@ -66,7 +66,7 @@ public class DetailPostActivity extends AppCompatActivity {
     private Fimaers fimaers;
     DetailPostBinding binding;
     private PostPhotoAdapter adapter;
-    private ChatRepository chatRepository = ChatRepository.getInstance();
+    private ChatRepository chatRepository = ChatRepository.getDefaultChatInstance();
     ArrayList<String> imageUrls = new ArrayList<>();
 //    List<Uri> imageUris = new ArrayList<>();
     List<Comment> comments;
@@ -117,7 +117,7 @@ public class DetailPostActivity extends AppCompatActivity {
                         @Override
                         public void onSuccess(DocumentSnapshot documentSnapshot) {
                             fimaers = documentSnapshot.toObject(Fimaers.class);
-                            initView();
+                            initView(updatePost.getContent(), fimaers.getUid());
                             initListener();
 
                         }
@@ -151,7 +151,7 @@ public class DetailPostActivity extends AppCompatActivity {
             likedPostListFragment.show(getSupportFragmentManager(), "likelist");
         });
     }
-    private void initView(){
+    private void initView(String content, String publisherId){
         TimerService.setDuration(binding.activeTime, post.getTimeCreated());
         binding.content.setText(post.getContent());
         binding.icMore.setOnClickListener(view -> {
@@ -163,7 +163,7 @@ public class DetailPostActivity extends AppCompatActivity {
 //            for(int i = 0; i < imageUrls.size(); i++){
 //                imageUris.add(Uri.parse(imageUrls.get(i)));
 //            }
-            adapter = new PostPhotoAdapter(this, imageUrls);
+            adapter = new PostPhotoAdapter(this, publisherId, content,imageUrls);
             binding.imageList.setVisibility(View.VISIBLE);
             LinearLayoutManager layoutManager = new GridLayoutManager(this, PostAdapter.getColumnSpan(imageUrls.size()) );
             binding.imageList.setLayoutManager(layoutManager);

@@ -1,18 +1,14 @@
 package com.example.fimae.repository;
 
-import android.app.ProgressDialog;
 import android.content.ContentResolver;
 import android.content.Context;
 import android.content.Intent;
 import android.net.Uri;
-import android.view.View;
 import android.webkit.MimeTypeMap;
 import android.widget.Toast;
 
 import androidx.annotation.NonNull;
-import androidx.annotation.Nullable;
 
-import com.example.fimae.activities.DetailPostActivity;
 import com.example.fimae.activities.OnChatActivity;
 import com.example.fimae.activities.PostMode;
 import com.example.fimae.adapters.PostAdapter;
@@ -20,41 +16,25 @@ import com.example.fimae.models.Conversation;
 import com.example.fimae.models.Fimaers;
 import com.example.fimae.models.Post;
 import com.google.android.gms.tasks.OnCompleteListener;
-import com.google.android.gms.tasks.OnFailureListener;
 import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.android.gms.tasks.Task;
 import com.google.android.gms.tasks.TaskCompletionSource;
 import com.google.android.gms.tasks.Tasks;
 import com.google.firebase.Timestamp;
 import com.google.firebase.auth.FirebaseAuth;
-import com.google.firebase.database.DataSnapshot;
-import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
-import com.google.firebase.database.MutableData;
-import com.google.firebase.database.ValueEventListener;
 import com.google.firebase.firestore.CollectionReference;
 import com.google.firebase.firestore.DocumentReference;
 import com.google.firebase.firestore.DocumentSnapshot;
-import com.google.firebase.firestore.EventListener;
 import com.google.firebase.firestore.FirebaseFirestore;
-import com.google.firebase.firestore.FirebaseFirestoreException;
 import com.google.firebase.storage.FirebaseStorage;
 import com.google.firebase.storage.StorageReference;
-import android.content.ContentResolver;
 
-import com.google.type.DateTime;
-import com.stringee.messaging.User;
-
-import java.lang.reflect.Type;
-import java.sql.Time;
-import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
-import java.util.Map;
-import java.util.concurrent.atomic.AtomicInteger;
 
 public class PostRepository {
     FirebaseAuth firebaseAuth;
@@ -109,7 +89,7 @@ public class PostRepository {
         });
     }
     public void goToChatWithUser(String userId, Context context){
-        ChatRepository.getInstance().getOrCreateFriendConversation(userId).addOnCompleteListener(new OnCompleteListener<Conversation>() {
+        ChatRepository.getDefaultChatInstance().getOrCreateFriendConversation(userId).addOnCompleteListener(new OnCompleteListener<Conversation>() {
             @Override
             public void onComplete(@NonNull Task<Conversation> task) {
                 if(task.getResult() != null){

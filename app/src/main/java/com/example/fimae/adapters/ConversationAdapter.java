@@ -137,7 +137,7 @@ public class ConversationAdapter extends FirestoreAdapter<ConversationAdapter.Vi
 
                         }
 
-                        ChatRepository.getInstance().getParticipantInConversation(conversation.getId(), FirebaseAuth.getInstance().getUid()).addOnSuccessListener(participant -> {
+                        ChatRepository.getDefaultChatInstance().getParticipantInConversation(conversation.getId(), FirebaseAuth.getInstance().getUid()).addOnSuccessListener(participant -> {
                             if(participant == null || message == null){
                                 holder.mTextDes.setTypeface(Typeface.defaultFromStyle(Typeface.BOLD));
                             }

@@ -18,6 +18,7 @@
     <color name="text_white">#FFFFFF</color>
     <color name="warning">#FF4D6D</color>
     <color name="error">#B3261E</color>
+    <color name="red">#EA4359</color>
     <color name="background">#FFFFFF</color>
     <color name="background_dark">#0C0D2B</color>
     <color name="background_button_dark_1_startColor">#0A061D</color>

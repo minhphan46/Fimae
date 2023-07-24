@@ -1,10 +1,11 @@
-package com.example.fimae;
+package com.example.fimae.activities;
 
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.viewpager2.widget.ViewPager2;
 
 import android.os.Bundle;
 
+import com.example.fimae.R;
 import com.example.fimae.adapters.MyStoryAdapter;
 import com.example.fimae.adapters.StoryAdapter.StoryAdapterItem;
 
@@ -21,6 +22,5 @@ public class StoryActivity extends AppCompatActivity {
         viewPager2 = findViewById(R.id.viewPager2);
         MyStoryAdapter myStoryAdapter = new MyStoryAdapter(this, storyAdapterItems);
         viewPager2.setAdapter(myStoryAdapter);
-
     }
 }

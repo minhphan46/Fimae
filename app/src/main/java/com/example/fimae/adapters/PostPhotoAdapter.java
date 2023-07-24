@@ -1,6 +1,7 @@
 package com.example.fimae.adapters;
 
 
+import android.annotation.SuppressLint;
 import android.content.Context;
 import android.content.Intent;
 import android.net.Uri;
@@ -32,16 +33,23 @@ public class PostPhotoAdapter extends RecyclerView.Adapter<RecyclerView.ViewHold
     boolean isEdit;
     int VIEW_TYPE_SPECIAL_ITEM = 1;
     int VIEW_TYPE_NORMAL_ITEM = 0;
+    String idPublisher;
+    String description;
+
     public void showImageDetail(int index){
         Intent intent = new Intent(context, PostContentActivity.class);
         intent.putExtra("urls", mImageUrls);
         intent.putExtra("index", index);
+        intent.putExtra("idUser", idPublisher);
+        intent.putExtra("description", description);
         context.startActivity(intent);
     }
-    public PostPhotoAdapter(Context context, ArrayList<String> mImageUrls){
+    public PostPhotoAdapter(Context context,String idPublisher, String description, ArrayList<String> mImageUrls){
         this.context = context;
         this.mImageUrls = mImageUrls;
         this.isEdit = false;
+        this.idPublisher = idPublisher;
+        this.description = description;
         updateImages(mImageUrls);
     }
     public void updateImages(ArrayList<String> mImageUrls){
@@ -88,7 +96,7 @@ public class PostPhotoAdapter extends RecyclerView.Adapter<RecyclerView.ViewHold
 
 
     @Override
-    public void onBindViewHolder(@NonNull RecyclerView.ViewHolder holder, int position) {
+    public void onBindViewHolder(@NonNull RecyclerView.ViewHolder holder, @SuppressLint("RecyclerView") int position) {
 
         if(isEdit && position == 0){
             SpecialViewHolder viewHolder = (SpecialViewHolder) holder;
