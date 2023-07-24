@@ -12,12 +12,14 @@ import com.google.firebase.firestore.FirebaseFirestore;
 import java.util.HashMap;
 
 public class ReportRepository {
+    ReportType reportType;
     FirebaseFirestore firestore;
     CollectionReference collectionReference;
 
     private ReportRepository(ReportType reportType) {
         firestore = FirebaseFirestore.getInstance();
-        collectionReference = firestore.collection("reports" + "/" + reportType.toString().toLowerCase());
+        collectionReference = firestore.collection("reports" );
+        this.reportType = reportType;
     }
 
     public static ReportRepository getReportRepository(ReportType reportType) {
@@ -29,6 +31,7 @@ public class ReportRepository {
         DocumentReference documentReference = collectionReference.document();
         HashMap<String, Object> hashMap = new HashMap<>();
         hashMap.put("id", documentReference.getId());
+        hashMap.put("type", reportType.toString());
         hashMap.put("reporterId", FirebaseAuth.getInstance().getCurrentUser().getUid());
         hashMap.put("reportedId", reportedId);
         hashMap.put("reason", reason);
