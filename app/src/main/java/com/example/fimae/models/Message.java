@@ -73,7 +73,6 @@ public class Message {
     }
 
     public void setType(String type) {
-        assert Objects.equals(type, TEXT) || Objects.equals(type, MEDIA) || Objects.equals(type, AUDIO) ||  Objects.equals(type, POST_LINK) || Objects.equals(type, CHANGE_NICKNAME) || Objects.equals(type, LEAVE_CONVERSATION);
         this.type = type;
     }
 
