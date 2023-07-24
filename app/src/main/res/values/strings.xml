@@ -18,6 +18,7 @@
     <string name="status_is_active">Đang hoạt động</string>
     <!-- TODO: Remove or change this placeholder text -->
     <string name="hello_blank_fragment">Hello blank fragment</string>
+    <string name="hint_text">Nhấn vào đây để giới thiệu về bản thân:\n-Tôi là...\n-Tôi muốn...\n-Tôi thích...</string>
 
     <string name="remind_to_take_a_break">Remind me to take a break</string>
     <string name="key_upload_quality">key_upload_quality</string>
