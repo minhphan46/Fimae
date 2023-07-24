@@ -90,7 +90,6 @@ public class ProfileFragment extends Fragment {
         if (getArguments() != null) {
             String uid = getArguments().getString("uid");
             ProfileViewModelFactory factory = new ProfileViewModelFactory(uid);
-            binding.editProfileBtn.setVisibility(View.GONE);
             viewModel = new ViewModelProvider(this, factory).get(ProfileViewModel.class);
         }
         else
@@ -160,6 +159,12 @@ public class ProfileFragment extends Fragment {
                 }
             }
         });
+        binding.backBtn.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                getActivity().onBackPressed();
+            }
+        });
         tabLayout.addOnTabSelectedListener(new TabLayout.OnTabSelectedListener() {
 
             @Override
@@ -203,9 +208,12 @@ public class ProfileFragment extends Fragment {
             @Override
             public void onClick(View view) {
 
-                AvatarBottomSheetFragment avatarFragment = AvatarBottomSheetFragment.newInstance(viewModel.getUser().getValue().getAvatarUrl());
-                FragmentManager fragmentManager = getChildFragmentManager(); // For fragments
-                avatarFragment.show(fragmentManager, "avatar_bottom_sheet");
+                if(!viewModel.isOther())
+                {
+                    AvatarBottomSheetFragment avatarFragment = AvatarBottomSheetFragment.newInstance(viewModel.getUser().getValue().getAvatarUrl());
+                    FragmentManager fragmentManager = getChildFragmentManager(); // For fragments
+                    avatarFragment.show(fragmentManager, "avatar_bottom_sheet");
+                }
             }
         });
         copyLitId.setOnClickListener(new View.OnClickListener() {

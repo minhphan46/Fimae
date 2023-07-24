@@ -17,13 +17,6 @@ public class ProfileActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         String uid = getIntent().getStringExtra("uid");
         setContentView(R.layout.activity_profile);
-        ImageButton backBtn = findViewById(R.id.backBtn);
-        backBtn.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                onBackPressed();
-            }
-        });
         if (savedInstanceState == null) {
             ProfileFragment profileFragment = ProfileFragment.newInstance(uid);
             // Add the initial fragment when the activity is first created

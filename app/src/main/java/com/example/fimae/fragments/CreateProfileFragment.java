@@ -51,6 +51,7 @@ public class CreateProfileFragment extends Fragment {
         binding = DataBindingUtil.inflate(inflater,R.layout.fragment_create_profile,container,false);
         binding.setLifecycleOwner(this.getViewLifecycleOwner());
         viewModel = new ViewModelProvider(getActivity()).get(CreateProfileViewModel.class);
+        viewModel.user.setGender(true);
         binding.dobEditText.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {

@@ -16,6 +16,7 @@
     android:layout_height="wrap_content">
 
 
+
     <ImageView
         android:id="@+id/backgroundImage"
         android:layout_width="wrap_content"
@@ -27,6 +28,21 @@
         app:srcCompat="@drawable/background_img" />
 
     <ImageButton
+        android:id="@+id/backBtn"
+        android:layout_width="48dp"
+        android:layout_height="48dp"
+        android:layout_marginTop="12dp"
+        android:layout_marginStart="12dp"
+        android:background="@android:color/transparent"
+        android:tint="@color/white"
+        android:visibility="@{viewmodel.other}"
+        android:padding="12dp"
+        android:scaleType="fitXY"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent"
+        app:srcCompat="@drawable/ic_arrow_left" />
+
+    <ImageButton
         android:id="@+id/editProfileBtn"
         android:layout_width="48dp"
         android:layout_height="48dp"
@@ -35,6 +51,7 @@
         android:background="@android:color/transparent"
         android:padding="12dp"
         android:scaleType="fitXY"
+        android:visibility="@{!viewmodel.other}"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintTop_toTopOf="parent"
         app:srcCompat="@drawable/ic_setting" />
