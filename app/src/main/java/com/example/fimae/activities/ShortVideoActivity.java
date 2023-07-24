@@ -14,6 +14,7 @@ import android.view.View;
 import android.view.Window;
 import android.view.WindowManager;
 import android.widget.EditText;
+import android.widget.FrameLayout;
 import android.widget.ImageButton;
 import android.widget.ImageView;
 import android.widget.TextView;
@@ -34,6 +35,7 @@ import com.example.fimae.models.shorts.ShortMedia;
 import com.example.fimae.repository.CommentRepository;
 import com.example.fimae.repository.FimaerRepository;
 import com.example.fimae.repository.ShortsRepository;
+import com.google.android.material.bottomsheet.BottomSheetBehavior;
 import com.google.android.material.bottomsheet.BottomSheetDialog;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.firestore.CollectionReference;
@@ -111,9 +113,9 @@ public class ShortVideoActivity extends AppCompatActivity {
     TextView mTvNumComments;
     ImageButton mBtnClose;
     RecyclerView mRvComments;
-
     EditText mEdtComment;
     ImageView mBtnSendComment;
+    @SuppressLint("SetTextI18n")
     private void showBottomSheetComment(ShortMedia video, Fimaers fimaers){
         curVideo = video;
         BottomSheetCommentShortBinding binding = BottomSheetCommentShortBinding.inflate(getLayoutInflater());
@@ -121,6 +123,14 @@ public class ShortVideoActivity extends AppCompatActivity {
 
         BottomSheetDialog bottomSheetDialog = new BottomSheetDialog(ShortVideoActivity.this);
         bottomSheetDialog.setContentView(dialogSetting);
+        // extended bottom sheet
+        bottomSheetDialog.setOnShowListener(dialog -> {
+            BottomSheetDialog d = (BottomSheetDialog) dialog;
+            FrameLayout bottomSheet = (FrameLayout) d.findViewById((com.google.android.material.R.id.design_bottom_sheet));
+            // Right here!
+            BottomSheetBehavior.from(bottomSheet)
+                    .setState(BottomSheetBehavior.STATE_EXPANDED);
+        });
         bottomSheetDialog.show();
 
         // set component
@@ -148,6 +158,8 @@ public class ShortVideoActivity extends AppCompatActivity {
         LinearLayoutManager layoutManager1 = new LinearLayoutManager(this);
         mRvComments.setLayoutManager(layoutManager1);
         mRvComments.setAdapter(newCommentAdapter);
+
+        mTvNumComments.setText(video.getNumOfComments() + " bình luận");
 
         // close bottom sheet
         mBtnClose.setOnClickListener(v -> {
@@ -195,6 +207,11 @@ public class ShortVideoActivity extends AppCompatActivity {
                 comment.setParentId("");
                 commentRepository.postComment(curVideo.getId(), CommentRepository.SHORT_COLLECTION,comment);
             }
+            // update text
+            ShortsRepository.getInstance().addShortCommentNum(1, video);
+            mTvNumComments.setText(video.getNumOfComments() + " bình luận");
+            shortVideoAdapter.updateCommentCount(video);
+
             mEdtComment.clearFocus();
             mEdtComment.setText("");
             mEdtComment.setHint("Để lại một bình luận");
@@ -209,6 +226,15 @@ public class ShortVideoActivity extends AppCompatActivity {
                         showEditCommentDialog(comment);
                     else if(bottomSheetItem.getTitle().equals("Xóa bình luận")){
                         commentRepository.deleteComment(curVideo.getId(), comment, CommentRepository.SHORT_COLLECTION);
+                        // update text
+                        ShortsRepository.getInstance().getShortById(comment.getPostId()).addOnCompleteListener(task -> {
+                            task.onSuccessTask(video -> {
+                                ShortsRepository.getInstance().addShortCommentNum(-1, video);
+                                mTvNumComments.setText(video.getNumOfComments() + " bình luận");
+                                shortVideoAdapter.updateCommentCount(video);
+                                return null;
+                            });
+                        });
                         fimaeBottomSheet.dismiss();
                     }
                 });

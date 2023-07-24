@@ -7,6 +7,7 @@ import android.net.Uri;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.Toast;
 
 import androidx.annotation.NonNull;
 import androidx.core.content.ContextCompat;
@@ -51,6 +52,7 @@ public class ShortVideoAdapter extends FirestoreAdapter<ShortVideoAdapter.VideoH
     String uidCurrentUser = FirebaseAuth.getInstance().getUid();
     String idVideoFirst;
     ListItemBottomSheetFragment listShareItemBottomSheetFragment;
+    VideoHolder curHolder;
 
     public interface IClickCardListener {
         void onClickUser(ShortMedia video);
@@ -81,6 +83,7 @@ public class ShortVideoAdapter extends FirestoreAdapter<ShortVideoAdapter.VideoH
         //uidCurrentUser = FirebaseAuth.getInstance().getUid();
         holders.add(position, holder);
         onBeginPlayVideo(position);
+        curHolder = holder;
         // get user avatar
         FimaerRepository.getInstance().getFimaerById(media.getUid()).addOnCompleteListener(
                 task -> {
@@ -176,10 +179,14 @@ public class ShortVideoAdapter extends FirestoreAdapter<ShortVideoAdapter.VideoH
         });
     }
 
+    public void updateCommentCount(ShortMedia media) {
+        String numOfComments = getStringNumber(media.getNumOfComments());
+        curHolder.binding.itemVideoTvComment.setText(numOfComments);
+    }
+
     private void handleLikeShort(ShortMedia media, VideoHolder holder) {
         if(ShortsRepository.getInstance().checkUserLiked(uidCurrentUser, media)){
             holder.binding.itemVideoIcLike.setColorFilter(ContextCompat.getColor(context, R.color.white));
-            //holder.binding.itemVideoTvLike.setText(getStringNumber(media.getUsersLiked().size() - 1));
             holder.binding.itemVideoTvLike.setText(getStringNumber(ShortsRepository.getInstance().getLikeCount(media) - 1));
         } else {
             holder.binding.itemVideoIcLike.setColorFilter(ContextCompat.getColor(context, R.color.red));
