@@ -36,6 +36,7 @@
         android:supportsRtl="true"
         android:theme="@style/Theme.Fimae"
         tools:targetApi="31">
+
         <activity
             android:name=".activities.AddShortActivity"
             android:exported="false" />
@@ -46,6 +47,9 @@
                 android:name="android.app.lib_name"
                 android:value="" />
         </activity>
+        <activity
+            android:name=".activities.CreateProfileActivity"
+            android:exported="false" />
         <activity
             android:name=".activities.StoryActivity"
             android:exported="false" />
@@ -77,9 +81,6 @@
             android:exported="false" />
         <activity
             android:name=".activities.EditProfileActivity"
-            android:exported="false" />
-        <activity
-            android:name=".activities.UpdateProfileActivity"
             android:exported="false" />
         <activity
             android:name=".activities.ProfileActivity"

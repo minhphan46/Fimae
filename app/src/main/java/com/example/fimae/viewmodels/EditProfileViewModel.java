@@ -22,99 +22,18 @@ public class EditProfileViewModel extends ViewModel {
         return user;
     }
 
+    private MutableLiveData<String> toastMessage = new MutableLiveData<>("");
+
+    public LiveData<String> getMessage()
+    {
+        return toastMessage;
+    }
+
     private FimaerRepository userRepo;
 
     public Boolean hasChange = false;
 
-    String[] tinhCach = {
-            "Hài hước",
-            "Ga lăng",
-            "Dễ gần",
-            "Dễ thương",
-            "Lãng mạn",
-            "Truyền thống",
-            "Gen Z",
-            "Thể thao",
-            "Đeo bám",
-            "Cú đêm",
-            "Cô đơn",
-            "Ngầu",
-            "Xấu hổ",
-            "Yên tĩnh",
-            "Thích ở nhà",
-            "Hoạt ngôn",
-            "Nhạt nhẽo"
-    };
-    String[] chomSao = {
-            "Bạch Dương",
-            "Kim Ngưu",
-            "Song Tử",
-            "Cự Giải",
-            "Sư Tử",
-            "Xử Nữ",
-            "Thiên Bình",
-            "Bọ Cạp",
-            "Nhân Mã",
-            "Ma Kết",
-            "Bảo Bình",
-            "Song Ngư"
-    };
-    String[] thuCung = {
-            "Chó",
-            "Mèo",
-            "Hamster",
-            "Thỏ",
-            "Cá",
-            "Chim",
-            "Rùa",
-            "Nhím",
-            "Bò sát",
-            "Khỉ",
-            "Côn trùng",
-    };
-    String[] amNhac = {
-            "Guitar",
-            "K-pop",
-            "J-pop",
-            "Nhạc pop",
-            "Nhạc rock",
-            "Nhạc đồng quê",
-            "Nhạc jazz",
-            "Nhạc không lời",
-            "R&B",
-            "Rap",
-            "Metal",
-            "Nhạc cổ điển",
-            "Nhạc điện tử",
-    };
-    String[] theThao = {
-            "Bóng đá",
-            "Bóng rổ",
-            "Cầu lông",
-            "Bơi lội",
-            "Bắn cung",
-            "Bóng chuyền",
-            "Điền kinh",
-            "Đua xe",
-            "Tenis",
-            "Bóng bàn",
-            "Muay Thái",
-            "Karate",
-            "Thể dục dụng cụ",
-            "Leo núi",
-            "Thể hình",
-            "Võ thuật",
-            "Trượt băng",
-            "Nhảy cao",
-            "Cờ vua",
-            "Cờ tướng",
-            "Taekwondo",
-            "Bi-a",
-            "Đấu vật",
-            "Bóng ném",
-            "Quần vợt"
-    };
-    MutableLiveData<ArrayList<String>> chips = new MutableLiveData<>(new ArrayList<>(Arrays.asList(tinhCach)));
+    MutableLiveData<ArrayList<String>> chips = new MutableLiveData<>(new ArrayList<>(Arrays.asList(ChipData.tinhCach)));
 
 
     public EditProfileViewModel(){
@@ -148,40 +67,50 @@ public class EditProfileViewModel extends ViewModel {
         switch (pos)
         {
             case 0:
-                list = tinhCach;
+                list = ChipData.tinhCach;
                 break;
             case 1:
-                list = chomSao;
+                list = ChipData.chomSao;
                 break;
             case 2:
-                list =thuCung;
+                list = ChipData.thuCung;
                 break;
             case 3:
-                list = amNhac;
+                list = ChipData.amNhac;
                 break;
             case 4:
-                list = theThao;
+                list = ChipData.theThao;
                 break;
             default:
-                list = tinhCach;
+                list = ChipData.tinhCach;
 
         }
         chips.setValue(new ArrayList<>(Arrays.asList(list)));
 
     }
 
-    public void chipClick(String text, boolean b)
+    public boolean chipClick(String text, boolean b)
     {
         if(b)
         {
-            user.getValue().addChip(text);
-            Log.i("TAG", "chipClick: " + text);
+            if(user.getValue().getChip()== null) {
+                user.getValue().setChip(new ArrayList<>());
+
+            }
+            if(user.getValue().getChip().size() < 9)
+            {
+                user.getValue().addChip(text);
+            }else
+            {
+                b = false;
+                toastMessage.setValue("Tối đa 9 tag");
+            }
         }
         else
         {
             user.getValue().removeChip(text);
-            Log.i("TAG", "chipUncheck: "+ text );
         }
+        return b;
     }
 
     public Task<Void> updateUser()

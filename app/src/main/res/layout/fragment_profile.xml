@@ -8,11 +8,13 @@
             type="com.example.fimae.viewmodels.ProfileViewModel" />
     </data>
 <androidx.core.widget.NestedScrollView
-    android:layout_width="wrap_content"
+    android:fillViewport="true"
+    android:layout_width="match_parent"
     android:layout_height="wrap_content">
 <androidx.constraintlayout.widget.ConstraintLayout
     android:layout_width="match_parent"
-    android:layout_height="match_parent">
+    android:layout_height="wrap_content">
+
 
 
     <ImageView
@@ -26,6 +28,21 @@
         app:srcCompat="@drawable/background_img" />
 
     <ImageButton
+        android:id="@+id/backBtn"
+        android:layout_width="48dp"
+        android:layout_height="48dp"
+        android:layout_marginTop="12dp"
+        android:layout_marginStart="12dp"
+        android:background="@android:color/transparent"
+        android:tint="@color/white"
+        android:visibility="@{viewmodel.other}"
+        android:padding="12dp"
+        android:scaleType="fitXY"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent"
+        app:srcCompat="@drawable/ic_arrow_left" />
+
+    <ImageButton
         android:id="@+id/editProfileBtn"
         android:layout_width="48dp"
         android:layout_height="48dp"
@@ -34,6 +51,7 @@
         android:background="@android:color/transparent"
         android:padding="12dp"
         android:scaleType="fitXY"
+        android:visibility="@{!viewmodel.other}"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintTop_toTopOf="parent"
         app:srcCompat="@drawable/ic_setting" />
@@ -173,6 +191,7 @@
         app:chipSpacingHorizontal="5dp"
         app:chipSpacingVertical="5dp"
         app:chipsData="@{viewmodel.user.chip}"
+        app:viewModel="@{viewmodel}"
         app:layout_constraintBottom_toTopOf="@id/followLayout"
         app:layout_constraintTop_toBottomOf="@+id/joinDateIcon">
 
@@ -292,7 +311,9 @@
     <androidx.recyclerview.widget.RecyclerView
         android:id="@+id/post_list"
         android:layout_width="match_parent"
-        android:layout_height="wrap_content"
+        android:layout_height="0dp"
+        android:nestedScrollingEnabled="false"
+        app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintTop_toBottomOf="@id/tabView"
         app:layout_constraintLeft_toLeftOf="parent"
         app:layout_constraintRight_toRightOf="parent"

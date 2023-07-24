@@ -18,28 +18,23 @@ import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.example.fimae.R;
-import com.example.fimae.activities.StoryActivity;
 import com.example.fimae.activities.OnChatActivity;
 import com.example.fimae.activities.SearchUserActivity;
+import com.example.fimae.activities.StoryActivity;
 import com.example.fimae.adapters.ConversationAdapter;
 import com.example.fimae.adapters.SpacingItemDecoration;
 import com.example.fimae.adapters.StoryAdapter.StoryAdapter;
 import com.example.fimae.adapters.StoryAdapter.StoryAdapterItem;
-import com.example.fimae.bottomdialogs.PickImageBottomSheetFragment;
-import com.example.fimae.models.BottomSheetItem;
-import com.example.fimae.models.Fimaers;
 import com.example.fimae.models.story.Story;
 import com.example.fimae.repository.ChatRepository;
 import com.example.fimae.repository.StoryRepository;
-import com.example.fimae.utils.FileUtils;
 import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.Task;
 import com.google.firebase.firestore.CollectionReference;
 import com.google.firebase.firestore.FirebaseFirestore;
 import com.google.firebase.firestore.Query;
 
-import java.io.File;
-import java.util.ArrayList;
+import java.util.*;
 
 public class ChatFragment extends Fragment {
     private FirebaseFirestore firestore;
@@ -54,7 +49,7 @@ public class ChatFragment extends Fragment {
         View view = inflater.inflate(R.layout.fragment_chat, container, false);
         RecyclerView recyclerView = view.findViewById(R.id.list_user);
         searchbar = view.findViewById(R.id.search_bar);
-        Query query = ChatRepository.getInstance().getConversationQuery();
+        Query query = ChatRepository.getDefaultChatInstance().getConversationQuery();
         ConversationAdapter adapter = new ConversationAdapter(query, conversation -> {
             Intent intent = new Intent(getContext(), OnChatActivity.class);
             intent.putExtra("conversationID", conversation.getId());

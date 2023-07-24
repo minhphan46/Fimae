@@ -18,7 +18,9 @@ import androidx.databinding.BindingAdapter;
 
 import com.example.fimae.R;
 import com.example.fimae.activities.EditProfileActivity;
+import com.example.fimae.viewmodels.CreateProfileViewModel;
 import com.example.fimae.viewmodels.EditProfileViewModel;
+import com.example.fimae.viewmodels.ProfileViewModel;
 import com.google.android.material.chip.Chip;
 import com.google.android.material.chip.ChipGroup;
 import com.squareup.picasso.Picasso;
@@ -77,7 +79,8 @@ public class BindingApdapter {
                                 @Override
                                 public void onCheckedChanged(CompoundButton compoundButton, boolean b) {
                                     viewModel.hasChange = true;
-                                    viewModel.chipClick(compoundButton.getText().toString(),b);
+                                    boolean check = viewModel.chipClick(compoundButton.getText().toString(),b);
+                                    chip.setChecked(check);
                                 }
                             });
                             chip.setText(item);
@@ -131,6 +134,131 @@ public class BindingApdapter {
                         chipGroup.addView(imageView);
 
                 }
+
+        }
+    }
+    @BindingAdapter(value = {"chipsData", "viewModel", "chipType", "checkedChips"}, requireAll = false)
+    public static void setChipsData(ChipGroup chipGroup, ArrayList<String> chipsData, ProfileViewModel viewModel, String chipType, ArrayList<String> checkedChips) {
+        chipGroup.removeAllViews();
+        List<String> dataList = chipsData;
+        if (dataList != null && !dataList.isEmpty()) {
+            LayoutInflater inflater = LayoutInflater.from(chipGroup.getContext());
+            if(chipType == null) chipType = "";
+            switch (chipType)
+            {
+                case "choice":
+                    break;
+                case "input":
+                    break;
+                default:
+                    int height = 0;
+                    for (String item : dataList) {
+                        Chip chip;
+                        chip = (Chip) inflater.inflate(R.layout.chip_item_layout, chipGroup, false);
+                        chip.setText(item);
+                        chipGroup.addView(chip);
+                        height = (int) chip.getChipMinHeight();
+                    }
+                    ImageView imageView = new ImageView(chipGroup.getContext());
+                    imageView.setImageResource(R.drawable.ic_edit); // Replace "your_image_resource" with the actual resource ID of the image you want to display
+                    imageView.setLayoutParams(new ViewGroup.LayoutParams(
+                            height,
+                            height
+                    ));
+                    int realHeight =(int) chipGroup.getResources().getDimension(R.dimen.image_size);
+
+                    imageView.setScaleType(ImageView.ScaleType.FIT_XY);
+                    int padding = (int) (height - realHeight) / 2;
+                    imageView.setPadding(padding, padding, padding, padding);
+                    imageView.setOnClickListener(new View.OnClickListener() {
+                        @Override
+                        public void onClick(View view) {
+                            Intent intent = new Intent(imageView.getContext(), EditProfileActivity.class);
+                            imageView.getContext().startActivity(intent);
+                        }
+                    });
+                    // Add the ImageView to the chipGroup
+                    if(!viewModel.isOther())
+                        chipGroup.addView(imageView);
+
+            }
+
+        }
+    }
+    @BindingAdapter(value = {"chipsData", "viewModel", "chipType", "checkedChips"}, requireAll = false)
+    public static void setChipsData(ChipGroup chipGroup, ArrayList<String> chipsData, CreateProfileViewModel viewModel, String chipType, ArrayList<String> checkedChips) {
+        chipGroup.removeAllViews();
+        List<String> dataList = chipsData;
+        if (dataList != null && !dataList.isEmpty()) {
+            LayoutInflater inflater = LayoutInflater.from(chipGroup.getContext());
+            if(chipType == null) chipType = "";
+            switch (chipType)
+            {
+                case "choice":
+                    for (String item : dataList) {
+                        Chip chip;
+                        chip = (Chip) inflater.inflate(R.layout.choice_chip_item_layout, chipGroup, false);
+
+                        if(checkedChips != null)
+                            chip.setChecked(checkedChips.contains(item));
+                        chip.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
+                            @Override
+                            public void onCheckedChanged(CompoundButton compoundButton, boolean b) {
+                                boolean check = viewModel.chipClick(compoundButton.getText().toString(),b);
+                                chip.setChecked(check);
+                            }
+                        });
+                        chip.setText(item);
+                        chipGroup.addView(chip);
+                    }
+                    break;
+                case "input":
+                    if(checkedChips == null || checkedChips.isEmpty()) break;
+                    for (String item : checkedChips) {
+                        Chip chip;
+                        chip = (Chip) inflater.inflate(R.layout.input_chip_item_layout, chipGroup, false);
+                        chip.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
+                            @Override
+                            public void onCheckedChanged(CompoundButton compoundButton, boolean b) {
+                                chipGroup.removeView(chip);
+                                viewModel.chipClick(compoundButton.getText().toString(),false);
+                            }
+                        });
+                        chip.setText(item);
+                        chipGroup.addView(chip);
+                    }
+                    break;
+                default:
+                    int height = 0;
+                    for (String item : dataList) {
+                        Chip chip;
+                        chip = (Chip) inflater.inflate(R.layout.chip_item_layout, chipGroup, false);
+                        chip.setText(item);
+                        chipGroup.addView(chip);
+                        height = (int) chip.getChipMinHeight();
+                    }
+                    ImageView imageView = new ImageView(chipGroup.getContext());
+                    imageView.setImageResource(R.drawable.ic_edit); // Replace "your_image_resource" with the actual resource ID of the image you want to display
+                    imageView.setLayoutParams(new ViewGroup.LayoutParams(
+                            height,
+                            height
+                    ));
+                    int realHeight =(int) chipGroup.getResources().getDimension(R.dimen.image_size);
+
+                    imageView.setScaleType(ImageView.ScaleType.FIT_XY);
+                    int padding = (int) (height - realHeight) / 2;
+                    imageView.setPadding(padding, padding, padding, padding);
+                    imageView.setOnClickListener(new View.OnClickListener() {
+                        @Override
+                        public void onClick(View view) {
+                            Intent intent = new Intent(imageView.getContext(), EditProfileActivity.class);
+                            imageView.getContext().startActivity(intent);
+                        }
+                    });
+                    // Add the ImageView to the chipGroup
+                    chipGroup.addView(imageView);
+
+            }
 
         }
     }

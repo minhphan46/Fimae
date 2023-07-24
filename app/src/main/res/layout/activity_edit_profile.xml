@@ -9,326 +9,336 @@
             name="viewmodel"
             type="com.example.fimae.viewmodels.EditProfileViewModel" />
     </data>
-    <androidx.core.widget.NestedScrollView
+    <LinearLayout
+        android:orientation="vertical"
         android:layout_width="match_parent"
-        android:layout_height="wrap_content">
-    <androidx.constraintlayout.widget.ConstraintLayout
-        android:layout_width="match_parent"
-        android:layout_height="match_parent"
-        tools:context=".activities.EditProfileActivity">
-
-
-    <androidx.appcompat.widget.Toolbar
-        android:id="@+id/editProfileToolBar"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:background="@color/transparent"
-        android:minHeight="?attr/actionBarSize"
-        android:theme="?attr/actionBarTheme"
-        android:layout_marginLeft="2dp"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent">
-
-        <ImageButton
-            android:id="@+id/backBtn"
-            android:layout_width="28dp"
-            android:layout_height="28dp"
-            android:background="@android:color/transparent"
-            android:scaleType="fitXY"
-            app:srcCompat="@drawable/ic_arrow_left" />
-
-        <TextView
-            android:id="@+id/editProfileTxt"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_gravity="center"
-            android:text="Chỉnh sửa hồ sơ"
-            style="@style/bold_20"
-            android:textColor="@color/black" />
-
-        <ImageButton
-            android:id="@+id/confirmBtn"
-            android:layout_width="28dp"
-            android:layout_height="28dp"
-            android:layout_gravity="right"
-            android:layout_marginRight="20dp"
-            android:background="@android:color/transparent"
-            android:scaleType="fitXY"
-            app:srcCompat="@drawable/ic_check_outline" />
-
-    </androidx.appcompat.widget.Toolbar>
-
-    <RelativeLayout
-        android:id="@+id/relativeName"
-        android:layout_width="match_parent"
-        android:layout_height="48dp"
-        android:layout_marginTop="1dp"
-        android:layout_marginRight="10dp"
-        android:layout_marginLeft="15dp"
-        android:clickable="true"
-        android:background="@drawable/item_color_grey"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/editProfileToolBar">
-
-        <ImageView
-            android:id="@+id/imageView2"
-            android:layout_width="18dp"
-            android:layout_height="18dp"
-            android:layout_alignParentEnd="true"
-            android:layout_centerVertical="true"
-            style="@style/regular_14"
-            app:srcCompat="@drawable/ic_chevron_right" />
-
-        <TextView
-            android:id="@+id/nameEditTxt"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_centerVertical="true"
-            android:text="Tên"
-            style="@style/bold_18"
-            android:textColor="@color/black" />
-
-        <TextView
-            android:id="@+id/usernameTxt"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_toStartOf="@id/imageView2"
-            android:layout_centerVertical="true"
-            android:layout_marginRight="10dp"
-            style="@style/regular_14"
-            android:text="@{viewmodel.user.name}"
-            android:textColor="@color/black" />
-
-    </RelativeLayout>
-
-    <RelativeLayout
-        android:id="@+id/relaviveLitId"
-        android:layout_width="match_parent"
-        android:layout_height="48dp"
-        android:background="@drawable/item_color_grey"
-        android:layout_marginRight="10dp"
-        android:layout_marginLeft="15dp"
-        android:clickable="true"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/relativeName">
-
-        <ImageView
-            android:id="@+id/copyImg"
-            android:layout_width="18dp"
-            android:layout_height="18dp"
-            android:layout_alignParentEnd="true"
-            android:layout_centerVertical="true"
-            app:srcCompat="@drawable/ic_copy"
-            app:tint="@color/primary_2" />
-
-        <TextView
-            android:id="@+id/litId"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_centerVertical="true"
-            android:text="Lit ID"
-            style="@style/bold_18"
-            android:textColor="@color/black" />
-
-        <TextView
-            android:id="@+id/litIdTxt"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_toStartOf="@id/copyImg"
-            android:layout_centerVertical="true"
-            android:layout_marginRight="10dp"
-            android:text="@{viewmodel.user.uid}"
-            style="@style/regular_14"
-            android:textColor="@color/black" />
-
-    </RelativeLayout>
-
-    <RelativeLayout
-        android:id="@+id/relativeDOB"
-        android:layout_width="match_parent"
-        android:layout_height="48dp"
-        android:background="@drawable/item_color_grey"
-        android:clickable="true"
-        android:layout_marginRight="10dp"
-        android:layout_marginLeft="15dp"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/relaviveLitId">
-
-        <ImageView
-            android:id="@+id/right_arrow"
-            android:layout_width="18dp"
-            android:layout_height="18dp"
-            android:layout_alignParentEnd="true"
-            android:layout_centerVertical="true"
-            app:srcCompat="@drawable/ic_chevron_right" />
-
-        <TextView
-            android:id="@+id/dob"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_centerVertical="true"
-            android:text="Ngày sinh"
-            style="@style/bold_18"
-            android:textColor="@color/black" />
-
-        <TextView
-            android:id="@+id/dobTxt"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_toStartOf="@id/right_arrow"
-            android:layout_centerVertical="true"
-            android:layout_marginRight="10dp"
-            android:text="@{viewmodel.user.birthDate}" />
-
-    </RelativeLayout>
-
-    <TextView
-        android:id="@+id/bio"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_marginTop="10dp"
-        android:layout_marginLeft="15dp"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/relativeDOB"
-        style="@style/bold_18"
-        android:text="Tiểu sử"
-        android:textColor="@color/black" />
-    <RelativeLayout
-        android:id="@+id/relativeBio"
-        android:layout_width="match_parent"
-        android:layout_height="160dp"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/bio">
-
-        <com.google.android.material.textfield.TextInputLayout
+        android:layout_height="match_parent">
+        <com.google.android.material.appbar.AppBarLayout
+            android:id="@+id/appbar"
             android:layout_width="match_parent"
-            android:layout_height="160dp"
-            app:counterEnabled="true"
-            app:counterMaxLength="200"
-            android:layout_alignParentBottom="true"
-            android:layout_marginLeft="15dp"
-            android:layout_marginRight="10dp"
-            app:counterOverflowTextAppearance="@style/TextAppearance.AppCompat.Small"
-            app:boxBackgroundMode="none"
-            android:paddingTop="0dp"
-            app:boxStrokeWidth="0dp">
-            <com.google.android.material.textfield.TextInputEditText
-                android:id="@+id/editText"
+            android:layout_height="wrap_content"
+            android:theme="@style/Theme.Fimae.NoActionBar"
+            app:layout_constraintTop_toTopOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintEnd_toEndOf="parent">
+            <androidx.appcompat.widget.Toolbar
+                android:id="@+id/toolbar"
                 android:layout_width="match_parent"
-                android:layout_height="130dp"
-                android:inputType="textMultiLine"
-                android:paddingTop="15dp"
-                style="@style/regular_16"
-                android:text="@={viewmodel.user.bio}"
-                android:maxLength="200"
-                android:background="@drawable/background"
-                android:imeOptions="actionDone"
-                android:gravity="top" />
+                android:layout_height="?attr/actionBarSize"
+                android:background="@color/text_white"
+                app:popupTheme="@style/Theme.Fimae.PopupOverlay"
+                android:elevation="10dp"
+                app:titleTextColor="@color/text_white">
+                <ImageButton
+                    android:id="@+id/backBtn"
+                    android:layout_width="28dp"
+                    android:layout_height="28dp"
+                    android:background="@android:color/transparent"
+                    android:scaleType="fitXY"
+                    app:srcCompat="@drawable/ic_arrow_left" />
 
-        </com.google.android.material.textfield.TextInputLayout>
+                <TextView
+                    android:id="@+id/editProfileTxt"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_gravity="center"
+                    android:text="Chỉnh sửa hồ sơ"
+                    style="@style/bold_20"
+                    android:textColor="@color/black" />
 
-    </RelativeLayout>
+                <ImageButton
+                    android:id="@+id/confirmBtn"
+                    android:layout_width="28dp"
+                    android:layout_height="28dp"
+                    android:layout_gravity="right"
+                    android:layout_marginRight="20dp"
+                    android:background="@android:color/transparent"
+                    android:scaleType="fitXY"
+                    app:srcCompat="@drawable/ic_check_outline" />
 
-    <TextView
-        android:id="@+id/tagTxt"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_marginTop="10dp"
-        android:layout_marginLeft="15dp"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/relativeBio"
-        style="@style/bold_18"
-        android:text="Thẻ tag"
-        android:textColor="@color/black" />
-    <TextView
-        android:id="@+id/tag2Txt"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_marginTop="10dp"
-        android:layout_marginLeft="15dp"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/tagTxt"
-        style="@style/semi_bold_16"
-        android:text="Mô tả những gì bạn thích với các thẻ tag" />
-
-        <com.google.android.material.chip.ChipGroup
-            android:id="@+id/inputChip"
+            </androidx.appcompat.widget.Toolbar>
+        </com.google.android.material.appbar.AppBarLayout>
+        <androidx.core.widget.NestedScrollView
             android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:layout_marginStart="22dp"
-            android:layout_marginTop="12dp"
-            app:layout_constraintStart_toStartOf="parent"
-            app:chipSpacingHorizontal="5dp"
-            app:chipSpacingVertical="5dp"
-            app:viewModel ="@{viewmodel}"
-            app:chipsData="@{viewmodel.chip}"
-            app:chipType="@{`input`}"
-            app:checkedChips="@{viewmodel.user.chip}"
-            app:layout_constraintTop_toBottomOf="@+id/tag2Txt"/>
-            <com.google.android.material.tabs.TabLayout
-                android:id="@+id/tabView"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_marginHorizontal="0dp"
-                app:layout_constraintTop_toBottomOf="@id/inputChip"
-                app:layout_constraintLeft_toLeftOf="parent"
-                app:layout_constraintRight_toRightOf="parent"
-                app:tabMode="scrollable"
-                app:tabInlineLabel="true"
-                app:tabIndicatorFullWidth="false">
+            android:layout_height="wrap_content">
+            <androidx.constraintlayout.widget.ConstraintLayout
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                tools:context=".activities.EditProfileActivity">
 
-                <com.google.android.material.tabs.TabItem
+
+
+                <RelativeLayout
+                    android:id="@+id/relativeName"
+                    android:layout_width="match_parent"
+                    android:layout_height="48dp"
+                    android:layout_marginTop="1dp"
+                    android:layout_marginRight="10dp"
+                    android:layout_marginLeft="15dp"
+                    android:clickable="true"
+                    android:background="@drawable/item_color_grey"
+                    app:layout_constraintEnd_toEndOf="parent"
+                    app:layout_constraintStart_toStartOf="parent"
+                    app:layout_constraintTop_toTopOf="parent">
+
+                    <ImageView
+                        android:id="@+id/imageView2"
+                        android:layout_width="18dp"
+                        android:layout_height="18dp"
+                        android:layout_alignParentEnd="true"
+                        android:layout_centerVertical="true"
+                        style="@style/regular_14"
+                        app:srcCompat="@drawable/ic_chevron_right" />
+
+                    <TextView
+                        android:id="@+id/nameEditTxt"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_centerVertical="true"
+                        android:text="Tên"
+                        style="@style/bold_18"
+                        android:textColor="@color/black" />
+
+                    <TextView
+                        android:id="@+id/usernameTxt"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_toStartOf="@id/imageView2"
+                        android:layout_centerVertical="true"
+                        android:layout_marginRight="10dp"
+                        style="@style/regular_14"
+                        android:text="@{viewmodel.user.name}"
+                        android:textColor="@color/black" />
+
+                </RelativeLayout>
+
+                <RelativeLayout
+                    android:id="@+id/relaviveLitId"
+                    android:layout_width="match_parent"
+                    android:layout_height="48dp"
+                    android:background="@drawable/item_color_grey"
+                    android:layout_marginRight="10dp"
+                    android:layout_marginLeft="15dp"
+                    android:clickable="true"
+                    app:layout_constraintEnd_toEndOf="parent"
+                    app:layout_constraintStart_toStartOf="parent"
+                    app:layout_constraintTop_toBottomOf="@+id/relativeName">
+
+                    <ImageView
+                        android:id="@+id/copyImg"
+                        android:layout_width="18dp"
+                        android:layout_height="18dp"
+                        android:layout_alignParentEnd="true"
+                        android:layout_centerVertical="true"
+                        app:srcCompat="@drawable/ic_copy"
+                        app:tint="@color/primary_2" />
+
+                    <TextView
+                        android:id="@+id/litId"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_centerVertical="true"
+                        android:text="Lit ID"
+                        style="@style/bold_18"
+                        android:textColor="@color/black" />
+
+                    <TextView
+                        android:id="@+id/litIdTxt"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_toStartOf="@id/copyImg"
+                        android:layout_centerVertical="true"
+                        android:layout_marginRight="10dp"
+                        android:text="@{viewmodel.user.uid}"
+                        style="@style/regular_14"
+                        android:textColor="@color/black" />
+
+                </RelativeLayout>
+
+                <RelativeLayout
+                    android:id="@+id/relativeDOB"
+                    android:layout_width="match_parent"
+                    android:layout_height="48dp"
+                    android:background="@drawable/item_color_grey"
+                    android:clickable="true"
+                    android:layout_marginRight="10dp"
+                    android:layout_marginLeft="15dp"
+                    app:layout_constraintEnd_toEndOf="parent"
+                    app:layout_constraintStart_toStartOf="parent"
+                    app:layout_constraintTop_toBottomOf="@+id/relaviveLitId">
+
+                    <ImageView
+                        android:id="@+id/right_arrow"
+                        android:layout_width="18dp"
+                        android:layout_height="18dp"
+                        android:layout_alignParentEnd="true"
+                        android:layout_centerVertical="true"
+                        app:srcCompat="@drawable/ic_chevron_right" />
+
+                    <TextView
+                        android:id="@+id/dob"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_centerVertical="true"
+                        android:text="Ngày sinh"
+                        style="@style/bold_18"
+                        android:textColor="@color/black" />
+
+                    <TextView
+                        android:id="@+id/dobTxt"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_toStartOf="@id/right_arrow"
+                        android:layout_centerVertical="true"
+                        android:layout_marginRight="10dp"
+                        android:text="@{viewmodel.user.birthDate}" />
+
+                </RelativeLayout>
+
+                <TextView
+                    android:id="@+id/bio"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:text="Tính cách"
-                    android:icon="@drawable/ic_personality" />
+                    android:layout_marginTop="10dp"
+                    android:layout_marginLeft="15dp"
+                    app:layout_constraintStart_toStartOf="parent"
+                    app:layout_constraintTop_toBottomOf="@+id/relativeDOB"
+                    style="@style/bold_18"
+                    android:text="Tiểu sử"
+                    android:textColor="@color/black" />
+                <RelativeLayout
+                    android:id="@+id/relativeBio"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    app:layout_constraintEnd_toEndOf="parent"
+                    app:layout_constraintStart_toStartOf="parent"
+                    app:layout_constraintTop_toBottomOf="@+id/bio">
 
-                <com.google.android.material.tabs.TabItem
+                    <com.google.android.material.textfield.TextInputLayout
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        app:counterEnabled="true"
+                        app:counterMaxLength="200"
+                        android:layout_alignParentBottom="true"
+                        android:layout_marginLeft="15dp"
+                        android:layout_marginRight="10dp"
+                        app:counterOverflowTextAppearance="@style/TextAppearance.AppCompat.Small"
+                        app:boxBackgroundMode="none"
+                        android:paddingTop="0dp"
+                        app:boxStrokeWidth="0dp">
+                        <com.google.android.material.textfield.TextInputEditText
+                            android:id="@+id/editText"
+                            android:layout_width="match_parent"
+                            android:layout_height="130dp"
+                            android:inputType="textMultiLine"
+                            android:paddingTop="15dp"
+                            style="@style/regular_16"
+                            android:text="@={viewmodel.user.bio}"
+                            android:maxLength="200"
+                            android:background="@drawable/background"
+                            android:imeOptions="actionDone"
+                            android:gravity="top" />
+
+                    </com.google.android.material.textfield.TextInputLayout>
+
+                </RelativeLayout>
+
+                <TextView
+                    android:id="@+id/tagTxt"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:text="Chòm sao"
-                    android:icon="@drawable/ic_zodiac" />
-
-                <com.google.android.material.tabs.TabItem
+                    android:layout_marginTop="10dp"
+                    android:layout_marginLeft="15dp"
+                    app:layout_constraintStart_toStartOf="parent"
+                    app:layout_constraintTop_toBottomOf="@+id/relativeBio"
+                    style="@style/bold_18"
+                    android:text="Thẻ tag"
+                    android:textColor="@color/black" />
+                <TextView
+                    android:id="@+id/tag2Txt"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:text="Thú cưng"
-                    android:icon="@drawable/ic_pet" />
+                    android:layout_marginTop="10dp"
+                    android:layout_marginLeft="15dp"
+                    app:layout_constraintStart_toStartOf="parent"
+                    app:layout_constraintTop_toBottomOf="@+id/tagTxt"
+                    style="@style/semi_bold_16"
+                    android:text="Mô tả những gì bạn thích với các thẻ tag" />
 
-                <com.google.android.material.tabs.TabItem
+                <com.google.android.material.chip.ChipGroup
+                    android:id="@+id/inputChip"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginStart="22dp"
+                    android:layout_marginTop="12dp"
+                    app:layout_constraintStart_toStartOf="parent"
+                    app:chipSpacingHorizontal="5dp"
+                    app:chipSpacingVertical="5dp"
+                    app:viewModel ="@{viewmodel}"
+                    app:chipsData="@{viewmodel.chip}"
+                    app:chipType="@{`input`}"
+                    app:checkedChips="@{viewmodel.user.chip}"
+                    app:layout_constraintTop_toBottomOf="@+id/tag2Txt"/>
+                <com.google.android.material.tabs.TabLayout
+                    android:id="@+id/tabView"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:text="Âm nhạc"
-                    android:icon="@drawable/ic_music" />
+                    android:layout_marginHorizontal="0dp"
+                    app:layout_constraintTop_toBottomOf="@id/inputChip"
+                    app:layout_constraintLeft_toLeftOf="parent"
+                    app:layout_constraintRight_toRightOf="parent"
+                    app:tabMode="scrollable"
+                    app:tabInlineLabel="true"
+                    app:tabIndicatorFullWidth="false">
 
-                <com.google.android.material.tabs.TabItem
-                    android:layout_width="wrap_content"
+                    <com.google.android.material.tabs.TabItem
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:text="Tính cách"
+                        android:icon="@drawable/ic_personality" />
+
+                    <com.google.android.material.tabs.TabItem
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:text="Chòm sao"
+                        android:icon="@drawable/ic_zodiac" />
+
+                    <com.google.android.material.tabs.TabItem
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:text="Thú cưng"
+                        android:icon="@drawable/ic_pet" />
+
+                    <com.google.android.material.tabs.TabItem
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:text="Âm nhạc"
+                        android:icon="@drawable/ic_music" />
+
+                    <com.google.android.material.tabs.TabItem
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:text="Thể thao"
+                        android:icon="@drawable/ic_basketball" />
+
+                </com.google.android.material.tabs.TabLayout>
+
+                <com.google.android.material.chip.ChipGroup
+                    android:id="@+id/chipGroup"
+                    android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:text="Thể thao"
-                    android:icon="@drawable/ic_basketball" />
+                    android:layout_marginStart="22dp"
+                    android:layout_marginTop="12dp"
+                    app:layout_constraintStart_toStartOf="parent"
+                    app:chipsData="@{viewmodel.chip}"
+                    app:viewModel="@{viewmodel}"
+                    app:chipType="@{`choice`}"
+                    app:checkedChips="@{viewmodel.user.chip}"
+                    app:chipSpacingHorizontal="5dp"
+                    app:chipSpacingVertical="5dp"
+                    app:layout_constraintTop_toBottomOf="@+id/tabView"/>
 
-            </com.google.android.material.tabs.TabLayout>
-
-        <com.google.android.material.chip.ChipGroup
-            android:id="@+id/chipGroup"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:layout_marginStart="22dp"
-            android:layout_marginTop="12dp"
-            app:layout_constraintStart_toStartOf="parent"
-            app:chipsData="@{viewmodel.chip}"
-            app:viewModel="@{viewmodel}"
-            app:chipType="@{`choice`}"
-            app:checkedChips="@{viewmodel.user.chip}"
-            app:chipSpacingHorizontal="5dp"
-            app:chipSpacingVertical="5dp"
-            app:layout_constraintTop_toBottomOf="@+id/tabView"/>
-
-    </androidx.constraintlayout.widget.ConstraintLayout>
-    </androidx.core.widget.NestedScrollView>
+            </androidx.constraintlayout.widget.ConstraintLayout>
+        </androidx.core.widget.NestedScrollView>
+    </LinearLayout>
 </layout>

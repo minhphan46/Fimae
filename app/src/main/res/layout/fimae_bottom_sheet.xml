@@ -1,64 +1,57 @@
 <?xml version="1.0" encoding="utf-8"?>
 <androidx.coordinatorlayout.widget.CoordinatorLayout
-        xmlns:android="http://schemas.android.com/apk/res/android"
-        xmlns:tools="http://schemas.android.com/tools"
-        android:background="@android:color/transparent"
-        android:layout_width="match_parent" xmlns:app="http://schemas.android.com/apk/res-auto"
-        app:layout_behavior="com.google.android.material.bottomsheet.BottomSheetBehavior"
-        android:layout_height="match_parent">
-    <FrameLayout
-            xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="@android:color/transparent"
+    app:layout_behavior="com.google.android.material.bottomsheet.BottomSheetBehavior">
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:layout_gravity="center"
+        android:background="@drawable/bottom_sheet_background"
+        android:backgroundTint="@color/background_button_2"
+        android:gravity="center_horizontal"
+        android:orientation="vertical">
+
+        <ImageView
+            android:id="@+id/ic_minimize"
+            android:layout_width="54dp"
+            android:layout_height="5dp"
+            android:layout_margin="10dp"
+            android:src="@drawable/rectangle_bottom_sheet"
+            app:layout_constraintTop_toTopOf="parent" />
+
+        <TextView
+            android:id="@+id/tv_bottom_sheet_title"
             android:layout_width="match_parent"
-            android:layout_height="match_parent"
-            android:background="@drawable/bottom_sheet_background"
-            android:backgroundTint="@color/background_button_2"
-    >
+            android:layout_height="wrap_content"
+            android:layout_margin="8dp"
+            android:text="Tiêu đề"
+            android:textAlignment="center"
+            android:textColor="@color/black"
+            android:textSize="18sp"
+            android:textStyle="bold" />
 
-        <LinearLayout
-                android:gravity="center_horizontal"
-                android:layout_gravity="center"
-                android:layout_width="match_parent"
-                android:layout_height="match_parent"
-                android:orientation="vertical"
-        >
-            <ImageView
-                    app:layout_constraintTop_toTopOf="parent"
-                    android:id="@+id/ic_minimize"
-                    android:layout_width="54dp"
-                    android:layout_height="5dp"
-                    android:layout_margin="10dp"
-                    android:src="@drawable/rectangle_bottom_sheet"
-            />
-            <TextView
-                android:id="@+id/tv_bottom_sheet_title"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:text="Tiêu đề"
-                android:textColor="@color/black"
-                android:textSize="18sp"
-                android:textStyle="bold"
-                android:textAlignment="center"
-                android:layout_margin="8dp"
-                />
-            <TextView
-                android:id="@+id/tv_bottom_sheet_subtitle"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:text="Phụ đề"
-                android:textColor="@color/gray_600"
-                android:textSize="14sp"
-                android:textStyle="bold"
-                android:textAlignment="center"
-                android:layout_marginHorizontal="10dp"
-                android:layout_marginBottom="8dp"
-                />
-            <androidx.recyclerview.widget.RecyclerView
-                    android:id="@+id/rcv_bottom_sheet_items"
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content">
+        <TextView
+            android:id="@+id/tv_bottom_sheet_subtitle"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginHorizontal="10dp"
+            android:layout_marginBottom="8dp"
+            android:text="Phụ đề"
+            android:textAlignment="center"
+            android:textColor="@color/gray_600"
+            android:textSize="14sp"
+            android:textStyle="bold" />
 
-            </androidx.recyclerview.widget.RecyclerView>
-        </LinearLayout>
-    </FrameLayout>
+        <androidx.recyclerview.widget.RecyclerView
+            android:id="@+id/rcv_bottom_sheet_items"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"/>
+    </LinearLayout>
+
 
 </androidx.coordinatorlayout.widget.CoordinatorLayout>

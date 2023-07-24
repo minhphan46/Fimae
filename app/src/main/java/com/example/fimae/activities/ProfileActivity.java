@@ -1,6 +1,8 @@
 package com.example.fimae.activities;
 
 import android.os.Bundle;
+import android.view.View;
+import android.widget.ImageButton;
 
 import androidx.annotation.Nullable;
 import androidx.appcompat.app.AppCompatActivity;
@@ -15,7 +17,6 @@ public class ProfileActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         String uid = getIntent().getStringExtra("uid");
         setContentView(R.layout.activity_profile);
-
         if (savedInstanceState == null) {
             ProfileFragment profileFragment = ProfileFragment.newInstance(uid);
             // Add the initial fragment when the activity is first created

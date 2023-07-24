@@ -94,6 +94,10 @@
         <item name="android:textSize">10sp</item>
     </style>
     <!-- Regular -->
+    <style name="regular_18">
+        <item name="fontFamily">@font/public_sans</item>
+        <item name="android:textSize">18sp</item>
+    </style>
     <style name="regular_16">
         <item name="fontFamily">@font/public_sans</item>
         <item name="android:textSize">16sp</item>
@@ -146,6 +150,27 @@
         <item name="chipStrokeColor">@color/chip_border_color</item>
         <item name="chipStrokeWidth">2dp</item>
     </style>
+
+    <style name="GenderMaleChoiceChipStyle" parent="@style/Widget.MaterialComponents.Chip.Choice">
+        <!-- Customize the background color (inside color) -->
+        <item name="chipIconTint">@color/chip_male_text_color</item>
+        <item name="android:textColor">@color/chip_male_text_color</item>
+        <item name="chipBackgroundColor">@color/chip_male_color</item>
+        <item name="android:textAppearance">@style/AppTheme.ChipText</item>
+        <item name="chipIconSize">16dp</item>
+        <item name="chipIconVisible">true</item>
+    </style>
+
+    <style name="GenderFemaleChoiceChipStyle" parent="@style/Widget.MaterialComponents.Chip.Choice">
+        <!-- Customize the background color (inside color) -->
+        <item name="chipIconTint">@color/chip_female_text_color</item>
+        <item name="android:textColor">@color/chip_female_text_color</item>
+        <item name="chipBackgroundColor">@color/chip_female_color</item>
+        <item name="android:textAppearance">@style/AppTheme.ChipText</item>
+        <item name="chipIconSize">16dp</item>
+        <item name="chipIconVisible">true</item>
+    </style>
+
 
     <style name="CustomInputChipStyle" parent="Widget.MaterialComponents.Chip.Entry">
         <item name="chipBackgroundColor">@color/input_chip_background</item>

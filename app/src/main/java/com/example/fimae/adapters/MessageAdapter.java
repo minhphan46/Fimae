@@ -181,7 +181,7 @@ public class MessageAdapter extends FirestoreAdapter {
         }
         if (!messages.isEmpty()) {
             Message lastMessage = messages.get(messages.size() - 1);
-            ChatRepository.getInstance().updateReadLastMessageAt(lastMessage.getConversationID(), lastMessage.getSentAt());
+            ChatRepository.getDefaultChatInstance().updateReadLastMessageAt(lastMessage.getConversationID(), lastMessage.getSentAt());
         }
         notifyDataSetChanged();
         return;

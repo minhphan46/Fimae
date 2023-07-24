@@ -2,6 +2,7 @@ package com.example.fimae.fragments;
 
 import android.content.Intent;
 import android.os.Bundle;
+import android.security.identity.CipherSuiteNotSupportedException;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -16,6 +17,7 @@ import androidx.viewpager2.widget.ViewPager2;
 
 import com.example.fimae.activities.DetailPostActivity;
 import com.example.fimae.activities.PostActivity;
+import com.example.fimae.activities.ProfileActivity;
 import com.example.fimae.adapters.PostAdapter;
 import com.example.fimae.adapters.ShortFragmentPageAdapter;
 import com.example.fimae.databinding.FragmentFeedBinding;
@@ -108,7 +110,9 @@ public class FeedFragment extends Fragment {
             }
         });
         binding.addPost.setOnClickListener(view -> {
-            Intent intent = new Intent(getContext(), PostActivity.class );
+
+            Intent intent = new Intent(getContext(), ProfileActivity.class );
+            intent.putExtra("uid", "0Ksg5AboSIf7c2mhLcPWiAmczcZ2");
             mStartForResult.launch(intent);
         });
 
