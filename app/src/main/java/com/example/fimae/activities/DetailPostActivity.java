@@ -34,6 +34,7 @@ import com.example.fimae.models.Post;
 import com.example.fimae.models.Fimaers;
 import com.example.fimae.repository.ChatRepository;
 import com.example.fimae.repository.CommentRepository;
+import com.example.fimae.repository.FimaerRepository;
 import com.example.fimae.repository.FollowRepository;
 import com.example.fimae.repository.PostRepository;
 import com.example.fimae.service.TimerService;
@@ -178,19 +179,26 @@ public class DetailPostActivity extends AppCompatActivity {
             isLike = true;
         }
         binding.ageTextView.setText(String.valueOf(fimaers.calculateAge()));
+        // comment
         comments = new ArrayList<>();
         commentItemAdapters = new ArrayList<>();
 
         Query query = postRef.document(postId).collection("comments").orderBy("timeCreated", Query.Direction.ASCENDING);
 
-        newCommentAdapter = new NewCommentAdapter(this, query, (comment) -> {
+        newCommentAdapter = new NewCommentAdapter(this, CommentRepository.POST_COLLECTION,query, (comment) -> {
             selectedCommentId =  comment.getParentId() != "" ? comment.getParentId() : comment.getId();
-            binding.addComment.setHint("@"+fimaers.getLastName());
+            FimaerRepository.getInstance().getFimaerById(comment.getPublisher()).addOnCompleteListener(task -> {
+                task.onSuccessTask(mfimaers -> {
+                    binding.addComment.setHint("@"+mfimaers.getLastName());
+                    return null;
+                });
+            });
             selectedFimaers = fimaers;
         }, post.getPostId(), this::showCommentDialog);
         LinearLayoutManager layoutManager1 = new LinearLayoutManager(this);
         binding.commentRecycler.setLayoutManager(layoutManager1);
         binding.commentRecycler.setAdapter(newCommentAdapter);
+        // share
         binding.icShare.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
@@ -428,7 +436,7 @@ public class DetailPostActivity extends AppCompatActivity {
                         if(bottomSheetItem.getTitle().equals("Chỉnh sửa bình luận"))
                             showEditCommentDialog(comment);
                         else if(bottomSheetItem.getTitle().equals("Xóa bình luận")){
-                            commentRepository.deleteComment(post.getPostId(), comment);
+                            commentRepository.deleteComment(post.getPostId(), comment, CommentRepository.POST_COLLECTION);
                             fimaeBottomSheet.dismiss();
                         }
                     });

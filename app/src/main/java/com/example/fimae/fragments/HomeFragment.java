@@ -177,7 +177,18 @@ public class HomeFragment extends Fragment  {
         // floating waiting
         mFlFloatingWaiting = mView.findViewById(R.id.floating_waiting);
         mImgAvatarWaiting = mView.findViewById(R.id.img_floating_waiting);
+        handleShowFloatingWaiting();
 
+        return mView;
+    }
+
+    @Override
+    public void onResume() {
+        super.onResume();
+        handleShowFloatingWaiting();
+    }
+
+    public void handleShowFloatingWaiting() {
         if(isShowFloatingWaiting) {
             setFloatingWaiting();
             mFlFloatingWaiting.setVisibility(View.VISIBLE);
@@ -185,10 +196,7 @@ public class HomeFragment extends Fragment  {
         else {
             mFlFloatingWaiting.setVisibility(View.GONE);
         }
-
-        return mView;
     }
-
     private void setFloatingWaiting() {
         if(ConnectRepo.getInstance().getUserLocal() != null){
             String avatar = ConnectRepo.getInstance().getUserLocal().getAvatarUrl();
@@ -196,7 +204,7 @@ public class HomeFragment extends Fragment  {
         }
         mImgAvatarWaiting.setOnClickListener(v -> {
             Intent intent = new Intent(getContext(), WaitingActivity.class);
-            intent.addFlags(Intent.FLAG_ACTIVITY_REORDER_TO_FRONT);
+            intent.putExtra("type", typeCall);
             startActivity(intent);
             isShowFloatingWaiting = false;
             mFlFloatingWaiting.setVisibility(View.GONE);

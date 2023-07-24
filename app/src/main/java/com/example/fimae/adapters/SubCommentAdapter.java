@@ -38,6 +38,8 @@ public class SubCommentAdapter extends RecyclerView.Adapter<SubCommentAdapter.Vi
     private NewCommentAdapter.IClickMyCommentItem iClickCommentItem;
     private NewCommentAdapter.IClickMyCommentItem iClickMyCommentItem;
 
+    String collection;
+
     public void setiClickCommentItem(NewCommentAdapter.IClickMyCommentItem iClickCommentItem) {
         this.iClickCommentItem = iClickCommentItem;
     }
@@ -54,8 +56,8 @@ public class SubCommentAdapter extends RecyclerView.Adapter<SubCommentAdapter.Vi
         this.mSubComment = mSubComment;
     }
 
-    public SubCommentAdapter() {
-
+    public SubCommentAdapter(String collection) {
+        this.collection = collection;
         mSubComment = new ArrayList<>();
     }
 
@@ -97,7 +99,7 @@ public class SubCommentAdapter extends RecyclerView.Adapter<SubCommentAdapter.Vi
 
 
         String userId = FirebaseAuth.getInstance().getUid();
-        DocumentReference reference = CommentRepository.getInstance().getCommentRef(comment.getPostId(), CommentRepository.POST_COLLECTION).document(comment.getId());
+        DocumentReference reference = CommentRepository.getInstance().getCommentRef(comment.getPostId(), collection).document(comment.getId());
         binding.likeNumber.setText(String.valueOf(PostService.getInstance().getNumberOfLikes(comment.getLikes())));
         boolean isLike = comment.getLikes().containsKey(comment.getPublisher()) && Boolean.TRUE.equals(comment.getLikes().get(userId));
         binding.heart.setImageResource(isLike ? R.drawable.ic_heart1 : R.drawable.ic_heart_gray);
