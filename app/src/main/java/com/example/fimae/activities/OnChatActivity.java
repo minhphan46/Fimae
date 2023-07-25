@@ -42,6 +42,8 @@ public class OnChatActivity extends AppCompatActivity{
     private static final int REQUEST_IMAGE_CAPTURE = 1;
     private static final int REQUEST_IMAGE_GALLERY = 2;
 
+    public static String currentConversationId;
+
     private CollectionReference messagesCol;
     private String conversationId;
     private EditText textInput;
@@ -63,6 +65,7 @@ public class OnChatActivity extends AppCompatActivity{
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_on_chat);
         conversationId = getIntent().getStringExtra("conversationID");
+        currentConversationId = conversationId;
         messagesCol = FirebaseFirestore.getInstance().collection("conversations").document(conversationId).collection("messages");
         initViews();
         initBottomSheetItems();

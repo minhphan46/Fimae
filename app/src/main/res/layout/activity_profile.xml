@@ -11,7 +11,49 @@
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent"
-        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintBottom_toTopOf="@id/bottomBar"
         android:layout_width="match_parent"
         android:layout_height="0dp"/>
+    <LinearLayout
+        android:id="@+id/bottomBar"
+        android:layout_width="match_parent"
+        android:layout_height="?actionBarSize"
+        android:orientation="horizontal"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintBottom_toBottomOf="parent">
+
+        <androidx.appcompat.widget.AppCompatButton
+            android:id="@+id/followButton"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            android:gravity="center"
+            android:drawableTint="@color/primary_1"
+            android:layout_gravity="center"
+            android:layout_marginLeft="15dp"
+            android:layout_marginRight="5dp"
+            android:paddingLeft="20dp"
+            android:drawableLeft="@drawable/ic_follow_24dp"
+            android:background="@drawable/follow_white_btn"
+            android:text="Theo dõi"
+            android:textColor="@color/primary_1" />
+
+        <androidx.appcompat.widget.AppCompatButton
+            android:id="@+id/startChat"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            android:layout_gravity="center"
+            android:gravity="center"
+            android:layout_marginLeft="5dp"
+            android:layout_marginRight="15dp"
+            android:paddingLeft="20dp"
+            android:drawableLeft="@drawable/ic_waving_24dp"
+            android:background="@drawable/rounded_corner_btn"
+            android:text="Trò chuyện"
+            android:textColor="@color/white" />
+
+    </LinearLayout>
+
 </androidx.constraintlayout.widget.ConstraintLayout>
