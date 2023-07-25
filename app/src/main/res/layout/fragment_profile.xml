@@ -25,7 +25,8 @@
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent"
-        app:srcCompat="@drawable/background_img" />
+        app:imageUrl="@{viewmodel.user.backgroundUrl}"
+        app:placeholder="@{@drawable/background_img}" />
 
     <ImageButton
         android:id="@+id/backBtn"

@@ -31,6 +31,7 @@ import java.util.List;
 public class BindingApdapter {
     @BindingAdapter(value={"imageUrl", "placeholder"}, requireAll=false)
     public static void setImageUrl(ImageView imageView, String url, Drawable placeHolder) {
+        Log.i("TAG", "setImageUrl: " + url);
         Picasso.get().load(url).placeholder(placeHolder).into(imageView);
     }
     @BindingAdapter("android:visibility")
