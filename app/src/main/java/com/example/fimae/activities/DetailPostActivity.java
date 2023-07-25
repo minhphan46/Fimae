@@ -15,14 +15,18 @@ import android.os.Bundle;
 import android.text.Editable;
 import android.text.TextWatcher;
 import android.view.View;
+import android.widget.Toast;
 
+import com.example.fimae.Constant.ReportContents;
 import com.example.fimae.R;
 import com.example.fimae.adapters.NewCommentAdapter;
 import com.example.fimae.adapters.PostAdapter;
 import com.example.fimae.adapters.PostPhotoAdapter;
+import com.example.fimae.adapters.Report.ReportAdapterItem;
 import com.example.fimae.adapters.ShareAdapter;
 import com.example.fimae.bottomdialogs.LikedPostListFragment;
 import com.example.fimae.bottomdialogs.ListItemBottomSheetFragment;
+import com.example.fimae.bottomdialogs.ReportDialog;
 import com.example.fimae.databinding.DetailPostBinding;
 import com.example.fimae.fragments.FimaeBottomSheet;
 import com.example.fimae.fragments.CommentEditFragment;
@@ -37,7 +41,9 @@ import com.example.fimae.repository.CommentRepository;
 import com.example.fimae.repository.FimaerRepository;
 import com.example.fimae.repository.FollowRepository;
 import com.example.fimae.repository.PostRepository;
+import com.example.fimae.repository.ReportRepository;
 import com.example.fimae.service.TimerService;
+import com.example.fimae.utils.ReportItem;
 import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.android.gms.tasks.Task;
@@ -402,7 +408,8 @@ public class DetailPostActivity extends AppCompatActivity {
         fimaeBottomSheet = new FimaeBottomSheet(reportSheetItemList,
                 bottomSheetItem -> {
                     if(bottomSheetItem.getTitle().equals("Báo cáo")){
-                        fimaeBottomSheet.dismiss();
+                        showReport();
+//                        fimaeBottomSheet.dismiss();
                     }
                 });
         fimaeBottomSheet.show(getSupportFragmentManager(), fimaeBottomSheet.getTag());
@@ -449,5 +456,26 @@ public class DetailPostActivity extends AppCompatActivity {
         else {
             showReportDialog();
         }
+    }
+    private void showReport(){
+        ReportDialog.builder()
+        .setTitle("Báo cáo bài viết") //must
+        .setSubtitle("Chọn lý do báo cáo và mô tả ngắn  gọn") //optional
+        .setReportAdapterItems(ReportContents.getPostReportAdapterItems()) //must
+        .setOnReportDialogListener(new ReportDialog.OnReportDialogListener() {
+            @Override
+            public void onReportDialog(ReportAdapterItem reportAdapterItem, String description) {
+                ReportRepository.getInstance().addNewReport( post.getPostId(), ReportItem.POST_ITEM ,reportAdapterItem.getTitle(), description)
+                        .addOnCompleteListener(task -> {
+                            if (task.isSuccessful()) {
+                                Toast.makeText(DetailPostActivity.this, "Báo cáo thành công", Toast.LENGTH_SHORT).show();
+                            } else {
+                                Toast.makeText(DetailPostActivity.this, "Báo cáo thất bại", Toast.LENGTH_SHORT).show();
+                            }
+                        });
+            }
+        })
+        .build()
+        .show(getSupportFragmentManager(), "report");
     }
 }
