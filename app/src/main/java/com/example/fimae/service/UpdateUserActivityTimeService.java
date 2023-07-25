@@ -31,6 +31,8 @@ public class UpdateUserActivityTimeService extends Service {
             @Override
             public void run() {
 // Gửi API lên Server để cập nhật thời gian hoạt động của User
+                if(FirebaseAuth.getInstance().getCurrentUser() == null)
+                    return;
                 FirebaseFirestore.getInstance().collection("fimaers").document(Objects.requireNonNull(FirebaseAuth.getInstance().getUid())).update("lastActive", FieldValue.serverTimestamp()).addOnCompleteListener(
                         new OnCompleteListener<Void>() {
                             @Override

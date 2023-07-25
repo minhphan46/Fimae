@@ -164,6 +164,7 @@ public class Fimaers extends BaseObservable implements Serializable {
         return phone;
     }
 
+    @Bindable
     public String getAvatarUrl() {
         return avatarUrl;
     }
@@ -192,6 +193,8 @@ public class Fimaers extends BaseObservable implements Serializable {
 
         return simpleDateFormat.format(dob);
     }
+
+
 
     @Exclude
     @Bindable
@@ -245,6 +248,7 @@ public class Fimaers extends BaseObservable implements Serializable {
     public void setGenderMatch(@Nullable GenderMatch genderMatch) {
         this.genderMatch = genderMatch;
     }
+    @Bindable
     @Nullable
     public String getBackgroundUrl() {
         return backgroundUrl;
@@ -252,10 +256,12 @@ public class Fimaers extends BaseObservable implements Serializable {
 
     public void setBackgroundUrl(@Nullable String backgroundUrl) {
         this.backgroundUrl = backgroundUrl;
+        notifyPropertyChanged(BR.backgroundUrl);
     }
 
     public void setAvatarUrl(String avatarUrl) {
         this.avatarUrl = avatarUrl;
+        notifyPropertyChanged(BR.avatarUrl);
     }
 
     public void setName(String fullName)
