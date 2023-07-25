@@ -111,8 +111,8 @@ public class FeedFragment extends Fragment {
         });
         binding.addPost.setOnClickListener(view -> {
 
-            Intent intent = new Intent(getContext(), ProfileActivity.class );
-            intent.putExtra("uid", "0Ksg5AboSIf7c2mhLcPWiAmczcZ2");
+            Intent intent = new Intent(getContext(), PostActivity.class );
+//            intent.putExtra("uid", "0Ksg5AboSIf7c2mhLcPWiAmczcZ2");
             mStartForResult.launch(intent);
         });
 

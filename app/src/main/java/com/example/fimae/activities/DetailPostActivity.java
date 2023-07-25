@@ -34,6 +34,7 @@ import com.example.fimae.models.BottomSheetItem;
 import com.example.fimae.models.Comment;
 import com.example.fimae.models.CommentItemAdapter;
 import com.example.fimae.models.Conversation;
+import com.example.fimae.models.Follows;
 import com.example.fimae.models.Post;
 import com.example.fimae.models.Fimaers;
 import com.example.fimae.repository.ChatRepository;
@@ -52,12 +53,15 @@ import com.google.firebase.firestore.CollectionReference;
 import com.google.firebase.firestore.DocumentReference;
 import com.google.firebase.firestore.DocumentSnapshot;
 import com.google.firebase.firestore.EventListener;
+import com.google.firebase.firestore.FieldPath;
 import com.google.firebase.firestore.FirebaseFirestore;
 import com.google.firebase.firestore.FirebaseFirestoreException;
 import com.google.firebase.firestore.Query;
+import com.google.firebase.firestore.QuerySnapshot;
 import com.squareup.picasso.Picasso;
 
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 import java.util.Objects;
 
@@ -321,39 +325,71 @@ public class DetailPostActivity extends AppCompatActivity {
             binding.follow.setVisibility(View.GONE);
         }
         else{
-            FollowRepository.getInstance().followRef.document(FirebaseAuth.getInstance().getUid()+"_"+post.getPublisher()).addSnapshotListener(new EventListener<DocumentSnapshot>() {
+            String doc1 = FirebaseAuth.getInstance().getUid()+"_"+post.getPublisher();
+            String doc2 = post.getPublisher()+"_"+FirebaseAuth.getInstance().getUid();
+            Query query = FollowRepository.getInstance().followRef.whereIn(FieldPath.documentId(), Arrays.asList(doc1, doc2));
+
+            query.addSnapshotListener(new EventListener<QuerySnapshot>() {
                 @Override
-                public void onEvent(@Nullable DocumentSnapshot value, @Nullable FirebaseFirestoreException error) {
-                    if(error != null ){
+                public void onEvent(@Nullable QuerySnapshot queryDocumentSnapshots, @Nullable FirebaseFirestoreException error) {
+                    if (error != null) {
+                        // Handle the error
                         return;
                     }
-                    if(value != null && value.exists()){
-                        binding.follow.setVisibility(View.GONE);
+                    if(queryDocumentSnapshots.getDocuments().size() == 2){
                         binding.edit.setVisibility(View.VISIBLE);
+                        binding.follow.setVisibility(View.GONE);
                     }
-                    else{
-                        binding.follow.setVisibility(View.VISIBLE);
+                    else {
                         binding.edit.setVisibility(View.GONE);
+                        binding.follow.setVisibility(View.VISIBLE);
+                        if(queryDocumentSnapshots.getDocuments().size() == 1){
+                            Follows follows = queryDocumentSnapshots.getDocuments().get(0).toObject(Follows.class);
+                            if(follows.getFollower().equals(post.getPublisher())){
+                                binding.follow.setText("Bỏ theo dõi");
+                            }
+                            else{
+                                binding.follow.setText("Theo dõi");
+                            }
+                        }
+                        else{
+                            binding.follow.setText("Theo dõi");
+                        }
                     }
                 }
             });
-
         }
+
         binding.edit.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
                 postRepository.goToChatWithUser(post.getPublisher(), DetailPostActivity.this);
             }
         });
-        binding.follow.setOnClickListener(view -> FollowRepository.getInstance().follow(post.getPublisher()).addOnCompleteListener(new OnCompleteListener<Boolean>() {
-            @Override
-            public void onComplete(@NonNull Task<Boolean> task) {
-                if(task.getResult()){
-                    binding.follow.setVisibility(View.GONE);
-                    binding.edit.setVisibility(View.VISIBLE);
-                }
+        binding.follow.setOnClickListener(view -> {
+            if(binding.follow.getText().equals("Theo dõi")){
+                FollowRepository.getInstance().follow(post.getPublisher()).addOnCompleteListener(new OnCompleteListener<Boolean>() {
+                    @Override
+                    public void onComplete(@NonNull Task<Boolean> task) {
+                        if (task.getResult()) {
+//                            binding.follow.setText("Bỏ theo dõi");
+                        }
+                    }
+                });
             }
-        }));
+            else {
+                FollowRepository.getInstance().unFollow(post.getPublisher()).addOnCompleteListener(new OnCompleteListener<Boolean>() {
+                    @Override
+                    public void onComplete(@NonNull Task<Boolean> task) {
+                        if (task.getResult()) {
+//                            binding.follow.setText("Theo dõi");
+                        }
+                    }
+
+                });
+
+            }
+    });
         binding.iconEmoji.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
@@ -372,11 +408,10 @@ public class DetailPostActivity extends AppCompatActivity {
                     Comment comment = new Comment();
                     comment.setPostId(post.getPostId());
                     comment.setPublisher(fimaers.getUid());
-                    comment.setContent(binding.addComment.getText().toString());
+                    comment.setContent( binding.addComment.getText().toString());
                     comment.setParentId("");
                     commentRepository.postComment(post.getPostId(), "posts",comment);
                 }
-                postRepository.updateNumOfComment(post.getPostId());
                 binding.addComment.clearFocus();
                 binding.addComment.setText("");
                 binding.addComment.setHint("Để lại một bình luận");
@@ -430,7 +465,6 @@ public class DetailPostActivity extends AppCompatActivity {
                     }
                 });
         fimaeBottomSheet.show(getSupportFragmentManager(), fimaeBottomSheet.getTag());
-
     }
     private void showEditCommentDialog(Comment comment){
         CommentEditFragment commentEditFragment = new CommentEditFragment(comment, post.getPostId());
@@ -477,5 +511,10 @@ public class DetailPostActivity extends AppCompatActivity {
         })
         .build()
         .show(getSupportFragmentManager(), "report");
+    }
+    private void viewPublisherProfile(){
+        Intent intent = new Intent(DetailPostActivity.this, ProfileActivity.class );
+        intent.putExtra("uid", post.getPublisher());
+        mStartForResult.launch(intent);
     }
 }
