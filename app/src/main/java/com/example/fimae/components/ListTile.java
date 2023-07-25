@@ -15,12 +15,14 @@ import androidx.core.content.ContextCompat;
 import com.example.fimae.R;
 
 public class ListTile extends ConstraintLayout {
+    ConstraintLayout container;
     ImageView leadingIcon;
     ImageView trailingIcon;
     TextView title;
     TextView subtitle;
     private void initView(Context context) {
         View view = inflate(context, R.layout.bottomsheet_item, this);
+        container = view.findViewById(R.id.bottom_sheet_item_layout);
         leadingIcon = view.findViewById(R.id.leading_icon);
         trailingIcon = view.findViewById(R.id.trailing_icon);
         title = view.findViewById(R.id.tv_title);
@@ -84,9 +86,6 @@ public class ListTile extends ConstraintLayout {
     }
     public void setSubtitle(String text) {
         subtitle.setText(text);
-    }
-    public void setOnClickListener(OnClickListener onClickListener) {
-        this.setOnClickListener(onClickListener);
     }
     public void setLeadingIconVisibility(int visibility) {
         leadingIcon.setVisibility(visibility);
