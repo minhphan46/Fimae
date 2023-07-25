@@ -9,8 +9,10 @@ import android.widget.LinearLayout;
 import android.widget.TextView;
 
 import androidx.annotation.NonNull;
+import androidx.core.content.ContextCompat;
 import androidx.recyclerview.widget.RecyclerView;
 
+import com.bumptech.glide.Glide;
 import com.example.fimae.R;
 import com.example.fimae.models.Conversation;
 import com.example.fimae.models.Message;
@@ -98,7 +100,18 @@ public class ConversationAdapter extends FirestoreAdapter<ConversationAdapter.Vi
                 return;
             }
             FimaerRepository.getInstance().getFimaerById(uid).addOnSuccessListener(user -> {
-                Picasso.get().load(user.getAvatarUrl()).placeholder(R.drawable.ic_default_avatar).into(holder.mAvatarView);
+                if(user == null){
+                    holder.mLayoutCard.setVisibility(View.GONE);
+                    return;
+                }
+
+                //Convert to Glide
+                if(user.getAvatarUrl() == null || user.getAvatarUrl().equals("")){
+                    holder.mAvatarView.setImageResource(R.drawable.ic_default_avatar);
+                }
+                else{
+                    Glide.with(holder.mAvatarView.getContext()).load(user.getAvatarUrl()).placeholder(R.drawable.ic_default_avatar).into(holder.mAvatarView);
+                }
                 holder.mTextName.setText(user.getFirstName() + " " + user.getLastName());
                 if (conversation.getLastMessage() != null) {
                     conversation.getLastMessage().get().addOnCompleteListener(task -> {
