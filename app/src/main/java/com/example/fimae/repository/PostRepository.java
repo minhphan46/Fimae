@@ -341,18 +341,18 @@ public class PostRepository {
         }
     }
 
-//    public void updateNumOfComment(String postId){
-//        final int[] number = {0};
-//
-//        postRef(postId).get().addOnSuccessListener(new OnSuccessListener<DocumentSnapshot>() {
-//            @Override
-//            public void onSuccess(DocumentSnapshot documentSnapshot) {
-//               Post post = documentSnapshot.toObject(Post.class);
-//               number[0] = (post.getNumberOfComments() + 1);
-//                postRef(postId).update("numberOfComments", number[0]);
-//            }
-//        });
-//    }
+    public void updateNumOfComment(String postId){
+        final int[] number = {0};
+
+        postRef(postId).get().addOnSuccessListener(new OnSuccessListener<DocumentSnapshot>() {
+            @Override
+            public void onSuccess(DocumentSnapshot documentSnapshot) {
+               Post post = documentSnapshot.toObject(Post.class);
+               number[0] = (post.getNumberOfComments() + 1);
+                postRef(postId).update("numberOfComments", number[0]);
+            }
+        });
+    }
     public DocumentReference postRef(String id){
         DocumentReference ref =  FirebaseFirestore.getInstance().collection("posts")
                 .document(id);
