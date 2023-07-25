@@ -39,8 +39,8 @@ public class PostMessage extends CardView {
     }
 
     private void initTypedArray(Context context, TypedArray typedArray) {
-        if (typedArray.hasValue(R.styleable.PostMessage_title)) {
-            title.setText(typedArray.getString(R.styleable.PostMessage_title));
+        if (typedArray.hasValue(R.styleable.PostMessage_post_title)) {
+            title.setText(typedArray.getString(R.styleable.PostMessage_post_title));
         }
         if (typedArray.hasValue(R.styleable.PostMessage_label_button)) {
             viewButton.setText(typedArray.getString(R.styleable.PostMessage_label_button));

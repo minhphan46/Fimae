@@ -1,0 +1,111 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    tools:context=".DatingProfile">
+
+    <!-- TODO: Update blank fragment layout -->
+    <TextView
+        android:id="@+id/tv_dating_profile_title"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:paddingHorizontal="16dp"
+        android:paddingVertical="4dp"
+        android:text="Chúng tôi dựa trên các tiêu chí để đánh giá xem ai phù hợp với bạn. Đôi khi, chúng tôi gợi ý những người nằm ngoài tiêu chí của bạn nhưng có thể vẫn xứng đáng với bạn."
+        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+ />
+
+    <TextView
+        android:id="@+id/tv_dating_profile_title_2"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:paddingHorizontal="16dp"
+        android:paddingVertical="4dp"
+        android:text="Thông tin cơ bản"
+        android:textColor="@color/black"
+        android:textSize="20sp"
+        android:textStyle="bold"
+        app:layout_constraintTop_toBottomOf="@+id/tv_dating_profile_title" />
+
+    <com.example.fimae.components.ListTile
+        android:id="@+id/lt_location"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/tv_dating_profile_title_2"
+        app:leadingIcon="@drawable/ic_date_location"
+        app:subtitle="Thành phố Hồ Chí Minh"
+        app:title="Vị trí hẹn hò"
+        app:trailingIconVisibility="false" />
+
+    <com.example.fimae.components.ListTile
+        android:id="@+id/lt_distance"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/lt_location"
+        app:leadingIcon="@drawable/ic_date_distance"
+        app:subtitle="Trong vòng 100km"
+        app:title="Khoảng cách"
+        app:trailingIconVisibility="false" />
+
+    <com.example.fimae.components.ListTile
+        android:id="@+id/lt_gender"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/lt_distance"
+        app:leadingIcon="@drawable/ic_date_gender"
+        app:subtitle="Nữ"
+        app:title="Giới tính"
+        app:trailingIconVisibility="false" />
+
+    <com.example.fimae.components.ListTile
+        android:id="@+id/lt_age"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/lt_gender"
+        app:leadingIcon="@drawable/ic_date_age"
+        app:subtitle="18 - 25 tuổi"
+        app:title="Độ tuổi"
+        app:trailingIconVisibility="false" />
+
+    <com.example.fimae.components.ListTile
+        android:id="@+id/lt_relationship"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/lt_age"
+        app:leadingIcon="@drawable/ic_date_relationship"
+        app:subtitle="Không ràng buộc"
+        app:title="Đang tìm"
+        app:trailingIconVisibility="false" />
+
+    <com.example.fimae.components.ListTile
+        android:id="@+id/lt_height"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/lt_relationship"
+        app:leadingIcon="@drawable/ic_date_height"
+        app:subtitle="160cm - 180cm"
+        app:title="Chiều cao"
+        app:trailingIconVisibility="false" />
+
+    <com.example.fimae.components.ListTile
+        android:id="@+id/lt_education"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/lt_height"
+        app:leadingIcon="@drawable/ic_date_education"
+        app:subtitle="Bằng cao đẳng/đại học"
+        app:title="Trình độ học vấn"
+        app:trailingIconVisibility="false" />
+
+</androidx.constraintlayout.widget.ConstraintLayout>

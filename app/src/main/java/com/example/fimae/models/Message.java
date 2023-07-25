@@ -16,6 +16,7 @@ public class Message {
     static final public String CHANGE_NICKNAME = "CHANGE_NICKNAME";
     static final public String LEAVE_CONVERSATION = "LEAVE_CONVERSATION";
     static final public String SHORT_VIDEO = "SHORT_VIDEO";
+    static final public String DATING_MATCH = "DATING_MATCH";
     private String id;
     private String conversationID;
     private String idSender; // người gửi tin nhắn

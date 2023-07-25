@@ -5,6 +5,7 @@ import android.content.ClipboardManager;
 import android.content.Context;
 import android.content.Intent;
 import android.graphics.drawable.Drawable;
+import android.net.Uri;
 import android.os.Bundle;
 import android.text.Spannable;
 import android.text.SpannableString;
@@ -36,20 +37,27 @@ import com.example.fimae.adapters.ShortAdapter.ShortsReviewAdapter;
 import com.example.fimae.adapters.ShortAdapter.ShortsReviewProfileAdapter;
 import com.example.fimae.adapters.SpacingItemDecoration;
 import com.example.fimae.bottomdialogs.AvatarBottomSheetFragment;
+import com.example.fimae.bottomdialogs.PickImageBottomSheetFragment;
 import com.example.fimae.databinding.FragmentProfileBinding;
 import com.example.fimae.models.Fimaers;
 import com.example.fimae.models.Post;
 import com.example.fimae.models.shorts.ShortMedia;
 import com.example.fimae.repository.FimaerRepository;
 import com.example.fimae.repository.ShortsRepository;
+import com.example.fimae.service.FirebaseService;
+import com.example.fimae.utils.FileUtils;
 import com.example.fimae.viewmodels.ProfileViewModel;
 import com.example.fimae.viewmodels.ProfileViewModelFactory;
+import com.google.android.gms.tasks.OnCompleteListener;
+import com.google.android.gms.tasks.Task;
 import com.google.android.material.tabs.TabLayout;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.firestore.CollectionReference;
 import com.google.firebase.firestore.DocumentChange;
 import com.google.firebase.firestore.FirebaseFirestore;
 import com.google.firebase.firestore.Query;
+import com.google.firebase.storage.UploadTask;
+import com.squareup.picasso.Picasso;
 
 import androidx.databinding.DataBindingUtil;
 import androidx.fragment.app.FragmentManager;
@@ -169,6 +177,44 @@ public class ProfileFragment extends Fragment {
                 getActivity().onBackPressed();
             }
         });
+        binding.backgroundImage.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                if(!viewModel.isOther())
+                {
+                    PickImageBottomSheetFragment pickImageFragment = new PickImageBottomSheetFragment();
+                    pickImageFragment.setCallBack(new PickImageBottomSheetFragment.PickImageCallBack() {
+                        @Override
+                        public void pickImageComplete(Uri uri) {
+                            FirebaseService firebaseService = FirebaseService.getInstance();
+                            String imagePath = FileUtils.getFilePathFromContentUri(getContext(),uri);
+                            firebaseService.uploadFile("background/" + viewModel.getUid(), Uri.parse(imagePath))
+                                    .addOnCompleteListener(new OnCompleteListener<UploadTask.TaskSnapshot>() {
+                                        @Override
+                                        public void onComplete(@NonNull Task<UploadTask.TaskSnapshot> task) {
+                                            if(task.isSuccessful())
+                                            {
+                                                Toast.makeText(getContext(), "Image Uploaded Successfully", Toast.LENGTH_SHORT).show();
+                                                Task<Uri> downloadUri = task.getResult().getStorage().getDownloadUrl();
+                                                downloadUri.addOnCompleteListener(new OnCompleteListener<Uri>() {
+                                                    @Override
+                                                    public void onComplete(@NonNull Task<Uri> task) {
+                                                        if(task.isSuccessful()){
+                                                            viewModel.getUser().getValue().setBackgroundUrl(task.getResult().toString());
+                                                            viewModel.updateUser();
+                                                        }
+                                                    }
+                                                });
+                                            }
+                                        }
+                                    });
+                        }
+                    });
+                    FragmentManager fragmentManager = getChildFragmentManager(); // For fragments
+                    pickImageFragment.show(fragmentManager, "pick_image_bottom_sheet");
+                }
+            }
+        });
         tabLayout.addOnTabSelectedListener(new TabLayout.OnTabSelectedListener() {
 
             @Override
@@ -178,7 +224,7 @@ public class ProfileFragment extends Fragment {
                     binding.postList.setAdapter(postAdapter);
                     binding.postList.setLayoutManager(linearLayoutManager);
                 } else if (position == 1) {
-                    Query shortQuery = ShortsRepository.getInstance().getShortUserQuery(FirebaseAuth.getInstance().getUid());
+                    Query shortQuery = ShortsRepository.getInstance().getShortUserQuery(viewModel.getUid());
                     ShortsReviewProfileAdapter shortsReviewProfileAdapter = new ShortsReviewProfileAdapter(
                             shortQuery,
                             new ShortsReviewProfileAdapter.IClickCardListener() {
@@ -220,7 +266,15 @@ public class ProfileFragment extends Fragment {
 
                 if(!viewModel.isOther())
                 {
-                    AvatarBottomSheetFragment avatarFragment = AvatarBottomSheetFragment.newInstance(viewModel.getUser().getValue().getAvatarUrl());
+                    AvatarBottomSheetFragment avatarFragment = AvatarBottomSheetFragment
+                            .newInstance(viewModel.getUser().getValue().getAvatarUrl(), viewModel.getUid());
+                    avatarFragment.setCallBack(new PickImageBottomSheetFragment.PickImageCallBack() {
+                        @Override
+                        public void pickImageComplete(Uri uri) {
+                            viewModel.getUser().getValue().setAvatarUrl(uri.toString());
+                            viewModel.updateUser();
+                        }
+                    });
                     FragmentManager fragmentManager = getChildFragmentManager(); // For fragments
                     avatarFragment.show(fragmentManager, "avatar_bottom_sheet");
                 }

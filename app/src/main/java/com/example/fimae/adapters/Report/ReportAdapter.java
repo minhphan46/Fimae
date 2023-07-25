@@ -66,6 +66,14 @@ public class ReportAdapter extends RecyclerView.Adapter<ReportAdapter.ReportView
         return reportAdapterItems.size();
     }
 
+    public void setCurrentSelectedIndex(int selectedRadioIndex) {
+        for (int i = 0; i < reportAdapterItems.size(); i++) {
+            reportAdapterItems.get(i).setChecked(false);
+        }
+        reportAdapterItems.get(selectedRadioIndex).setChecked(true);
+        notifyDataSetChanged();
+    }
+
     public class ReportViewHolder extends RecyclerView.ViewHolder {
         ConstraintLayout layout;
         AppCompatCheckBox checkBox;
