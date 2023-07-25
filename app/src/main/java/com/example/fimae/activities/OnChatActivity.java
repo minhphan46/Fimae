@@ -11,7 +11,9 @@ import android.widget.*;
 
 import androidx.appcompat.app.ActionBar;
 import androidx.appcompat.app.AppCompatActivity;
+
 import android.os.Bundle;
+
 import androidx.appcompat.widget.Toolbar;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
@@ -23,6 +25,7 @@ import com.example.fimae.adapters.Report.ReportAdapter;
 import com.example.fimae.adapters.Report.ReportAdapterItem;
 import com.example.fimae.adapters.Report.ReportType;
 import com.example.fimae.bottomdialogs.ReportDialog;
+import com.example.fimae.dialogs.DatingMatchDialog;
 import com.example.fimae.fragments.MediaListDialogFragment;
 import com.example.fimae.R;
 import com.example.fimae.fragments.FimaeBottomSheet;
@@ -38,7 +41,7 @@ import com.google.firebase.firestore.*;
 
 import java.util.*;
 
-public class OnChatActivity extends AppCompatActivity{
+public class OnChatActivity extends AppCompatActivity {
     private static final int REQUEST_IMAGE_CAPTURE = 1;
     private static final int REQUEST_IMAGE_GALLERY = 2;
 
@@ -97,9 +100,9 @@ public class OnChatActivity extends AppCompatActivity{
     private void initBottomSheetItems() {
         bottomSheetItemList = new ArrayList<BottomSheetItem>() {
             {
-                add(new BottomSheetItem("Share",R.drawable.ic_share, "Chia sẽ liên hệ", "Chia sẽ ngay cho bạn bè"));
-                add(new BottomSheetItem("Media",R.drawable.ic_gallery, "Tất cả ảnh", R.drawable.ic_mic_on ));
-                add(new BottomSheetItem("Media",R.drawable.ic_edit, "Chỉnh sửa biệt danh"));
+                add(new BottomSheetItem("Share", R.drawable.ic_share, "Chia sẽ liên hệ", "Chia sẽ ngay cho bạn bè"));
+                add(new BottomSheetItem("Media", R.drawable.ic_gallery, "Tất cả ảnh", R.drawable.ic_mic_on));
+                add(new BottomSheetItem("Media", R.drawable.ic_edit, "Chỉnh sửa biệt danh"));
                 add(new BottomSheetItem("Media", R.drawable.ic_search, "Tìm kiếm lịch sử cuộc trò chuyện"));
                 add(new BottomSheetItem("Media", R.drawable.ic_user_block, "Chặn"));
                 add(new BottomSheetItem("Media", R.drawable.ic_chat_dots, "Báo cáo"));
@@ -151,25 +154,40 @@ public class OnChatActivity extends AppCompatActivity{
                             new BottomSheetItemAdapter.IClickBottomSheetItemListener() {
                                 @Override
                                 public void onClick(BottomSheetItem bottomSheetItem) {
-                                    ReportDialog.builder()
-                                            .setTitle("Báo cáo bài viết") //must
-                                            .setSubtitle("Chọn lý do báo cáo và mô tả ngắn  gọn") //optional
-                                            .setReportAdapterItems(ReportContents.getPostReportAdapterItems()) //must
-                                            .setOnReportDialogListener(new ReportDialog.OnReportDialogListener() {
-                                                @Override
-                                                public void onReportDialog(ReportAdapterItem reportAdapterItem, String description) {
-                                                    ReportRepository.getInstance().addNewReport("docId", ReportItem.USER_ITEM ,reportAdapterItem.getTitle(), description)
-                                                            .addOnCompleteListener(task -> {
-                                                                if (task.isSuccessful()) {
-                                                                    Toast.makeText(OnChatActivity.this, "Báo cáo thành công", Toast.LENGTH_SHORT).show();
-                                                                } else {
-                                                                    Toast.makeText(OnChatActivity.this, "Báo cáo thất bại", Toast.LENGTH_SHORT).show();
-                                                                }
-                                                            });
-                                                }
-                                            })
-                                            .build()
-                                            .show(getSupportFragmentManager(), "report");
+                                    DatingMatchDialog.builder()
+                                            .setMyImageUrl("https://picsum.photos/200/300?random=1")
+                                            .setOtherImageUrl("https://picsum.photos/200/300?random=2")
+                                            .setOtherName("Hào").setListener(new DatingMatchDialog.ButtonListener() {
+                                        @Override
+                                        public void onAcceptClick() {
+                                            Toast.makeText(OnChatActivity.this, "Accept", Toast.LENGTH_SHORT).show();
+                                        }
+
+                                        @Override
+                                        public void onDeclineClick() {
+                                            Toast.makeText(OnChatActivity.this, "Decline", Toast.LENGTH_SHORT).show();
+                                        }
+                                    }).build().show(getSupportFragmentManager(), "dating_match_dialog");
+
+//                                    ReportDialog.builder()
+//                                            .setTitle("Báo cáo bài viết") //must
+//                                            .setSubtitle("Chọn lý do báo cáo và mô tả ngắn  gọn") //optional
+//                                            .setReportAdapterItems(ReportContents.getPostReportAdapterItems()) //must
+//                                            .setOnReportDialogListener(new ReportDialog.OnReportDialogListener() {
+//                                                @Override
+//                                                public void onReportDialog(ReportAdapterItem reportAdapterItem, String description) {
+//                                                    ReportRepository.getInstance().addNewReport("docId", ReportItem.USER_ITEM ,reportAdapterItem.getTitle(), description)
+//                                                            .addOnCompleteListener(task -> {
+//                                                                if (task.isSuccessful()) {
+//                                                                    Toast.makeText(OnChatActivity.this, "Báo cáo thành công", Toast.LENGTH_SHORT).show();
+//                                                                } else {
+//                                                                    Toast.makeText(OnChatActivity.this, "Báo cáo thất bại", Toast.LENGTH_SHORT).show();
+//                                                                }
+//                                                            });
+//                                                }
+//                                            })
+//                                            .build()
+//                                            .show(getSupportFragmentManager(), "report");
                                 }
                             });
                     fimaeBottomSheet.show(getSupportFragmentManager(), fimaeBottomSheet.getTag());
@@ -191,7 +209,7 @@ public class OnChatActivity extends AppCompatActivity{
     }
 
     private void sendTextMessage() {
-        if(textInput.getText().toString().trim().isEmpty())
+        if (textInput.getText().toString().trim().isEmpty())
             return;
         ChatRepository.getDefaultChatInstance().sendTextMessage(conversationId, String.valueOf(textInput.getText()));
         textInput.setText("");
@@ -226,6 +244,7 @@ public class OnChatActivity extends AppCompatActivity{
         message.setIdSender(FirebaseAuth.getInstance().getUid());
         return message;
     }
+
     private void sendMessage(Message message) {
         recyclerView.scrollToPosition(messageAdapter.getItemCount() - 1);
         messagesCol.document(message.getId()).set(message)
@@ -233,6 +252,7 @@ public class OnChatActivity extends AppCompatActivity{
                     recyclerView.scrollToPosition(messageAdapter.getItemCount() - 1);
                 });
     }
+
     private void dispatchTakePictureIntent() {
         Intent takePictureIntent = new Intent(MediaStore.ACTION_IMAGE_CAPTURE);
         startActivityForResult(takePictureIntent, REQUEST_IMAGE_CAPTURE);
@@ -251,6 +271,7 @@ public class OnChatActivity extends AppCompatActivity{
 
         }
     }
+
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
         int id = item.getItemId();
@@ -270,7 +291,6 @@ public class OnChatActivity extends AppCompatActivity{
         }
         return super.onOptionsItemSelected(item);
     }
-
 
 
     @Override
