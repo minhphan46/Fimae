@@ -154,10 +154,7 @@ public class OnChatActivity extends AppCompatActivity {
                             new BottomSheetItemAdapter.IClickBottomSheetItemListener() {
                                 @Override
                                 public void onClick(BottomSheetItem bottomSheetItem) {
-                                    DatingMatchDialog.builder()
-                                            .setMyImageUrl("https://picsum.photos/200/300?random=1")
-                                            .setOtherImageUrl("https://picsum.photos/200/300?random=2")
-                                            .setOtherName("Hào").setListener(new DatingMatchDialog.ButtonListener() {
+                                    DatingMatchDialog.builder().setMyImageUrl("https://picsum.photos/200/300?random=1").setOtherImageUrl("https://picsum.photos/200/300?random=2").setOtherName("Hào").setListener(new DatingMatchDialog.ButtonListener() {
                                         @Override
                                         public void onAcceptClick() {
                                             Toast.makeText(OnChatActivity.this, "Accept", Toast.LENGTH_SHORT).show();
