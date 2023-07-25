@@ -73,6 +73,7 @@ public class AuthRepository {
                             if (task.isSuccessful()) {
                                 // Đăng nhập thành công
                                 FirebaseUser user = auth.getCurrentUser();
+                                OneSignalRepo.setExternalId(user.getUid());
                                 callback.onSignInSuccess(user);
                             } else {
                                 // Đăng nhập thất bại
@@ -110,6 +111,7 @@ public class AuthRepository {
                         if(task.isSuccessful())
                         {
                             FirebaseUser user = auth.getCurrentUser();
+                            OneSignalRepo.setExternalId(user.getUid());
                             if(task.getResult().getAdditionalUserInfo().isNewUser())
                             {
                                 callback.onFirstTimeSignIn(user);
@@ -145,6 +147,7 @@ public class AuthRepository {
 
     public void signOut()
     {
+        OneSignalRepo.removeExternalId();
         auth.signOut();
     }
 
