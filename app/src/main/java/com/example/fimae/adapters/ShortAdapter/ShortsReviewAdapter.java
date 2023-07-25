@@ -12,11 +12,15 @@ import androidx.recyclerview.widget.RecyclerView;
 
 import com.bumptech.glide.Glide;
 import com.example.fimae.R;
+import com.example.fimae.activities.PostMode;
 import com.example.fimae.adapters.FirestoreAdapter;
 import com.example.fimae.models.Fimaers;
 import com.example.fimae.models.shorts.ShortMedia;
+import com.example.fimae.repository.AuthRepository;
 import com.example.fimae.repository.FimaerRepository;
+import com.example.fimae.repository.FollowRepository;
 import com.example.fimae.repository.ShortsRepository;
+import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.firestore.DocumentChange;
 import com.google.firebase.firestore.DocumentSnapshot;
 import com.google.firebase.firestore.Query;
@@ -114,7 +118,12 @@ public class ShortsReviewAdapter extends FirestoreAdapter<ShortsReviewAdapter.Sh
         }
         for(DocumentSnapshot documentSnapshot : queryDocumentSnapshots){
             ShortMedia shortMedia = documentSnapshot.toObject(ShortMedia.class);
-            shortMedias.add(shortMedia);
+            ShortsRepository.getInstance().checkIsCanWatch(shortMedia, new ShortsRepository.CanWatchResultListener() {
+                @Override
+                public void onCanWatch(boolean canWatch) {
+                    if (canWatch) shortMedias.add(shortMedia);
+                }
+            });
         }
         notifyDataSetChanged();
     }
