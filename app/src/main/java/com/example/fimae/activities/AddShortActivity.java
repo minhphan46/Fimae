@@ -42,6 +42,7 @@ public class AddShortActivity extends AppCompatActivity {
                 finish();
             }
         });
+        // image video
         binding.imageVideo.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
@@ -59,9 +60,36 @@ public class AddShortActivity extends AppCompatActivity {
                 mediaListDialogFragment.show(getSupportFragmentManager(), "mediaList");
             }
         });
-
+        // post mode =====================================================================================
+        // set default value
+        binding.radioGroup.check(binding.rbPublic.getId());
+        // click layout public
+        binding.layoutPublic.setOnClickListener(view -> {
+            binding.rbPublic.setChecked(true);
+            binding.rbPublic.setButtonDrawable(R.drawable.radio_button_custom_background);
+        });
+        // click layout friend
+        binding.layoutFriends.setOnClickListener(view -> {
+            binding.rbFriend.setChecked(true);
+            binding.rbFriend.setButtonDrawable(R.drawable.radio_button_custom_background);
+        });
+        // click layout private
+        binding.layoutPrivate.setOnClickListener(view -> {
+            binding.rbPrivate.setChecked(true);
+            binding.rbPrivate.setButtonDrawable(R.drawable.radio_button_custom_background);
+        });
+        // allow comment =================================================================================
+        binding.cbComment.setChecked(true);
+        // click layout allow comment
+        binding.layoutAllowComment.setOnClickListener(view -> {
+            binding.cbComment.setChecked(!binding.cbComment.isChecked());
+        });
+        //================================================================================================
+        // finish
         binding.btnFinish.setOnClickListener(view -> {
             String description = binding.tvDescription.getText().toString();
+            PostMode postMode = getPostMode(binding.radioGroup.getCheckedRadioButtonId());
+            boolean allowComment = binding.cbComment.isChecked();
             if(description.isEmpty() || urlVideo == null){
                 Toast.makeText(getBaseContext(), "Please fill all fields", Toast.LENGTH_SHORT).show();
                 return;
@@ -69,7 +97,7 @@ public class AddShortActivity extends AppCompatActivity {
             binding.loading.setVisibility(View.VISIBLE);
             binding.btnFinish.setEnabled(false);
             binding.btnFinish.setBackgroundTintList(this.getResources().getColorStateList(R.color.gray_400));
-            ShortsRepository.getInstance().createShortVideo(description, Uri.parse(urlVideo), PostMode.PUBLIC, true).addOnCompleteListener(new OnCompleteListener<ShortMedia>() {
+            ShortsRepository.getInstance().createShortVideo(description, Uri.parse(urlVideo), postMode, allowComment).addOnCompleteListener(new OnCompleteListener<ShortMedia>() {
                 @Override
                 public void onComplete(@NonNull Task<ShortMedia> task) {
                     binding.loading.setVisibility(View.GONE);
@@ -84,5 +112,18 @@ public class AddShortActivity extends AppCompatActivity {
                 }
             });
         });
+    }
+
+    private PostMode getPostMode(int id) {
+        switch (id)
+        {
+            case R.id.rb_public:
+                return PostMode.PUBLIC;
+            case R.id.rb_friend:
+                return PostMode.FRIEND;
+            case R.id.rb_private:
+                return PostMode.PRIVATE;
+        }
+        return PostMode.PUBLIC;
     }
 }

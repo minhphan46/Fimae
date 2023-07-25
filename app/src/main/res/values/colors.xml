@@ -46,6 +46,8 @@
     <color name="transparent_white">#1FFFFFFF</color>
     <color name="transparent_dark">#80000000</color>
 
+    <color name="transparent_50_white">#80ffffff</color>
+
 <!--    StoryView-->
     <color name="progress_primary">@color/white</color>
     <color name="progress_secondary">@color/gray_scale</color>

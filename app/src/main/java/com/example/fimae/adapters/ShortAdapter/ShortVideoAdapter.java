@@ -81,6 +81,7 @@ public class ShortVideoAdapter extends FirestoreAdapter<ShortVideoAdapter.VideoH
         return new ShortVideoAdapter.VideoHolder(view);
     }
 
+
     @SuppressLint("SetTextI18n")
     @Override
     public void onBindViewHolder(@NonNull VideoHolder holder, int position) {
@@ -119,9 +120,15 @@ public class ShortVideoAdapter extends FirestoreAdapter<ShortVideoAdapter.VideoH
                                 holder.binding.itemVideoIcLike.setColorFilter(ContextCompat.getColor(context, R.color.white));
                             }
                             // comment
-                            holder.binding.itemVideoIcComment.setOnClickListener(view -> {
-                                iClickCardListener.showComment(media, fimaers);
-                            });
+                            if(media.isAllowComment()){
+                                holder.binding.itemVideoIcComment.setOnClickListener(view -> {
+                                    iClickCardListener.showComment(media, fimaers);
+                                });
+                            }
+                            else {
+                                holder.binding.itemVideoIcComment.setColorFilter(ContextCompat.getColor(context, R.color.transparent_50_white), android.graphics.PorterDuff.Mode.MULTIPLY);
+                                holder.binding.itemVideoTvComment.setClickable(false);
+                            }
                         }
                     }
                 }
