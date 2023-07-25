@@ -23,14 +23,15 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content">
 
-            <de.hdodenhof.circleimageview.CircleImageView
-                android:id="@+id/item_user_avatar_view"
-                android:layout_width="48dp"
-                android:layout_height="48dp"
-                android:src="@drawable/ic_default_avatar"
-                app:layout_constraintBottom_toBottomOf="parent"
-                app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintTop_toTopOf="parent" />
+        <de.hdodenhof.circleimageview.CircleImageView
+            android:id="@+id/item_user_avatar_view"
+            android:layout_width="48dp"
+            android:layout_height="48dp"
+            android:layout_marginEnd="10dp"
+            android:src="@color/gray_200"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="parent"
+            app:layout_constraintBottom_toBottomOf="parent"/>
 
             <TextView
                 android:visibility="gone"
@@ -70,51 +71,25 @@
                 android:orientation="horizontal"
                 app:layout_constraintTop_toTopOf="parent">
 
-                <TextView
-                    android:id="@+id/item_user_tv_name"
-                    style="@style/bold_14"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:text="Name"
-                    android:textColor="@color/text_primary"
-                    android:textSize="14sp" />
+                <View
+                    android:layout_width="100dp"
+                    android:layout_height="18dp"
+                    android:background="@color/gray_200"/>
 
-                <LinearLayout
-                    android:id="@+id/item_user_layout_gender_age"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:layout_marginStart="6dp"
-                    android:background="@drawable/shape_gender_border_blue"
-                    android:gravity="center"
-                    android:paddingHorizontal="5dp"
-                    android:paddingVertical="2.5dp">
+                <View
+                    android:layout_width="30dp"
+                    android:layout_height="18dp"
+                    android:layout_marginStart="10dp"
+                    android:background="@color/gray_200"/>
 
-                    <ImageView
-                        android:id="@+id/item_user_ic_gender"
-                        android:layout_width="10dp"
-                        android:layout_height="10dp"
-                        android:layout_marginEnd="2dp"
-
-                        android:src="@drawable/ic_male"
-                        app:tint="@color/text_white" />
-
-                    <TextView
-                        android:id="@+id/item_user_tv_age"
-                        style="@style/regular_8"
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:text="31"
-                        android:textColor="@color/text_white" />
-                </LinearLayout>
             </LinearLayout>
 
-            <TextView
-                android:id="@+id/item_user_tv_description"
-                style="@style/regular_12"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
+            <View
+                android:layout_width="140dp"
+                android:layout_height="18dp"
                 android:layout_marginTop="5dp"
-                android:text="Hello" />
+                android:background="@color/gray_200"/>
+
         </LinearLayout>
     </LinearLayout>
 

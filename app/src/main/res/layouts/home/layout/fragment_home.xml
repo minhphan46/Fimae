@@ -221,6 +221,31 @@
                     app:layout_constraintEnd_toEndOf="parent"
                     app:layout_constraintTop_toBottomOf="@id/layout_buttons"
                     tools:listitem="@layout/item_user"/>
+
+                <com.facebook.shimmer.ShimmerFrameLayout
+                    android:id="@+id/shimmer_view_users"
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent"
+                    app:layout_constraintStart_toStartOf="parent"
+                    app:layout_constraintEnd_toEndOf="parent"
+                    app:layout_constraintTop_toBottomOf="@id/layout_buttons"
+                    >
+                    <LinearLayout
+                        android:id="@+id/layout_shimmer_users"
+                        android:layout_width="match_parent"
+                        android:layout_height="match_parent"
+                        android:orientation="vertical">
+                        <include layout="@layout/shimmer_item_user"/>
+                        <include layout="@layout/shimmer_item_user"/>
+                        <include layout="@layout/shimmer_item_user"/>
+                        <include layout="@layout/shimmer_item_user"/>
+                        <include layout="@layout/shimmer_item_user"/>
+                        <include layout="@layout/shimmer_item_user"/>
+                        <include layout="@layout/shimmer_item_user"/>
+                        <include layout="@layout/shimmer_item_user"/>
+
+                    </LinearLayout>
+                </com.facebook.shimmer.ShimmerFrameLayout>
             </androidx.constraintlayout.widget.ConstraintLayout>
         </androidx.core.widget.NestedScrollView>
     </LinearLayout>

@@ -31,6 +31,7 @@
     <color name="white">#FFFFFF</color>
     <color name="light_blue_400">#FF29B6F6</color>
     <color name="light_blue_600">#FF039BE5</color>
+    <color name="gray_200">#E8E7E7</color>
     <color name="gray_400">#FFBDBDBD</color>
     <color name="gray_600">#FF757575</color>
     <color name="light_blue_50">#FFE1F5FE</color>
