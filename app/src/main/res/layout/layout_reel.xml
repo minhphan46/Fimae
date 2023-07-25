@@ -57,7 +57,7 @@
             android:background="@null"
             android:src="@drawable/ic_play_arrow"
             android:scaleType="fitCenter"
-            app:tint="#80ffffff"
+            app:tint="@color/transparent_50_white"
         />
 
     </FrameLayout>
@@ -77,19 +77,19 @@
         app:layout_constraintTop_toTopOf="parent"
         app:tint="@color/text_white" />
 
-    <!--<ImageButton
-        android:id="@+id/item_video_ic_search"
+    <ImageButton
+        android:id="@+id/item_video_ic_report"
         android:layout_width="25dp"
         android:layout_height="25dp"
-        android:layout_marginEnd="20dp"
+        android:layout_marginEnd="15dp"
         android:layout_marginTop="16dp"
         android:adjustViewBounds="true"
         android:background="@null"
         android:scaleType="fitCenter"
-        android:src="@drawable/ic_search"
+        android:src="@drawable/ic_flag"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintTop_toTopOf="parent"
-        app:tint="@color/text_white" />-->
+        app:tint="@color/text_white" />
 
     <LinearLayout
         android:layout_width="wrap_content"
