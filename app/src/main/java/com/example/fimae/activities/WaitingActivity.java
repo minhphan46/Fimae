@@ -26,6 +26,7 @@ import android.widget.Toast;
 
 import com.example.fimae.R;
 import com.example.fimae.adapters.SliderAdapter;
+import com.example.fimae.fragments.HomeFragment;
 import com.example.fimae.models.Calls;
 import com.example.fimae.models.Fimaers;
 import com.example.fimae.repository.ConnectRepo;
@@ -115,6 +116,7 @@ public class WaitingActivity extends AppCompatActivity {
         mBtnZoomOut = findViewById(R.id.btn_zoom_out_waiting);
         mBtnZoomOut.setOnClickListener(v -> {
             // zoom out
+            zoomOut();
         });
 
         mBtnClose = findViewById(R.id.btn_close_waiting);
@@ -159,6 +161,12 @@ public class WaitingActivity extends AppCompatActivity {
         mBtnSpeedUp.setOnClickListener(v -> {
             connectToRemoteUser();
         });
+    }
+
+    private void zoomOut() {
+        // zoom out
+        HomeFragment.isShowFloatingWaiting = true;
+        finish();
     }
 
     // close screen ==============================================================================

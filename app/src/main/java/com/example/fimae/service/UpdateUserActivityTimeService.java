@@ -30,14 +30,14 @@ public class UpdateUserActivityTimeService extends Service {
         runnable = new Runnable() {
             @Override
             public void run() {
-// Gửi API lên Server để cập nhật thời gian hoạt động của User
+                // Gửi API lên Server để cập nhật thời gian hoạt động của User
                 if(FirebaseAuth.getInstance().getCurrentUser() == null)
                     return;
                 FirebaseFirestore.getInstance().collection("fimaers").document(Objects.requireNonNull(FirebaseAuth.getInstance().getUid())).update("lastActive", FieldValue.serverTimestamp()).addOnCompleteListener(
                         new OnCompleteListener<Void>() {
                             @Override
                             public void onComplete(@NonNull Task<Void> task) {
-                                if(task.isSuccessful()){
+                                if (task.isSuccessful()) {
                                     handler.postDelayed(runnable, INTERVAL);
                                     Log.d("UpdateUserActivityTimeService", "Update success");
                                 } else {

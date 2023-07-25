@@ -1,7 +1,9 @@
 package com.example.fimae.repository;
 
 import android.net.Uri;
+import android.util.Log;
 import android.view.View;
+import android.widget.Toast;
 
 import androidx.annotation.Nullable;
 
@@ -168,6 +170,18 @@ public class ShortsRepository {
         if(shortMedia.getUsersWatched() == null) return 0;
         return shortMedia.getUsersWatched().values().size();
     }
+    // get short by id
+    public Task<ShortMedia> getShortById(String id) {
+        TaskCompletionSource<ShortMedia> taskCompletionSource = new TaskCompletionSource<>();
+        shortsRef.document(id).get().addOnCompleteListener(task -> {
+            if(task.isSuccessful()){
+                taskCompletionSource.setResult(Objects.requireNonNull(task.getResult()).toObject(ShortMedia.class));
+            }else{
+                taskCompletionSource.setException(Objects.requireNonNull(task.getException()));
+            }
+        });
+        return taskCompletionSource.getTask();
+    }
 
     // check user is followed or not
     public void checkUserFollowed(String uidCurrenUser, ShortMedia shortMedia, FollowRepository.FollowCheckListener followCheckListener) {
@@ -193,5 +207,16 @@ public class ShortsRepository {
                 }
             }
         });
+    }
+    // comment
+    public Query getShortCommentQuery(String idShort) {
+        return shortsRef.document(idShort).collection("comments").orderBy("timeCreated", Query.Direction.ASCENDING);
+    }
+    // add comment
+    public void addShortCommentNum(int numOfComment, ShortMedia video) {
+        int newNumOfComment = video.getNumOfComments() + numOfComment;
+        video.setNumOfComments(newNumOfComment);
+        // update
+        shortsRef.document(video.getId()).update("numOfComments", newNumOfComment);
     }
 }

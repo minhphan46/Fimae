@@ -21,6 +21,7 @@ import java.util.Map;
 
 public class CommentRepository {
     public static String POST_COLLECTION = "posts";
+    public static String SHORT_COLLECTION = "shorts";
     private static CommentRepository commentRepository;
     public static CommentRepository getInstance(){
         if(commentRepository == null) commentRepository = new CommentRepository();
@@ -31,6 +32,7 @@ public class CommentRepository {
                 .document(postId).collection("comments");
         return ref;
     }
+
     public Task<Boolean> postComment(String postId, String collection, Comment comment) {
         TaskCompletionSource<Boolean> taskCompletionSource = new TaskCompletionSource<>();
         DocumentReference commentId = getCommentRef(postId, collection).document();
@@ -44,21 +46,22 @@ public class CommentRepository {
         return taskCompletionSource.getTask();
     }
 
-    public Task<Boolean> editComment(String postId, Comment comment, String content) {
+    public Task<Boolean> editComment(String postId, Comment comment, String content, String collection) {
         TaskCompletionSource<Boolean> taskCompletionSource = new TaskCompletionSource<>();
         Map<String, Object> updates = new HashMap<>();
             updates.put("content", content);
             updates.put("timeEdited", FieldValue.serverTimestamp());
-            getCommentRef(postId, POST_COLLECTION).document(comment.getId()).update(updates).addOnCompleteListener(ss -> {
+            getCommentRef(postId, collection).document(comment.getId()).update(updates).addOnCompleteListener(ss -> {
                 taskCompletionSource.setResult(true);
             }).addOnFailureListener(e -> {
                 taskCompletionSource.setResult(false);
             });
             return taskCompletionSource.getTask();
     }
-    public Task<Boolean> deleteComment(String postId, Comment comment){
+
+    public Task<Boolean> deleteComment(String postId, Comment comment, String collection){
         TaskCompletionSource<Boolean> taskCompletionSource = new TaskCompletionSource<>();
-        getCommentRef(postId, POST_COLLECTION).document(comment.getId()).delete().addOnCompleteListener(ss->{
+        getCommentRef(postId, collection).document(comment.getId()).delete().addOnCompleteListener(ss->{
                 taskCompletionSource.setResult(true);
             }).addOnFailureListener(e->{
                 taskCompletionSource.setResult(false);
@@ -74,9 +77,9 @@ public class CommentRepository {
         }
         return -1; // Comment with the specified ID not found
     }
-    public void getSubComment(CommentItemAdapter commentItem){
+    public void getSubComment(CommentItemAdapter commentItem, String collection){
         Comment rootComment = commentItem.getComment();
-        getCommentRef(rootComment.getPostId(), POST_COLLECTION).orderBy("timeCreated").addSnapshotListener((value, error) -> {
+        getCommentRef(rootComment.getPostId(), collection).orderBy("timeCreated").addSnapshotListener((value, error) -> {
             if (error != null || value == null) {
                 return;
             }
@@ -96,8 +99,8 @@ public class CommentRepository {
         });
     }
 
-    public void getComment(String postId, List<CommentItemAdapter> comments, NewCommentAdapter newCommentAdapter) {
-        getCommentRef(postId, POST_COLLECTION).orderBy("timeCreated").addSnapshotListener((value, error) -> {
+    public void getComment(String postId, List<CommentItemAdapter> comments, NewCommentAdapter newCommentAdapter, String collection) {
+        getCommentRef(postId, collection).orderBy("timeCreated").addSnapshotListener((value, error) -> {
             if (error != null) {
                 return;
             }
@@ -107,7 +110,7 @@ public class CommentRepository {
                 if(!comment.getParentId().equals("")) return;
                 switch (dc.getType()) {
                     case ADDED:
-                        CommentItemAdapter commentItemAdapter = new CommentItemAdapter(comment);
+                        CommentItemAdapter commentItemAdapter = new CommentItemAdapter(comment, collection);
                         comments.add(commentItemAdapter);
                         newCommentAdapter.addUpdate();
                         break;

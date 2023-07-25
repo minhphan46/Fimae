@@ -16,15 +16,23 @@ import androidx.appcompat.widget.Toolbar;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
+import com.example.fimae.Constant.ReportContents;
+import com.example.fimae.adapters.BottomSheetItemAdapter;
 import com.example.fimae.adapters.MessageAdapter;
+import com.example.fimae.adapters.Report.ReportAdapter;
+import com.example.fimae.adapters.Report.ReportAdapterItem;
+import com.example.fimae.adapters.Report.ReportType;
+import com.example.fimae.bottomdialogs.ReportDialog;
 import com.example.fimae.fragments.MediaListDialogFragment;
 import com.example.fimae.R;
 import com.example.fimae.fragments.FimaeBottomSheet;
 import com.example.fimae.models.BottomSheetItem;
 import com.example.fimae.models.Message;
 import com.example.fimae.repository.ChatRepository;
+import com.example.fimae.repository.ReportRepository;
 import com.example.fimae.utils.FileUtils;
 import com.example.fimae.utils.FirebaseHelper;
+import com.example.fimae.utils.ReportItem;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.firestore.*;
 
@@ -140,7 +148,30 @@ public class OnChatActivity extends AppCompatActivity{
             switch (id) {
                 case R.id.option_more:
                     FimaeBottomSheet fimaeBottomSheet = new FimaeBottomSheet(bottomSheetItemList,
-                            bottomSheetItem -> Toast.makeText(this, bottomSheetItem.getTitle(), Toast.LENGTH_SHORT).show());
+                            new BottomSheetItemAdapter.IClickBottomSheetItemListener() {
+                                @Override
+                                public void onClick(BottomSheetItem bottomSheetItem) {
+                                    ReportDialog.builder()
+                                            .setTitle("Báo cáo bài viết") //must
+                                            .setSubtitle("Chọn lý do báo cáo và mô tả ngắn  gọn") //optional
+                                            .setReportAdapterItems(ReportContents.getPostReportAdapterItems()) //must
+                                            .setOnReportDialogListener(new ReportDialog.OnReportDialogListener() {
+                                                @Override
+                                                public void onReportDialog(ReportAdapterItem reportAdapterItem, String description) {
+                                                    ReportRepository.getInstance().addNewReport("docId", ReportItem.USER_ITEM ,reportAdapterItem.getTitle(), description)
+                                                            .addOnCompleteListener(task -> {
+                                                                if (task.isSuccessful()) {
+                                                                    Toast.makeText(OnChatActivity.this, "Báo cáo thành công", Toast.LENGTH_SHORT).show();
+                                                                } else {
+                                                                    Toast.makeText(OnChatActivity.this, "Báo cáo thất bại", Toast.LENGTH_SHORT).show();
+                                                                }
+                                                            });
+                                                }
+                                            })
+                                            .build()
+                                            .show(getSupportFragmentManager(), "report");
+                                }
+                            });
                     fimaeBottomSheet.show(getSupportFragmentManager(), fimaeBottomSheet.getTag());
                     return true;
                 case R.id.option_call:
@@ -228,7 +259,12 @@ public class OnChatActivity extends AppCompatActivity{
             return true;
         } else if (id == R.id.option_more) {
             FimaeBottomSheet fimaeBottomSheet = new FimaeBottomSheet(bottomSheetItemList,
-                    bottomSheetItem -> Toast.makeText(getBaseContext(), bottomSheetItem.getTitle(), Toast.LENGTH_SHORT).show());
+                    new BottomSheetItemAdapter.IClickBottomSheetItemListener() {
+                        @Override
+                        public void onClick(BottomSheetItem bottomSheetItem) {
+
+                        }
+                    });
             fimaeBottomSheet.show(getSupportFragmentManager(), fimaeBottomSheet.getTag());
         } else if (id == R.id.option_call) {
         }

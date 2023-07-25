@@ -1,10 +1,10 @@
-<layout xmlns:android="http://schemas.android.com/apk/res/android">
+<layout xmlns:tools="http://schemas.android.com/tools"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:android="http://schemas.android.com/apk/res/android">
     <FrameLayout
         android:layout_width="match_parent"
         android:layout_height="match_parent">
         <RelativeLayout
-            xmlns:app="http://schemas.android.com/apk/res-auto"
-            xmlns:tools="http://schemas.android.com/tools"
             android:layout_width="match_parent"
             android:layout_marginBottom="5dp"
             android:layout_height="match_parent"
@@ -297,27 +297,25 @@
                 android:layout_width="match_parent"
                 android:layout_height="0.5dp"
                 android:background="@drawable/divided_shape"
-                android:layout_marginBottom="6dp"
                 android:layout_above="@id/bottom"
                 />
 
             <androidx.constraintlayout.widget.ConstraintLayout
                 android:id="@+id/bottom"
-                android:layout_marginBottom="0dp"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:paddingBottom="0dp"
                 android:layout_alignParentBottom="true"
-
+                android:paddingVertical="5dp"
                 >
 
                 <ImageView
                     android:id="@+id/icon_emoji"
                     android:layout_width="25dp"
                     android:layout_height="25dp"
-                    android:layout_marginLeft="14dp"
+                    android:layout_marginStart="14dp"
                     android:src="@drawable/smile"
                     app:layout_constraintLeft_toLeftOf="parent"
+                    app:layout_constraintTop_toTopOf="parent"
                     app:layout_constraintBottom_toBottomOf="parent"
                     />
                 <ImageView
@@ -326,31 +324,35 @@
                     android:layout_height="25dp"
                     android:layout_marginLeft="17dp"
                     android:src="@drawable/ic_aplus"
-                    app:layout_constraintTop_toTopOf="@id/icon_emoji"
                     app:layout_constraintLeft_toRightOf="@id/icon_emoji"
+                    app:layout_constraintTop_toTopOf="parent"
                     app:layout_constraintBottom_toBottomOf="parent"
                     />
+
                 <EditText
                     android:id="@+id/add_comment"
-                    android:layout_width="210dp"
+                    style="@style/medium_16"
+                    android:layout_width="match_parent"
                     android:layout_height="40dp"
+                    android:layout_marginStart="90dp"
+                    android:layout_marginEnd="80dp"
+                    android:background="@drawable/add_comment_background"
+                    android:gravity="center"
                     android:hint="Để lại một bình luận"
                     android:paddingHorizontal="20dp"
-                    android:layout_marginLeft="20dp"
                     android:textColor="@color/text_secondary"
-                    style="@style/medium_16"
-                    android:gravity="center"
-                    app:layout_constraintBottom_toBottomOf="@id/icon_emoji"
+                    app:layout_constraintBottom_toBottomOf="parent"
+                    app:layout_constraintEnd_toStartOf="@+id/post"
                     app:layout_constraintLeft_toRightOf="@id/icon_image"
-                    android:background="@drawable/add_comment_background"
-                    />
+                    app:layout_constraintTop_toTopOf="parent" />
                 <ImageView
                     android:id="@+id/post"
                     android:layout_width="65dp"
                     android:layout_height="40dp"
                     android:scaleType="fitStart"
                     android:layout_marginEnd="10dp"
-                    app:layout_constraintBottom_toBottomOf="@id/icon_emoji"
+                    app:layout_constraintTop_toTopOf="parent"
+                    app:layout_constraintBottom_toBottomOf="parent"
                     app:layout_constraintRight_toRightOf="parent"
                     android:background="@drawable/cantpost" />
             </androidx.constraintlayout.widget.ConstraintLayout>
