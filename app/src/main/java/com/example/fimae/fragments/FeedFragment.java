@@ -15,6 +15,7 @@ import androidx.fragment.app.Fragment;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.viewpager2.widget.ViewPager2;
 
+import com.example.fimae.activities.AdminReportActivity;
 import com.example.fimae.activities.DetailPostActivity;
 import com.example.fimae.activities.PostActivity;
 import com.example.fimae.activities.ProfileActivity;
@@ -111,8 +112,8 @@ public class FeedFragment extends Fragment {
         });
         binding.addPost.setOnClickListener(view -> {
 
-            Intent intent = new Intent(getContext(), ProfileActivity.class );
-            intent.putExtra("uid", "0Ksg5AboSIf7c2mhLcPWiAmczcZ2");
+            Intent intent = new Intent(getContext(), AdminReportActivity.class );
+//            intent.putExtra("uid", "0Ksg5AboSIf7c2mhLcPWiAmczcZ2");
             mStartForResult.launch(intent);
         });
 

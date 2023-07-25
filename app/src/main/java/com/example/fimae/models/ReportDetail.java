@@ -15,6 +15,7 @@ public class ReportDetail {
 
     private String uid;
 
+    public ReportDetail(){}
     public ReportDetail(String reporter, String description, String reason, String idReport, String uid) {
         this.reporter = reporter;
         this.description = description;
