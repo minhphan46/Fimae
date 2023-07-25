@@ -36,8 +36,11 @@ import com.google.firebase.firestore.DocumentChange;
 import com.google.firebase.firestore.DocumentReference;
 import com.google.firebase.firestore.DocumentSnapshot;
 import com.google.firebase.firestore.EventListener;
+import com.google.firebase.firestore.FieldPath;
 import com.google.firebase.firestore.FirebaseFirestore;
 import com.google.firebase.firestore.FirebaseFirestoreException;
+import com.google.firebase.firestore.Query;
+import com.google.firebase.firestore.QuerySnapshot;
 import com.google.type.DateTime;
 import com.google.type.DateTimeOrBuilder;
 import com.squareup.picasso.Picasso;
@@ -48,6 +51,7 @@ import java.time.LocalDateTime;
 import java.time.ZoneId;
 import java.time.temporal.ChronoUnit;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Date;
 import java.util.List;
 import java.util.Map;
@@ -102,22 +106,17 @@ public class PostAdapter extends RecyclerView.Adapter<PostAdapter.ViewHolder> {
                     binding.itemUserIcGender.setImageResource(R.drawable.ic_male);
                     binding.genderAgeIcon.setBackgroundResource(R.drawable.shape_gender_border_pink);
                 }
-
                 binding.ageTextView.setText(String.valueOf(fimaers.calculateAge()));
                 binding.userName.setText(fimaers.getLastName());
                 initListener(binding, currentPost, fimaers);
-
             }
         });
-
         ArrayList<String> imageUrls = new ArrayList<>( currentPost.getPostImages());
         List<Uri> imageUris = new ArrayList<>();
         String description = currentPost.getContent();
-
         binding.content.setText(description);
         binding.commentNumber.setText(String.valueOf(currentPost.getNumberOfComments()));
         binding.likeNumber.setText(String.valueOf(currentPost.getLikes().size()));
-
         for(int i = 0; i < imageUrls.size();i++){
             imageUris.add(Uri.parse(imageUrls.get(i)));
         }
@@ -155,34 +154,71 @@ public class PostAdapter extends RecyclerView.Adapter<PostAdapter.ViewHolder> {
                 binding.follow.setVisibility(View.GONE);
             }
             else{
-                followRepository.followRef.document(FirebaseAuth.getInstance().getUid()+"_"+currentPost.getPublisher()).addSnapshotListener(new EventListener<DocumentSnapshot>() {
+                String doc1 = FirebaseAuth.getInstance().getUid()+"_"+currentPost.getPublisher();
+                String doc2 = currentPost.getPublisher()+"_"+FirebaseAuth.getInstance().getUid();
+                Query query = FollowRepository.getInstance().followRef.whereIn(FieldPath.documentId(), Arrays.asList(doc1, doc2));
+
+                query.addSnapshotListener(new EventListener<QuerySnapshot>() {
                     @Override
-                    public void onEvent(@Nullable DocumentSnapshot value, @Nullable FirebaseFirestoreException error) {
-                        if(error != null ){
+                    public void onEvent(@Nullable QuerySnapshot queryDocumentSnapshots, @Nullable FirebaseFirestoreException error) {
+                        if (error != null) {
+                            // Handle the error
                             return;
                         }
-                        if(value != null && value.exists()){
-                            binding.follow.setVisibility(View.GONE);
+                        if(queryDocumentSnapshots.getDocuments().size() == 2){
                             binding.chat.setVisibility(View.VISIBLE);
+                            binding.follow.setVisibility(View.GONE);
                         }
-                        else{
-                            binding.follow.setVisibility(View.VISIBLE);
+                        else {
                             binding.chat.setVisibility(View.GONE);
+                            binding.follow.setVisibility(View.VISIBLE);
+                            if(queryDocumentSnapshots.getDocuments().size() == 1){
+                                Follows follows = queryDocumentSnapshots.getDocuments().get(0).toObject(Follows.class);
+                                if(follows.getFollower().equals(currentPost.getPublisher())){
+                                    binding.follow.setText("Bỏ theo dõi");
+                                }
+                                else{
+                                    binding.follow.setText("Theo dõi");
+                                }
+                            }
+                            else{
+                                binding.follow.setText("Theo dõi");
+                            }
                         }
                     }
                 });
             }
 
-
-            binding.follow.setOnClickListener(new View.OnClickListener() {
+            binding.chat.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View view) {
-                        followRepository.follow(currentPost.getPublisher());
-                        binding.follow.setVisibility(View.GONE);
-                        binding.chat.setVisibility(View.VISIBLE);
-                    }
+                    PostRepository.getInstance().goToChatWithUser(currentPost.getPublisher(), mContext);
                 }
-            );
+            });
+            binding.follow.setOnClickListener(view -> {
+                if(binding.follow.getText().equals("Theo dõi")){
+                    FollowRepository.getInstance().follow(currentPost.getPublisher()).addOnCompleteListener(new OnCompleteListener<Boolean>() {
+                        @Override
+                        public void onComplete(@NonNull Task<Boolean> task) {
+                            if (task.getResult()) {
+//                            binding.follow.setText("Bỏ theo dõi");
+                            }
+                        }
+                    });
+                }
+                else {
+                    FollowRepository.getInstance().unFollow(currentPost.getPublisher()).addOnCompleteListener(new OnCompleteListener<Boolean>() {
+                        @Override
+                        public void onComplete(@NonNull Task<Boolean> task) {
+                            if (task.getResult()) {
+//                            binding.follow.setText("Theo dõi");
+                            }
+                        }
+
+                    });
+
+                }
+            });
             if(!currentPost.getContent().equals(updatePost.getContent())){
                 binding.content.setText(updatePost.getContent());
             }
