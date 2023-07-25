@@ -79,7 +79,14 @@ public class UserHomeViewAdapter extends RecyclerView.Adapter<UserHomeViewAdapte
             return;
         }
         Picasso.get().load(user.getAvatarUrl()).placeholder(R.drawable.ic_default_avatar).into(holder.mAvatarView);
-        holder.mTextName.setText(user.getFirstName() + " " + user.getLastName());
+        String firstName = user.getFirstName();
+        String lastName = user.getLastName();
+        // Check if firstName is null, if null, use an empty string instead
+        firstName = firstName != null ? firstName : "";
+        // Check if lastName is null, if null, use an empty string instead
+        lastName = lastName != null ? lastName : "";
+        // Set the text in the TextView
+        holder.mTextName.setText(firstName + " " + lastName);
         holder.mTextDes.setText(user.getBio());
         holder.mTextAge.setText(String.valueOf(user.calculateAge()));
         holder.mLayoutGenderAge.setBackgroundResource(user.isGender() ? R.drawable.shape_gender_border_blue : R.drawable.shape_gender_border_pink);

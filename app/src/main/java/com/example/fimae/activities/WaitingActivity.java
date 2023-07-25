@@ -332,7 +332,8 @@ public class WaitingActivity extends AppCompatActivity {
             @Override
             public void onConnectionConnected(StringeeClient stringeeClient, boolean b) {
                 runOnUiThread(()->{
-                    mTvStatusConnect.setText("Bạn là " + stringeeClient.getUserId());
+                    //mTvStatusConnect.setText("Bạn là " + stringeeClient.getUserId());
+                    mTvStatusConnect.setText("Bạn là " + ConnectRepo.getInstance().getUserLocal().getName());
                 });
             }
 

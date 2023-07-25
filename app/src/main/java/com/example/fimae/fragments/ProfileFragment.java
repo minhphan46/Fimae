@@ -68,6 +68,7 @@ import androidx.recyclerview.widget.LinearLayoutManager;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Objects;
 
 import de.hdodenhof.circleimageview.CircleImageView;
 
@@ -267,7 +268,7 @@ public class ProfileFragment extends Fragment {
                 if(!viewModel.isOther())
                 {
                     AvatarBottomSheetFragment avatarFragment = AvatarBottomSheetFragment
-                            .newInstance(viewModel.getUser().getValue().getAvatarUrl(), viewModel.getUid());
+                            .newInstance(Objects.requireNonNull(viewModel.getUser().getValue()).getAvatarUrl(), viewModel.getUid());
                     avatarFragment.setCallBack(new PickImageBottomSheetFragment.PickImageCallBack() {
                         @Override
                         public void pickImageComplete(Uri uri) {
