@@ -4,9 +4,11 @@ import android.content.ClipData;
 import android.content.ClipboardManager;
 import android.content.Context;
 import android.content.Intent;
+import android.graphics.Bitmap;
 import android.graphics.drawable.Drawable;
 import android.net.Uri;
 import android.os.Bundle;
+import android.provider.MediaStore;
 import android.text.Spannable;
 import android.text.SpannableString;
 import android.text.method.LinkMovementMethod;
@@ -188,27 +190,35 @@ public class ProfileFragment extends Fragment {
                         @Override
                         public void pickImageComplete(Uri uri) {
                             FirebaseService firebaseService = FirebaseService.getInstance();
-                            String imagePath = FileUtils.getFilePathFromContentUri(getContext(),uri);
-                            firebaseService.uploadFile("background/" + viewModel.getUid(), Uri.parse(imagePath))
-                                    .addOnCompleteListener(new OnCompleteListener<UploadTask.TaskSnapshot>() {
-                                        @Override
-                                        public void onComplete(@NonNull Task<UploadTask.TaskSnapshot> task) {
-                                            if(task.isSuccessful())
-                                            {
-                                                Toast.makeText(getContext(), "Image Uploaded Successfully", Toast.LENGTH_SHORT).show();
-                                                Task<Uri> downloadUri = task.getResult().getStorage().getDownloadUrl();
-                                                downloadUri.addOnCompleteListener(new OnCompleteListener<Uri>() {
-                                                    @Override
-                                                    public void onComplete(@NonNull Task<Uri> task) {
-                                                        if(task.isSuccessful()){
-                                                            viewModel.getUser().getValue().setBackgroundUrl(task.getResult().toString());
-                                                            viewModel.updateUser();
+                            String fileName = FileUtils.getFileNameFromUri(uri);
+                            try
+                            {
+                                Bitmap bitmap = MediaStore.Images.Media.getBitmap(getContext().getContentResolver() , uri);
+                                byte[] data = FileUtils.getBytesFromBitmap(bitmap,100);
+                                firebaseService.uploadFile("background/" + viewModel.getUid(), fileName, data)
+                                        .addOnCompleteListener(new OnCompleteListener<UploadTask.TaskSnapshot>() {
+                                            @Override
+                                            public void onComplete(@NonNull Task<UploadTask.TaskSnapshot> task) {
+                                                if(task.isSuccessful())
+                                                {
+                                                    Toast.makeText(getContext(), "Image Uploaded Successfully", Toast.LENGTH_SHORT).show();
+                                                    Task<Uri> downloadUri = task.getResult().getStorage().getDownloadUrl();
+                                                    downloadUri.addOnCompleteListener(new OnCompleteListener<Uri>() {
+                                                        @Override
+                                                        public void onComplete(@NonNull Task<Uri> task) {
+                                                            if(task.isSuccessful()){
+                                                                viewModel.getUser().getValue().setBackgroundUrl(task.getResult().toString());
+                                                                viewModel.updateUser();
+                                                            }
                                                         }
-                                                    }
-                                                });
+                                                    });
+                                                }
                                             }
-                                        }
-                                    });
+                                        });
+                            }
+                            catch (Exception e)
+                            {
+                            }
                         }
                     });
                     FragmentManager fragmentManager = getChildFragmentManager(); // For fragments

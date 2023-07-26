@@ -22,6 +22,7 @@ import com.google.android.gms.common.api.ApiException;
 import com.example.fimae.models.Fimaers;
 import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.Task;
+import com.google.android.material.textfield.TextInputLayout;
 import com.google.firebase.auth.*;
 import com.google.firebase.firestore.FirebaseFirestore;
 import com.google.firebase.database.DatabaseReference;
@@ -32,7 +33,8 @@ import com.google.firebase.firestore.FirebaseFirestore;
 
 public class AuthenticationActivity extends AppCompatActivity {
 
-    private EditText editTextEmail, editTextPassword, editTextUsername;
+    private EditText editTextEmail, editTextPassword, editTextRepeatPass;
+    TextInputLayout repeatPassLayout;
     Button btnSignIn;
     ImageButton btnGoogleSignIn;
     TextView signUpTextView;
@@ -44,13 +46,15 @@ public class AuthenticationActivity extends AppCompatActivity {
     FirebaseDatabase database = FirebaseDatabase.getInstance();
     CollectionReference fimaeUsersRefer = firestore.collection("fimae-users");
     DatabaseReference usersRef = database.getReference("fimae-users");
-
+    boolean isRegister = false;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_authentication);
         editTextEmail = findViewById(R.id.editTextEmail);
         editTextPassword = findViewById(R.id.editTextPassword);
+        editTextRepeatPass = findViewById(R.id.editTextRepeatPassword);
+        repeatPassLayout = findViewById(R.id.repeatPassInput);
         signUpTextView = findViewById(R.id.textViewRegister);
         btnSignIn = findViewById(R.id.buttonLogin);
         btnGoogleSignIn = findViewById(R.id.googleImgBtn);
@@ -71,13 +75,35 @@ public class AuthenticationActivity extends AppCompatActivity {
         signUpTextView.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                signUp();
+                //signUp();
+                if(!isRegister)
+                {
+                    repeatPassLayout.setVisibility(View.VISIBLE);
+                    btnSignIn.setText("Register");
+                    signUpTextView.setText("Has an account? Login here.");
+                    isRegister = true;
+                }
+                else
+                {
+                    repeatPassLayout.setVisibility(View.GONE);
+                    btnSignIn.setText("Login");
+                    signUpTextView.setText("New user? Register Now");
+                    isRegister = false;
+                }
+
             }
         });
         btnSignIn.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                signIn();
+                if(!isRegister)
+                {
+                    signIn();
+                }
+                else
+                {
+                    signUp();
+                }
             }
         });
 
@@ -116,6 +142,7 @@ public class AuthenticationActivity extends AppCompatActivity {
 
             @Override
             public void onSignInError(String errorMessage) {
+                editTextEmail.setError(errorMessage);
                 Toast.makeText(getApplicationContext(),errorMessage,Toast.LENGTH_SHORT).show();
             }
         });
@@ -124,7 +151,13 @@ public class AuthenticationActivity extends AppCompatActivity {
     private void signUp() {
         String email = String.valueOf(editTextEmail.getText());
         String password = String.valueOf(editTextPassword.getText());
-        if (!(email.isEmpty() && password.isEmpty())) {
+        String repeatPass = String.valueOf(editTextRepeatPass.getText());
+        if (!(email.isEmpty() && password.isEmpty() && repeatPass.isEmpty())) {
+            if(!repeatPass.equals(password))
+            {
+                editTextRepeatPass.setError("Vui lòng nhập lại mật khẩu giống phía trên");
+                return;
+            }
             authRepository.signUp(email, password, new AuthRepository.SignUpCallback() {
                 @Override
                 public void onSignUpSuccess(FirebaseUser user) {
@@ -133,6 +166,7 @@ public class AuthenticationActivity extends AppCompatActivity {
 
                 @Override
                 public void onSignUpError(String errorMessage) {
+                    editTextEmail.setError(errorMessage);
                     Toast.makeText(getApplicationContext(), errorMessage,Toast.LENGTH_SHORT).show();
                 }
             });

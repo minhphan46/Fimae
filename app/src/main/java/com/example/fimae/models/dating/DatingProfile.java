@@ -3,29 +3,80 @@ package com.example.fimae.models.dating;
 
 import com.google.android.gms.maps.model.LatLng;
 import com.google.firebase.firestore.ServerTimestamp;
+import com.google.gson.annotations.Expose;
+import com.google.gson.annotations.SerializedName;
 
 import java.util.ArrayList;
 import java.util.Date;
 
 public class DatingProfile {
     private String id;
-    private @ServerTimestamp Date timeCreated;
-    private String uid;
-    private String description;
-    private LatLng location;
-    private int distance;
-    private int minAge;
-    private int maxAge;
-    private int minHeight;
-    private int maxHeight;
-    private RelationshipType relationshipType;
-    private EducationalLevel educationalLevel;
-    private boolean isEnable;
-    private boolean isVerified;
-    private ArrayList<String> genres;
-    private ArrayList<String> images;
-    private ArrayList<String> likedUsers;
-    private ArrayList<String> dislikedUsers;
+
+    @SerializedName("name")
+    @Expose
+    private String name;
+
+    @SerializedName("url")
+    @Expose
+    private String imageUrl;
+
+    @SerializedName("age")
+    @Expose
+    private Integer age;
+
+    @SerializedName("location")
+    @Expose
+    private String locationName;
+
+    public String getName() {
+        return name;
+    }
+
+    public void setName(String name) {
+        this.name = name;
+    }
+
+    public String getImageUrl() {
+        return imageUrl;
+    }
+
+    public void setImageUrl(String imageUrl) {
+        this.imageUrl = imageUrl;
+    }
+
+    public Integer getAge() {
+        return age;
+    }
+
+    public void setAge(Integer age) {
+        this.age = age;
+    }
+
+    public String getLocationName() {
+        return locationName;
+    }
+
+    public void setLocationName(String locationName) {
+        this.locationName = locationName;
+    }
+
+    private transient @ServerTimestamp Date timeCreated;
+    private transient String uid;
+    private transient String description;
+    private transient LatLng location;
+    private transient int distance;
+    private transient int minAge;
+    private transient int maxAge;
+    private transient int minHeight;
+    private transient int maxHeight;
+    private transient RelationshipType relationshipType;
+    private transient EducationalLevel educationalLevel;
+    private transient boolean isEnable;
+    private transient boolean isVerified;
+    private transient ArrayList<String> genres;
+    private transient ArrayList<String> images;
+    private transient ArrayList<String> likedUsers;
+    private transient ArrayList<String> dislikedUsers;
 
     public DatingProfile() {
         genres = new ArrayList<>();
