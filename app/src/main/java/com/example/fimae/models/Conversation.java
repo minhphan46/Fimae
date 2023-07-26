@@ -18,10 +18,10 @@ public class Conversation {
     private String blockedBy;
     @ServerTimestamp
     private Date createdAt;
-    private String type;
-    private String name;
     private DocumentReference lastMessage;
     ArrayList<String> participantIds = new ArrayList<> ();
+    HashMap<String, Date> readLastMessageAt = new HashMap<>();
+    HashMap<String, Date> joinedAt = new HashMap<>();
     public Conversation(){
 
     }
@@ -29,10 +29,25 @@ public class Conversation {
     public static Conversation create(String id, String type, ArrayList<String> participantIds){
         Conversation conversation = new Conversation();
         conversation.setId(id);
-        conversation.setType(type);
         Collections.sort(participantIds);
         conversation.setParticipantIds(participantIds);
         return conversation;
+    }
+
+    public HashMap<String, Date> getReadLastMessageAt() {
+        return readLastMessageAt;
+    }
+
+    public void setReadLastMessageAt(HashMap<String, Date> readLastMessageAt) {
+        this.readLastMessageAt = readLastMessageAt;
+    }
+
+    public HashMap<String, Date> getJoinedAt() {
+        return joinedAt;
+    }
+
+    public void setJoinedAt(HashMap<String, Date> joinedAt) {
+        this.joinedAt = joinedAt;
     }
 
     public ArrayList<String> getParticipantIds() {
@@ -67,21 +82,6 @@ public class Conversation {
         this.createdAt = createdAt;
     }
 
-    public String getType() {
-        return type;
-    }
-
-    public void setType(String type) {
-        this.type = type;
-    }
-
-    public String getName() {
-        return name;
-    }
-
-    public void setName(String name) {
-        this.name = name;
-    }
 
     public DocumentReference getLastMessage() {
         return lastMessage;
