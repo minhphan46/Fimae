@@ -44,6 +44,14 @@ public class DisabledUserActivity extends AppCompatActivity {
                     public void onSuccess(DocumentSnapshot documentSnapshot) {
                         DisableUser disableUser = documentSnapshot.toObject(DisableUser.class);
                         if(disableUser == null){
+                            if(type=="POST"){
+                                Intent intent1 = new Intent(DisabledUserActivity.this, PostActivity.class);
+                                startActivity(intent1);
+                            }
+                            else if(type == "SHORT"){
+                                Intent intent1 = new Intent(DisabledUserActivity.this, AddShortActivity.class);
+                                startActivity(intent1);
+                            }
                             finish();
                         }
                         SimpleDateFormat sdf = new SimpleDateFormat("dd-MM-yyyy", Locale.getDefault());
