@@ -16,6 +16,7 @@ import com.example.fimae.models.Conversation;
 import com.example.fimae.models.Fimaers;
 import com.example.fimae.models.Post;
 import com.google.android.gms.tasks.OnCompleteListener;
+import com.google.android.gms.tasks.OnFailureListener;
 import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.android.gms.tasks.Task;
 import com.google.android.gms.tasks.TaskCompletionSource;
@@ -28,6 +29,7 @@ import com.google.firebase.firestore.CollectionReference;
 import com.google.firebase.firestore.DocumentReference;
 import com.google.firebase.firestore.DocumentSnapshot;
 import com.google.firebase.firestore.FirebaseFirestore;
+import com.google.firebase.firestore.SetOptions;
 import com.google.firebase.storage.FirebaseStorage;
 import com.google.firebase.storage.StorageReference;
 
@@ -56,6 +58,26 @@ public class PostRepository {
         storageReference = FirebaseStorage.getInstance().getReference("AvatarPics");
         init();
     };
+
+    public Task<Boolean> deletePost(String postId){
+        TaskCompletionSource<Boolean> taskCompletionSource = new TaskCompletionSource<>();
+        postRef.document(postId).set(new HashMap<String, Object>() {{
+                    put("isDeleted", true);
+                }}, SetOptions.merge())
+                .addOnSuccessListener(new OnSuccessListener<Void>() {
+                    @Override
+                    public void onSuccess(Void unused) {
+                        taskCompletionSource.setResult(true);
+                    }
+                }).addOnFailureListener(new OnFailureListener() {
+                    @Override
+                    public void onFailure(@NonNull Exception e) {
+                        taskCompletionSource.setResult(false);
+                    }
+                });
+        return taskCompletionSource.getTask();
+    }
+
     private void init(){
         fimaersRef.document(firebaseAuth.getCurrentUser().getUid()).get().addOnSuccessListener(new OnSuccessListener<DocumentSnapshot>() {
             @Override

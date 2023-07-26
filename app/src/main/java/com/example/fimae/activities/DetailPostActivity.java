@@ -136,6 +136,7 @@ public class DetailPostActivity extends AppCompatActivity {
         addDisableSheet = new FimaeBottomSheet(addDisableDialog,
                 bottomSheetItem -> {
                     if (bottomSheetItem.getTitle().equals("Vô hiệu hóa đăng tin")) {
+                        PostRepository.getInstance().deletePost(postId);
                         Intent intent = new Intent(DetailPostActivity.this, DisableUserActivity.class);
                         intent.putExtra("id", post.getPublisher());
                         intent.putExtra("type", "POST");
