@@ -198,7 +198,7 @@ public class ShortVideoAdapter extends FirestoreAdapter<ShortVideoAdapter.VideoH
                     .setOnReportDialogListener(new ReportDialog.OnReportDialogListener() {
                         @Override
                         public void onReportDialog(ReportAdapterItem reportAdapterItem, String description) {
-                            ReportRepository.getInstance().addNewReport(media.getId(), ReportItem.USER_ITEM ,reportAdapterItem.getTitle(), description)
+                            ReportRepository.getInstance().addNewReport(media.getId(), ReportItem.SHORT_ITEM ,reportAdapterItem.getTitle(), description)
                                     .addOnCompleteListener(task -> {
                                         if (task.isSuccessful()) {
                                             Toast.makeText(context, "Báo cáo thành công", Toast.LENGTH_SHORT).show();

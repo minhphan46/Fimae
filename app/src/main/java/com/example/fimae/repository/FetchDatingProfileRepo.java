@@ -173,6 +173,7 @@ public class FetchDatingProfileRepo {
                 }
             }
         }
+        result.remove(currentProfile.getUid());
         return result;
     }
 

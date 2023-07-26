@@ -21,6 +21,7 @@ import com.google.firebase.auth.FirebaseUser;
 import com.google.firebase.firestore.CollectionReference;
 import com.google.firebase.firestore.DocumentSnapshot;
 import com.google.firebase.firestore.FirebaseFirestore;
+import com.google.firebase.firestore.ListenerRegistration;
 import com.google.firebase.functions.FirebaseFunctions;
 import com.google.firebase.functions.HttpsCallableResult;
 import com.google.firebase.storage.FirebaseStorage;
@@ -162,6 +163,29 @@ public class FimaerRepository {
         void onUploadSuccess(Uri uri);
         void onUploadError(String errorMessage);
     }
-
+    public interface GetFimaerCallback {
+        void updateNumOfUserOnline(int numOfUserOnline);
+    }
+    public ListenerRegistration getNumOfUserOnline(GetFimaerCallback callback){
+        ListenerRegistration listenerRegistration = fimaersRef.addSnapshotListener((value, error) -> {
+            if (error != null){
+                Log.e(TAG, "Listen failed.", error);
+                return;
+            }
+            if (value != null && !value.isEmpty()){
+                ArrayList<Fimaers> fimaers = new ArrayList<>();
+                for (DocumentSnapshot documentSnapshot : value.getDocuments()){
+                    Fimaers fimaer = documentSnapshot.toObject(Fimaers.class);
+                    if (fimaer != null && fimaer.isOnline()){
+                        fimaers.add(fimaer);
+                    }
+                }
+               callback.updateNumOfUserOnline(fimaers.size());
+            } else {
+                Log.e(TAG, "No data");
+            }
+        });
+        return listenerRegistration;
+    }
 
 }

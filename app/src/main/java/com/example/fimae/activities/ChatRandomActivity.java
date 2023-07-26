@@ -7,6 +7,7 @@ import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
 import android.os.Bundle;
+import android.util.Log;
 import android.view.View;
 import android.widget.EditText;
 import android.widget.ImageButton;
@@ -18,6 +19,7 @@ import android.widget.Toast;
 
 import com.example.fimae.R;
 import com.example.fimae.adapters.MessageAdapter;
+import com.example.fimae.models.Message;
 import com.example.fimae.models.Report;
 import com.example.fimae.repository.ChatRepository;
 import com.example.fimae.repository.ConnectRepo;
@@ -72,7 +74,21 @@ public class ChatRandomActivity extends AppCompatActivity {
             // send message
             String message = textInputEditText.getText().toString();
             if(message.isEmpty()) return;
-            ChatRepository.getRandomChatInstance().sendTextMessage(chatId, message);
+            ChatRepository.getRandomChatInstance().sendTextMessage(chatId, message)
+                    .addOnCompleteListener(new OnCompleteListener<Message>() {
+                        @Override
+                        public void onComplete(@NonNull Task<Message> task) {
+                            if(task.isSuccessful())
+                            {
+
+                            }
+                            else
+                            {
+                                Toast.makeText(ChatRandomActivity.this, "Error: Your partner has left the chat.", Toast.LENGTH_SHORT).show();
+                                finish();
+                            }
+                        }
+                    });
             textInputEditText.setText("");
         });
 

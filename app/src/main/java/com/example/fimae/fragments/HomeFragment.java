@@ -43,6 +43,7 @@ import com.example.fimae.models.Fimaers;
 import com.example.fimae.models.GenderMatch;
 import com.example.fimae.models.Report;
 import com.example.fimae.repository.ConnectRepo;
+import com.example.fimae.repository.FimaerRepository;
 import com.example.fimae.repository.FollowRepository;
 import com.example.fimae.repository.PostRepository;
 import com.facebook.shimmer.ShimmerFrameLayout;
@@ -60,6 +61,7 @@ import com.google.firebase.database.ValueEventListener;
 import com.google.firebase.firestore.CollectionReference;
 import com.google.firebase.firestore.DocumentReference;
 import com.google.firebase.firestore.FirebaseFirestore;
+import com.google.firebase.firestore.ListenerRegistration;
 import com.google.firebase.firestore.QueryDocumentSnapshot;
 import com.squareup.picasso.Picasso;
 
@@ -120,6 +122,8 @@ public class HomeFragment extends Fragment  {
     float xDown = 0, yDown = 0;
     private FimaeBottomSheet fimaeBottomSheet;
     List<BottomSheetItem> sheetItems;
+
+    private ListenerRegistration mlisten;
 
     static public boolean isShowFloatingWaiting = false;
     @Nullable
@@ -197,7 +201,32 @@ public class HomeFragment extends Fragment  {
         mImgAvatarWaiting = mView.findViewById(R.id.img_floating_waiting);
         handleShowFloatingWaiting();
 
+        // handle number of view
+        TextView mTvNumOfChat = mView.findViewById(R.id.tv_num_onl_chat);
+        TextView mTvNumOfVoice = mView.findViewById(R.id.tv_num_onl_call);
+        TextView mTvNumOfVideo = mView.findViewById(R.id.tv_num_onl_call_video);
+
+        mlisten = FimaerRepository.getInstance().getNumOfUserOnline(new FimaerRepository.GetFimaerCallback() {
+            @Override
+            public void updateNumOfUserOnline(int numOfUserOnline) {
+                mTvNumOfChat.setText(numOfUserOnline + "");
+                mTvNumOfVoice.setText(numOfUserOnline + "");
+                mTvNumOfVideo.setText(numOfUserOnline + "");
+            }
+        });
+
+
         return mView;
+    }
+
+    @Override
+    public void onDestroy() {
+        super.onDestroy();
+        if (mlisten != null)
+            mlisten.remove();
+
+        if(listenerRegistrationUser != null)
+            listenerRegistrationUser.remove();
     }
 
     @Override
@@ -274,13 +303,15 @@ public class HomeFragment extends Fragment  {
         });
     }
 
+    ListenerRegistration listenerRegistrationUser;
+
     private void GetAllUsers(){
         String localUid = FirebaseAuth.getInstance().getCurrentUser().getUid();
         mLayoutShimmerUser.setVisibility(View.VISIBLE);
         mShimmerWaitingUser.startShimmer();
         // get users from firebase
         fimaeUserRef = firestore.collection("fimaers"); // lay het thu muc user ra
-        fimaeUserRef.addSnapshotListener((value, error) -> {
+        listenerRegistrationUser = fimaeUserRef.addSnapshotListener((value, error) -> {
             if (error != null) {
                 // Xử lý lỗi
                 return;

@@ -245,6 +245,8 @@ public class SwipeViewFragment extends Fragment {
                 Match match = dc.getDocument().toObject(Match.class);
                 switch (dc.getType()) {
                     case ADDED:
+                        if(match.getMatchedUsers() == null)
+                            return;
                         if(!match.getMatchedUsers().contains(uid))
                             return;
                         if(match.getUserRead() == null || match.getUserRead().get(uid) == null || match.getUserRead().get(uid) == false )
