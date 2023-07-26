@@ -140,6 +140,8 @@ public class Fimaers extends BaseObservable implements Serializable {
 
     @Bindable
     public String getLastName() {
+        if(lastName == null)
+            return "";
         return lastName;
     }
 
