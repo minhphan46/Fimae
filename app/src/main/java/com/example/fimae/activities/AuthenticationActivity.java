@@ -160,9 +160,10 @@ public class AuthenticationActivity extends AppCompatActivity {
                                     DocumentSnapshot documentSnapshot = task.getResult();
                                     if (documentSnapshot != null) {
                                         DisableUser disableUser = documentSnapshot.toObject(DisableUser.class);
-                                        if (disableUser != null && disableUser.getTimeEnd().after(new Date())) {
+                                        if (disableUser != null && disableUser.getTimeEnd().after(new Date()) && disableUser.getType() != null &&  disableUser.getType().equals("USER")) {
                                             Intent intent = new Intent(AuthenticationActivity.this, DisabledUserActivity.class);
                                             intent.putExtra("disableId", user.getUid());
+                                            intent.putExtra("type", "USER");
                                             startActivity(intent);
                                         }
                                     }
