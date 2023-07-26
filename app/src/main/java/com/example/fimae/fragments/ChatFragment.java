@@ -31,6 +31,8 @@ import com.example.fimae.adapters.ConversationAdapter;
 import com.example.fimae.adapters.SpacingItemDecoration;
 import com.example.fimae.adapters.StoryAdapter.StoryAdapter;
 import com.example.fimae.adapters.StoryAdapter.StoryAdapterItem;
+import com.example.fimae.models.Conversation;
+import com.example.fimae.models.Fimaers;
 import com.example.fimae.models.story.Story;
 import com.example.fimae.repository.ChatRepository;
 import com.example.fimae.repository.StoryRepository;
@@ -79,10 +81,14 @@ public class ChatFragment extends Fragment {
         RecyclerView recyclerView = view.findViewById(R.id.list_user);
         searchbar = view.findViewById(R.id.search_bar);
         Query query = ChatRepository.getDefaultChatInstance().getConversationQuery();
-        adapter = new ConversationAdapter(query, conversation -> {
-            Intent intent = new Intent(getContext(), OnChatActivity.class);
-            intent.putExtra("conversationID", conversation.getId());
-            startActivity(intent);
+        adapter = new ConversationAdapter(query, new ConversationAdapter.IClickConversationListener() {
+            @Override
+            public void onClickConversation(Conversation conversation, Fimaers fimaers) {
+                Intent intent = new Intent(getContext(), OnChatActivity.class);
+                intent.putExtra("conversationID", conversation.getId());
+                intent.putExtra("fimaer", fimaers);
+                startActivity(intent);
+            }
         });
         LinearLayoutManager linearLayoutManager = new LinearLayoutManager(this.getContext());
         recyclerView.setLayoutManager(linearLayoutManager);

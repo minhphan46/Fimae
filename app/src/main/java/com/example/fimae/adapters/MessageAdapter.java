@@ -42,6 +42,11 @@ public class MessageAdapter extends FirestoreAdapter {
         return messages.get(position);
     }
 
+    @Override
+    public int getItemViewType(int position) {
+        return position;
+    }
+
     public int getMessageType(int position) {
         Message message = getMessage(position);
         Log.i("Tag", message.getType());
@@ -206,4 +211,10 @@ public class MessageAdapter extends FirestoreAdapter {
         return messages.size();
     }
 
+    @Override
+    public void stopListening() {
+        super.stopListening();
+        messages.clear();
+        fimaersHashMap.clear();
+    }
 }

@@ -83,12 +83,13 @@ public class OnChatActivity extends AppCompatActivity {
         getMenuInflater().inflate(R.menu.chat_second_menu, menu);
         return true;
     }
-
+    Fimaers fimaer;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_on_chat);
         conversationId = getIntent().getStringExtra("conversationID");
+        fimaer = (Fimaers) getIntent().getSerializableExtra("fimaer");
         currentConversationId = conversationId;
         messagesCol = FirebaseFirestore.getInstance().collection("conversations").document(conversationId).collection("messages");
         initViews();

@@ -76,7 +76,7 @@ public class ConversationAdapter extends FirestoreAdapter<ConversationAdapter.Vi
     }
 
     public interface IClickConversationListener {
-        void onClickConversation(Conversation conversation);
+        void onClickConversation(Conversation conversation, Fimaers fimaers);
     }
 
     private IClickConversationListener iClickConversationListener;
@@ -226,10 +226,10 @@ public class ConversationAdapter extends FirestoreAdapter<ConversationAdapter.Vi
                     holder.onlineStatus.setVisibility(View.GONE);
                     holder.offlineStatus.setVisibility(View.GONE);
                 }
+                holder.mLayoutCard.setOnClickListener(v -> iClickConversationListener.onClickConversation(conversation, user));
             });
-
         }
-        holder.mLayoutCard.setOnClickListener(v -> iClickConversationListener.onClickConversation(conversation));
+
     }
 
 }
