@@ -71,7 +71,6 @@ public class OneSignalRepo {
         });
 
         // promptForPushNotifications will show the native Android notification permission prompt.
-        OneSignal.promptForPushNotifications();
 
     }
 

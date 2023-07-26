@@ -6,7 +6,7 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent">
 
-    <com.example.fimae.service.CustomViewPager
+    <androidx.viewpager2.widget.ViewPager2
         android:id="@+id/view_paper"
         android:layout_width="match_parent"
         android:layout_height="match_parent"

@@ -1,10 +1,13 @@
 package com.example.fimae.activities;
+
 import android.content.Intent;
+
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.core.provider.FontRequest;
 import androidx.fragment.app.FragmentPagerAdapter;
 import androidx.viewpager.widget.ViewPager;
+import androidx.viewpager2.widget.ViewPager2;
 
 import android.os.Bundle;
 import android.view.MenuItem;
@@ -23,8 +26,9 @@ import java.security.cert.Certificate;
 public class HomeActivity extends AppCompatActivity {
 
     private BottomNavigationView mNavigationView;
-    private CustomViewPager mViewPager;
+    private ViewPager2 mViewPager;
     public static String PACKAGE_NAME;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -40,19 +44,19 @@ public class HomeActivity extends AppCompatActivity {
             public boolean onNavigationItemSelected(@NonNull MenuItem item) {
                 switch (item.getItemId()) {
                     case R.id.action_home:
-                        mViewPager.setCurrentItem(0);
+                        mViewPager.setCurrentItem(0, false);
                         break;
                     case R.id.action_feed:
-                        mViewPager.setCurrentItem(1);
+                        mViewPager.setCurrentItem(1, false);
                         break;
                     case R.id.action_date:
-                        mViewPager.setCurrentItem(2);
+                        mViewPager.setCurrentItem(2, false);
                         break;
                     case R.id.action_chat:
-                        mViewPager.setCurrentItem(3);
+                        mViewPager.setCurrentItem(3, false);
                         break;
                     case R.id.action_profile:
-                        mViewPager.setCurrentItem(4);
+                        mViewPager.setCurrentItem(4, false);
                         break;
                 }
                 return true;
@@ -61,40 +65,21 @@ public class HomeActivity extends AppCompatActivity {
         Intent intent = new Intent(this, UpdateUserActivityTimeService.class);
         startService(intent);
     }
+void init(){
 
+}
     private void setUpViewPager() {
-        ViewPagerAdapter viewPagerAdapter = new ViewPagerAdapter(getSupportFragmentManager(), FragmentPagerAdapter.BEHAVIOR_RESUME_ONLY_CURRENT_FRAGMENT);
+        ViewPagerAdapter viewPagerAdapter = new ViewPagerAdapter(this);
         mViewPager.setAdapter(viewPagerAdapter);
-        mViewPager.addOnPageChangeListener(new ViewPager.OnPageChangeListener() {
-            @Override
-            public void onPageScrolled(int position, float positionOffset, int positionOffsetPixels) {
+        //turn off smooth scroll
+        mViewPager.setUserInputEnabled(false);
 
-            }
-
+        mViewPager.setOffscreenPageLimit(5);
+        //Add listener to change icon when page change
+        mViewPager.registerOnPageChangeCallback(new ViewPager2.OnPageChangeCallback() {
             @Override
             public void onPageSelected(int position) {
-                switch (position) {
-                    case 0:
-                        mNavigationView.getMenu().findItem(R.id.action_home).setChecked(true);
-                        break;
-                    case 1:
-                        mNavigationView.getMenu().findItem(R.id.action_feed).setChecked(true);
-                        break;
-                    case 2:
-                        mNavigationView.getMenu().findItem(R.id.action_date).setChecked(true);
-                        break;
-                    case 3:
-                        mNavigationView.getMenu().findItem(R.id.action_chat).setChecked(true);
-                        break;
-                    case 4:
-                        mNavigationView.getMenu().findItem(R.id.action_profile).setChecked(true);
-                        break;
-                }
-            }
-
-            @Override
-            public void onPageScrollStateChanged(int state) {
-
+                mNavigationView.getMenu().getItem(position).setChecked(true);
             }
         });
     }

@@ -12,6 +12,7 @@ import android.view.View;
 import android.widget.*;
 
 import androidx.annotation.NonNull;
+import androidx.annotation.UiThread;
 import androidx.appcompat.app.ActionBar;
 import androidx.appcompat.app.AppCompatActivity;
 
@@ -132,10 +133,9 @@ public class OnChatActivity extends AppCompatActivity {
             {
                 add(new BottomSheetItem("Share", R.drawable.ic_share, "Chia sẽ liên hệ", "Chia sẽ ngay cho bạn bè"));
                 add(new BottomSheetItem("Media", R.drawable.ic_gallery, "Tất cả ảnh", R.drawable.ic_mic_on));
-                add(new BottomSheetItem("Media", R.drawable.ic_edit, "Chỉnh sửa biệt danh"));
-                add(new BottomSheetItem("Media", R.drawable.ic_search, "Tìm kiếm lịch sử cuộc trò chuyện"));
-                add(new BottomSheetItem("Media", R.drawable.ic_user_block, "Chặn"));
-                add(new BottomSheetItem("Media", R.drawable.ic_chat_dots, "Báo cáo"));
+                add(new BottomSheetItem("EditNickname", R.drawable.ic_edit, "Chỉnh sửa biệt danh"));
+                add(new BottomSheetItem("Block", R.drawable.ic_user_block, "Chặn"));
+                add(new BottomSheetItem("Report", R.drawable.ic_flag, "Báo cáo"));
             }
         };
     }
@@ -184,37 +184,11 @@ public class OnChatActivity extends AppCompatActivity {
                             new BottomSheetItemAdapter.IClickBottomSheetItemListener() {
                                 @Override
                                 public void onClick(BottomSheetItem bottomSheetItem) {
-                                    DatingMatchDialog.builder().setMyImageUrl("https://picsum.photos/200/300?random=1").setOtherImageUrl("https://picsum.photos/200/300?random=2").setOtherName("Hào").setListener(new DatingMatchDialog.ButtonListener() {
-                                        @Override
-                                        public void onAcceptClick() {
-                                            Toast.makeText(OnChatActivity.this, "Accept", Toast.LENGTH_SHORT).show();
-                                        }
-
-                                        @Override
-                                        public void onDeclineClick() {
-                                            Toast.makeText(OnChatActivity.this, "Decline", Toast.LENGTH_SHORT).show();
-                                        }
-                                    }).build().show(getSupportFragmentManager(), "dating_match_dialog");
-
-//                                    ReportDialog.builder()
-//                                            .setTitle("Báo cáo bài viết") //must
-//                                            .setSubtitle("Chọn lý do báo cáo và mô tả ngắn  gọn") //optional
-//                                            .setReportAdapterItems(ReportContents.getPostReportAdapterItems()) //must
-//                                            .setOnReportDialogListener(new ReportDialog.OnReportDialogListener() {
-//                                                @Override
-//                                                public void onReportDialog(ReportAdapterItem reportAdapterItem, String description) {
-//                                                    ReportRepository.getInstance().addNewReport("docId", ReportItem.USER_ITEM ,reportAdapterItem.getTitle(), description)
-//                                                            .addOnCompleteListener(task -> {
-//                                                                if (task.isSuccessful()) {
-//                                                                    Toast.makeText(OnChatActivity.this, "Báo cáo thành công", Toast.LENGTH_SHORT).show();
-//                                                                } else {
-//                                                                    Toast.makeText(OnChatActivity.this, "Báo cáo thất bại", Toast.LENGTH_SHORT).show();
-//                                                                }
-//                                                            });
-//                                                }
-//                                            })
-//                                            .build()
-//                                            .show(getSupportFragmentManager(), "report");
+                                    switch (bottomSheetItem.getTag()){
+                                        case "Block":
+//                                            ChatRepository.getDefaultChatInstance().blockUser(conversationId, "fimaer.getId()");
+                                            break;
+                                    }
                                 }
                             });
                     fimaeBottomSheet.show(getSupportFragmentManager(), fimaeBottomSheet.getTag());
@@ -224,6 +198,7 @@ public class OnChatActivity extends AppCompatActivity {
                     return true;
                 default:
                     return super.onOptionsItemSelected(item);
+
             }
         });
     }
