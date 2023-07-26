@@ -36,15 +36,32 @@ public class DisabledUserActivity extends AppCompatActivity {
         button = findViewById(R.id.buttonFinish);
         Intent intent = getIntent();
         String disableId =  intent.getStringExtra("disableId");
+        String type = intent.getStringExtra("type");
         FirebaseFirestore.getInstance().collection("user_disable")
-                .document(disableId)
+                .document(disableId+type)
                 .get().addOnSuccessListener(new OnSuccessListener<DocumentSnapshot>() {
                     @Override
                     public void onSuccess(DocumentSnapshot documentSnapshot) {
                         DisableUser disableUser = documentSnapshot.toObject(DisableUser.class);
+                        if(disableUser == null){
+                            finish();
+                        }
                         SimpleDateFormat sdf = new SimpleDateFormat("dd-MM-yyyy", Locale.getDefault());
-                        noti.setText("Tài khoản của bạn sẽ bị vô hiệu hóa đến ngày " + sdf.format(disableUser.getTimeEnd()));
-                        reason.setText("Lí do: " + disableUser.getReason().toString());
+                        if(type.equals("USER")){
+                            noti.setText("Tài khoản của bạn sẽ bị vô hiệu hóa đến ngày " + sdf.format(disableUser.getTimeEnd()));
+                            reason.setText("Lí do: " + disableUser.getReason().toString());
+                        }
+                        else if(type.equals("POST")) {
+                            noti.setText("Tài khoản của bạn sẽ bị vô hiệu hóa đăng tin đến ngày " + sdf.format(disableUser.getTimeEnd()));
+                            reason.setText("Lí do: " + disableUser.getReason().toString());
+                            button.setVisibility(View.GONE);
+
+                        }
+                        else if(type.equals("SHORT")){
+                            noti.setText("Tài khoản của bạn sẽ bị vô hiệu hóa đăng short đến ngày " + sdf.format(disableUser.getTimeEnd()));
+                            reason.setText("Lí do: " + disableUser.getReason().toString());
+                            button.setVisibility(View.GONE);
+                        }
                     }
                 });
 //                .get(new EventListener<DocumentSnapshot>() {
