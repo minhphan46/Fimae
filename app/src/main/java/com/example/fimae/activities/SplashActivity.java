@@ -14,6 +14,8 @@ import com.google.firebase.auth.FirebaseUser;
 import com.google.firebase.firestore.CollectionReference;
 import com.google.firebase.firestore.DocumentSnapshot;
 import com.google.firebase.firestore.FirebaseFirestore;
+import com.onesignal.OneSignal;
+
 import org.jetbrains.annotations.NotNull;
 
 public class SplashActivity extends AppCompatActivity {
@@ -40,6 +42,7 @@ public class SplashActivity extends AppCompatActivity {
                             Intent intent = new Intent(SplashActivity.this, HomeActivity.class);
                             intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TASK | Intent.FLAG_ACTIVITY_NEW_TASK);
                             startActivity(intent);
+
                         }
                         else
                         {
@@ -47,6 +50,7 @@ public class SplashActivity extends AppCompatActivity {
                             intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TASK | Intent.FLAG_ACTIVITY_NEW_TASK);
                             startActivity(intent);
                         }
+                        OneSignal.promptForPushNotifications();
                     }
                 }
             });

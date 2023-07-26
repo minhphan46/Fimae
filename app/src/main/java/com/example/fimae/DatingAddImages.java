@@ -14,6 +14,8 @@ import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
 import android.Manifest;
+import android.app.AlertDialog;
+import android.app.ProgressDialog;
 import android.content.Intent;
 import android.content.pm.PackageManager;
 import android.location.Location;
@@ -45,12 +47,22 @@ import java.util.List;
 public class DatingAddImages extends AppCompatActivity {
 
     private boolean checkReadImageAndVideoPermission(){
-        if (ActivityCompat.checkSelfPermission(this, Manifest.permission.READ_MEDIA_IMAGES) != PackageManager.PERMISSION_GRANTED && ActivityCompat.checkSelfPermission(this, Manifest.permission.READ_MEDIA_VIDEO) != PackageManager.PERMISSION_GRANTED) {
-            ActivityCompat.requestPermissions(this, new String[]{android.Manifest.permission.READ_MEDIA_IMAGES, android.Manifest.permission.READ_MEDIA_VIDEO}, 1);
-            Toast.makeText(getApplicationContext(), "Please allow permission to access your gallery", Toast.LENGTH_SHORT).show();
-            return false;
+        if (Build.VERSION.SDK_INT == Build.VERSION_CODES.S) {
+            if (ActivityCompat.checkSelfPermission(this, Manifest.permission.READ_MEDIA_IMAGES) != PackageManager.PERMISSION_GRANTED && ActivityCompat.checkSelfPermission(this, Manifest.permission.READ_MEDIA_VIDEO) != PackageManager.PERMISSION_GRANTED) {
+                ActivityCompat.requestPermissions(this, new String[]{android.Manifest.permission.READ_MEDIA_IMAGES, android.Manifest.permission.READ_MEDIA_VIDEO}, 1);
+                Toast.makeText(getApplicationContext(), "Please allow permission to access your gallery", Toast.LENGTH_SHORT).show();
+                return false;
+            } else {
+                return true;
+            }
         } else {
-            return true;
+            if (ActivityCompat.checkSelfPermission(this, Manifest.permission.READ_EXTERNAL_STORAGE) != PackageManager.PERMISSION_GRANTED && ActivityCompat.checkSelfPermission(this, Manifest.permission.WRITE_EXTERNAL_STORAGE) != PackageManager.PERMISSION_GRANTED) {
+                ActivityCompat.requestPermissions(this, new String[]{android.Manifest.permission.READ_EXTERNAL_STORAGE, android.Manifest.permission.WRITE_EXTERNAL_STORAGE}, 1);
+                Toast.makeText(getApplicationContext(), "Please allow permission to access your gallery", Toast.LENGTH_SHORT).show();
+                return false;
+            } else {
+                return true;
+            }
         }
     }
     DatingImageAdapter postPhotoAdapter;
@@ -84,11 +96,6 @@ public class DatingAddImages extends AppCompatActivity {
         intent.putExtra(Intent.EXTRA_ALLOW_MULTIPLE, true);
         //add request code
         launcher.launch(intent);
-//        Intent intent = new Intent();
-//        intent.setType("image/*");
-//        intent.putExtra(Intent.EXTRA_ALLOW_MULTIPLE, true);
-//        intent.setAction(Intent.ACTION_GET_CONTENT);
-//        launcher.launch(Intent.createChooser(intent, "Select Picture"));
     }
 
     void createProfile() {
@@ -122,23 +129,23 @@ public class DatingAddImages extends AppCompatActivity {
                                     startActivity(intent);
                                     finish();
                                 } else {
+                                    progressdialog.dismiss();
                                     Toast.makeText(getApplicationContext(), "Profile creation failed", Toast.LENGTH_SHORT).show();
                                 }
                             }
                         });
                     } else {
                         Toast.makeText(getApplicationContext(), "Failed to get location", Toast.LENGTH_SHORT).show();
+                        progressdialog.dismiss();
                     }
                 });
     }
 
     void submit() {
-        if (Build.VERSION.SDK_INT == Build.VERSION_CODES.S) {
-            if (!checkReadImageAndVideoPermission()) {
-                return;
-            }
+        if (!checkReadImageAndVideoPermission()) {
+            return;
         }
-
+        progressdialog.show();
         if (postPhotoAdapter.getItems().size() < 2 || postPhotoAdapter.getItems().size() > 6) {
             Toast.makeText(getApplicationContext(), "Please select 2 to 6 images", Toast.LENGTH_SHORT).show();
             return;
@@ -160,6 +167,7 @@ public class DatingAddImages extends AppCompatActivity {
                 remoteImages.add(Uri.parse(item.getUrl()));
             }
         }
+
         DatingRepository.getInstance().updateDatingProfileImages(remoteImages, localImages).addOnCompleteListener(task -> {
             if (task.isSuccessful()) {
                 Toast.makeText(getApplicationContext(), "Profile updated", Toast.LENGTH_SHORT).show();
@@ -167,15 +175,15 @@ public class DatingAddImages extends AppCompatActivity {
             } else {
                 Toast.makeText(getApplicationContext(), "Profile update failed", Toast.LENGTH_SHORT).show();
             }
+            progressdialog.dismiss();
         });
     }
-
+    ProgressDialog progressdialog;
     MaterialButton button;
     private boolean isCreate = true;
     private String uid;
     ArrayList<DatingImageAdapterItem> imageList;
     FusedLocationProviderClient fusedLocationProviderClient;
-
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -189,6 +197,9 @@ public class DatingAddImages extends AppCompatActivity {
         button = findViewById(R.id.dating_images_add_button);
         fusedLocationProviderClient = LocationServices.getFusedLocationProviderClient(this);
         button.setOnClickListener(v -> submit());
+         progressdialog = new ProgressDialog(this);
+        progressdialog.setMessage("Đang cập nhật ảnh");
+        progressdialog.setCancelable(false);
     }
 
     private void getArgs(Intent intent) {
