@@ -32,7 +32,9 @@ import androidx.recyclerview.widget.RecyclerView;
 
 import com.example.fimae.R;
 import com.example.fimae.activities.ConnectActivity;
+import com.example.fimae.activities.DetailPostActivity;
 import com.example.fimae.activities.HomeActivity;
+import com.example.fimae.activities.ProfileActivity;
 import com.example.fimae.activities.WaitingActivity;
 import com.example.fimae.adapters.UserHomeViewAdapter;
 import com.example.fimae.models.Fimaers;
@@ -165,8 +167,11 @@ public class HomeFragment extends Fragment  {
         userAdapter.setData(mUsers, new UserHomeViewAdapter.IClickCardUserListener() {
             @Override
             public void onClickUser(Fimaers user) {
-                ConnectRepo.getInstance().setUserLocal(user);
-                showToast("You are " + user.getFirstName());
+//                ConnectRepo.getInstance().setUserLocal(user);
+//                showToast("You are " + user.getFirstName());
+                Intent intent = new Intent(getContext(), ProfileActivity.class);
+                intent.putExtra("uid", user.getUid());
+                startActivity(intent);
             }
         });
         mRcvUsers.setAdapter(userAdapter);
