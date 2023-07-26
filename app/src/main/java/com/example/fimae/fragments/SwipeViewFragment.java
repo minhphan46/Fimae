@@ -273,6 +273,8 @@ public class SwipeViewFragment extends Fragment {
                                             }
                                             DatingProfile finalOther = other;
                                             DatingProfile finalYour = your;
+                                            if(other == null || your == null)
+                                                return;
                                             DatingMatchDialog.builder()
                                                     .setMyImageUrl(your.getImages().get(0))
                                                     .setOtherImageUrl(other.getImages().get(0))
