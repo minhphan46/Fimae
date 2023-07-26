@@ -37,6 +37,7 @@ import com.example.fimae.repository.StoryRepository;
 import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.Task;
 import com.google.android.material.appbar.AppBarLayout;
+import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.firestore.CollectionReference;
 import com.google.firebase.firestore.FirebaseFirestore;
 import com.google.firebase.firestore.Query;
@@ -47,7 +48,7 @@ public class ChatFragment extends Fragment {
     private FirebaseFirestore firestore;
     private CollectionReference fimaeUserRef;
     private CollectionReference conversationRef;
-
+    ConversationAdapter adapter;
     private LinearLayout searchbar;
 
     @Override
@@ -67,6 +68,7 @@ public class ChatFragment extends Fragment {
                 switch (item.getItemId()) {
                     case R.id.action_add_friend:
                         Intent intent = new Intent(getContext(), DatingSettings.class);
+                        intent.putExtra("uid", FirebaseAuth.getInstance().getUid());
                         startActivity(intent);
                         return true;
                     default:
@@ -77,7 +79,7 @@ public class ChatFragment extends Fragment {
         RecyclerView recyclerView = view.findViewById(R.id.list_user);
         searchbar = view.findViewById(R.id.search_bar);
         Query query = ChatRepository.getDefaultChatInstance().getConversationQuery();
-        ConversationAdapter adapter = new ConversationAdapter(query, conversation -> {
+        adapter = new ConversationAdapter(query, conversation -> {
             Intent intent = new Intent(getContext(), OnChatActivity.class);
             intent.putExtra("conversationID", conversation.getId());
             startActivity(intent);
@@ -166,5 +168,11 @@ public class ChatFragment extends Fragment {
         return view;
     }
 
-
+    @Override
+    public void onDestroy() {
+        super.onDestroy();
+        if (adapter != null) {
+            adapter.stopListening();
+        }
+    }
 }

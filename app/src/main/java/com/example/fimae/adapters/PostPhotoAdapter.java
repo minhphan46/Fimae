@@ -161,6 +161,7 @@ public class PostPhotoAdapter extends RecyclerView.Adapter<RecyclerView.ViewHold
 
     @Override
     public int getItemCount()  {
+        if(mImages == null) return 0;
         if(!isEdit) return mImages.size();
         return mImages.size() +  editedImageList.size() + 1;
     }

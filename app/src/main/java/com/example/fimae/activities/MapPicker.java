@@ -14,13 +14,13 @@ import android.widget.ProgressBar;
 import android.widget.Toast;
 
 import com.example.fimae.R;
+import com.example.fimae.models.dating.LatLng;
 import com.google.android.gms.location.FusedLocationProviderClient;
 import com.google.android.gms.location.LocationServices;
 import com.google.android.gms.maps.CameraUpdateFactory;
 import com.google.android.gms.maps.GoogleMap;
 import com.google.android.gms.maps.MapView;
 import com.google.android.gms.maps.OnMapReadyCallback;
-import com.google.android.gms.maps.model.LatLng;
 import com.google.android.gms.maps.model.Marker;
 import com.google.android.gms.maps.model.MarkerOptions;
 import com.google.android.gms.tasks.OnCompleteListener;
@@ -69,9 +69,9 @@ public class MapPicker extends AppCompatActivity {
                         if (task.isSuccessful()) {
                             Location location = task.getResult();
                             if (location != null) {
-                                LatLng selectedLatLng = new LatLng(location.getLatitude(), location.getLongitude());
+                                LatLng currentLatLng = new LatLng(location.getLatitude(), location.getLongitude());
                                 Intent resultIntent = new Intent();
-                                resultIntent.putExtra("selectedLatLng", selectedLatLng);
+                                resultIntent.putExtra("selectedLatLng", currentLatLng);
                                 setResult(RESULT_OK, resultIntent);
                                 finish();
                             } else {
@@ -92,7 +92,7 @@ public class MapPicker extends AppCompatActivity {
         btnSelectLocation.setOnClickListener(v -> {
             if (googleMap != null) {
                 if (selectedMarker != null) {
-                    LatLng selectedLatLng = selectedMarker.getPosition();
+                    LatLng selectedLatLng = new LatLng(selectedMarker.getPosition().latitude, selectedMarker.getPosition().longitude);
                     Intent resultIntent = new Intent();
                     resultIntent.putExtra("selectedLatLng", selectedLatLng);
                     setResult(RESULT_OK, resultIntent);
@@ -109,13 +109,14 @@ public class MapPicker extends AppCompatActivity {
             googleMap.setMyLocationEnabled(true);
             googleMap.setOnMapClickListener(new GoogleMap.OnMapClickListener() {
                 @Override
-                public void onMapClick(@NonNull @NotNull LatLng latLng) {
+                public void onMapClick(@NonNull com.google.android.gms.maps.model.LatLng latLng) {
                     if (selectedMarker != null) {
                         selectedMarker.remove();
                     }
                     btnSelectLocation.setVisibility(Button.VISIBLE);
                     selectedMarker = googleMap.addMarker(new MarkerOptions().position(latLng));
                 }
+
             });
         };
         mapView.getMapAsync(callback);
