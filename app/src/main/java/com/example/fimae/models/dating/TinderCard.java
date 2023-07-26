@@ -1,6 +1,7 @@
 package com.example.fimae.models.dating;
 
 import android.content.Context;
+import android.content.Intent;
 import android.location.Address;
 import android.location.Geocoder;
 import android.util.Log;
@@ -9,6 +10,7 @@ import android.widget.TextView;
 
 import com.bumptech.glide.Glide;
 import com.example.fimae.R;
+import com.example.fimae.activities.MediaSliderActivity;
 import com.example.fimae.repository.DatingRepository;
 import com.mindorks.placeholderview.SwipePlaceHolderView;
 import com.mindorks.placeholderview.annotations.Layout;
@@ -53,6 +55,16 @@ public class TinderCard {
     public void onResolved(){
         Glide.with(mContext).load(mProfile.getImages().get(0)).into(profileImageView);
         nameAgeTxt.setText(mProfile.getName() + ", " + mProfile.getAge());
+        profileImageView.setOnClickListener(new android.view.View.OnClickListener() {
+            @Override
+            public void onClick(android.view.View view) {
+                Intent intent = new Intent(mContext, MediaSliderActivity.class);
+                intent.putExtra("urls", mProfile.getImages());
+                intent.putExtra("currentIndex", 0);
+                mContext.startActivity(intent);
+
+            }
+        });
         try {
             Geocoder geocoder = new Geocoder(mContext);
             ArrayList<Address> addresses = null;
