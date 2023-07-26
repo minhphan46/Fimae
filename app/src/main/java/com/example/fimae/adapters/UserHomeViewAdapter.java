@@ -1,5 +1,6 @@
 package com.example.fimae.adapters;
 
+import android.content.Context;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -10,14 +11,30 @@ import android.widget.LinearLayout;
 import android.widget.TextView;
 
 import androidx.annotation.NonNull;
+import androidx.annotation.Nullable;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.example.fimae.R;
+import com.example.fimae.activities.DetailPostActivity;
+import com.example.fimae.fragments.FimaeBottomSheet;
+import com.example.fimae.models.BottomSheetItem;
 import com.example.fimae.models.Fimaers;
+import com.example.fimae.models.Follows;
+import com.example.fimae.repository.FollowRepository;
+import com.example.fimae.repository.PostRepository;
 import com.example.fimae.utils.StringUtils;
+import com.google.android.gms.tasks.OnCompleteListener;
+import com.google.android.gms.tasks.Task;
+import com.google.firebase.auth.FirebaseAuth;
+import com.google.firebase.firestore.EventListener;
+import com.google.firebase.firestore.FieldPath;
+import com.google.firebase.firestore.FirebaseFirestoreException;
+import com.google.firebase.firestore.Query;
+import com.google.firebase.firestore.QuerySnapshot;
 import com.squareup.picasso.Picasso;
 
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 
 import de.hdodenhof.circleimageview.CircleImageView;
@@ -28,10 +45,14 @@ public class UserHomeViewAdapter extends RecyclerView.Adapter<UserHomeViewAdapte
     private List<Fimaers> mUsersOld;
     private IClickCardUserListener iClickCardUserListener;
 
+    Context context;
     public interface IClickCardUserListener {
         void onClickUser(Fimaers user);
+        void onGoChat(Fimaers user);
     }
-
+    public UserHomeViewAdapter(Context context){
+        this.context = context;
+    }
     public void setData(List<Fimaers> mUsers, IClickCardUserListener inIClickCardUserListener) {
         this.mUsers = mUsers;
         mUsersOld = mUsers;
@@ -49,7 +70,8 @@ public class UserHomeViewAdapter extends RecyclerView.Adapter<UserHomeViewAdapte
         private ImageView mIconGender;
         private ImageView onlineStatus;
         private TextView offlineStatus;
-
+        private TextView follow;
+        private TextView goChat;
         public ViewHolder(@NonNull View itemView) {
             super(itemView);
             mLayoutCard = itemView.findViewById(R.id.item_user_layout_card);
@@ -61,6 +83,8 @@ public class UserHomeViewAdapter extends RecyclerView.Adapter<UserHomeViewAdapte
             mIconGender = itemView.findViewById(R.id.item_user_ic_gender);
             onlineStatus = itemView.findViewById(R.id.imv_status_indicator);
             offlineStatus = itemView.findViewById(R.id.tv_status);
+            follow = itemView.findViewById(R.id.follow);
+            goChat = itemView.findViewById(R.id.chat);
         }
     }
 
@@ -103,6 +127,60 @@ public class UserHomeViewAdapter extends RecyclerView.Adapter<UserHomeViewAdapte
             holder.offlineStatus.setVisibility(View.GONE);
         }
         holder.mLayoutCard.setOnClickListener(v -> iClickCardUserListener.onClickUser(user));
+        //create bottomsheet
+
+
+        if(user.getUid().equals(FirebaseAuth.getInstance().getUid())){
+            holder.follow.setVisibility(View.GONE);
+        }
+        else{
+            String doc1 = FirebaseAuth.getInstance().getUid()+"_"+user.getUid();
+            String doc2 = user.getUid()+"_"+FirebaseAuth.getInstance().getUid();
+            Query query = FollowRepository.getInstance().followRef.whereIn(FieldPath.documentId(), Arrays.asList(doc1, doc2));
+
+            query.addSnapshotListener((queryDocumentSnapshots, error) -> {
+                if (error != null) {
+                    // Handle the error
+                    return;
+                }
+                if(queryDocumentSnapshots.getDocuments().size() == 2){
+                    holder.goChat.setVisibility(View.VISIBLE);
+                    holder.follow.setVisibility(View.GONE);
+                }
+                else {
+                    holder.goChat.setVisibility(View.GONE);
+                    holder.follow.setVisibility(View.VISIBLE);
+                    if(queryDocumentSnapshots.getDocuments().size() == 1){
+                        Follows follows = queryDocumentSnapshots.getDocuments().get(0).toObject(Follows.class);
+                        assert follows != null;
+                        if(follows.getFollower().equals(user.getUid())){
+                            holder.follow.setText("Bỏ theo dõi");
+                        }
+                        else{
+                            holder.follow.setText("Theo dõi");
+                        }
+                    }
+                    else{
+                        holder.follow.setText("Theo dõi");
+                    }
+                }
+            });
+        }
+
+        holder.goChat.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                iClickCardUserListener.onGoChat(user);
+            }
+        });
+        holder.follow.setOnClickListener(view -> {
+            if(holder.follow.getText().equals("Theo dõi")){
+                FollowRepository.getInstance().follow(user.getUid());
+            }
+            else {
+                FollowRepository.getInstance().unFollow(user.getUid());
+            }
+        });
     }
 
     @Override

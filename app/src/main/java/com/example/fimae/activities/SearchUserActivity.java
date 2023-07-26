@@ -32,23 +32,30 @@ public class SearchUserActivity extends AppCompatActivity implements SearchView.
         searchView = findViewById(R.id.searchView);
         recyclerViewRes =findViewById(R.id.recycler_view_result);
         LinearLayoutManager manager =new LinearLayoutManager(this);
-         adapter = new UserHomeViewAdapter();
+         adapter = new UserHomeViewAdapter(this);
         searchView.setOnQueryTextListener(this);
         recyclerViewRes.setLayoutManager(manager);
         adapter.getFilter().filter("");
         recyclerViewRes.setAdapter(adapter);
-        fimaeUserRef.get().addOnCompleteListener(task -> adapter.setData(task.getResult().toObjects(Fimaers.class), user -> {
-            Log.d("SearchUserActivity", "onCreateOrGetConversationWith : " + user.getUid());
-            ChatRepository.getDefaultChatInstance().getOrCreateFriendConversation(user.getUid()).addOnSuccessListener(conversation -> {
-                if(task.isSuccessful()){
-                    Intent intent = new Intent(SearchUserActivity.this, OnChatActivity.class);
-                    intent.putExtra("conversationID", conversation.getId());
-                    startActivity(intent);
-                } else {
-                    Toast.makeText(SearchUserActivity.this, task.getException().getMessage(), Toast.LENGTH_LONG).show();
-                }
-            });
+        fimaeUserRef.get().addOnCompleteListener(task -> adapter.setData(task.getResult().toObjects(Fimaers.class), new UserHomeViewAdapter.IClickCardUserListener() {
+            @Override
+            public void onClickUser(Fimaers user) {
+                Log.d("SearchUserActivity", "onCreateOrGetConversationWith : " + user.getUid());
+                ChatRepository.getDefaultChatInstance().getOrCreateFriendConversation(user.getUid()).addOnSuccessListener(conversation -> {
+                    if(task.isSuccessful()){
+                        Intent intent = new Intent(SearchUserActivity.this, OnChatActivity.class);
+                        intent.putExtra("conversationID", conversation.getId());
+                        startActivity(intent);
+                    } else {
+                        Toast.makeText(SearchUserActivity.this, task.getException().getMessage(), Toast.LENGTH_LONG).show();
+                    }
+                });
+            }
 
+            @Override
+            public void onGoChat(Fimaers user) {
+
+            }
         }));
     }
 
