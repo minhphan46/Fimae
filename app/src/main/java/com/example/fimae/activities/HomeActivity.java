@@ -76,8 +76,6 @@ public class HomeActivity extends AppCompatActivity {
         Intent intent = new Intent(this, UpdateUserActivityTimeService.class);
         startService(intent);
     }
-void init(){
-
     private void listenDisable(){
         if(FirebaseAuth.getInstance().getUid() == null){
             Intent intent = new Intent(HomeActivity.this, AuthenticationActivity.class);
@@ -107,6 +105,9 @@ void init(){
                     }
                 });
     }
+
+    void init(){
+
 }
     private void setUpViewPager() {
         ViewPagerAdapter viewPagerAdapter = new ViewPagerAdapter(this);
