@@ -1,6 +1,7 @@
 package com.example.fimae.fragments;
 
 import android.content.Context;
+import android.os.Build;
 import android.os.Bundle;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -44,7 +45,9 @@ public class MediaListDialogFragment extends BottomSheetDialogFragment {
     public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
         final RecyclerView recyclerView = view.findViewById(R.id.list);
         recyclerView.setLayoutManager(new GridLayoutManager(getContext(), 3));
-        mediaAdapter = new MediaAdapter(getContext());
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.Q) {
+            mediaAdapter = new MediaAdapter(getContext(), 1);
+        }
         recyclerView.setAdapter(mediaAdapter);
     }
 
