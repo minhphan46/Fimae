@@ -460,11 +460,11 @@ public class WaitingActivity extends AppCompatActivity {
         });
         client.connect(ConnectRepo.getInstance().getUserLocal().getToken());
     }*/
-
     private void navigateToChatScreen() {
         Intent intent = new Intent(this, ChatRandomActivity.class);
         intent.putExtra("to", remoteUserId);
         intent.putExtra("chatId", chatId );
+        finish();
         startActivity(intent);
     }
 
@@ -472,6 +472,7 @@ public class WaitingActivity extends AppCompatActivity {
         Intent intent = new Intent(this, CallActivity.class);
         intent.putExtra("to", remoteUserId);
         intent.putExtra("isIncomingCall", false);
+        finish();
         startActivity(intent);
     }
 
@@ -479,6 +480,7 @@ public class WaitingActivity extends AppCompatActivity {
         Intent intent = new Intent(this, CallVideoActivity.class);
         intent.putExtra("to", remoteUserId);
         intent.putExtra("isIncomingCall", false);
+        finish();
         startActivity(intent);
     }
 }
