@@ -63,6 +63,7 @@ public class DatingRepository {
         profile.setMaxAge(DatingProfileDefaultValue.maxAge);
         profile.setMinHeight(DatingProfileDefaultValue.minHeight);
         profile.setMaxHeight(DatingProfileDefaultValue.maxHeight);
+        profile.setGenderOptions(DatingProfileDefaultValue.gender);
         profile.setRelationshipType(DatingProfileDefaultValue.relationshipType);
         profile.setEducationalLevel(DatingProfileDefaultValue.educationalLevel);
         String path = datingProfileImagesLocation + "/" + profile.getId();
