@@ -148,7 +148,7 @@ public class FetchDatingProfileRepo {
 
     private HashMap<String,DatingProfile> filter(HashMap<String,DatingProfile> datingProfiles)
     {
-
+        return null;
     }
 
     public interface GetProfileCallback
