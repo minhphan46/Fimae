@@ -3,6 +3,7 @@ package com.example.fimae.activities;
 import android.content.Intent;
 
 import androidx.annotation.NonNull;
+import androidx.annotation.Nullable;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.core.provider.FontRequest;
 import androidx.fragment.app.FragmentPagerAdapter;
@@ -16,12 +17,22 @@ import android.view.View;
 
 import com.example.fimae.R;
 import com.example.fimae.adapters.ViewPagerAdapter;
+import com.example.fimae.models.DisableUser;
+import com.example.fimae.repository.AuthRepository;
 import com.example.fimae.service.CustomViewPager;
 import com.example.fimae.service.UpdateUserActivityTimeService;
 import com.google.android.material.bottomnavigation.BottomNavigationView;
 import com.google.android.material.navigation.NavigationBarView;
+import com.google.firebase.auth.FirebaseAuth;
+import com.google.firebase.firestore.DocumentSnapshot;
+import com.google.firebase.firestore.EventListener;
+import com.google.firebase.firestore.FirebaseFirestore;
+import com.google.firebase.firestore.FirebaseFirestoreException;
+import com.google.firebase.firestore.QuerySnapshot;
 
 import java.security.cert.Certificate;
+import java.util.Date;
+import java.util.Objects;
 
 public class HomeActivity extends AppCompatActivity {
 
@@ -33,8 +44,8 @@ public class HomeActivity extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_home);
+        listenDisable();
         PACKAGE_NAME = getApplicationContext().getPackageName();
-
         mNavigationView = findViewById(R.id.bottom_nav);
         mViewPager = findViewById(R.id.view_paper);
         setUpViewPager();
@@ -65,7 +76,37 @@ public class HomeActivity extends AppCompatActivity {
         Intent intent = new Intent(this, UpdateUserActivityTimeService.class);
         startService(intent);
     }
-void init(){
+    private void listenDisable(){
+        if(FirebaseAuth.getInstance().getUid() == null){
+            Intent intent = new Intent(HomeActivity.this, AuthenticationActivity.class);
+            startActivity(intent);
+        }
+        FirebaseFirestore.getInstance().collection("user_disable")
+                .document(Objects.requireNonNull(FirebaseAuth.getInstance().getUid()))
+                .addSnapshotListener(new EventListener<DocumentSnapshot>() {
+                    @Override
+                    public void onEvent(@Nullable DocumentSnapshot snapshot, @Nullable FirebaseFirestoreException error) {
+                        if (error != null) {
+                            return;
+                        }
+                        if (snapshot != null && snapshot.exists()) {
+                            // Document exists, check if the user is disabled
+                            DisableUser disableUser = snapshot.toObject(DisableUser.class);
+                            if (disableUser != null && disableUser.getTimeEnd().after(new Date())) {
+//                                Intent intent = new Intent(HomeActivity.this, AuthenticationActivity.class);
+//                                intent.putExtra("signout", true);
+//                                startActivity(intent);
+                                Intent intent = new Intent(HomeActivity.this, DisabledUserActivity.class);
+                                intent.putExtra( "disableId", disableUser.getUserId());
+                                startActivity(intent);
+                                finish();
+                            }
+                        }
+                    }
+                });
+    }
+
+    void init(){
 
 }
     private void setUpViewPager() {

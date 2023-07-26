@@ -26,6 +26,7 @@ import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.firestore.CollectionReference;
 import com.google.firebase.firestore.DocumentChange;
 import com.google.firebase.firestore.FirebaseFirestore;
+import com.google.firebase.firestore.ListenerRegistration;
 import com.google.firebase.firestore.Query;
 
 import java.util.ArrayList;
@@ -36,6 +37,7 @@ public class FeedFragment extends Fragment {
     private PostAdapter postAdapter;
     private List<Post> posts = new ArrayList<>();
     FragmentFeedBinding binding;
+    private ListenerRegistration postRef;
 
     private ShortFragmentPageAdapter shortFragmentPageAdapter;
 
@@ -49,6 +51,12 @@ public class FeedFragment extends Fragment {
     @Override
     public void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+    }
+
+    @Override
+    public void onDestroyView() {
+        super.onDestroyView();
+        postRef.remove();
     }
 
     @Nullable
@@ -68,8 +76,7 @@ public class FeedFragment extends Fragment {
             startActivity(intent);
         });
         binding.postList.setAdapter(postAdapter);
-        CollectionReference postRef = FirebaseFirestore.getInstance().collection("posts");
-        postRef.orderBy("timeCreated", Query.Direction.DESCENDING).addSnapshotListener((value, error) -> {
+        postRef= FirebaseFirestore.getInstance().collection("posts").orderBy("timeCreated", Query.Direction.DESCENDING).addSnapshotListener((value, error) -> {
             if (error != null) {
                 return;
             }

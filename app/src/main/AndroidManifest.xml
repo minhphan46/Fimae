@@ -42,6 +42,9 @@
         android:theme="@style/Theme.Fimae"
         tools:targetApi="31">
         <activity
+            android:name=".activities.DisabledUserActivity"
+            android:exported="false" />
+        <activity
             android:name=".CallOnChatActivity"
             android:exported="false" />
         <activity
