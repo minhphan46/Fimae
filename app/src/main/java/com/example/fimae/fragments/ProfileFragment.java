@@ -87,6 +87,7 @@ public class ProfileFragment extends Fragment {
     private List<Post> posts = new ArrayList<>();
 
     private PostAdapter postAdapter;
+    ShortsReviewProfileAdapter shortsReviewProfileAdapter;
 
     public static ProfileFragment newInstance(String uid) {
         Bundle args = new Bundle();
@@ -96,6 +97,11 @@ public class ProfileFragment extends Fragment {
         return fragment;
     }
 
+    @Override
+    public void onDestroy() {
+        super.onDestroy();
+        shortsReviewProfileAdapter.stopListening();
+    }
 
     @Nullable
     @Override
@@ -236,7 +242,7 @@ public class ProfileFragment extends Fragment {
                     binding.postList.setLayoutManager(linearLayoutManager);
                 } else if (position == 1) {
                     Query shortQuery = ShortsRepository.getInstance().getShortUserQuery(viewModel.getUid());
-                    ShortsReviewProfileAdapter shortsReviewProfileAdapter = new ShortsReviewProfileAdapter(
+                    shortsReviewProfileAdapter = new ShortsReviewProfileAdapter(
                             shortQuery,
                             new ShortsReviewProfileAdapter.IClickCardListener() {
                                 @Override
