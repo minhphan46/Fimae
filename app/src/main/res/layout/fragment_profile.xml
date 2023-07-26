@@ -115,6 +115,37 @@
             android:text="@{viewmodel.user.age}"
             android:textColor="@color/text_white" />
     </LinearLayout>
+    <androidx.legacy.widget.Space
+        android:id="@+id/space"
+        android:layout_width="20dp"
+        android:layout_height="wrap_content"
+        app:layout_constraintLeft_toRightOf="@id/item_user_layout_gender_age"
+        app:layout_constraintTop_toTopOf="@id/item_user_layout_gender_age"
+        />
+    <TextView
+        android:id="@+id/follow"
+        android:visibility="visible"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:background="@drawable/shape_retangle_border_radius_purple"
+        android:text="0 tố cáo"
+        android:layout_marginEnd="5dp"
+        android:textColor="@color/primary_2"
+        android:textSize="12sp"
+        android:paddingHorizontal="10dp"
+        android:paddingVertical="2dp"
+        app:layout_constraintLeft_toRightOf="@id/space"
+        app:layout_constraintBottom_toBottomOf="@id/item_user_layout_gender_age"
+        />
+    <ImageView
+        android:id="@+id/ic_more"
+        android:layout_width="10dp"
+        android:layout_height="10dp"
+        android:src="@drawable/ic_more"
+        app:layout_constraintLeft_toRightOf="@id/follow"
+        app:layout_constraintTop_toTopOf="@id/item_user_layout_gender_age"
+
+        />
 
     <TextView
         android:id="@+id/idTxt"

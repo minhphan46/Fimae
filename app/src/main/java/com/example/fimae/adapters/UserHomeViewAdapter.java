@@ -79,7 +79,11 @@ public class UserHomeViewAdapter extends RecyclerView.Adapter<UserHomeViewAdapte
             return;
         }
         Picasso.get().load(user.getAvatarUrl()).placeholder(R.drawable.ic_default_avatar).into(holder.mAvatarView);
-        holder.mTextName.setText(user.getFirstName() + " " + user.getLastName());
+        String lastName = user.getLastName() == null ? "": user.getLastName();
+
+        holder.mTextName.setText(user.getFirstName() + " " + lastName);
+
+
         holder.mTextDes.setText(user.getBio());
         holder.mTextAge.setText(String.valueOf(user.calculateAge()));
         holder.mLayoutGenderAge.setBackgroundResource(user.isGender() ? R.drawable.shape_gender_border_blue : R.drawable.shape_gender_border_pink);
