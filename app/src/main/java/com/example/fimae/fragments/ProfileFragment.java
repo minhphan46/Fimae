@@ -84,6 +84,8 @@ public class ProfileFragment extends Fragment {
     FragmentProfileBinding binding;
     ProfileViewModel viewModel;
 
+    boolean hasListen = false;
+
     private List<Post> posts = new ArrayList<>();
 
     private PostAdapter postAdapter;
@@ -102,6 +104,16 @@ public class ProfileFragment extends Fragment {
         super.onDestroy();
         if(shortsReviewProfileAdapter != null)
             shortsReviewProfileAdapter.stopListening();
+    }
+
+    @Override
+    public void onResume() {
+        super.onResume();
+        if(!hasListen)
+        {
+            hasListen = true;
+            initFirebaseListener();
+        }
     }
 
     @Nullable
@@ -151,36 +163,7 @@ public class ProfileFragment extends Fragment {
         binding.postList.addItemDecoration(itemDecoration);
         binding.postList.setAdapter(postAdapter);
         binding.postList.setLayoutManager(linearLayoutManager);
-        CollectionReference postRef = FirebaseFirestore.getInstance().collection("posts");
-        postRef.addSnapshotListener((value, error) -> {
-            if (error != null) {
-                return;
-            }
-            for (DocumentChange dc : value.getDocumentChanges()) {
-                Post post = dc.getDocument().toObject(Post.class);
-                switch (dc.getType()) {
-                    case ADDED:
-                        if(post.getPublisher().equals(viewModel.getUid()))
-                        {
-                            posts.add(post);
-                            postAdapter.addUpdate();
-                        }
-                        break;
-                    case MODIFIED:
-                        for(Post item : posts){
-                            if(item.getPostId().equals(post.getPostId())){
-                                if(!post.getContent().equals(item.getContent()) || post.getPostImages().size() != item.getPostImages().size()){
-                                    posts.set(posts.indexOf(item), post);
-                                    postAdapter.notifyItemChanged(posts.indexOf(item));
-                                }
-                            }
-                        }
-                        break;
-                    case REMOVED:
-                        break;
-                }
-            }
-        });
+
         binding.backBtn.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
@@ -242,19 +225,7 @@ public class ProfileFragment extends Fragment {
                     binding.postList.setAdapter(postAdapter);
                     binding.postList.setLayoutManager(linearLayoutManager);
                 } else if (position == 1) {
-                    Query shortQuery = ShortsRepository.getInstance().getShortUserQuery(viewModel.getUid());
-                    shortsReviewProfileAdapter = new ShortsReviewProfileAdapter(
-                            shortQuery,
-                            new ShortsReviewProfileAdapter.IClickCardListener() {
-                                @Override
-                                public void onClickUser(ShortMedia video) {
-                                    Intent intent = new Intent(getContext(), ShortVideoActivity.class);
-                                    intent.putExtra("idVideo", video.getId()); // send id video
-                                    intent.putExtra("isProfile", true);
-                                    startActivity(intent);
-                                }
-                            }
-                    );
+
                     binding.postList.setAdapter(shortsReviewProfileAdapter);
                     GridAutoFitLayoutManager gridLayoutManager = new GridAutoFitLayoutManager(getContext(), 120);
                     binding.postList.setLayoutManager(gridLayoutManager);
@@ -275,6 +246,8 @@ public class ProfileFragment extends Fragment {
         initListener();
         return view;
     }
+
+
 
     private void initListener()
     {
@@ -327,7 +300,52 @@ public class ProfileFragment extends Fragment {
         // Show a toast message
         Toast.makeText(getActivity(), "Lit ID copied", Toast.LENGTH_SHORT).show();
     }
-
+    private void initFirebaseListener()
+    {
+        CollectionReference postRef = FirebaseFirestore.getInstance().collection("posts");
+        postRef.addSnapshotListener((value, error) -> {
+            if (error != null) {
+                return;
+            }
+            for (DocumentChange dc : value.getDocumentChanges()) {
+                Post post = dc.getDocument().toObject(Post.class);
+                switch (dc.getType()) {
+                    case ADDED:
+                        if(post.getPublisher().equals(viewModel.getUid()))
+                        {
+                            posts.add(post);
+                            postAdapter.addUpdate();
+                        }
+                        break;
+                    case MODIFIED:
+                        for(Post item : posts){
+                            if(item.getPostId().equals(post.getPostId())){
+                                if(!post.getContent().equals(item.getContent()) || post.getPostImages().size() != item.getPostImages().size()){
+                                    posts.set(posts.indexOf(item), post);
+                                    postAdapter.notifyItemChanged(posts.indexOf(item));
+                                }
+                            }
+                        }
+                        break;
+                    case REMOVED:
+                        break;
+                }
+            }
+        });
+        Query shortQuery = ShortsRepository.getInstance().getShortUserQuery(viewModel.getUid());
+        shortsReviewProfileAdapter = new ShortsReviewProfileAdapter(
+                shortQuery,
+                new ShortsReviewProfileAdapter.IClickCardListener() {
+                    @Override
+                    public void onClickUser(ShortMedia video) {
+                        Intent intent = new Intent(getContext(), ShortVideoActivity.class);
+                        intent.putExtra("idVideo", video.getId()); // send id video
+                        intent.putExtra("isProfile", true);
+                        startActivity(intent);
+                    }
+                }
+        );
+    }
     private void setTextSpan()
     {
         String text = binding.getViewmodel().getUser().getValue().getBio();
