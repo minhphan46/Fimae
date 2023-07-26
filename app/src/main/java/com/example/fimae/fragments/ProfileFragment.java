@@ -100,7 +100,8 @@ public class ProfileFragment extends Fragment {
     @Override
     public void onDestroy() {
         super.onDestroy();
-        shortsReviewProfileAdapter.stopListening();
+        if(shortsReviewProfileAdapter != null)
+            shortsReviewProfileAdapter.stopListening();
     }
 
     @Nullable
