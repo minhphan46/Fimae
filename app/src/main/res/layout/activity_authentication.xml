@@ -55,6 +55,28 @@
             android:text="123456" />
     </com.google.android.material.textfield.TextInputLayout>
 
+    <com.google.android.material.textfield.TextInputLayout
+        android:id="@+id/repeatPassInput"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="16dp"
+        android:layout_marginTop="8dp"
+        android:layout_marginEnd="16dp"
+        android:hint="Repeat password"
+        android:visibility="gone"
+        app:boxBackgroundColor="@color/white"
+        app:layout_constraintTop_toBottomOf="@id/pass_input_layout"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:placeholderText="Enter your password">
+
+        <EditText
+            android:id="@+id/editTextRepeatPassword"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:inputType="textPassword"
+            android:text="123456" />
+    </com.google.android.material.textfield.TextInputLayout>
 
     <Button
         android:id="@+id/buttonLogin"
@@ -68,7 +90,7 @@
         android:textColor="@color/white"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@id/pass_input_layout" />
+        app:layout_constraintTop_toBottomOf="@id/repeatPassInput" />
 
     <!-- Giao diện cho phần đăng ký -->
     <TextView

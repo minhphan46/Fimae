@@ -17,12 +17,16 @@ import androidx.viewpager2.widget.ViewPager2;
 
 import com.example.fimae.activities.DetailPostActivity;
 import com.example.fimae.activities.PostActivity;
+import com.example.fimae.activities.PostMode;
 import com.example.fimae.activities.ProfileActivity;
 import com.example.fimae.adapters.PostAdapter;
 import com.example.fimae.adapters.ShortFragmentPageAdapter;
 import com.example.fimae.databinding.FragmentFeedBinding;
 import com.example.fimae.models.Post;
+import com.example.fimae.repository.FollowRepository;
+import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.android.material.tabs.TabLayout;
+import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.firestore.CollectionReference;
 import com.google.firebase.firestore.DocumentChange;
 import com.google.firebase.firestore.EventListener;
@@ -83,22 +87,59 @@ public class FeedFragment extends Fragment {
                 Post post = dc.getDocument().toObject(Post.class);
                 switch (dc.getType()) {
                     case ADDED:
-                        posts.add(post);
-                        if(posts.size() <=1){
-                            postAdapter.addUpdate();
+                        if(post.getIsDeleted() != null && post.getIsDeleted()) {
+                            continue;
                         }
-                        else postAdapter.notifyItemInserted(posts.size() - 1);
-                        break;
+                        else {
+                            switch (post.getPostMode()){
+                                case PRIVATE:
+                                    if(post.getPublisher().equals(FirebaseAuth.getInstance().getUid())){
+                                        posts.add(post);
+                                        if(posts.size() <=1){
+                                            postAdapter.addUpdate();
+                                        }
+                                        else postAdapter.notifyItemInserted(posts.size() - 1);
+
+                                    }
+
+                                    break;
+                                case FRIEND:
+                                    FollowRepository.getInstance().isFriend(post.getPublisher()).addOnSuccessListener(new OnSuccessListener<Boolean>() {
+                                        @Override
+                                        public void onSuccess(Boolean aBoolean) {
+                                            if (aBoolean){
+                                                posts.add(post);
+                                                if(posts.size() <=1){
+                                                    postAdapter.addUpdate();
+                                                }
+                                                else postAdapter.notifyItemInserted(posts.size() - 1);
+                                            }
+                                        }
+                                    });
+                                    break;
+                                case PUBLIC:
+                                    posts.add(post);
+                                    if(posts.size() <=1){
+                                        postAdapter.addUpdate();
+                                    }
+                                    else postAdapter.notifyItemInserted(posts.size() - 1);
+                            }
+                        }
                     case MODIFIED:
+                        int i =0;
                         for(Post item : posts){
                             if(item.getPostId().equals(post.getPostId())){
-                                if(!post.getContent().equals(item.getContent()) || post.getPostImages().size() != item.getPostImages().size()){
+                                i = 1;
+                                if(post.getIsDeleted() != null && post.getIsDeleted()){
+                                    int index = posts.indexOf(item);
+                                    posts.remove(item);
+                                    postAdapter.notifyItemRemoved(index);
+                                }
+                                else if(!post.getContent().equals(item.getContent()) || post.getPostImages().size() != item.getPostImages().size()){
                                     posts.set(posts.indexOf(item), post);
-//                                    item = post;
-//                                    postAdapter.notifyItemChanged(posts.indexOf(item));
-//                                    postAdapter.notifyItemChanged(posts.indexOf(item) + 1);
                                     postAdapter.notifyItemChanged(posts.indexOf(item) + 1);
                                 }
+                                break;
                             }
                         }
                         break;
@@ -111,10 +152,9 @@ public class FeedFragment extends Fragment {
         });
         binding.addPost.setOnClickListener(view -> {
 
-            Intent intent = new Intent(getContext(), ProfileActivity.class );
-            intent.putExtra("uid", "0Ksg5AboSIf7c2mhLcPWiAmczcZ2");
-            mStartForResult.launch(intent);
-        });
+            Intent intent = new Intent(getContext(), PostActivity.class );
+            //            intent.putExtra("uid", "0Ksg5AboSIf7c2mhLcPWiAmczcZ2");
+                        mStartForResult.launch(intent);        });
 
         // page shorts
         shortFragmentPageAdapter = new ShortFragmentPageAdapter(getChildFragmentManager(), getLifecycle());

@@ -26,11 +26,11 @@ public class Post {
     private Map<String, Boolean> saves;
     @ServerTimestamp
     private Date timeCreated;
-    private boolean isDeleted;
+    private Boolean isDeleted;
     private Date timeEdited;
     public  Post(){}
 
-    public Post(String postId, List<String> postImages, String content, String publisher, PostMode postMode, Map<String, Boolean> likes, int numberOfComments, Map<String, Boolean> saves, Date timeCreated, boolean isDeleted, Date timeEdited) {
+    public Post(String postId, List<String> postImages, String content, String publisher, PostMode postMode, Map<String, Boolean> likes, int numberOfComments, Map<String, Boolean> saves, Date timeCreated, Boolean isDeleted, Date timeEdited) {
         this.postId = postId;
         this.postImages = postImages;
         this.content = content;
@@ -124,12 +124,12 @@ public class Post {
         this.timeCreated = timeCreated;
     }
 
-    public boolean isDeleted() {
+    public Boolean getIsDeleted() {
         return isDeleted;
     }
 
-    public void setDeleted(boolean deleted) {
-        isDeleted = deleted;
+    public void setIsDeleted(Boolean isDeleted) {
+        this.isDeleted = isDeleted;
     }
 
     public String getNumberTrue(){

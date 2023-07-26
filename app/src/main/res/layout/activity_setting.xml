@@ -70,6 +70,71 @@
                 android:textColor="@color/black" />
 
         </RelativeLayout>
+
+    <RelativeLayout
+        android:id="@+id/relativePrivacy"
+        android:layout_width="match_parent"
+        android:layout_height="48dp"
+        android:layout_marginTop="1dp"
+        android:clickable="true"
+        android:background="@drawable/item_color_grey"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/relativeEditProfile">
+
+        <ImageView
+            android:id="@+id/imageView4"
+            android:layout_width="22dp"
+            android:layout_height="22dp"
+            android:layout_marginRight="10dp"
+            android:layout_alignParentEnd="true"
+            android:layout_centerVertical="true"
+            app:srcCompat="@drawable/ic_chevron_right" />
+
+        <TextView
+            android:id="@+id/privacyTxt"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_centerVertical="true"
+            android:layout_marginLeft="20dp"
+            android:text="Chính sách bảo mật"
+            style="@style/semi_bold_18"
+            android:textColor="@color/black" />
+
+    </RelativeLayout>
+
+    <RelativeLayout
+        android:id="@+id/relativeCommunity"
+        android:layout_width="match_parent"
+        android:layout_height="48dp"
+        android:layout_marginTop="1dp"
+        android:clickable="true"
+        android:background="@drawable/item_color_grey"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/relativePrivacy">
+
+        <ImageView
+            android:id="@+id/imageView5"
+            android:layout_width="22dp"
+            android:layout_height="22dp"
+            android:layout_marginRight="10dp"
+            android:layout_alignParentEnd="true"
+            android:layout_centerVertical="true"
+            app:srcCompat="@drawable/ic_chevron_right" />
+
+        <TextView
+            android:id="@+id/communityTxt"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_centerVertical="true"
+            android:layout_marginLeft="20dp"
+            android:text="Nguyên tắc cộng đồng"
+            style="@style/semi_bold_18"
+            android:textColor="@color/black" />
+
+    </RelativeLayout>
+
     <RelativeLayout
         android:id="@+id/relativeLogout"
         android:layout_width="match_parent"
@@ -79,7 +144,7 @@
         android:background="@drawable/item_color_grey"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/relativeEditProfile">
+        app:layout_constraintTop_toBottomOf="@+id/relativeCommunity">
 
         <ImageView
             android:id="@+id/imageView3"

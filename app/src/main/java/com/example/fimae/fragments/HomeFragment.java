@@ -39,6 +39,7 @@ import com.example.fimae.models.Fimaers;
 import com.example.fimae.models.GenderMatch;
 import com.example.fimae.models.Report;
 import com.example.fimae.repository.ConnectRepo;
+import com.facebook.shimmer.ShimmerFrameLayout;
 import com.google.android.gms.tasks.OnFailureListener;
 import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.android.material.bottomsheet.BottomSheetBehavior;
@@ -107,6 +108,8 @@ public class HomeFragment extends Fragment  {
     private String typeCall = "";
     private LinearLayout mFlFloatingWaiting;
     private CircleImageView mImgAvatarWaiting;
+    private ShimmerFrameLayout mShimmerWaitingUser;
+    private LinearLayout mLayoutShimmerUser;
     float xDown = 0, yDown = 0;
 
     static public boolean isShowFloatingWaiting = false;
@@ -157,11 +160,15 @@ public class HomeFragment extends Fragment  {
         // recycleView: List users
         mRcvUsers = mView.findViewById(R.id.recycler_users);
         homeActivity = (HomeActivity) getActivity();
-        mUsers = Fimaers.dummy;
+        mUsers = new ArrayList<>();
         LinearLayoutManager linearLayoutManager = new LinearLayoutManager(homeActivity);
         mRcvUsers.setLayoutManager(linearLayoutManager);
 
         userAdapter = new UserHomeViewAdapter();
+        // shimmer
+        mShimmerWaitingUser = mView.findViewById(R.id.shimmer_view_users);
+        mLayoutShimmerUser = mView.findViewById(R.id.layout_shimmer_users);
+
         userAdapter.setData(mUsers, new UserHomeViewAdapter.IClickCardUserListener() {
             @Override
             public void onClickUser(Fimaers user) {
@@ -236,6 +243,8 @@ public class HomeFragment extends Fragment  {
 
     private void GetAllUsers(){
         String localUid = FirebaseAuth.getInstance().getCurrentUser().getUid();
+        mLayoutShimmerUser.setVisibility(View.VISIBLE);
+        mShimmerWaitingUser.startShimmer();
         // get users from firebase
         fimaeUserRef = firestore.collection("fimaers"); // lay het thu muc user ra
         fimaeUserRef.addSnapshotListener((value, error) -> {
@@ -251,6 +260,8 @@ public class HomeFragment extends Fragment  {
                 if(user.getUid().equals(localUid)) ConnectRepo.getInstance().setUserLocal(user);
                 mUsers.add(user);
             }
+            mLayoutShimmerUser.setVisibility(View.GONE);
+            mShimmerWaitingUser.stopShimmer();
             // Cập nhật giao diện người dùng (RecyclerView)
             userAdapter.notifyDataSetChanged();
         });

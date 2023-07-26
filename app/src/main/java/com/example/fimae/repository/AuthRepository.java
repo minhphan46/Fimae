@@ -87,17 +87,20 @@ public class AuthRepository {
     public void signUp(String email, String password, final SignUpCallback callback) {
         if (!(email.isEmpty() && password.isEmpty())) {
             auth.createUserWithEmailAndPassword(email, password)
-                    .addOnCompleteListener((Executor) this, task -> {
-                        if (task.isSuccessful()) {
-                            // Đăng nhập thành công
-                            FirebaseUser user = auth.getCurrentUser();
-                            callback.onSignUpSuccess(user);
-                        } else {
-                            // Đăng nhập thất bại
-                            String errorMessage = task.getException() != null ? task.getException().getMessage() : "lỗi không xác định";
-                            callback.onSignUpError(errorMessage);
-                        }
-                    });
+                    .addOnCompleteListener(new OnCompleteListener<AuthResult>() {
+                @Override
+                public void onComplete(@NonNull Task<AuthResult> task) {
+                    if (task.isSuccessful()) {
+                        // Đăng nhập thành công
+                        FirebaseUser user = auth.getCurrentUser();
+                        callback.onSignUpSuccess(user);
+                    } else {
+                        // Đăng nhập thất bại
+                        String errorMessage = task.getException() != null ? task.getException().getMessage() : "lỗi không xác định";
+                        callback.onSignUpError(errorMessage);
+                    }
+                }
+            });
         }
     }
 
