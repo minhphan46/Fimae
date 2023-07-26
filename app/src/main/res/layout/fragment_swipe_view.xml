@@ -36,6 +36,49 @@
         android:orientation="horizontal"
         android:layout_alignParentBottom="true">
 
+
+        <RelativeLayout
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_weight="1">
+
+            <com.google.android.material.floatingactionbutton.FloatingActionButton
+                android:id="@+id/fabSkip"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_centerInParent="true"
+                android:layout_margin="8dp"
+                android:clickable="true"
+                android:focusable="true"
+                android:backgroundTint="@android:color/white"
+                app:fabSize="normal"
+                app:rippleColor="@null"
+                app:borderWidth="0dp"
+                app:srcCompat="@drawable/skip"/>
+
+        </RelativeLayout>
+
+        <RelativeLayout
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:visibility="gone"
+            android:layout_weight="1">
+
+            <com.google.android.material.floatingactionbutton.FloatingActionButton
+                android:id="@+id/fabSuperLike"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_centerInParent="true"
+                android:layout_margin="8dp"
+                android:clickable="true"
+                android:focusable="true"
+                android:backgroundTint="@android:color/white"
+                app:fabSize="mini"
+                app:rippleColor="@null"
+                app:borderWidth="0dp"
+                app:srcCompat="@drawable/ic_star_turquoise_24dp"/>
+
+        </RelativeLayout>
         <RelativeLayout
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
@@ -63,48 +106,6 @@
             android:layout_weight="1">
 
             <com.google.android.material.floatingactionbutton.FloatingActionButton
-                android:id="@+id/fabSkip"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_centerInParent="true"
-                android:layout_margin="8dp"
-                android:clickable="true"
-                android:focusable="true"
-                android:backgroundTint="@android:color/white"
-                app:fabSize="normal"
-                app:rippleColor="@null"
-                app:borderWidth="0dp"
-                app:srcCompat="@drawable/skip"/>
-
-        </RelativeLayout>
-
-        <RelativeLayout
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_weight="1">
-
-            <com.google.android.material.floatingactionbutton.FloatingActionButton
-                android:id="@+id/fabSuperLike"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_centerInParent="true"
-                android:layout_margin="8dp"
-                android:clickable="true"
-                android:focusable="true"
-                android:backgroundTint="@android:color/white"
-                app:fabSize="mini"
-                app:rippleColor="@null"
-                app:borderWidth="0dp"
-                app:srcCompat="@drawable/ic_star_turquoise_24dp"/>
-
-        </RelativeLayout>
-
-        <RelativeLayout
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_weight="1">
-
-            <com.google.android.material.floatingactionbutton.FloatingActionButton
                 android:id="@+id/fabLike"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
@@ -123,6 +124,7 @@
         <RelativeLayout
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
+            android:visibility="gone"
             android:layout_weight="1">
 
             <com.google.android.material.floatingactionbutton.FloatingActionButton

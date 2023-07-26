@@ -18,6 +18,7 @@ import android.content.Intent;
 import android.content.pm.PackageManager;
 import android.location.Location;
 import android.net.Uri;
+import android.os.Build;
 import android.os.Bundle;
 import android.provider.MediaStore;
 import android.util.Log;
@@ -132,9 +133,12 @@ public class DatingAddImages extends AppCompatActivity {
     }
 
     void submit() {
-        if (!checkReadImageAndVideoPermission()) {
-            return;
+        if (Build.VERSION.SDK_INT == Build.VERSION_CODES.S) {
+            if (!checkReadImageAndVideoPermission()) {
+                return;
+            }
         }
+
         if (postPhotoAdapter.getItems().size() < 2 || postPhotoAdapter.getItems().size() > 6) {
             Toast.makeText(getApplicationContext(), "Please select 2 to 6 images", Toast.LENGTH_SHORT).show();
             return;

@@ -1,6 +1,8 @@
 package com.example.fimae.models.dating;
 
 import android.content.Context;
+import android.location.Address;
+import android.location.Geocoder;
 import android.util.Log;
 import android.widget.ImageView;
 import android.widget.TextView;
@@ -17,6 +19,10 @@ import com.mindorks.placeholderview.annotations.swipe.SwipeInState;
 import com.mindorks.placeholderview.annotations.swipe.SwipeOut;
 import com.mindorks.placeholderview.annotations.swipe.SwipeOutState;
 
+import java.io.IOException;
+import java.text.DecimalFormat;
+import java.util.ArrayList;
+
 @Layout(R.layout.adapter_tinder_card)
 public class TinderCard {
 
@@ -29,11 +35,11 @@ public class TinderCard {
     @View(R.id.locationNameTxt)
      TextView locationNameTxt;
 
-    private Profile mProfile;
+    private DatingProfile mProfile;
     private Context mContext;
     private SwipePlaceHolderView mSwipeView;
 
-    public TinderCard(Context context, Profile profile, SwipePlaceHolderView swipeView) {
+    public TinderCard(Context context, DatingProfile profile, SwipePlaceHolderView swipeView) {
         mContext = context;
         mProfile = profile;
         mSwipeView = swipeView;
@@ -41,9 +47,27 @@ public class TinderCard {
 
     @Resolve
     public void onResolved(){
-        Glide.with(mContext).load(mProfile.getImageUrl()).into(profileImageView);
+        Glide.with(mContext).load(mProfile.getImages().get(0)).into(profileImageView);
         nameAgeTxt.setText(mProfile.getName() + ", " + mProfile.getAge());
-        locationNameTxt.setText(mProfile.getLocation());
+        try {
+            Geocoder geocoder = new Geocoder(mContext);
+            ArrayList<Address> addresses = null;
+            LatLng latLng = mProfile.getLocation();
+            addresses = (ArrayList<Address>) geocoder.getFromLocation(latLng.getLatitude(), latLng.getLongitude(), 1);
+
+            double distanceInKm = (mProfile.getDistanceFromYou()/1000);
+            //Set subtile is City name
+            DecimalFormat decimalFormat = new DecimalFormat("#.00");
+
+            if (!addresses.isEmpty())
+                locationNameTxt.setText(addresses.get(0).getLocality() + " " +decimalFormat.format(distanceInKm) + "Km");
+            else {
+                locationNameTxt.setText("Không xác định được vị trí");
+            }
+        } catch (IOException e) {
+            throw new RuntimeException(e);
+        }
+
     }
 
     @SwipeOut

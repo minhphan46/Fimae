@@ -1,6 +1,9 @@
 package com.example.fimae.models.dating;
 
 
+import com.firebase.geofire.GeoFireUtils;
+import com.firebase.geofire.GeoLocation;
+import com.google.firebase.firestore.Exclude;
 import com.google.firebase.firestore.ServerTimestamp;
 
 import java.util.ArrayList;
@@ -11,6 +14,9 @@ public class DatingProfile {
     private @ServerTimestamp Date timeCreated;
     private String uid;
     private LatLng location;
+
+    private String geoHash;
+
     private int distance;
     private int minAge;
     private int maxAge;
@@ -23,6 +29,16 @@ public class DatingProfile {
     private ArrayList<String> images;
     private ArrayList<String> likedUsers;
     private ArrayList<String> dislikedUsers;
+
+    private String age;
+
+    private boolean gender;
+
+    private String name;
+
+    private String locationName;
+
+    private double distanceFromYou;
 
     public DatingProfile() {
         likedUsers = new ArrayList<>();
@@ -110,6 +126,20 @@ public class DatingProfile {
         this.relationshipType = relationshipType;
     }
 
+    public String getGeoHash() {
+        if(geoHash == null)
+        {
+            String hash = GeoFireUtils
+                    .getGeoHashForLocation(new GeoLocation(location.getLatitude(), location.getLongitude()));
+            setGeoHash(hash);
+        }
+        return geoHash;
+    }
+
+    public void setGeoHash(String geoHash) {
+        this.geoHash = geoHash;
+    }
+
     public EducationalLevel getEducationalLevel() {
         return educationalLevel;
     }
@@ -157,5 +187,47 @@ public class DatingProfile {
 
     public void setGenderOptions(GenderOptions genderOptions) {
         this.genderOptions = genderOptions;
+    }
+    @Exclude
+    public String getAge() {
+        return age;
+    }
+
+    public void setAge(String age) {
+        this.age = age;
+    }
+    @Exclude
+    public String getName() {
+        return name;
+    }
+
+    public void setName(String name) {
+        this.name = name;
+    }
+    @Exclude
+    public String getLocationName() {
+        return locationName;
+    }
+
+    public void setLocationName(String locationName) {
+        this.locationName = locationName;
+    }
+
+    @Exclude
+    public double getDistanceFromYou() {
+        return distanceFromYou;
+    }
+
+    @Exclude
+    public boolean isGender() {
+        return gender;
+    }
+
+    public void setGender(boolean gender) {
+        this.gender = gender;
+    }
+
+    public void setDistanceFromYou(double distanceFromYou) {
+        this.distanceFromYou = distanceFromYou;
     }
 }

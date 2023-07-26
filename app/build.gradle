@@ -54,6 +54,7 @@ dependencies {
     implementation 'com.facebook.shimmer:shimmer:0.5.0'
     //implementation'com.firebaseui:firebase-ui-database:6.3.0'
     implementation 'com.google.firebase:firebase-database-ktx'
+    implementation 'com.firebase:geofire-android-common:3.1.0'
 
     // one signal
     implementation 'com.onesignal:OneSignal:[4.0.0, 4.99.99]'
