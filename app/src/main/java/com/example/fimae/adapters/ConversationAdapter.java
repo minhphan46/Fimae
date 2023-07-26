@@ -54,6 +54,7 @@ public class ConversationAdapter extends FirestoreAdapter<ConversationAdapter.Vi
                     ids.add(conversation.getOtherParticipantId());
                 }
             }
+            if (ids.size() == 0) return;
             FimaerRepository.getInstance().getFimaersByIds(ids).addOnCompleteListener(new OnCompleteListener<ArrayList<Fimaers>>() {
                 @Override
                 public void onComplete(@NonNull Task<ArrayList<Fimaers>> task) {

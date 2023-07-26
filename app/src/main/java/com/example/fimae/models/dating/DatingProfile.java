@@ -230,4 +230,27 @@ public class DatingProfile {
     public void setDistanceFromYou(double distanceFromYou) {
         this.distanceFromYou = distanceFromYou;
     }
+
+    public void addUserLike(String value)
+    {
+        if(likedUsers == null)
+        {
+            likedUsers = new ArrayList<>();
+        }
+        if(!likedUsers.contains(value))
+        {
+            likedUsers.add(value);
+        }
+    }
+    public void addUserDislike(String value)
+    {
+        if(dislikedUsers == null)
+        {
+            dislikedUsers = new ArrayList<>();
+        }
+        if(!dislikedUsers.contains(value))
+        {
+            dislikedUsers.add(value);
+        }
+    }
 }

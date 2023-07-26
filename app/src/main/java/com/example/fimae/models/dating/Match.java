@@ -48,4 +48,12 @@ public class Match {
     public void setUserRead(HashMap<String, Boolean> userRead) {
         this.userRead = userRead;
     }
+    public void addUserRead(String uid, Boolean hasRead)
+    {
+        if(userRead == null)
+        {
+            userRead = new HashMap<>();
+        }
+        userRead.put(uid, hasRead);
+    }
 }

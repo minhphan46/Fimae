@@ -51,11 +51,21 @@ public class ChatFragment extends Fragment {
     private CollectionReference fimaeUserRef;
     private CollectionReference conversationRef;
     ConversationAdapter adapter;
+    RecyclerView recyclerView;
     private LinearLayout searchbar;
 
-    @Override
-    public void onOptionsMenuClosed(@NonNull Menu menu) {
-        super.onOptionsMenuClosed(menu);
+    void initListener() {
+        Query query = ChatRepository.getDefaultChatInstance().getConversationQuery();
+        adapter = new ConversationAdapter(query, new ConversationAdapter.IClickConversationListener() {
+            @Override
+            public void onClickConversation(Conversation conversation, Fimaers fimaers) {
+                Intent intent = new Intent(getContext(), OnChatActivity.class);
+                intent.putExtra("conversationID", conversation.getId());
+                intent.putExtra("fimaer", fimaers);
+                startActivity(intent);
+            }
+        });
+        recyclerView.setAdapter(adapter);
     }
 
     @Nullable
@@ -78,27 +88,24 @@ public class ChatFragment extends Fragment {
                 }
             }
         });
-        RecyclerView recyclerView = view.findViewById(R.id.list_user);
+        recyclerView = view.findViewById(R.id.list_user);
         searchbar = view.findViewById(R.id.search_bar);
-        Query query = ChatRepository.getDefaultChatInstance().getConversationQuery();
-        adapter = new ConversationAdapter(query, new ConversationAdapter.IClickConversationListener() {
-            @Override
-            public void onClickConversation(Conversation conversation, Fimaers fimaers) {
-                Intent intent = new Intent(getContext(), OnChatActivity.class);
-                intent.putExtra("conversationID", conversation.getId());
-                intent.putExtra("fimaer", fimaers);
-                startActivity(intent);
-            }
-        });
         LinearLayoutManager linearLayoutManager = new LinearLayoutManager(this.getContext());
         recyclerView.setLayoutManager(linearLayoutManager);
-        recyclerView.setAdapter(adapter);
-
         searchbar.setOnClickListener(v -> {
             Intent intent = new Intent(getContext(), SearchUserActivity.class);
             startActivity(intent);
         });
+
         return view;
+    }
+
+    @Override
+    public void onResume() {
+        super.onResume();
+        if (adapter == null) {
+            initListener();
+        }
     }
 
     @Override

@@ -13,6 +13,7 @@
         android:layout_height="?attr/actionBarSize"
         android:background="@color/white"
         android:elevation="4dp"
+        app:menu="@menu/chat_menu"
         android:theme="@style/ThemeOverlay.AppCompat.ActionBar"
         app:popupTheme="@style/ThemeOverlay.AppCompat.Light">
 
@@ -21,7 +22,7 @@
         <TextView
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:text="Your App Name"
+            android:text="Fimae"
             android:textColor="@android:color/black"
             android:textSize="18sp"
             android:textStyle="bold"/>
@@ -145,6 +146,34 @@
 
 
     </LinearLayout>
+
+    <TextView
+        android:id="@+id/hasProfileTxt"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginLeft="20dp"
+        android:layout_marginRight="20dp"
+        android:layout_centerVertical="true"
+        android:layout_centerHorizontal="true"
+        android:textColor="@color/black"
+        android:text="Bạn chưa có tài khoản vui lòng tạo ở góc trên bên phải màn hình"
+        ></TextView>
+
+    <com.facebook.shimmer.ShimmerFrameLayout
+        android:id="@+id/shimmer_view_users"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        >
+        <LinearLayout
+            android:id="@+id/swipeViewShimmer"
+            android:visibility="gone"
+            android:orientation="horizontal"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:layout_marginTop="?attr/actionBarSize"
+            android:background="@color/gray_200"
+            android:layout_marginBottom="65dp"/>
+    </com.facebook.shimmer.ShimmerFrameLayout>
 
     <com.mindorks.placeholderview.SwipePlaceHolderView
         android:id="@+id/swipeView"

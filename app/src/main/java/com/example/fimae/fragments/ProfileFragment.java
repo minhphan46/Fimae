@@ -45,6 +45,7 @@ import com.example.fimae.models.Fimaers;
 import com.example.fimae.models.Post;
 import com.example.fimae.models.shorts.ShortMedia;
 import com.example.fimae.repository.FimaerRepository;
+import com.example.fimae.repository.FollowRepository;
 import com.example.fimae.repository.ShortsRepository;
 import com.example.fimae.service.FirebaseService;
 import com.example.fimae.utils.FileUtils;
@@ -56,8 +57,12 @@ import com.google.android.material.tabs.TabLayout;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.firestore.CollectionReference;
 import com.google.firebase.firestore.DocumentChange;
+import com.google.firebase.firestore.DocumentSnapshot;
+import com.google.firebase.firestore.EventListener;
 import com.google.firebase.firestore.FirebaseFirestore;
+import com.google.firebase.firestore.FirebaseFirestoreException;
 import com.google.firebase.firestore.Query;
+import com.google.firebase.firestore.QuerySnapshot;
 import com.google.firebase.storage.UploadTask;
 import com.squareup.picasso.Picasso;
 
@@ -84,6 +89,8 @@ public class ProfileFragment extends Fragment {
     FragmentProfileBinding binding;
     ProfileViewModel viewModel;
 
+    boolean hasListen = false;
+
     private List<Post> posts = new ArrayList<>();
 
     private PostAdapter postAdapter;
@@ -97,11 +104,22 @@ public class ProfileFragment extends Fragment {
         return fragment;
     }
 
+
     @Override
     public void onDestroy() {
         super.onDestroy();
         if(shortsReviewProfileAdapter != null)
             shortsReviewProfileAdapter.stopListening();
+    }
+
+    @Override
+    public void onResume() {
+        super.onResume();
+        if(!hasListen)
+        {
+            hasListen = true;
+            initFirebaseListener();
+        }
     }
 
     @Nullable
@@ -118,6 +136,36 @@ public class ProfileFragment extends Fragment {
         {
             viewModel = new ViewModelProvider(this).get(ProfileViewModel.class);
         }
+//        FollowRepository.getInstance().getFollowers(viewModel.getUid()).addOnCompleteListener(new OnCompleteListener<ArrayList<Fimaers>>() {
+//            @Override
+//            public void onComplete(@NonNull Task<ArrayList<Fimaers>> task) {
+//                if(task.isSuccessful() && task.getResult() != null){
+//                    int num = task.getResult().size();
+//                    binding.followerNum.setText(String.valueOf(num));
+//                }
+//            }
+//        });
+        FollowRepository.getInstance().followRef.whereEqualTo("follower", viewModel.getUid()).addSnapshotListener(new EventListener<QuerySnapshot>() {
+            @Override
+            public void onEvent(@Nullable QuerySnapshot value, @Nullable FirebaseFirestoreException error) {
+                if(error != null || value == null){
+                    return;
+                }
+                binding.followerNum.setText(String.valueOf(value.getDocuments().size()));
+                for(DocumentSnapshot doc: value.getDocuments()){
+                }
+            }
+        });
+        FollowRepository.getInstance().getFollowings(viewModel.getUid()).addOnCompleteListener(new OnCompleteListener<ArrayList<Fimaers>>() {
+            @Override
+            public void onComplete(@NonNull Task<ArrayList<Fimaers>> task) {
+                if(task.isSuccessful() && task.getResult() != null){
+                    int num = task.getResult().size();
+                    binding.followingNum.setText(String.valueOf(num));
+                }
+            }
+        });
+
         binding.setLifecycleOwner(this.getViewLifecycleOwner());
         binding.setViewmodel(viewModel);
         posts.clear();
@@ -151,36 +199,7 @@ public class ProfileFragment extends Fragment {
         binding.postList.addItemDecoration(itemDecoration);
         binding.postList.setAdapter(postAdapter);
         binding.postList.setLayoutManager(linearLayoutManager);
-        CollectionReference postRef = FirebaseFirestore.getInstance().collection("posts");
-        postRef.addSnapshotListener((value, error) -> {
-            if (error != null) {
-                return;
-            }
-            for (DocumentChange dc : value.getDocumentChanges()) {
-                Post post = dc.getDocument().toObject(Post.class);
-                switch (dc.getType()) {
-                    case ADDED:
-                        if(post.getPublisher().equals(viewModel.getUid()))
-                        {
-                            posts.add(post);
-                            postAdapter.addUpdate();
-                        }
-                        break;
-                    case MODIFIED:
-                        for(Post item : posts){
-                            if(item.getPostId().equals(post.getPostId())){
-                                if(!post.getContent().equals(item.getContent()) || post.getPostImages().size() != item.getPostImages().size()){
-                                    posts.set(posts.indexOf(item), post);
-                                    postAdapter.notifyItemChanged(posts.indexOf(item));
-                                }
-                            }
-                        }
-                        break;
-                    case REMOVED:
-                        break;
-                }
-            }
-        });
+
         binding.backBtn.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
@@ -242,19 +261,7 @@ public class ProfileFragment extends Fragment {
                     binding.postList.setAdapter(postAdapter);
                     binding.postList.setLayoutManager(linearLayoutManager);
                 } else if (position == 1) {
-                    Query shortQuery = ShortsRepository.getInstance().getShortUserQuery(viewModel.getUid());
-                    shortsReviewProfileAdapter = new ShortsReviewProfileAdapter(
-                            shortQuery,
-                            new ShortsReviewProfileAdapter.IClickCardListener() {
-                                @Override
-                                public void onClickUser(ShortMedia video) {
-                                    Intent intent = new Intent(getContext(), ShortVideoActivity.class);
-                                    intent.putExtra("idVideo", video.getId()); // send id video
-                                    intent.putExtra("isProfile", true);
-                                    startActivity(intent);
-                                }
-                            }
-                    );
+
                     binding.postList.setAdapter(shortsReviewProfileAdapter);
                     GridAutoFitLayoutManager gridLayoutManager = new GridAutoFitLayoutManager(getContext(), 120);
                     binding.postList.setLayoutManager(gridLayoutManager);
@@ -275,6 +282,8 @@ public class ProfileFragment extends Fragment {
         initListener();
         return view;
     }
+
+
 
     private void initListener()
     {
@@ -327,7 +336,52 @@ public class ProfileFragment extends Fragment {
         // Show a toast message
         Toast.makeText(getActivity(), "Lit ID copied", Toast.LENGTH_SHORT).show();
     }
-
+    private void initFirebaseListener()
+    {
+        CollectionReference postRef = FirebaseFirestore.getInstance().collection("posts");
+        postRef.addSnapshotListener((value, error) -> {
+            if (error != null) {
+                return;
+            }
+            for (DocumentChange dc : value.getDocumentChanges()) {
+                Post post = dc.getDocument().toObject(Post.class);
+                switch (dc.getType()) {
+                    case ADDED:
+                        if(post.getPublisher().equals(viewModel.getUid()))
+                        {
+                            posts.add(post);
+                            postAdapter.addUpdate();
+                        }
+                        break;
+                    case MODIFIED:
+                        for(Post item : posts){
+                            if(item.getPostId().equals(post.getPostId())){
+                                if(!post.getContent().equals(item.getContent()) || post.getPostImages().size() != item.getPostImages().size()){
+                                    posts.set(posts.indexOf(item), post);
+                                    postAdapter.notifyItemChanged(posts.indexOf(item));
+                                }
+                            }
+                        }
+                        break;
+                    case REMOVED:
+                        break;
+                }
+            }
+        });
+        Query shortQuery = ShortsRepository.getInstance().getShortUserQuery(viewModel.getUid());
+        shortsReviewProfileAdapter = new ShortsReviewProfileAdapter(
+                shortQuery,
+                new ShortsReviewProfileAdapter.IClickCardListener() {
+                    @Override
+                    public void onClickUser(ShortMedia video) {
+                        Intent intent = new Intent(getContext(), ShortVideoActivity.class);
+                        intent.putExtra("idVideo", video.getId()); // send id video
+                        intent.putExtra("isProfile", true);
+                        startActivity(intent);
+                    }
+                }
+        );
+    }
     private void setTextSpan()
     {
         String text = binding.getViewmodel().getUser().getValue().getBio();

@@ -107,7 +107,7 @@ public class PostAdapter extends RecyclerView.Adapter<PostAdapter.ViewHolder> {
                     binding.genderAgeIcon.setBackgroundResource(R.drawable.shape_gender_border_pink);
                 }
                 binding.ageTextView.setText(String.valueOf(fimaers.calculateAge()));
-                binding.userName.setText(fimaers.getLastName());
+                binding.userName.setText(fimaers.getFirstName());
                 initListener(binding, currentPost, fimaers);
             }
         });
@@ -154,71 +154,34 @@ public class PostAdapter extends RecyclerView.Adapter<PostAdapter.ViewHolder> {
                 binding.follow.setVisibility(View.GONE);
             }
             else{
-                String doc1 = FirebaseAuth.getInstance().getUid()+"_"+currentPost.getPublisher();
-                String doc2 = currentPost.getPublisher()+"_"+FirebaseAuth.getInstance().getUid();
-                Query query = FollowRepository.getInstance().followRef.whereIn(FieldPath.documentId(), Arrays.asList(doc1, doc2));
-
-                query.addSnapshotListener(new EventListener<QuerySnapshot>() {
+                followRepository.followRef.document(FirebaseAuth.getInstance().getUid()+"_"+currentPost.getPublisher()).addSnapshotListener(new EventListener<DocumentSnapshot>() {
                     @Override
-                    public void onEvent(@Nullable QuerySnapshot queryDocumentSnapshots, @Nullable FirebaseFirestoreException error) {
-                        if (error != null) {
-                            // Handle the error
+                    public void onEvent(@Nullable DocumentSnapshot value, @Nullable FirebaseFirestoreException error) {
+                        if(error != null ){
                             return;
                         }
-                        if(queryDocumentSnapshots.getDocuments().size() == 2){
-                            binding.chat.setVisibility(View.VISIBLE);
+                        if(value != null && value.exists()){
                             binding.follow.setVisibility(View.GONE);
+                            binding.chat.setVisibility(View.VISIBLE);
                         }
-                        else {
-                            binding.chat.setVisibility(View.GONE);
+                        else{
                             binding.follow.setVisibility(View.VISIBLE);
-                            if(queryDocumentSnapshots.getDocuments().size() == 1){
-                                Follows follows = queryDocumentSnapshots.getDocuments().get(0).toObject(Follows.class);
-                                if(follows.getFollower().equals(currentPost.getPublisher())){
-                                    binding.follow.setText("Bỏ theo dõi");
-                                }
-                                else{
-                                    binding.follow.setText("Theo dõi");
-                                }
-                            }
-                            else{
-                                binding.follow.setText("Theo dõi");
-                            }
+                            binding.chat.setVisibility(View.GONE);
                         }
                     }
                 });
             }
 
-            binding.chat.setOnClickListener(new View.OnClickListener() {
-                @Override
-                public void onClick(View view) {
 
-                }
-            });
-            binding.follow.setOnClickListener(view -> {
-                if(binding.follow.getText().equals("Theo dõi")){
-                    FollowRepository.getInstance().follow(currentPost.getPublisher()).addOnCompleteListener(new OnCompleteListener<Boolean>() {
-                        @Override
-                        public void onComplete(@NonNull Task<Boolean> task) {
-                            if (task.getResult()) {
-//                            binding.follow.setText("Bỏ theo dõi");
-                            }
-                        }
-                    });
-                }
-                else {
-                    FollowRepository.getInstance().unFollow(currentPost.getPublisher()).addOnCompleteListener(new OnCompleteListener<Boolean>() {
-                        @Override
-                        public void onComplete(@NonNull Task<Boolean> task) {
-                            if (task.getResult()) {
-//                            binding.follow.setText("Theo dõi");
-                            }
-                        }
-
-                    });
-
-                }
-            });
+            binding.follow.setOnClickListener(new View.OnClickListener() {
+                  @Override
+                  public void onClick(View view) {
+                      followRepository.follow(currentPost.getPublisher());
+                      binding.follow.setVisibility(View.GONE);
+                      binding.chat.setVisibility(View.VISIBLE);
+                  }
+              }
+            );
             if(!currentPost.getContent().equals(updatePost.getContent())){
                 binding.content.setText(updatePost.getContent());
             }
@@ -234,7 +197,6 @@ public class PostAdapter extends RecyclerView.Adapter<PostAdapter.ViewHolder> {
                             path, false
                     );
                 });
-
             }
             else {
                 binding.icLike.setImageResource(R.drawable.ic_heart_gray);
@@ -246,33 +208,24 @@ public class PostAdapter extends RecyclerView.Adapter<PostAdapter.ViewHolder> {
                     );
                 });
             }
-            binding.chat.setOnClickListener(new View.OnClickListener() {
-                @Override
-                public void onClick(View view) {
-                    Intent intent = new Intent(mContext, DetailPostActivity.class);
-                    intent.putExtra("id", currentPost.getPostId());
-                    intent.putExtra("chat",true);
-                    mContext.startActivity(intent);
-                }
-            });
-            binding.icShare.setOnClickListener(new View.OnClickListener() {
-                @Override
-                public void onClick(View view) {
-                    Intent intent = new Intent(mContext, DetailPostActivity.class);
-                    intent.putExtra("id", currentPost.getPostId());
-                    intent.putExtra("share",true);
-                    mContext.startActivity(intent);
-                }
-            });
-            binding.icMore.setOnClickListener(new View.OnClickListener() {
-                @Override
-                public void onClick(View view) {
-                    Intent intent = new Intent(mContext, DetailPostActivity.class);
-                    intent.putExtra("id", currentPost.getPostId());
-                    intent.putExtra("more",true);
-                    mContext.startActivity(intent);
+            binding.chat.setOnClickListener(view -> {
+                Intent intent = new Intent(mContext, DetailPostActivity.class);
+                intent.putExtra("id", currentPost.getPostId());
+                intent.putExtra("chat",true);
+                mContext.startActivity(intent);
 
-                }
+            });
+            binding.icShare.setOnClickListener(view -> {
+                Intent intent = new Intent(mContext, DetailPostActivity.class);
+                intent.putExtra("id", currentPost.getPostId());
+                intent.putExtra("share",true);
+                mContext.startActivity(intent);
+            });
+            binding.icMore.setOnClickListener(view -> {
+                Intent intent = new Intent(mContext, DetailPostActivity.class);
+                intent.putExtra("id", currentPost.getPostId());
+                intent.putExtra("more",true);
+                mContext.startActivity(intent);
             });
         });
         //go back
