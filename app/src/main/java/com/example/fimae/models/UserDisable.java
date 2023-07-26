@@ -12,14 +12,24 @@ public class UserDisable {
     String reason;
     Date timeEnd;
     String userId;
+    String type;
     public UserDisable(){}
 
 
-    public UserDisable(Date timeCreated, String reason, Date timeEnd, String userId) {
+    public UserDisable(Date timeCreated, String reason, Date timeEnd, String userId, String type) {
         this.timeCreated = timeCreated;
         this.reason = reason;
         this.timeEnd = timeEnd;
         this.userId = userId;
+        this.type = type;
+    }
+
+    public String getType() {
+        return type;
+    }
+
+    public void setType(String type) {
+        this.type = type;
     }
 
     public Date getTimeCreated() {

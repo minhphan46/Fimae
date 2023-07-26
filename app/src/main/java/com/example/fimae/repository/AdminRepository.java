@@ -21,10 +21,11 @@ public class AdminRepository {
         if(adminRepository == null) adminRepository = new AdminRepository();
         return adminRepository;
     }
-    private CollectionReference disableRef = FirebaseFirestore.getInstance().collection("user_disable");
-    public Task<Boolean> disableUser(UserDisable userDisable){
+    public CollectionReference disableRef = FirebaseFirestore.getInstance().collection("user_disable");
+    public Task<Boolean> disableUser(UserDisable userDisable, String type){
         TaskCompletionSource<Boolean> taskCompletionSource = new TaskCompletionSource<>();
-        DocumentReference disableUser = disableRef.document(userDisable.getUserId());
+        userDisable.setType(type);
+        DocumentReference disableUser = disableRef.document(userDisable.getUserId() + type);
         disableUser.set(userDisable).addOnSuccessListener(new OnSuccessListener<Void>() {
             @Override
             public void onSuccess(Void unused) {
@@ -38,4 +39,5 @@ public class AdminRepository {
         });
         return taskCompletionSource.getTask();
     }
+
 }

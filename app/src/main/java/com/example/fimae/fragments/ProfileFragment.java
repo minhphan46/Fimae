@@ -40,10 +40,16 @@ import com.example.fimae.adapters.SpacingItemDecoration;
 import com.example.fimae.bottomdialogs.AvatarBottomSheetFragment;
 import com.example.fimae.bottomdialogs.PickImageBottomSheetFragment;
 import com.example.fimae.databinding.FragmentProfileBinding;
+import com.example.fimae.models.BottomSheetItem;
 import com.example.fimae.models.Fimaers;
 import com.example.fimae.models.Post;
+import com.example.fimae.models.ReportDetail;
+import com.example.fimae.models.Reports;
+import com.example.fimae.models.UserDisable;
 import com.example.fimae.models.shorts.ShortMedia;
+import com.example.fimae.repository.AdminRepository;
 import com.example.fimae.repository.FimaerRepository;
+import com.example.fimae.repository.ReportRepository;
 import com.example.fimae.repository.ShortsRepository;
 import com.example.fimae.service.FirebaseService;
 import com.example.fimae.utils.FileUtils;
@@ -55,8 +61,12 @@ import com.google.android.material.tabs.TabLayout;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.firestore.CollectionReference;
 import com.google.firebase.firestore.DocumentChange;
+import com.google.firebase.firestore.DocumentSnapshot;
+import com.google.firebase.firestore.EventListener;
 import com.google.firebase.firestore.FirebaseFirestore;
+import com.google.firebase.firestore.FirebaseFirestoreException;
 import com.google.firebase.firestore.Query;
+import com.google.firebase.firestore.QuerySnapshot;
 import com.google.firebase.storage.UploadTask;
 import com.squareup.picasso.Picasso;
 
@@ -68,6 +78,7 @@ import androidx.lifecycle.ViewModelProvider;
 import androidx.recyclerview.widget.LinearLayoutManager;
 
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.List;
 
 import de.hdodenhof.circleimageview.CircleImageView;
@@ -84,8 +95,54 @@ public class ProfileFragment extends Fragment {
     private String uid;
 
     private List<Post> posts = new ArrayList<>();
+    List<BottomSheetItem> addDisableDialog;
+    List<BottomSheetItem> removeDisableDialog;
+    FimaeBottomSheet addDisableSheet;
+    FimaeBottomSheet removeDisableSheet;
+    private UserDisable userDisable;
+    private void createCommentDialog() {
+        addDisableDialog = new ArrayList<BottomSheetItem>() {
+            {
+                add(new BottomSheetItem(R.drawable.ic_edit, "Vô hiệu hóa người dùng"));
+            }
+        };
+        removeDisableDialog = new ArrayList<BottomSheetItem>() {
+            {
+                add(new BottomSheetItem(R.drawable.ic_edit, "Xóa vô hiệu hóa người dùng"));
+            }
+        };
+    }
+    private void showDeleteDisableSheet () {
+        removeDisableSheet = new FimaeBottomSheet(removeDisableDialog,
+                bottomSheetItem -> {
+                    if (bottomSheetItem.getTitle().equals("Xóa vô hiệu hóa người dùng")) {
+                        AdminRepository.getInstance().disableRef.document(userDisable.getUserId()+"USER").delete().addOnCompleteListener(new OnCompleteListener<Void>() {
+                            @Override
+                            public void onComplete(@NonNull Task<Void> task) {
+                                userDisable = null;
+                            }
+                        });
+                        removeDisableSheet.dismiss();
+                    }
+                });
+        removeDisableSheet.show(getParentFragmentManager(), "Remove");
+    }
+    private void showAddDisableSheet() {
+        addDisableSheet = new FimaeBottomSheet(addDisableDialog,
+                bottomSheetItem -> {
+                    if (bottomSheetItem.getTitle().equals("Vô hiệu hóa người dùng")) {
+                        Intent intent = new Intent(getContext(), DisableUserActivity.class);
+                        intent.putExtra("id", uid);
+                        intent.putExtra("type", "USER");
+                        startActivity(intent);
+                        addDisableSheet.dismiss();
+                    }
+                });
+        addDisableSheet.show(getParentFragmentManager(), "Addd");
+    }
 
     private PostAdapter postAdapter;
+    private ArrayList<ReportDetail> reportDetails = new ArrayList<>();
 
     public static ProfileFragment newInstance(String uid) {
         Bundle args = new Bundle();
@@ -94,13 +151,12 @@ public class ProfileFragment extends Fragment {
         fragment.setArguments(args);
         return fragment;
     }
-
-
     @Nullable
     @Override
     public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
         binding = DataBindingUtil.inflate(inflater,R.layout.fragment_profile,container,false);
         View view = binding.getRoot();
+        createCommentDialog() ;
         if (getArguments() != null) {
              uid = getArguments().getString("uid");
             ProfileViewModelFactory factory = new ProfileViewModelFactory(uid);
@@ -176,11 +232,53 @@ public class ProfileFragment extends Fragment {
         binding.icMore.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                Intent intent = new Intent(getContext(), DisableUserActivity.class);
-                intent.putExtra("id", uid);
-                startActivity(intent);
+                if(userDisable == null){
+                    showAddDisableSheet();
+                }
+                else {
+                    showDeleteDisableSheet();
+                }
             }
         });
+
+        AdminRepository.getInstance().disableRef.document(viewModel.getUid()+"USER").addSnapshotListener(new EventListener<DocumentSnapshot>() {
+            @Override
+            public void onEvent(@Nullable DocumentSnapshot value, @Nullable FirebaseFirestoreException error) {
+                if(error != null || value == null){
+                    return;
+                }
+                userDisable = value.toObject(UserDisable.class);
+                if(userDisable != null && userDisable.getTimeEnd().after(new Date()) && userDisable.getType() != null && userDisable.getType().equals("USER")){
+                    binding.follow.setText("Đã vô hiệu hóa");
+                }
+                else {
+                    binding.follow.setText(reportDetails.size() + " báo cáo");
+                }
+            }
+        });
+        ReportRepository.getInstance().reportRef.document(viewModel.getUid()).addSnapshotListener(new EventListener<DocumentSnapshot>() {
+            @Override
+            public void onEvent(@Nullable DocumentSnapshot value, @Nullable FirebaseFirestoreException error) {
+                if(error != null || value == null) return;
+                Reports report = value.toObject(Reports.class);
+                ReportRepository.getInstance().reportRef.document(viewModel.getUid()).collection("reportdetails").addSnapshotListener(new EventListener<QuerySnapshot>() {
+                    @Override
+                    public void onEvent(@Nullable QuerySnapshot value, @Nullable FirebaseFirestoreException error) {
+                        if (error != null || value == null) {
+                            return;
+                        }
+                        if(reportDetails == null) reportDetails = new ArrayList<>();
+                        else reportDetails.clear();
+                        for(DocumentSnapshot dc: value.getDocuments()){
+                            ReportDetail reportDetail = dc.toObject(ReportDetail.class);
+                            reportDetails.add(reportDetail);
+                        }
+                       if(userDisable == null)  binding.follow.setText(reportDetails.size() + " báo cáo");
+                    }
+                });
+            }
+        });
+
 
         binding.backBtn.setOnClickListener(new View.OnClickListener() {
             @Override

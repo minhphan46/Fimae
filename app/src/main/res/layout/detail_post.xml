@@ -129,18 +129,26 @@
                             app:layout_constraintHorizontal_bias="0.926"
                             app:layout_constraintTop_toTopOf="@+id/user_name"
                             >
+
                             <TextView
                                 android:id="@+id/numberOfReport"
-                                android:visibility="visible"
                                 android:layout_width="wrap_content"
                                 android:layout_height="wrap_content"
-                                android:background="@drawable/shape_retangle_border_radius_purple"
-                                android:text="0 báo cáo"
                                 android:layout_marginEnd="5dp"
+                                android:background="@drawable/shape_retangle_border_radius_purple"
+                                android:paddingHorizontal="10dp"
+                                android:paddingVertical="2dp"
+                                android:text="0 báo cáo"
                                 android:textColor="@color/primary_2"
                                 android:textSize="12sp"
-                                android:paddingHorizontal="10dp"
-                                android:paddingVertical="2dp"/>
+                                android:visibility="visible" />
+                            <ImageView
+                                android:id="@+id/ic_more"
+                                android:layout_width="10dp"
+                                android:layout_height="10dp"
+                                android:src="@drawable/ic_more"
+                                />
+
                             <TextView
                                 android:id="@+id/status"
                                 android:layout_marginEnd="5dp"
@@ -323,32 +331,6 @@
                     app:layout_constraintBottom_toBottomOf="parent"
                     />
 
-                <EditText
-                    android:id="@+id/add_comment"
-                    style="@style/medium_16"
-                    android:layout_width="match_parent"
-                    android:layout_height="40dp"
-                    android:layout_marginStart="10dp"
-                    android:layout_marginEnd="80dp"
-                    android:background="@drawable/add_comment_background"
-                    android:gravity="center"
-                    android:hint="Nhập nội dung ẩn bài đăng"
-                    android:paddingHorizontal="20dp"
-                    android:textColor="@color/text_secondary"
-                    app:layout_constraintBottom_toBottomOf="parent"
-                    app:layout_constraintEnd_toStartOf="@+id/post"
-                    app:layout_constraintLeft_toRightOf="@id/icon_emoji"
-                    app:layout_constraintTop_toTopOf="parent" />
-                <ImageView
-                    android:id="@+id/post"
-                    android:layout_width="65dp"
-                    android:layout_height="40dp"
-                    android:scaleType="fitStart"
-                    android:layout_marginEnd="10dp"
-                    app:layout_constraintTop_toTopOf="parent"
-                    app:layout_constraintBottom_toBottomOf="parent"
-                    app:layout_constraintRight_toRightOf="parent"
-                    android:background="@drawable/cantpost" />
             </androidx.constraintlayout.widget.ConstraintLayout>
         </RelativeLayout>
         <ProgressBar

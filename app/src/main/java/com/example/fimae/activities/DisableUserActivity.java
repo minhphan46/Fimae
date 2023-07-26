@@ -26,14 +26,27 @@ public class DisableUserActivity extends AppCompatActivity {
     ActivityDisableUserBinding binding;
     UserDisable userDisable;
     String uid;
+    String type;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         binding = DataBindingUtil.setContentView(this, R.layout.activity_disable_user);
         Intent intent = getIntent();
         uid = intent.getStringExtra("id");
+        type = intent.getStringExtra("type");
         userDisable = new UserDisable();
         userDisable.setUserId(uid);
+        if(type.equals("POST")){
+            binding.titleTxt.setText("Vô hiệu hóa tạo bài viết mới");
+            binding.warningTxt.setText("Người dùng sẽ không thể đăng bài viết cho đến khi hết thời hạn vô hiệu hóa");
+        }else if(type.equals("SHORT")){
+            binding.titleTxt.setText("Vô hiệu hóa tạo short");
+            binding.warningTxt.setText("Người dùng sẽ không thể đăng short cho đến khi hết thời hạn vô hiệu hóa");
+        }
+        else if(type.equals("STORY")){
+            binding.titleTxt.setText("Vô hiệu hóa tạo story mới");
+            binding.warningTxt.setText("Người dùng sẽ không thể đăng story cho đến khi hết thời hạn vô hiệu hóa");
+        }
         binding.dobEditText.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
@@ -46,7 +59,7 @@ public class DisableUserActivity extends AppCompatActivity {
                 binding.progressBar.setVisibility(View.VISIBLE);
                 binding.contentLayout.setVisibility(View.GONE);
                 userDisable.setReason(binding.nameEditText.getText().toString());
-                AdminRepository.getInstance().disableUser(userDisable).addOnSuccessListener(new OnSuccessListener<Boolean>() {
+                AdminRepository.getInstance().disableUser(userDisable, type).addOnSuccessListener(new OnSuccessListener<Boolean>() {
                     @Override
                     public void onSuccess(Boolean aBoolean) {
                         finish();

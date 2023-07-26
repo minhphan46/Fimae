@@ -35,6 +35,8 @@ import com.example.fimae.models.Post;
 import com.example.fimae.models.Fimaers;
 import com.example.fimae.models.ReportDetail;
 import com.example.fimae.models.Reports;
+import com.example.fimae.models.UserDisable;
+import com.example.fimae.repository.AdminRepository;
 import com.example.fimae.repository.ChatRepository;
 import com.example.fimae.repository.CommentRepository;
 import com.example.fimae.repository.FimaerRepository;
@@ -57,6 +59,7 @@ import com.google.firebase.firestore.QuerySnapshot;
 import com.squareup.picasso.Picasso;
 
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.List;
 import java.util.Objects;
 
@@ -96,6 +99,53 @@ public class DetailPostActivity extends AppCompatActivity {
         void onClick(Fimaers userInfo);
     }
     public static int REQUEST_EDITPOST_CODE = 2;
+    List<BottomSheetItem> addDisableDialog;
+    List<BottomSheetItem> removeDisableDialog;
+    FimaeBottomSheet addDisableSheet;
+    FimaeBottomSheet removeDisableSheet;
+    private UserDisable userDisable;
+
+    private void createDialog() {
+        addDisableDialog = new ArrayList<BottomSheetItem>() {
+            {
+                add(new BottomSheetItem(R.drawable.ic_edit, "Vô hiệu hóa đăng tin"));
+            }
+        };
+        removeDisableDialog = new ArrayList<BottomSheetItem>() {
+            {
+                add(new BottomSheetItem(R.drawable.ic_edit, "Xóa vô hiệu hóa đăng tin"));
+            }
+        };
+    }
+    private void showDeleteDisableSheet () {
+        removeDisableSheet = new FimaeBottomSheet(removeDisableDialog,
+                bottomSheetItem -> {
+                    if (bottomSheetItem.getTitle().equals("Xóa vô hiệu hóa đăng tin")) {
+                        AdminRepository.getInstance().disableRef.document(userDisable.getUserId()+"POST").delete().addOnCompleteListener(new OnCompleteListener<Void>() {
+                            @Override
+                            public void onComplete(@NonNull Task<Void> task) {
+                                userDisable = null;
+                            }
+                        });
+                        removeDisableSheet.dismiss();
+                    }
+                });
+        removeDisableSheet.show(getSupportFragmentManager(), "Remove");
+    }
+    private void showAddDisableSheet() {
+        addDisableSheet = new FimaeBottomSheet(addDisableDialog,
+                bottomSheetItem -> {
+                    if (bottomSheetItem.getTitle().equals("Vô hiệu hóa đăng tin")) {
+                        Intent intent = new Intent(DetailPostActivity.this, DisableUserActivity.class);
+                        intent.putExtra("id", post.getPublisher());
+                        intent.putExtra("type", "POST");
+                        startActivity(intent);
+                        addDisableSheet.dismiss();
+                    }
+                });
+        addDisableSheet.show(getSupportFragmentManager(), "Addd");
+    }
+
     ActivityResultLauncher<Intent> mStartForResult = registerForActivityResult(new ActivityResultContracts.StartActivityForResult(),
             result -> {
                 if (result.getResultCode() == REQUEST_EDITPOST_CODE) {
@@ -110,8 +160,21 @@ public class DetailPostActivity extends AppCompatActivity {
         Intent intent = getIntent();
         postId = intent.getStringExtra("id");
         getPost(postId);
+        createDialog();
         isShowShareDialog = intent.getBooleanExtra("share", false);
         isShowMoreDialog = intent.getBooleanExtra("more", false);
+        binding.icMore.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                if(userDisable == null){
+                    showAddDisableSheet();
+                }
+                else {
+                    showDeleteDisableSheet();
+                }
+            }
+        });
+
     }
     private void getPost(String postId){
         postRef.document(postId).addSnapshotListener((value, e) -> {
@@ -128,7 +191,6 @@ public class DetailPostActivity extends AppCompatActivity {
                             fimaers = documentSnapshot.toObject(Fimaers.class);
                             initView(updatePost.getContent(), fimaers.getUid());
                             initListener();
-
                         }
                     });
                 }
@@ -160,7 +222,48 @@ public class DetailPostActivity extends AppCompatActivity {
             likedPostListFragment.show(getSupportFragmentManager(), "likelist");
         });
     }
+    private void getNumberOfReport(){
+        ReportRepository.getInstance().reportRef.document(post.getPublisher()).addSnapshotListener(new EventListener<DocumentSnapshot>() {
+            @Override
+            public void onEvent(@Nullable DocumentSnapshot value, @Nullable FirebaseFirestoreException error) {
+                if(error != null || value == null) return;
+                Reports report = value.toObject(Reports.class);
+                ReportRepository.getInstance().reportRef.document(post.getPublisher()).collection("reportdetails").addSnapshotListener(new EventListener<QuerySnapshot>() {
+                    @Override
+                    public void onEvent(@Nullable QuerySnapshot value, @Nullable FirebaseFirestoreException error) {
+                        if (error != null || value == null) {
+                            return;
+                        }
+                        if(reportDetails == null) reportDetails = new ArrayList<>();
+                        else reportDetails.clear();
+                        for(DocumentSnapshot dc: value.getDocuments()){
+                            ReportDetail reportDetail = dc.toObject(ReportDetail.class);
+                            reportDetails.add(reportDetail);
+                        }
+                        if(userDisable == null)  binding.numberOfReport.setText(reportDetails.size() + " báo cáo");
+                    }
+                });
+            }
+        });
+
+    }
     private void initView(String content, String publisherId){
+        AdminRepository.getInstance().disableRef.document(post.getPublisher()+"POST").addSnapshotListener(new EventListener<DocumentSnapshot>() {
+            @Override
+            public void onEvent(@Nullable DocumentSnapshot value, @Nullable FirebaseFirestoreException error) {
+                if(error != null || value == null){
+                    return;
+                }
+                userDisable = value.toObject(UserDisable.class);
+                if(userDisable != null && userDisable.getTimeEnd().after(new Date()) && userDisable.getType() != null && userDisable.getType().equals("POST")){
+                    binding.numberOfReport.setText("Đã vô hiệu hóa");
+                }
+                else {
+                    getNumberOfReport();
+                }
+            }
+        });
+
         TimerService.setDuration(binding.activeTime, post.getTimeCreated());
         binding.content.setText(post.getContent());
         Picasso.get().load(fimaers.getAvatarUrl()).placeholder(R.drawable.ic_default_avatar).into(binding.imageAvatar);
@@ -194,7 +297,6 @@ public class DetailPostActivity extends AppCompatActivity {
             selectedCommentId = comment.getParentId() != "" ? comment.getParentId() : comment.getId();
             FimaerRepository.getInstance().getFimaerById(comment.getPublisher()).addOnCompleteListener(task -> {
                 task.onSuccessTask(mfimaers -> {
-                    binding.addComment.setHint("@" + mfimaers.getLastName());
                     return null;
                 });
             });
@@ -285,57 +387,11 @@ public class DetailPostActivity extends AppCompatActivity {
                 });
                 //like
                 //add comment
-                binding.addComment.addTextChangedListener(new TextWatcher() {
-                    @Override
-                    public void beforeTextChanged(CharSequence charSequence, int i, int i1, int i2) {
-
-                    }
-
-                    @Override
-                    public void onTextChanged(CharSequence charSequence, int i, int i1, int i2) {
-                        if (binding.addComment.getText().length() > 0) {
-                            binding.post.setBackgroundResource(R.drawable.canpost);
-                            canPost = true;
-                        } else {
-                            binding.post.setBackgroundResource(R.drawable.cantpost);
-                            canPost = false;
-                        }
-                    }
-
-                    @Override
-                    public void afterTextChanged(Editable editable) {
-
-                    }
-                });
                 //go liked list people
                 //
                 binding.iconEmoji.setOnClickListener(new View.OnClickListener() {
                     @Override
                     public void onClick(View view) {
-                    }
-                });
-                binding.post.setOnClickListener(view -> {
-                    if (canPost) {
-                        if (!selectedCommentId.trim().isEmpty()) {
-                            Comment subComment = new Comment();
-                            subComment.setContent(binding.addComment.getText().toString());
-                            subComment.setPublisher(fimaers.getUid());
-                            subComment.setParentId(selectedCommentId);
-                            subComment.setPostId(post.getPostId());
-                            commentRepository.postComment(post.getPostId(), "posts", subComment);
-                        } else {
-                            Comment comment = new Comment();
-                            comment.setPostId(post.getPostId());
-                            comment.setPublisher(fimaers.getUid());
-                            comment.setContent(binding.addComment.getText().toString());
-                            comment.setParentId("");
-                            commentRepository.postComment(post.getPostId(), "posts", comment);
-                        }
-                        postRepository.updateNumOfComment(post.getPostId());
-                        binding.addComment.clearFocus();
-                        binding.addComment.setText("");
-                        binding.addComment.setHint("Để lại một bình luận");
-                        selectedCommentId = "";
                     }
                 });
                 binding.numberOfReport.setOnClickListener(new View.OnClickListener() {
