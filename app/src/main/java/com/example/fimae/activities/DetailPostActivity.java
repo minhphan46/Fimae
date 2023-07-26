@@ -128,6 +128,9 @@ public class DetailPostActivity extends AppCompatActivity {
                 Post updatePost = value.toObject(Post.class);
                 if(post == null){
                     post = updatePost;
+                    if(updatePost.getIsDeleted() != null && updatePost.getIsDeleted()){
+                        finish();
+                    }
                     fimaesRef.document(post.getPublisher()).get().addOnSuccessListener(new OnSuccessListener<DocumentSnapshot>() {
                         @Override
                         public void onSuccess(DocumentSnapshot documentSnapshot) {
@@ -145,14 +148,18 @@ public class DetailPostActivity extends AppCompatActivity {
     }
     private void listenToChange(Post updatePost){
         imageUrls = new ArrayList<>(updatePost.getPostImages());
-
+        if(updatePost.getIsDeleted() != null && updatePost.getIsDeleted()){
+            finish();
+        }
         if(adapter != null){
             adapter.updateImages(imageUrls);
             adapter.notifyDataSetChanged();
             LinearLayoutManager layoutManager = new GridLayoutManager(this, PostAdapter.getColumnSpan(imageUrls.size()) );
             binding.imageList.setLayoutManager(layoutManager);
         }
-
+        if(post.getPostMode() != updatePost.getPostMode()){
+            finish();
+        }
         if(!post.getContent().equals(updatePost.getContent())){
             binding.content.setText(updatePost.getContent());
         }

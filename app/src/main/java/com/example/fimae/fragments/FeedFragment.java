@@ -18,12 +18,14 @@ import com.example.fimae.activities.DetailPostActivity;
 import com.example.fimae.activities.DisabledUserActivity;
 import com.example.fimae.activities.HomeActivity;
 import com.example.fimae.activities.PostActivity;
+import com.example.fimae.activities.PostMode;
 import com.example.fimae.adapters.PostAdapter;
 import com.example.fimae.adapters.ShortAdapter.ShortFragmentPageAdapter;
 import com.example.fimae.databinding.FragmentFeedBinding;
 import com.example.fimae.models.DisableUser;
 import com.example.fimae.models.Post;
 import com.example.fimae.repository.FollowRepository;
+import com.google.android.gms.tasks.OnFailureListener;
 import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.android.material.tabs.TabLayout;
 import com.google.firebase.auth.FirebaseAuth;
@@ -111,18 +113,27 @@ public class FeedFragment extends Fragment {
 
                                     break;
                                 case FRIEND:
-                                    FollowRepository.getInstance().isFriend(post.getPublisher()).addOnSuccessListener(new OnSuccessListener<Boolean>() {
-                                        @Override
-                                        public void onSuccess(Boolean aBoolean) {
-                                            if (aBoolean){
-                                                posts.add(post);
-                                                if(posts.size() <=1){
-                                                    postAdapter.addUpdate();
-                                                }
-                                                else postAdapter.notifyItemInserted(posts.size() - 1);
-                                            }
+                                    if(post.getPublisher().equals(FirebaseAuth.getInstance().getUid())){
+                                        posts.add(post);
+                                        if(posts.size() <=1){
+                                            postAdapter.addUpdate();
                                         }
-                                    });
+                                        else postAdapter.notifyItemInserted(posts.size() - 1);
+                                    }
+                                    else{
+                                        FollowRepository.getInstance().isFriend(post.getPublisher()).addOnSuccessListener(new OnSuccessListener<Boolean>() {
+                                            @Override
+                                            public void onSuccess(Boolean aBoolean) {
+                                                if (aBoolean){
+                                                    posts.add(post);
+                                                    if(posts.size() <=1){
+                                                        postAdapter.addUpdate();
+                                                    }
+                                                    else postAdapter.notifyItemInserted(posts.size() - 1);
+                                                }
+                                            }
+                                        });
+                                    }
                                     break;
                                 case PUBLIC:
                                     posts.add(post);
@@ -142,6 +153,41 @@ public class FeedFragment extends Fragment {
                                     posts.remove(item);
                                     postAdapter.notifyItemRemoved(index);
                                 }
+                                else if(post.getPostMode()!= PostMode.PUBLIC){
+                                    if(Objects.equals(post.getPublisher(), FirebaseAuth.getInstance().getUid())){
+                                        if(!post.getContent().equals(item.getContent()) || post.getPostImages().size() != item.getPostImages().size()){
+                                            posts.set(posts.indexOf(item), post);
+                                            postAdapter.notifyItemChanged(posts.indexOf(item) + 1);
+                                        }
+                                    }
+                                    else if(post.getPostMode()==PostMode.FRIEND) {
+                                        FollowRepository.getInstance().isFriend(post.getPublisher()).addOnSuccessListener(new OnSuccessListener<Boolean>() {
+                                            @Override
+                                            public void onSuccess(Boolean aBoolean) {
+                                                if (aBoolean){
+                                                    if(!post.getContent().equals(item.getContent()) || post.getPostImages().size() != item.getPostImages().size()){
+                                                        posts.set(posts.indexOf(item), post);
+                                                        postAdapter.notifyItemChanged(posts.indexOf(item) + 1);
+                                                    }
+                                            }
+                                        }}).addOnFailureListener(new OnFailureListener() {
+                                            @Override
+                                            public void onFailure(@NonNull Exception e) {
+                                                int index = posts.indexOf(item);
+                                                posts.remove(item);
+//                                        postAdapter.notifyItemRemoved(index - 1);
+                                                postAdapter.notifyItemRemoved(index);
+                                            }
+                                        });
+                                    }
+                                    else{
+                                        int index = posts.indexOf(item);
+                                        posts.remove(item);
+//                                        postAdapter.notifyItemRemoved(index - 1);
+                                        postAdapter.notifyItemRemoved(index);
+//                                        postAdapter.notifyItemRemoved(posts.indexOf(item) + 1);
+                                    }
+                                }
                                 else if(!post.getContent().equals(item.getContent()) || post.getPostImages().size() != item.getPostImages().size()){
                                     posts.set(posts.indexOf(item), post);
                                     postAdapter.notifyItemChanged(posts.indexOf(item) + 1);
@@ -151,8 +197,8 @@ public class FeedFragment extends Fragment {
                         }
                         break;
                     case REMOVED:
-                        posts.remove(post);
-                        postAdapter.notifyItemRemoved(posts.indexOf(post));
+//                        posts.remove(post);
+//                        postAdapter.notifyItemRemoved(posts.indexOf(post));
                         break;
                 }
             }
