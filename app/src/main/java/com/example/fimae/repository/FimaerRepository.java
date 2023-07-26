@@ -147,4 +147,6 @@ public class FimaerRepository {
         void onUploadSuccess(Uri uri);
         void onUploadError(String errorMessage);
     }
+
+
 }
