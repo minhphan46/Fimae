@@ -50,6 +50,13 @@ public class ShortTabFragment extends Fragment {
     }
 
     @Override
+    public void onDestroy() {
+        super.onDestroy();
+        shortAdapter.stopListening();
+    }
+
+    ShortsReviewAdapter shortAdapter;
+    @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
         View view = inflater.inflate(R.layout.fragment_short_tab, container, false);
@@ -61,7 +68,7 @@ public class ShortTabFragment extends Fragment {
         SpacingItemDecoration itemDecoration = new SpacingItemDecoration(16, 16, 10, 0);
         storyRecyclerView.addItemDecoration(itemDecoration);
         Query shortQuery = ShortsRepository.getInstance().getShortQuery();
-        ShortsReviewAdapter shortAdapter = new ShortsReviewAdapter(
+        shortAdapter = new ShortsReviewAdapter(
                 shortQuery,
                 new ShortsReviewAdapter.IClickCardListener() {
                     @Override

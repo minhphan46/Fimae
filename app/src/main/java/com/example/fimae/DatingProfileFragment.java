@@ -66,6 +66,7 @@ public class DatingProfileFragment extends Fragment {
         relationship.setOnClickListener(v -> setProfileRelationship());
         height.setOnClickListener(v -> setProfileHeight());
         education.setOnClickListener(v -> setProfileEducation());
+        setValue();
         return view;
     }
 

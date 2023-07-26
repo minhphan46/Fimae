@@ -3,12 +3,15 @@ package com.example.fimae.activities;
 import android.content.Intent;
 import android.graphics.Bitmap;
 import android.net.Uri;
+import android.os.Handler;
 import android.provider.MediaStore;
+import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
 import android.widget.*;
 
+import androidx.annotation.NonNull;
 import androidx.appcompat.app.ActionBar;
 import androidx.appcompat.app.AppCompatActivity;
 
@@ -17,7 +20,9 @@ import android.os.Bundle;
 import androidx.appcompat.widget.Toolbar;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
+import androidx.viewpager2.widget.ViewPager2;
 
+import com.example.fimae.CallOnChatActivity;
 import com.example.fimae.Constant.ReportContents;
 import com.example.fimae.adapters.BottomSheetItemAdapter;
 import com.example.fimae.adapters.MessageAdapter;
@@ -30,14 +35,30 @@ import com.example.fimae.fragments.MediaListDialogFragment;
 import com.example.fimae.R;
 import com.example.fimae.fragments.FimaeBottomSheet;
 import com.example.fimae.models.BottomSheetItem;
+import com.example.fimae.models.Conversation;
+import com.example.fimae.models.Fimaers;
 import com.example.fimae.models.Message;
 import com.example.fimae.repository.ChatRepository;
+import com.example.fimae.repository.ConnectRepo;
+import com.example.fimae.repository.FimaerRepository;
 import com.example.fimae.repository.ReportRepository;
 import com.example.fimae.utils.FileUtils;
 import com.example.fimae.utils.FirebaseHelper;
 import com.example.fimae.utils.ReportItem;
+import com.google.android.gms.tasks.OnCompleteListener;
+import com.google.android.gms.tasks.Task;
+import com.google.android.gms.tasks.TaskCompletionSource;
 import com.google.firebase.auth.FirebaseAuth;
+import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.firestore.*;
+import com.google.firebase.functions.FirebaseFunctionsException;
+import com.stringee.StringeeClient;
+import com.stringee.call.StringeeCall;
+import com.stringee.call.StringeeCall2;
+import com.stringee.exception.StringeeError;
+import com.stringee.listener.StringeeConnectionListener;
+
+import org.json.JSONObject;
 
 import java.util.*;
 
@@ -62,18 +83,24 @@ public class OnChatActivity extends AppCompatActivity {
         getMenuInflater().inflate(R.menu.chat_second_menu, menu);
         return true;
     }
-
+    Fimaers fimaer;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_on_chat);
         conversationId = getIntent().getStringExtra("conversationID");
+        fimaer = (Fimaers) getIntent().getSerializableExtra("fimaer");
         currentConversationId = conversationId;
         messagesCol = FirebaseFirestore.getInstance().collection("conversations").document(conversationId).collection("messages");
         initViews();
         initBottomSheetItems();
         initListeners();
         initMessagesListener();
+
+        // call
+        mTvStatusConnect = findViewById(R.id.status_appbar);
+        initStringeeConnection();
+        getRemoteUserToken();
     }
 
     private void initViews() {
@@ -193,8 +220,7 @@ public class OnChatActivity extends AppCompatActivity {
                     fimaeBottomSheet.show(getSupportFragmentManager(), fimaeBottomSheet.getTag());
                     return true;
                 case R.id.option_call:
-                    FirebaseAuth.getInstance().signOut();
-                    startActivity(new Intent(this, AuthenticationActivity.class));
+                    initCall();
                     return true;
                 default:
                     return super.onOptionsItemSelected(item);
@@ -206,6 +232,13 @@ public class OnChatActivity extends AppCompatActivity {
         Query query = messagesCol.orderBy("sentAt", Query.Direction.ASCENDING);
         messageAdapter = new MessageAdapter(query, this);
         recyclerView.setAdapter(messageAdapter);
+        messageAdapter.registerAdapterDataObserver(new RecyclerView.AdapterDataObserver() {
+            @Override
+            public void onChanged() {
+                recyclerView.scrollToPosition(messageAdapter.getItemCount() - 1);
+            }
+        });
+        recyclerView.scrollToPosition(messageAdapter.getItemCount() - 1);
     }
 
     private void sendTextMessage() {
@@ -298,5 +331,117 @@ public class OnChatActivity extends AppCompatActivity {
         super.onDestroy();
         currentConversationId = null;
         messageAdapter.stopListening();
+    }
+
+    // goi dien ====================================================
+    public static boolean isCalled = false;
+    private String remoteUserToken;
+    private TextView mTvStatusConnect;
+    public static StringeeClient client;
+
+    public static Map<String, StringeeCall> callMap = new HashMap<>();
+
+    private void showToast(String msg) {
+        Toast.makeText(this, msg, Toast.LENGTH_SHORT).show();
+    }
+
+    private void initCall() {
+        Intent intent = new Intent(this, CallOnChatActivity.class);
+        intent.putExtra("to", remoteUserToken);
+        intent.putExtra("isIncomingCall", false);
+        startActivity(intent);
+    }
+
+    private void getRemoteUserToken() {
+        getConversationById(conversationId).addOnCompleteListener(task -> {
+            if (task.isSuccessful()) {
+                Conversation conversation = task.getResult();
+                if (conversation != null) {
+                    // lấy id ko phải local id
+                    conversation.getParticipantIds().forEach(s -> {
+                        if(!s.equals(FirebaseAuth.getInstance().getUid())){
+                            remoteUserToken = s;
+                            return;
+                        }
+                    });
+                }
+            }
+        });
+    }
+
+    public Task<Conversation> getConversationById(String id){
+        TaskCompletionSource<Conversation> taskCompletionSource = new TaskCompletionSource<>();
+        FirebaseFirestore.getInstance().collection("conversations").document(id).get().addOnCompleteListener(new OnCompleteListener<DocumentSnapshot>() {
+            @Override
+            public void onComplete(@NonNull Task<DocumentSnapshot> task) {
+                if (task.isSuccessful()){
+                    Conversation conversation = task.getResult().toObject(Conversation.class);
+                    taskCompletionSource.setResult(conversation);
+                } else {
+                    taskCompletionSource.setException(Objects.requireNonNull(task.getException()));
+                }
+            }
+        });
+        return taskCompletionSource.getTask();
+    }
+
+
+    private void initStringeeConnection(){
+        client = new StringeeClient(this);
+        client.setConnectionListener(new StringeeConnectionListener() {
+            @Override
+            public void onConnectionConnected(StringeeClient stringeeClient, boolean b) {
+                runOnUiThread(()->{
+                    mTvStatusConnect.setText("Bạn là " + stringeeClient.getUserId());
+                });
+            }
+
+            @Override
+            public void onConnectionDisconnected(StringeeClient stringeeClient, boolean b) {
+                runOnUiThread(()->{
+                    mTvStatusConnect.setText("Mất kết nối");
+                });
+            }
+
+            @Override
+            public void onIncomingCall(StringeeCall stringeeCall) {
+                runOnUiThread(()->{
+                    callMap.put(stringeeCall.getCallId(), stringeeCall);
+                    // navigate to call screen
+                    isCalled = true;
+                    Intent intent = new Intent(OnChatActivity.this, CallOnChatActivity.class);
+                    intent.putExtra("callId", stringeeCall.getCallId());
+                    intent.putExtra("isIncomingCall", true);
+                    startActivity(intent);
+                });
+            }
+
+            @Override
+            public void onIncomingCall2(StringeeCall2 stringeeCall2) {
+            }
+
+            @Override
+            public void onConnectionError(StringeeClient stringeeClient, StringeeError stringeeError) {
+                runOnUiThread(()->{
+                    mTvStatusConnect.setText("Lỗi kết nối");
+                });
+            }
+
+            @Override
+            public void onRequestNewToken(StringeeClient stringeeClient) {
+
+            }
+
+            @Override
+            public void onCustomMessage(String s, JSONObject jsonObject) {
+
+            }
+
+            @Override
+            public void onTopicMessage(String s, JSONObject jsonObject) {
+
+            }
+        });
+        client.connect(ConnectRepo.getInstance().getUserLocal().getToken());
     }
 }

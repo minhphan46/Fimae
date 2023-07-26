@@ -36,6 +36,7 @@
                         android:layout_gravity="center_horizontal"
                 />
                 <TextView
+                        android:id="@+id/status_appbar"
                         style="@style/chat_status_appbar_title"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"

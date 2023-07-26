@@ -158,7 +158,7 @@ public class MessageView extends ConstraintLayout {
     public void setFimaers(Fimaers fimaers) {
         this.fimaers = fimaers;
         if (!Objects.equals(message.getIdSender(), FirebaseAuth.getInstance().getUid())) {
-            Glide.with(getContext()).load(fimaers.getAvatarUrl()).into(avatar).onLoadFailed(ContextCompat.getDrawable(getContext(), R.drawable.avatar));
+            Glide.with(getContext()).load(fimaers.getAvatarUrl()).into(avatar);
         }
     }
 

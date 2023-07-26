@@ -3,6 +3,7 @@ package com.example.fimae.models;
 import androidx.annotation.IntDef;
 import androidx.annotation.StringDef;
 
+import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.firestore.DocumentReference;
 import com.google.firebase.firestore.ServerTimestamp;
 
@@ -88,5 +89,15 @@ public class Conversation {
 
     public void setLastMessage(DocumentReference lastMessage) {
         this.lastMessage = lastMessage;
+    }
+
+    public String getOtherParticipantId(){
+        String myId = FirebaseAuth.getInstance().getCurrentUser().getUid();
+        for (String participantId : participantIds) {
+            if(!participantId.equals(myId)){
+                return participantId;
+            }
+        }
+        return null;
     }
 }

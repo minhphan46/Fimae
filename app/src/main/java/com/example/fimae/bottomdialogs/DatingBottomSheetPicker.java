@@ -123,6 +123,7 @@ public class DatingBottomSheetPicker  extends BottomSheetDialogFragment {
             });
             adapter.setCurrentSelectedIndex(selectedRadioIndex);
         }
+        button.setText("Chọn");
 
         return bottomSheetDialog;
     }
