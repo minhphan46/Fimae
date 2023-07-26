@@ -10,6 +10,8 @@ import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.appcompat.widget.Toolbar;
 import androidx.fragment.app.Fragment;
+import androidx.fragment.app.FragmentManager;
+import androidx.fragment.app.FragmentTransaction;
 
 import android.util.Log;
 import android.view.Gravity;
@@ -22,6 +24,7 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import com.example.fimae.DatingAddImages;
+import com.example.fimae.EmptyDatingProfile;
 import com.example.fimae.R;
 import com.example.fimae.activities.DatingSettings;
 import com.example.fimae.activities.OnChatActivity;
@@ -73,7 +76,6 @@ public class SwipeViewFragment extends Fragment {
     private LinearLayout mLayoutShimmerUser;
 
     DatingProfile currentDating;
-    TextView hasProfileTxt;
     public SwipeViewFragment() {
         // Required empty public constructor
     }
@@ -115,6 +117,8 @@ public class SwipeViewFragment extends Fragment {
         return rootLayout;
     }
 
+    EmptyDatingProfile fragment = EmptyDatingProfile.newInstance(uid);
+
     @Override
     public void onResume() {
         super.onResume();
@@ -123,13 +127,25 @@ public class SwipeViewFragment extends Fragment {
             DatingRepository.getInstance().getDatingProfileByUid(uid).addOnSuccessListener(datingProfile -> {
                 if (datingProfile == null) {
                     hasProfile = false;
+                    FragmentManager fragmentManager =  getActivity().getSupportFragmentManager();
+                    FragmentTransaction fragmentTransaction = fragmentManager.beginTransaction();
+                    fragmentTransaction.replace(R.id.layout_dating, fragment);
+                    fragmentTransaction.commit();
+                    fabLike.setVisibility(View.GONE);
+                    fabBack.setVisibility(View.GONE);
+                    fabSkip.setVisibility(View.GONE);
                     mSwipeView.setVisibility(View.GONE);
-                    hasProfileTxt.setVisibility(View.VISIBLE);
                 }
                 else {
                     currentDating = datingProfile;
-                    //mSwipeView.setVisibility(View.VISIBLE);
-                    hasProfileTxt.setVisibility(View.GONE);
+                    FragmentManager fragmentManager =  getActivity().getSupportFragmentManager();
+                    FragmentTransaction fragmentTransaction = fragmentManager.beginTransaction();
+                    fragmentTransaction.remove(fragment);
+                    fragmentTransaction.commit();
+                    mSwipeView.setVisibility(View.VISIBLE);
+                    fabLike.setVisibility(View.VISIBLE);
+                    fabBack.setVisibility(View.VISIBLE);
+                    fabSkip.setVisibility(View.VISIBLE);
                     hasProfile = true;
                     mLayoutShimmerUser.setVisibility(View.VISIBLE);
                     mShimmerWaitingUser.startShimmer();
@@ -140,7 +156,6 @@ public class SwipeViewFragment extends Fragment {
         else
         {
             //mSwipeView.setVisibility(View.VISIBLE);
-            hasProfileTxt.setVisibility(View.GONE);
             hasProfile = true;
             mLayoutShimmerUser.setVisibility(View.VISIBLE);
             mShimmerWaitingUser.startShimmer();
@@ -167,7 +182,6 @@ public class SwipeViewFragment extends Fragment {
         fabSkip = view.findViewById(R.id.fabSkip);
         fabSuperLike = view.findViewById(R.id.fabSuperLike);
         fabBoost = view.findViewById(R.id.fabBoost);
-        hasProfileTxt = view.findViewById(R.id.hasProfileTxt);
         mShimmerWaitingUser = view.findViewById(R.id.shimmer_view_users);
         mLayoutShimmerUser = view.findViewById(R.id.swipeViewShimmer);
         mContext = getActivity();

@@ -29,6 +29,7 @@ import com.google.firebase.firestore.Query;
 import com.squareup.picasso.Picasso;
 
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.HashMap;
 import java.util.Objects;
 
@@ -45,8 +46,12 @@ public class ConversationAdapter extends FirestoreAdapter<ConversationAdapter.Vi
         if (conversations == null) {
             conversations = new ArrayList<>();
             for (DocumentSnapshot documentSnapshot : queryDocumentSnapshots) {
-                Conversation conversation = documentSnapshot.toObject(Conversation.class);
-                conversations.add(conversation);
+                try {
+                    Conversation conversation = documentSnapshot.toObject(Conversation.class);
+                    conversations.add(conversation);
+                } catch (Exception e) {
+                    e.printStackTrace();
+                }
             }
             ArrayList<String> ids = new ArrayList<>();
             for (Conversation conversation : conversations) {
@@ -71,9 +76,14 @@ public class ConversationAdapter extends FirestoreAdapter<ConversationAdapter.Vi
         }
         conversations.clear();
         for (DocumentSnapshot documentSnapshot : queryDocumentSnapshots) {
-            Conversation conversation = documentSnapshot.toObject(Conversation.class);
-            conversations.add(conversation);
+            try {
+                Conversation conversation = documentSnapshot.toObject(Conversation.class);
+                conversations.add(conversation);
+            } catch (Exception e) {
+                e.printStackTrace();
+            }
         }
+        notifyDataSetChanged();
     }
 
     public interface IClickConversationListener {
@@ -122,7 +132,7 @@ public class ConversationAdapter extends FirestoreAdapter<ConversationAdapter.Vi
         return new ViewHolder(heroView);
     }
 
-    private Task<Fimaers> getFimaer(String id){
+    private Task<Fimaers> getFimaer(String id) {
         TaskCompletionSource<Fimaers> taskCompletionSource = new TaskCompletionSource<>();
         Fimaers fimaers = fimaersHashMap.get(id);
         if (fimaers != null) {
@@ -146,91 +156,92 @@ public class ConversationAdapter extends FirestoreAdapter<ConversationAdapter.Vi
 
         Conversation conversation = conversations.get(position);
         assert conversation != null;
-        if (conversation.getType().equals(Conversation.FRIEND_CHAT)) {
-            ArrayList<String> ids = new ArrayList<>(conversation.getParticipantIds());
-            ids.remove(FirebaseAuth.getInstance().getUid());
-            String uid = ids.get(0);
-            if (uid.equals("")) {
+        ArrayList<String> ids = new ArrayList<>(conversation.getParticipantIds());
+        ids.remove(FirebaseAuth.getInstance().getUid());
+        String uid = ids.get(0);
+        if (uid.equals("")) {
+            return;
+        }
+        getFimaer(uid).addOnSuccessListener(user -> {
+            if (user == null) {
+                holder.mLayoutCard.setVisibility(View.GONE);
                 return;
             }
-            getFimaer(uid).addOnSuccessListener(user -> {
-                if (user == null) {
-                    holder.mLayoutCard.setVisibility(View.GONE);
-                    return;
-                }
 
-                //Convert to Glide
-                if (user.getAvatarUrl() == null || user.getAvatarUrl().equals("")) {
-                    holder.mAvatarView.setImageResource(R.drawable.ic_default_avatar);
-                } else {
-                    Glide.with(holder.mAvatarView.getContext()).load(user.getAvatarUrl()).placeholder(R.drawable.ic_default_avatar).into(holder.mAvatarView);
-                }
-                holder.mTextName.setText(user.getFirstName() + " " + user.getLastName());
-                if (conversation.getLastMessage() != null) {
-                    conversation.getLastMessage().get().addOnCompleteListener(task -> {
-                        HashMap map = (HashMap) task.getResult().getData();
-                        Message message = task.getResult().toObject(Message.class);
-                        if (message == null) {
-                            holder.mTextDes.setText("Bắt đầu cuộc trò chuyện");
+            //Convert to Glide
+            if (user.getAvatarUrl() == null || user.getAvatarUrl().equals("")) {
+                holder.mAvatarView.setImageResource(R.drawable.ic_default_avatar);
+            } else {
+                Glide.with(holder.mAvatarView.getContext()).load(user.getAvatarUrl()).placeholder(R.drawable.ic_default_avatar).into(holder.mAvatarView);
+            }
+            holder.mTextName.setText(user.getFirstName() + " " + user.getLastName());
+            if (conversation.getLastMessage() != null) {
+                conversation.getLastMessage().get().addOnCompleteListener(task -> {
+                    HashMap map = (HashMap) task.getResult().getData();
+                    Message message = task.getResult().toObject(Message.class);
+                    if (message == null) {
+                        holder.mTextDes.setText("Bắt đầu cuộc trò chuyện");
+                    } else {
+                        String start;
+                        if (message.getIdSender() == FirebaseAuth.getInstance().getUid()) {
+                            start = "Bạn: ";
                         } else {
-                            String start;
-                            if (message.getIdSender() == FirebaseAuth.getInstance().getUid()) {
-                                start = "Bạn: ";
-                            } else {
-                                start = user.getFirstName() + ": ";
+                            start = user.getFirstName() + ": ";
+                        }
+                        if (Objects.equals(message.getType(), Message.TEXT)) {
+                            String content = message.getContent().toString();
+                            if (Objects.equals(message.getIdSender(), FirebaseAuth.getInstance().getUid())) {
+                                content = "Bạn: " + content;
                             }
-                            if (Objects.equals(message.getType(), Message.TEXT)) {
-                                String content = message.getContent().toString();
-                                if (Objects.equals(message.getIdSender(), FirebaseAuth.getInstance().getUid())) {
-                                    content = "Bạn: " + content;
-                                }
-                                holder.mTextDes.setText(content);
-                            } else if (Objects.equals(message.getType(), Message.MEDIA)) {
-                                String content = "Đã gửi " + ((ArrayList) message.getContent()).size() + " hình ảnh";
-                                if (Objects.equals(message.getIdSender(), FirebaseAuth.getInstance().getUid())) {
-                                    content = "Bạn: " + content;
-                                }
-                                holder.mTextDes.setText(content);
-                            } else if (Objects.equals(message.getType(), Message.POST_LINK)) {
-                                String content = "Đã gửi một bài viết";
-                                if (Objects.equals(message.getIdSender(), FirebaseAuth.getInstance().getUid())) {
-                                    content = "Bạn: " + content;
-                                }
-                                holder.mTextDes.setText(content);
+                            holder.mTextDes.setText(content);
+                        } else if (Objects.equals(message.getType(), Message.MEDIA)) {
+                            String content = "Đã gửi " + ((ArrayList) message.getContent()).size() + " hình ảnh";
+                            if (Objects.equals(message.getIdSender(), FirebaseAuth.getInstance().getUid())) {
+                                content = "Bạn: " + content;
                             }
-
+                            holder.mTextDes.setText(content);
+                        } else if (Objects.equals(message.getType(), Message.POST_LINK)) {
+                            String content = "Đã gửi một bài viết";
+                            if (Objects.equals(message.getIdSender(), FirebaseAuth.getInstance().getUid())) {
+                                content = "Bạn: " + content;
+                            }
+                            holder.mTextDes.setText(content);
                         }
 
-                        ChatRepository.getDefaultChatInstance().getParticipantInConversation(conversation.getId(), FirebaseAuth.getInstance().getUid()).addOnSuccessListener(participant -> {
-                            if (participant == null || message == null) {
-                                holder.mTextDes.setTypeface(Typeface.defaultFromStyle(Typeface.BOLD));
-                            } else if (participant.getReadLastMessageAt() != null && participant.getReadLastMessageAt().after(message.getSentAt())) {
-                                //set holder.mTextDes fontweight to bold
-                                holder.mTextDes.setTypeface(Typeface.defaultFromStyle(Typeface.BOLD));
-                            } else {
-                                holder.mTextDes.setTypeface(Typeface.defaultFromStyle(Typeface.NORMAL));
-                            }
-                        });
-                    });
-                }
-                holder.mTextAge.setText(String.valueOf(user.calculateAge()));
-                holder.mLayoutGenderAge.setBackgroundResource(user.isGender() ? R.drawable.shape_gender_border_blue : R.drawable.shape_gender_border_pink);
-                holder.mIconGender.setImageResource(user.isGender() ? R.drawable.ic_male : R.drawable.ic_female);
-                if (user.isOnline()) {
-                    holder.onlineStatus.setVisibility(View.VISIBLE);
-                    holder.offlineStatus.setVisibility(View.GONE);
-                } else if (user.getLastActiveMinuteAgo() <= 60) {
-                    holder.onlineStatus.setVisibility(View.GONE);
-                    holder.offlineStatus.setVisibility(View.VISIBLE);
-                    holder.offlineStatus.setText(user.getLastActiveMinuteAgo() + "m");
-                } else {
-                    holder.onlineStatus.setVisibility(View.GONE);
-                    holder.offlineStatus.setVisibility(View.GONE);
-                }
-                holder.mLayoutCard.setOnClickListener(v -> iClickConversationListener.onClickConversation(conversation, user));
-            });
-        }
+                    }
 
+                    try {
+                        Date sentAt = message.getSentAt();
+                        Date readAt = conversation.getReadLastMessageAt().get(FirebaseAuth.getInstance().getUid());
+                        if (readAt != null && readAt.after(sentAt)) {
+                            holder.mTextDes.setTypeface(Typeface.defaultFromStyle(Typeface.BOLD));
+                            holder.mTextDes.setTextColor(ContextCompat.getColor(holder.mTextDes.getContext(), R.color.black));
+                        } else {
+                            holder.mTextDes.setTypeface(Typeface.defaultFromStyle(Typeface.NORMAL));
+                        }
+                    } catch (Exception e) {
+                        holder.mTextDes.setTypeface(Typeface.defaultFromStyle(Typeface.NORMAL));
+                    }
+                });
+            }
+            holder.mTextAge.setText(String.valueOf(user.calculateAge()));
+            holder.mLayoutGenderAge.setBackgroundResource(user.isGender() ? R.drawable.shape_gender_border_blue : R.drawable.shape_gender_border_pink);
+            holder.mIconGender.setImageResource(user.isGender() ? R.drawable.ic_male : R.drawable.ic_female);
+            if (user.isOnline()) {
+                holder.onlineStatus.setVisibility(View.VISIBLE);
+                holder.offlineStatus.setVisibility(View.GONE);
+            } else if (user.getLastActiveMinuteAgo() <= 60) {
+                holder.onlineStatus.setVisibility(View.GONE);
+                holder.offlineStatus.setVisibility(View.VISIBLE);
+                holder.offlineStatus.setText(user.getLastActiveMinuteAgo() + "m");
+            } else {
+                holder.onlineStatus.setVisibility(View.GONE);
+                holder.offlineStatus.setVisibility(View.GONE);
+            }
+            holder.mLayoutCard.setOnClickListener(v -> iClickConversationListener.onClickConversation(conversation, user));
+        });
     }
 
 }
+
+

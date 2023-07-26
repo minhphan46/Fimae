@@ -1,13 +1,11 @@
 package com.example.fimae.repository;
 
 import android.net.Uri;
-import android.util.Log;
 
 import androidx.annotation.NonNull;
 
 import com.example.fimae.models.Conversation;
 import com.example.fimae.models.Message;
-import com.example.fimae.models.Participant;
 import com.example.fimae.service.FirebaseService;
 import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.Task;
@@ -18,6 +16,7 @@ import com.google.firebase.firestore.CollectionReference;
 import com.google.firebase.firestore.DocumentReference;
 import com.google.firebase.firestore.DocumentSnapshot;
 import com.google.firebase.firestore.EventListener;
+import com.google.firebase.firestore.FieldValue;
 import com.google.firebase.firestore.FirebaseFirestore;
 import com.google.firebase.firestore.ListenerRegistration;
 import com.google.firebase.firestore.Query;
@@ -93,7 +92,6 @@ public class ChatRepository {
         Collections.sort(participantIds);
         Task<QuerySnapshot> queryTask = conversationsRef
                 .whereEqualTo("participantIds", participantIds)
-                .whereEqualTo("type", type)
                 .limit(1)
                 .get();
         queryTask.addOnCompleteListener(querySnapshotTask -> {
@@ -108,12 +106,10 @@ public class ChatRepository {
                 } else {
                     DocumentReference newConDoc = conversationsRef.document();
                     WriteBatch batch = FirebaseFirestore.getInstance().batch();
-                    CollectionReference collectionReference = newConDoc.collection("participants");
                     Conversation conversation = Conversation.create(newConDoc.getId(), Conversation.FRIEND_CHAT, participantIds);
                     batch.set(newConDoc, conversation);
                     for (String id : participantIds) {
-                        Participant participant = Participant.create(id, Participant.ROLE_Participant);
-                        batch.set(collectionReference.document(id), participant);
+                        batch.update(newConDoc, "joinedAt." + id, FieldValue.serverTimestamp());
                     }
                     batch.commit().addOnCompleteListener(batchTask -> {
                         if (batchTask.isSuccessful()) {
@@ -133,40 +129,11 @@ public class ChatRepository {
 
 
 
-    public Task<Boolean> updateReadLastMessageAt(String conversationId, Date timeStamp) {
-        TaskCompletionSource taskCompletionSource = new TaskCompletionSource();
-        Log.i("TAG", "updateReadLastMessageAt: " + conversationId);
-        if(FirebaseAuth.getInstance().getUid() == null)
-        {
-            return null;
-        }
-        DocumentReference participantRef = conversationsRef.document(conversationId).collection("participants").document(FirebaseAuth.getInstance().getUid());
-        participantRef.update("readLastMessageAt", timeStamp).addOnCompleteListener(task -> {
-            if (task.isSuccessful()) {
-                taskCompletionSource.setResult(true);
-            } else {
-                taskCompletionSource.setException(Objects.requireNonNull(task.getException()));
-            }
-        });
-        return taskCompletionSource.getTask();
+    public Task<Void> updateReadLastMessageAt(String conversationId, Date timeStamp) {
+
+        return conversationsRef.document(conversationId).update("readLastMessageAt." + FirebaseAuth.getInstance().getUid(), timeStamp);
     }
 
-    public Task<Participant> getParticipantInConversation(String conversationId, String participantId) {
-        TaskCompletionSource<Participant> taskCompletionSource = new TaskCompletionSource<>();
-        DocumentReference participantRef = conversationsRef.document(conversationId).collection("participants").document(participantId);
-        participantRef.get().addOnCompleteListener(task -> {
-            if (task.isSuccessful()) {
-                DocumentSnapshot documentSnapshot = task.getResult();
-                assert documentSnapshot != null;
-                Participant participant = documentSnapshot.toObject(Participant.class);
-                assert participant != null;
-                taskCompletionSource.setResult(participant);
-            } else {
-                taskCompletionSource.setException(Objects.requireNonNull(task.getException()));
-            }
-        });
-        return taskCompletionSource.getTask();
-    }
 
     public Task<Message> sendMessage(String conversationId, Object content, String type){
         TaskCompletionSource<Message> taskCompletionSource = new TaskCompletionSource<Message>();
@@ -228,6 +195,21 @@ public class ChatRepository {
                         }
                     });
                 }
+            }
+        });
+        return taskCompletionSource.getTask();
+    }
+    public Task<Void> deleteConversation(String conversationId) {
+        return conversationsRef.document(conversationId).delete();
+    }
+
+    public Task<Conversation> getConversationById(String id) {
+        TaskCompletionSource<Conversation> taskCompletionSource = new TaskCompletionSource<>();
+        conversationsRef.document(id).get().addOnCompleteListener(task -> {
+            if (task.isSuccessful()) {
+                taskCompletionSource.setResult(task.getResult().toObject(Conversation.class));
+            } else {
+                taskCompletionSource.setException(Objects.requireNonNull(task.getException()));
             }
         });
         return taskCompletionSource.getTask();
