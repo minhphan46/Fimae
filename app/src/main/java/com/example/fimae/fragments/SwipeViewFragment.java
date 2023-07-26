@@ -76,7 +76,7 @@ public class SwipeViewFragment extends Fragment {
                         .setSwipeOutMsgLayoutId(R.layout.tinder_swipe_out_msg_view));
 
 
-        for(DatingProfile profile : Utils.loadProfiles(getActivity())){
+        for(Profile profile : Utils.loadProfiles(getActivity())){
             mSwipeView.addView(new TinderCard(mContext, profile, mSwipeView));
         }
 

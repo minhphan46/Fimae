@@ -38,15 +38,15 @@ public class Utils {
         builder.show();
     }
 
-    public static List<DatingProfile> loadProfiles(Context context){
+    public static List<Profile> loadProfiles(Context context){
         try{
             GsonBuilder builder = new GsonBuilder();
             Gson gson = builder.create();
             JSONArray array = new JSONArray(loadJSONFromAsset(context, "profiles.json"));
-            List<DatingProfile> profileList = new ArrayList<>();
+            List<Profile> profileList = new ArrayList<>();
             for(int i=0;i<array.length();i++){
                 Log.i(TAG, "loadProfiles: " + array.getString(i));
-                DatingProfile profile = gson.fromJson(array.getString(i), DatingProfile.class);
+                Profile profile = gson.fromJson(array.getString(i), Profile.class);
                 profileList.add(profile);
             }
             return profileList;
