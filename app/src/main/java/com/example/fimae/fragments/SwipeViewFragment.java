@@ -52,20 +52,13 @@ public class SwipeViewFragment extends Fragment {
     }
 
     String uid = FimaerRepository.getInstance().getCurrentUserUid();
-
+    boolean hasProfile = false;
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
         // Inflate the layout for this fragment
         rootLayout = inflater.inflate(R.layout.fragment_swipe_view, container, false);
-        DatingRepository.getInstance().getDatingProfileByUid(uid).addOnSuccessListener(datingProfile -> {
-            if (datingProfile == null) {
-                Intent intent = new Intent(getContext(), DatingAddImages.class);
-                intent.putExtra("uid", uid);
-                intent.putExtra("isCreate", true);
-                startActivity(intent);
-            }
-        });
+
 
         return rootLayout;
     }
@@ -73,6 +66,12 @@ public class SwipeViewFragment extends Fragment {
     @Override
     public void onResume() {
         super.onResume();
+        DatingRepository.getInstance().getDatingProfileByUid(uid).addOnSuccessListener(datingProfile -> {
+            if (datingProfile != null) {
+                hasProfile = true;
+            }
+
+        });
     }
 
     @Override
@@ -87,7 +86,10 @@ public class SwipeViewFragment extends Fragment {
 
 
         mContext = getActivity();
-
+        if(hasProfile)
+        {
+            getData();
+        }
         int bottomMargin = Utils.dpToPx(100);
         int topMargin = Utils.dpToPx(80);
         Point windowSize = Utils.getDisplaySize(getActivity().getWindowManager());
@@ -103,7 +105,42 @@ public class SwipeViewFragment extends Fragment {
                         .setSwipeInMsgLayoutId(R.layout.tinder_swipe_in_msg_view)
                         .setSwipeOutMsgLayoutId(R.layout.tinder_swipe_out_msg_view));
 
+        DatingRepository.getInstance().getDatingProfileByUid(uid).addOnSuccessListener(datingProfile -> {
+            if (datingProfile == null) {
+                hasProfile = false;
+                Intent intent = new Intent(getContext(), DatingAddImages.class);
+                intent.putExtra("uid", uid);
+                intent.putExtra("isCreate", true);
+                startActivity(intent);
+            }
+            else {
+                hasProfile = true;
+                getData();
+            }
+        });
+        for(Profile profile : Utils.loadProfiles(getActivity())){
+        }
 
+        fabSkip.setOnClickListener(v -> {
+            animateFab(fabSkip);
+            mSwipeView.doSwipe(false);
+        });
+
+        fabLike.setOnClickListener(v -> {
+            animateFab(fabLike);
+            mSwipeView.doSwipe(true);
+        });
+
+        fabBoost.setOnClickListener(v -> animateFab(fabBoost));
+        fabSuperLike.setOnClickListener(v -> animateFab(fabSuperLike));
+        fabBack.setOnClickListener(v -> {
+            mSwipeView.undoLastSwipe();
+            animateFab(fabBack);
+        });
+    }
+
+    private void getData()
+    {
         DatingRepository.getInstance().getDatingProfileByUid(uid)
                 .addOnCompleteListener(new OnCompleteListener<DatingProfile>() {
                     @Override
@@ -127,27 +164,7 @@ public class SwipeViewFragment extends Fragment {
                         }
                     }
                 });
-        for(Profile profile : Utils.loadProfiles(getActivity())){
-        }
-
-        fabSkip.setOnClickListener(v -> {
-            animateFab(fabSkip);
-            mSwipeView.doSwipe(false);
-        });
-
-        fabLike.setOnClickListener(v -> {
-            animateFab(fabLike);
-            mSwipeView.doSwipe(true);
-        });
-
-        fabBoost.setOnClickListener(v -> animateFab(fabBoost));
-        fabSuperLike.setOnClickListener(v -> animateFab(fabSuperLike));
-        fabBack.setOnClickListener(v -> {
-            mSwipeView.undoLastSwipe();
-            animateFab(fabBack);
-        });
     }
-
 
     private void animateFab(final FloatingActionButton fab){
         fab.animate().scaleX(0.7f).setDuration(100).withEndAction(() -> fab.animate().scaleX(1f).scaleY(1f));

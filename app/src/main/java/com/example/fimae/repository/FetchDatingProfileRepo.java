@@ -1,11 +1,13 @@
 package com.example.fimae.repository;
 
+import android.content.Intent;
 import android.util.Log;
 
 import androidx.annotation.NonNull;
 
 import com.example.fimae.models.Fimaers;
 import com.example.fimae.models.dating.DatingProfile;
+import com.example.fimae.models.dating.GenderOptions;
 import com.example.fimae.models.dating.LatLng;
 import com.firebase.geofire.GeoFireUtils;
 import com.firebase.geofire.GeoLocation;
@@ -127,7 +129,7 @@ public class FetchDatingProfileRepo {
                                                     datingProfiles.get(user.getUid()).setDistanceFromYou(distanceInM);
                                                 }
                                                 datingProfiles.remove(currentProfile.getUid());
-                                                callback.OnGetProfileComplete(datingProfiles);
+                                                callback.OnGetProfileComplete(filter(datingProfiles,currentProfile));
                                             }
                                         }
 
@@ -136,7 +138,7 @@ public class FetchDatingProfileRepo {
                         else
                         {
                             datingProfiles.remove(currentProfile.getUid());
-                            callback.OnGetProfileComplete(datingProfiles);
+                            callback.OnGetProfileComplete(filter(datingProfiles,currentProfile));
                         }
 
 
@@ -146,9 +148,30 @@ public class FetchDatingProfileRepo {
                 });
     }
 
-    private HashMap<String,DatingProfile> filter(HashMap<String,DatingProfile> datingProfiles)
+    private HashMap<String,DatingProfile> filter(HashMap<String,DatingProfile> datingProfiles, DatingProfile currentProfile)
     {
+        HashMap<String, DatingProfile> result = new HashMap<>();
+        for (DatingProfile profile : datingProfiles.values())
+        {
+            int age = Integer.parseInt(currentProfile.getAge());
+            if(age >= profile.getMinAge() && age <= profile.getMaxAge())
+            {
+                GenderOptions gender = currentProfile.isGender() ? GenderOptions.MALE : GenderOptions.FEMALE;
+                GenderOptions profileGender = profile.isGender() ? GenderOptions.MALE : GenderOptions.FEMALE;
 
+                if((currentProfile.getGenderOptions() == GenderOptions.UNIMPORTANT)
+                        && (profile.getGenderOptions() == GenderOptions.UNIMPORTANT || profile.getGenderOptions() == gender ))
+                {
+                    result.put(profile.getUid(), profile);
+                }
+                else if(currentProfile.getGenderOptions() == profileGender
+                        && (profile.getGenderOptions() == GenderOptions.UNIMPORTANT || profile.getGenderOptions() == gender))
+                {
+                    result.put(profile.getUid(), profile);
+                }
+            }
+        }
+        return result;
     }
 
     public interface GetProfileCallback
