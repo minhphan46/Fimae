@@ -22,6 +22,7 @@ import com.example.fimae.activities.OnChatActivity;
 import com.example.fimae.activities.WaitingActivity;
 import com.example.fimae.databinding.ActivityCallOnChatBinding;
 import com.example.fimae.repository.ConnectRepo;
+import com.example.fimae.service.CallService;
 import com.example.fimae.service.TimerService;
 import com.squareup.picasso.Picasso;
 import com.stringee.call.StringeeCall;
@@ -232,14 +233,15 @@ public class CallOnChatActivity extends AppCompatActivity {
     private void initCall(){
         if(isInComingCall){
             // cuoc goi den
-            call = OnChatActivity.callMap.get(callId);
+            call = CallService.getInstance().callMap.get(callId);
             if( call == null){
                 onFinish();
                 return;
             }
         }else{
             // tao cuoc goi moi
-            call = new StringeeCall(OnChatActivity.client, OnChatActivity.client.getUserId(), to);
+            call = new StringeeCall(CallService.getInstance().client, CallService.getInstance().client.getUserId(), to);
+            call.setCustom(CallService.NORMAL);
         }
 
         // theo doi trang thai cuoc goi

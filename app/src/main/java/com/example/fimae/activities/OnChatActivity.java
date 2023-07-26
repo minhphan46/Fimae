@@ -100,7 +100,7 @@ public class OnChatActivity extends AppCompatActivity {
 
         // call
         mTvStatusConnect = findViewById(R.id.status_appbar);
-        initStringeeConnection();
+        //initStringeeConnection();
         getRemoteUserId();
     }
 
@@ -361,7 +361,7 @@ public class OnChatActivity extends AppCompatActivity {
     }
 
 
-    private void initStringeeConnection(){
+/*    private void initStringeeConnection(){
         client = new StringeeClient(this);
         client.setConnectionListener(new StringeeConnectionListener() {
             @Override
@@ -419,5 +419,5 @@ public class OnChatActivity extends AppCompatActivity {
             }
         });
         client.connect(ConnectRepo.getInstance().getUserLocal().getToken());
-    }
+    }*/
 }

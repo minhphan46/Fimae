@@ -58,6 +58,33 @@ public class ConnectRepo {
         this.userLocal = userLocal;
     }
 
+    public void setUserLocalById(String id) {
+
+        DocumentReference docRef = firestore.collection(user_table).document(id);
+        docRef.get().addOnCompleteListener(new OnCompleteListener<DocumentSnapshot>() {
+            @Override
+            public void onComplete(@NonNull Task<DocumentSnapshot> task) {
+                if(task.isSuccessful())
+                {
+                    DocumentSnapshot documentSnapshot = task.getResult();
+                    if(documentSnapshot.exists())
+                    {
+                        Log.e("ConnectRepo", "No document");
+
+                        Fimaers user = documentSnapshot.toObject(Fimaers.class);
+                        setUserLocal(user);
+                    }
+                    else
+                    {
+                        Log.e("ConnectRepo", "No such document");
+                    }
+                }else {
+                    Log.e("ConnectRepo", "get failed with ", task.getException());
+
+                }
+            }
+        });
+    }
     public Fimaers getUserRemote() {
         return userRemote;
     }

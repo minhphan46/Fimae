@@ -1,5 +1,4 @@
 package com.example.fimae.activities;
-
 import android.content.Intent;
 
 import androidx.annotation.NonNull;
@@ -15,8 +14,10 @@ import android.view.MenuItem;
 import android.view.MotionEvent;
 import android.view.View;
 
+import com.example.fimae.CallOnChatActivity;
 import com.example.fimae.R;
 import com.example.fimae.adapters.ViewPagerAdapter;
+import com.example.fimae.service.CallService;
 import com.example.fimae.models.DisableUser;
 import com.example.fimae.repository.AuthRepository;
 import com.example.fimae.service.CustomViewPager;
@@ -46,6 +47,7 @@ public class HomeActivity extends AppCompatActivity {
         setContentView(R.layout.activity_home);
         listenDisable();
         PACKAGE_NAME = getApplicationContext().getPackageName();
+
         mNavigationView = findViewById(R.id.bottom_nav);
         mViewPager = findViewById(R.id.view_paper);
         setUpViewPager();
@@ -75,6 +77,29 @@ public class HomeActivity extends AppCompatActivity {
         });
         Intent intent = new Intent(this, UpdateUserActivityTimeService.class);
         startService(intent);
+
+        CallService.getInstance().initStringeeConnection(getBaseContext(), HomeActivity.this);
+        CallService.getInstance().addListener(new CallService.CallClientListener() {
+            @Override
+            public void onStatusChange(String status) {
+
+            }
+
+            @Override
+            public void onIncomingCallVoice(String typeCall, String callId) {
+                if(typeCall.equals(CallService.NORMAL)) {
+                    Intent intent = new Intent(HomeActivity.this, CallOnChatActivity.class);
+                    intent.putExtra("callId", callId);
+                    intent.putExtra("isIncomingCall", true);
+                    startActivity(intent);
+                }
+            }
+
+            @Override
+            public void onIncomingCallVideo(String typeCall, String callId) {
+
+            }
+        });
     }
     private void listenDisable(){
         if(FirebaseAuth.getInstance().getUid() == null){
