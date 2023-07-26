@@ -21,12 +21,15 @@ import com.google.firebase.firestore.DocumentChange;
 import com.google.firebase.firestore.DocumentReference;
 import com.google.firebase.firestore.DocumentSnapshot;
 import com.google.firebase.firestore.EventListener;
+import com.google.firebase.firestore.FieldPath;
 import com.google.firebase.firestore.FirebaseFirestore;
 import com.google.firebase.firestore.FirebaseFirestoreException;
+import com.google.firebase.firestore.Query;
 import com.google.firebase.firestore.QuerySnapshot;
 import com.google.firebase.storage.StorageReference;
 
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 
 public class FollowRepository {
@@ -164,6 +167,22 @@ public class FollowRepository {
             @Override
             public void onFailure(@NonNull Exception e) {
                 taskCompletionSource.setResult(false);
+            }
+        });
+        return taskCompletionSource.getTask();
+    }
+    public Task<Boolean> isFriend(String userId){
+        TaskCompletionSource<Boolean> taskCompletionSource = new TaskCompletionSource<>();
+        String doc1 = FirebaseAuth.getInstance().getUid()+"_"+userId;
+        String doc2 = userId+"_"+FirebaseAuth.getInstance().getUid();
+        Query query = FollowRepository.getInstance().followRef.whereIn(FieldPath.documentId(), Arrays.asList(doc1, doc2));
+        query.get().addOnSuccessListener(new OnSuccessListener<QuerySnapshot>() {
+            @Override
+            public void onSuccess(QuerySnapshot queryDocumentSnapshots) {
+                if(queryDocumentSnapshots.getDocuments().size() == 2){
+                    taskCompletionSource.setResult(true);
+                }
+                else taskCompletionSource.setResult(false);
             }
         });
         return taskCompletionSource.getTask();
