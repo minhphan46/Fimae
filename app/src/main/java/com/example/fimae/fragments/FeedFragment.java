@@ -2,8 +2,6 @@ package com.example.fimae.fragments;
 
 import android.content.Intent;
 import android.os.Bundle;
-import android.security.identity.CipherSuiteNotSupportedException;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -17,10 +15,8 @@ import androidx.viewpager2.widget.ViewPager2;
 
 import com.example.fimae.activities.DetailPostActivity;
 import com.example.fimae.activities.PostActivity;
-import com.example.fimae.activities.PostMode;
-import com.example.fimae.activities.ProfileActivity;
 import com.example.fimae.adapters.PostAdapter;
-import com.example.fimae.adapters.ShortFragmentPageAdapter;
+import com.example.fimae.adapters.ShortAdapter.ShortFragmentPageAdapter;
 import com.example.fimae.databinding.FragmentFeedBinding;
 import com.example.fimae.models.Post;
 import com.example.fimae.repository.FollowRepository;
@@ -29,17 +25,11 @@ import com.google.android.material.tabs.TabLayout;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.firestore.CollectionReference;
 import com.google.firebase.firestore.DocumentChange;
-import com.google.firebase.firestore.EventListener;
 import com.google.firebase.firestore.FirebaseFirestore;
-import com.google.firebase.firestore.FirebaseFirestoreException;
 import com.google.firebase.firestore.Query;
-import com.google.firebase.firestore.QueryDocumentSnapshot;
-import com.google.firebase.firestore.QuerySnapshot;
 
 import java.util.ArrayList;
-import java.util.HashMap;
 import java.util.List;
-import java.util.Map;
 
 public class FeedFragment extends Fragment {
     public static int REQUEST_CREATEPOST_CODE = 1;

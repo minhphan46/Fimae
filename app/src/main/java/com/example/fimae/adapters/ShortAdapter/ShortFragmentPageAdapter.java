@@ -1,4 +1,4 @@
-package com.example.fimae.adapters;
+package com.example.fimae.adapters.ShortAdapter;
 
 import androidx.annotation.NonNull;
 import androidx.fragment.app.Fragment;

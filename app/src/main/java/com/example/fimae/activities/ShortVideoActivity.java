@@ -23,6 +23,7 @@ import android.widget.Toast;
 import com.example.fimae.R;
 import com.example.fimae.adapters.NewCommentAdapter;
 import com.example.fimae.adapters.ShortAdapter.ShortVideoAdapter;
+import com.example.fimae.adapters.ShortAdapter.ShortsReviewAdapter;
 import com.example.fimae.databinding.ActivityShortVideoBinding;
 import com.example.fimae.databinding.BottomSheetCommentShortBinding;
 import com.example.fimae.fragments.CommentEditFragment;
@@ -66,6 +67,12 @@ public class ShortVideoActivity extends AppCompatActivity {
 
     ShortMedia curVideo;
     boolean canPost = false;
+
+    @Override
+    protected void onDestroy() {
+        super.onDestroy();
+        shortVideoAdapter.stopListening();
+    }
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
