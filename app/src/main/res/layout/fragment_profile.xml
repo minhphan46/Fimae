@@ -237,74 +237,74 @@
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/chipGroup"
         >
-        <TextView
-            android:id="@+id/followingNum"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_marginStart="22dp"
-            android:layout_marginTop="22dp"
-            android:textColor="@color/black"
-            android:textStyle="bold"
-            android:text="0"
-            app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toBottomOf="@+id/chipGroup" />
+<!--        <TextView-->
+<!--            android:id="@+id/followingNum"-->
+<!--            android:layout_width="wrap_content"-->
+<!--            android:layout_height="0dp"-->
+<!--            android:layout_marginStart="22dp"-->
+<!--            android:layout_marginTop="22dp"-->
+<!--            android:textColor="@color/black"-->
+<!--            android:textStyle="bold"-->
+<!--            android:text="0"-->
+<!--            app:layout_constraintStart_toStartOf="parent"-->
+<!--            app:layout_constraintTop_toBottomOf="@+id/chipGroup" />-->
 
-        <TextView
-            android:id="@+id/followingTxt"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_marginStart="6dp"
-            android:layout_marginTop="22dp"
-            android:textColor="@color/text_secondary"
-            android:text="Đang theo dõi"
-            app:layout_constraintStart_toEndOf="@id/followingNum"
-            app:layout_constraintTop_toBottomOf="@+id/chipGroup" />
+<!--        <TextView-->
+<!--            android:id="@+id/followingTxt"-->
+<!--            android:layout_width="wrap_content"-->
+<!--            android:layout_height="0dp"-->
+<!--            android:layout_marginStart="6dp"-->
+<!--            android:layout_marginTop="22dp"-->
+<!--            android:textColor="@color/text_secondary"-->
+<!--            android:text="Đang theo dõi"-->
+<!--            app:layout_constraintStart_toEndOf="@id/followingNum"-->
+<!--            app:layout_constraintTop_toBottomOf="@+id/chipGroup" />-->
 
-        <TextView
-            android:id="@+id/followerNum"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_marginStart="13dp"
-            android:layout_marginTop="22dp"
-            android:textColor="@color/black"
-            android:textStyle="bold"
-            android:text="2"
-            app:layout_constraintStart_toEndOf="@id/followingTxt"
-            app:layout_constraintTop_toBottomOf="@+id/chipGroup" />
+<!--        <TextView-->
+<!--            android:id="@+id/followerNum"-->
+<!--            android:layout_width="wrap_content"-->
+<!--            android:layout_height="wrap_content"-->
+<!--            android:layout_marginStart="13dp"-->
+<!--            android:layout_marginTop="22dp"-->
+<!--            android:textColor="@color/black"-->
+<!--            android:textStyle="bold"-->
+<!--            android:text="2"-->
+<!--            app:layout_constraintStart_toEndOf="@id/followingTxt"-->
+<!--            app:layout_constraintTop_toBottomOf="@+id/chipGroup" />-->
 
-        <TextView
-            android:id="@+id/followerTxt"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_marginStart="6dp"
-            android:layout_marginTop="22dp"
-            android:textColor="@color/text_secondary"
-            android:text="Người theo dõi"
-            app:layout_constraintStart_toEndOf="@id/followerNum"
-            app:layout_constraintTop_toBottomOf="@+id/chipGroup" />
+<!--        <TextView-->
+<!--            android:id="@+id/followerTxt"-->
+<!--            android:layout_width="wrap_content"-->
+<!--            android:layout_height="wrap_content"-->
+<!--            android:layout_marginStart="6dp"-->
+<!--            android:layout_marginTop="22dp"-->
+<!--            android:textColor="@color/text_secondary"-->
+<!--            android:text="Người theo dõi"-->
+<!--            app:layout_constraintStart_toEndOf="@id/followerNum"-->
+<!--            app:layout_constraintTop_toBottomOf="@+id/chipGroup" />-->
 
-        <TextView
-            android:id="@+id/visitorNum"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_marginStart="13dp"
-            android:layout_marginTop="22dp"
-            android:textColor="@color/black"
-            android:textStyle="bold"
-            android:text="12"
-            app:layout_constraintStart_toEndOf="@id/followerTxt"
-            app:layout_constraintTop_toBottomOf="@+id/chipGroup" />
+<!--        <TextView-->
+<!--            android:id="@+id/visitorNum"-->
+<!--            android:layout_width="wrap_content"-->
+<!--            android:layout_height="wrap_content"-->
+<!--            android:layout_marginStart="13dp"-->
+<!--            android:layout_marginTop="22dp"-->
+<!--            android:textColor="@color/black"-->
+<!--            android:textStyle="bold"-->
+<!--            android:text="12"-->
+<!--            app:layout_constraintStart_toEndOf="@id/followerTxt"-->
+<!--            app:layout_constraintTop_toBottomOf="@+id/chipGroup" />-->
 
-        <TextView
-            android:id="@+id/visitorTxt"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_marginStart="6dp"
-            android:layout_marginTop="22dp"
-            android:textColor="@color/text_secondary"
-            android:text="Ghé thăm"
-            app:layout_constraintStart_toEndOf="@id/visitorNum"
-            app:layout_constraintTop_toBottomOf="@+id/chipGroup" />
+<!--        <TextView-->
+<!--            android:id="@+id/visitorTxt"-->
+<!--            android:layout_width="wrap_content"-->
+<!--            android:layout_height="wrap_content"-->
+<!--            android:layout_marginStart="6dp"-->
+<!--            android:layout_marginTop="22dp"-->
+<!--            android:textColor="@color/text_secondary"-->
+<!--            android:text="Ghé thăm"-->
+<!--            app:layout_constraintStart_toEndOf="@id/visitorNum"-->
+<!--            app:layout_constraintTop_toBottomOf="@+id/chipGroup" />-->
     </LinearLayout>
 
 
