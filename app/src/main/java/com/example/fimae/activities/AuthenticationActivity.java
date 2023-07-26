@@ -151,7 +151,7 @@ public class AuthenticationActivity extends AppCompatActivity {
             @Override
             public void onSignInSuccess(FirebaseUser user) {
                 FirebaseFirestore.getInstance().collection("user_disable")
-                        .document(user.getUid())
+                        .document(user.getUid()+"USER")
                         .get()
                         .addOnCompleteListener(new OnCompleteListener<DocumentSnapshot>() {
                             @Override
