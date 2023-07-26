@@ -37,7 +37,7 @@ public class ReportRepository {
         }
         return  repository;
     }
-    private CollectionReference reportRef = FirebaseFirestore.getInstance().collection("reports");
+    public CollectionReference reportRef = FirebaseFirestore.getInstance().collection("reports");
 
     public CollectionReference getReportDetailRef(String docId){
         return FirebaseFirestore.getInstance().collection("reports").document(docId).collection("reportdetails");

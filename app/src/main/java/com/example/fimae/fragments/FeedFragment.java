@@ -110,12 +110,12 @@ public class FeedFragment extends Fragment {
                 }
             }
         });
-        binding.addPost.setOnClickListener(view -> {
-
-            Intent intent = new Intent(getContext(), AdminReportActivity.class );
-//            intent.putExtra("uid", "0Ksg5AboSIf7c2mhLcPWiAmczcZ2");
-            mStartForResult.launch(intent);
-        });
+//        binding.addPost.setOnClickListener(view -> {
+//
+//            Intent intent = new Intent(getContext(), AdminReportActivity.class );
+////            intent.putExtra("uid", "0Ksg5AboSIf7c2mhLcPWiAmczcZ2");
+//            mStartForResult.launch(intent);
+//        });
 
         // page shorts
         shortFragmentPageAdapter = new ShortFragmentPageAdapter(getChildFragmentManager(), getLifecycle());

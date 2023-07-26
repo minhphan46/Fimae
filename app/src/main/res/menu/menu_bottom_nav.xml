@@ -8,16 +8,16 @@
         android:id="@+id/action_feed"
         android:title="@string/action_feed"
         android:icon="@drawable/ic_chart"/>
-    <item
-        android:id="@+id/action_date"
-        android:title="@string/action_date"
-        android:icon="@drawable/ic_heart_gray"/>
-    <item
-        android:id="@+id/action_chat"
-        android:title="@string/action_chat"
-        android:icon="@drawable/ic_chat"/>
-    <item
-        android:id="@+id/action_profile"
-        android:title="@string/action_profile"
-        android:icon="@drawable/ic_profile"/>
+<!--    <item-->
+<!--        android:id="@+id/action_date"-->
+<!--        android:title="@string/action_date"-->
+<!--        android:icon="@drawable/ic_heart_gray"/>-->
+<!--    <item-->
+<!--        android:id="@+id/action_chat"-->
+<!--        android:title="@string/action_chat"-->
+<!--        android:icon="@drawable/ic_chat"/>-->
+<!--    <item-->
+<!--        android:id="@+id/action_profile"-->
+<!--        android:title="@string/action_profile"-->
+<!--        android:icon="@drawable/ic_profile"/>-->
 </menu>

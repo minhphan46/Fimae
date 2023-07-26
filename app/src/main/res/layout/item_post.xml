@@ -77,12 +77,12 @@
             app:layout_constraintTop_toTopOf="@+id/user_name"
             >
             <TextView
-                android:id="@+id/follow"
+                android:id="@+id/report_number"
                 android:visibility="visible"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:background="@drawable/shape_retangle_border_radius_purple"
-                android:text="Theo dõi"
+                android:text="0 báo cáo"
                 android:textColor="@color/primary_2"
                 android:textSize="12sp"
                 android:paddingHorizontal="10dp"
@@ -91,11 +91,11 @@
                 />
 
             <TextView
-                android:id="@+id/chat"
+                android:id="@+id/status"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:background="@drawable/cancel_button_background"
-                android:text="Trò chuyện"
+                android:text="Đã bị ẩn"
                 android:visibility="gone"
                 android:textColor="@color/primary_2"
                 android:textSize="12sp"
@@ -171,13 +171,6 @@
                 android:text="20"
                 android:textSize="12sp"
                 android:layout_marginStart="10dp"
-                />
-            <ImageView
-                android:id="@+id/ic_share"
-                android:layout_width="20dp"
-                android:layout_height="20dp"
-                android:src="@drawable/ic_share"
-                android:layout_marginStart="20dp"
                 />
 
 

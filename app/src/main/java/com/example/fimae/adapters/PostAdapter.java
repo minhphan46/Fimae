@@ -18,13 +18,17 @@ import androidx.recyclerview.widget.RecyclerView;
 import com.example.fimae.R;
 import com.example.fimae.activities.DetailPostActivity;
 import com.example.fimae.databinding.ItemPostBinding;
+import com.example.fimae.models.Comment;
 import com.example.fimae.models.Follows;
 import com.example.fimae.models.Post;
+import com.example.fimae.models.ReportDetail;
+import com.example.fimae.models.Reports;
 import com.example.fimae.models.Seed;
 import com.example.fimae.models.Fimaers;
 import com.example.fimae.repository.FimaerRepository;
 import com.example.fimae.repository.FollowRepository;
 import com.example.fimae.repository.PostRepository;
+import com.example.fimae.repository.ReportRepository;
 import com.example.fimae.service.TimerService;
 import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.OnSuccessListener;
@@ -38,6 +42,7 @@ import com.google.firebase.firestore.DocumentSnapshot;
 import com.google.firebase.firestore.EventListener;
 import com.google.firebase.firestore.FirebaseFirestore;
 import com.google.firebase.firestore.FirebaseFirestoreException;
+import com.google.firebase.firestore.QuerySnapshot;
 import com.google.type.DateTime;
 import com.google.type.DateTimeOrBuilder;
 import com.squareup.picasso.Picasso;
@@ -60,6 +65,7 @@ public class PostAdapter extends RecyclerView.Adapter<PostAdapter.ViewHolder> {
     private IClickCardUserListener iClickCardUserListener;
     private PostPhotoAdapter adapter;
     private FollowRepository followRepository = FollowRepository.getInstance();
+    private ArrayList<ReportDetail> reportDetails;
     public interface IClickCardUserListener {
         void onClickUser(Post post);
     }
@@ -109,6 +115,28 @@ public class PostAdapter extends RecyclerView.Adapter<PostAdapter.ViewHolder> {
 
             }
         });
+        ReportRepository.getInstance().reportRef.document(currentPost.getPostId()).addSnapshotListener(new EventListener<DocumentSnapshot>() {
+            @Override
+            public void onEvent(@Nullable DocumentSnapshot value, @Nullable FirebaseFirestoreException error) {
+                if(error != null || value == null) return;
+                Reports report = value.toObject(Reports.class);
+                ReportRepository.getInstance().reportRef.document(currentPost.getPostId()).collection("reportdetails").addSnapshotListener(new EventListener<QuerySnapshot>() {
+                    @Override
+                    public void onEvent(@Nullable QuerySnapshot value, @Nullable FirebaseFirestoreException error) {
+                        if (error != null || value == null) {
+                            return;
+                        }
+                        if(reportDetails == null) reportDetails = new ArrayList<>();
+                        else reportDetails.clear();
+                        for(DocumentSnapshot dc: value.getDocuments()){
+                                ReportDetail reportDetail = dc.toObject(ReportDetail.class);
+                                reportDetails.add(reportDetail);
+                            }
+                        binding.reportNumber.setText(reportDetails.size() + " báo cáo");
+                    }
+                });
+            }
+        });
 
         ArrayList<String> imageUrls = new ArrayList<>( currentPost.getPostImages());
         List<Uri> imageUris = new ArrayList<>();
@@ -151,38 +179,7 @@ public class PostAdapter extends RecyclerView.Adapter<PostAdapter.ViewHolder> {
 ////                LinearLayoutManager layoutManager = new GridLayoutManager(mContext, getColumnSpan(updatePost.getPostImages().size()) );
 ////                binding.imageList.setLayoutManager(layoutManager);
 //            }
-            if(currentPost.getPublisher().equals(FirebaseAuth.getInstance().getUid())){
-                binding.follow.setVisibility(View.GONE);
-            }
-            else{
-                followRepository.followRef.document(FirebaseAuth.getInstance().getUid()+"_"+currentPost.getPublisher()).addSnapshotListener(new EventListener<DocumentSnapshot>() {
-                    @Override
-                    public void onEvent(@Nullable DocumentSnapshot value, @Nullable FirebaseFirestoreException error) {
-                        if(error != null ){
-                            return;
-                        }
-                        if(value != null && value.exists()){
-                            binding.follow.setVisibility(View.GONE);
-                            binding.chat.setVisibility(View.VISIBLE);
-                        }
-                        else{
-                            binding.follow.setVisibility(View.VISIBLE);
-                            binding.chat.setVisibility(View.GONE);
-                        }
-                    }
-                });
-            }
 
-
-            binding.follow.setOnClickListener(new View.OnClickListener() {
-                @Override
-                public void onClick(View view) {
-                        followRepository.follow(currentPost.getPublisher());
-                        binding.follow.setVisibility(View.GONE);
-                        binding.chat.setVisibility(View.VISIBLE);
-                    }
-                }
-            );
             if(!currentPost.getContent().equals(updatePost.getContent())){
                 binding.content.setText(updatePost.getContent());
             }
@@ -210,31 +207,16 @@ public class PostAdapter extends RecyclerView.Adapter<PostAdapter.ViewHolder> {
                     );
                 });
             }
-            binding.chat.setOnClickListener(new View.OnClickListener() {
-                @Override
-                public void onClick(View view) {
-                    PostRepository.getInstance().goToChatWithUser(currentPost.getPublisher(), mContext);
-                }
-            });
-            binding.icShare.setOnClickListener(new View.OnClickListener() {
-                @Override
-                public void onClick(View view) {
-                    Intent intent = new Intent(mContext, DetailPostActivity.class);
-                    intent.putExtra("id", currentPost.getPostId());
-                    intent.putExtra("share",true);
-                    mContext.startActivity(intent);
-                }
-            });
-            binding.icMore.setOnClickListener(new View.OnClickListener() {
-                @Override
-                public void onClick(View view) {
-                    Intent intent = new Intent(mContext, DetailPostActivity.class);
-                    intent.putExtra("id", currentPost.getPostId());
-                    intent.putExtra("more",true);
-                    mContext.startActivity(intent);
-
-                }
-            });
+//            binding.icMore.setOnClickListener(new View.OnClickListener() {
+//                @Override
+//                public void onClick(View view) {
+//                    Intent intent = new Intent(mContext, DetailPostActivity.class);
+//                    intent.putExtra("id", currentPost.getPostId());
+//                    intent.putExtra("more",true);
+//                    mContext.startActivity(intent);
+//
+//                }
+//            });
         });
         //go back
         //like
