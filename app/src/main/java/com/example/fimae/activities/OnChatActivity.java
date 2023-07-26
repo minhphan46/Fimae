@@ -296,6 +296,7 @@ public class OnChatActivity extends AppCompatActivity {
     @Override
     protected void onDestroy() {
         super.onDestroy();
+        currentConversationId = null;
         messageAdapter.stopListening();
     }
 }

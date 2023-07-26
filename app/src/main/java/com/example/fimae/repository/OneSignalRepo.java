@@ -81,6 +81,7 @@ public class OneSignalRepo {
 
     public static void removeExternalId()
     {
+        Log.i("TAG", "removeExternalId: ");
         OneSignal.removeExternalUserId();
     }
 }
