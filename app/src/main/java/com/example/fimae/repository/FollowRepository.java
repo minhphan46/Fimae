@@ -80,29 +80,56 @@ public class FollowRepository {
 //
 //            return taskCompletionSource.getTask();
 //        }
-    public Task<ArrayList<Fimaers>> getFollowers2(String userId){
-            ArrayList<Fimaers> fimaers= new ArrayList<>();
-            TaskCompletionSource<ArrayList<Fimaers>> taskCompletionSource = new TaskCompletionSource<>();
-            String path = currentUser + "_" + userId;
-            followRef.whereEqualTo("following",userId).get()
-                    .addOnSuccessListener(new OnSuccessListener<QuerySnapshot>() {
-                        @Override
-                        public void onSuccess(QuerySnapshot queryDocumentSnapshots) {
-                            for(DocumentChange doc: queryDocumentSnapshots.getDocumentChanges()){
-                                Follows follows = doc.getDocument().toObject(Follows.class);
-                                fimaersRef.document(follows.getFollower()).get().addOnSuccessListener(new OnSuccessListener<DocumentSnapshot>() {
-                                    @Override
-                                    public void onSuccess(DocumentSnapshot documentSnapshot) {
-                                        fimaers.add( documentSnapshot.toObject(Fimaers.class));
-                                    }
-                                });
-                            }
-                            taskCompletionSource.setResult(fimaers);
-                        }
-                    })
-                    .addOnFailureListener(taskCompletionSource::setException);
-            return taskCompletionSource.getTask();
+//    public Task<ArrayList<Fimaers>> getFollowers(String userId){
+//            ArrayList<Fimaers> fimaers= new ArrayList<>();
+//            TaskCompletionSource<ArrayList<Fimaers>> taskCompletionSource = new TaskCompletionSource<>();
+//            String path = currentUser + "_" + userId;
+//            followRef.whereEqualTo("follower",userId).get()
+//                    .addOnSuccessListener(new OnSuccessListener<QuerySnapshot>() {
+//                        @Override
+//                        public void onSuccess(QuerySnapshot queryDocumentSnapshots) {
+//                            for(DocumentChange doc: queryDocumentSnapshots.getDocumentChanges()){
+//                                Follows follows = doc.getDocument().toObject(Follows.class);
+//                                fimaersRef.document(follows.getFollowing()).get().addOnSuccessListener(new OnSuccessListener<DocumentSnapshot>() {
+//                                    @Override
+//                                    public void onSuccess(DocumentSnapshot documentSnapshot) {
+//                                        fimaers.add( documentSnapshot.toObject(Fimaers.class));
+//                                    }
+//                                });
+//                            }
+//                            taskCompletionSource.setResult(fimaers);
+//                        }
+//                    })
+//                    .addOnFailureListener(taskCompletionSource::setException);
+//            return taskCompletionSource.getTask();
+//    }
+    public Task<ArrayList<Fimaers>> getFollowings(String userId) {
+        ArrayList<Fimaers> fimaers = new ArrayList<>();
+        TaskCompletionSource<ArrayList<Fimaers>> taskCompletionSource = new TaskCompletionSource<>();
+        followRef.whereEqualTo("follower", userId).get()
+                .addOnSuccessListener(queryDocumentSnapshots -> {
+                    ArrayList<Task<DocumentSnapshot>> followerTasks = new ArrayList<>();
+
+                    for (DocumentChange doc : queryDocumentSnapshots.getDocumentChanges()) {
+                        Follows follows = doc.getDocument().toObject(Follows.class);
+                        followerTasks.add(fimaersRef.document(follows.getFollowing()).get());
+                    }
+
+                    // Wait for all the follower document tasks to complete
+                    Tasks.whenAllSuccess(followerTasks)
+                            .addOnSuccessListener(followerSnapshots -> {
+                                for (Object snapshot :  followerSnapshots) {
+                                    fimaers.add(((DocumentSnapshot)snapshot).toObject(Fimaers.class));
+                                }
+                                taskCompletionSource.setResult(fimaers);
+                            })
+                            .addOnFailureListener(taskCompletionSource::setException);
+                })
+                .addOnFailureListener(taskCompletionSource::setException);
+
+        return taskCompletionSource.getTask();
     }
+
     public Task<ArrayList<Fimaers>> getFollowers(String userId) {
         ArrayList<Fimaers> fimaers = new ArrayList<>();
         TaskCompletionSource<ArrayList<Fimaers>> taskCompletionSource = new TaskCompletionSource<>();
@@ -129,7 +156,6 @@ public class FollowRepository {
 
         return taskCompletionSource.getTask();
     }
-
 
     public Task<Boolean> follow(String userId){
         TaskCompletionSource<Boolean> taskCompletionSource = new TaskCompletionSource<>();

@@ -32,13 +32,19 @@ import androidx.recyclerview.widget.RecyclerView;
 
 import com.example.fimae.R;
 import com.example.fimae.activities.ConnectActivity;
+import com.example.fimae.activities.DetailPostActivity;
 import com.example.fimae.activities.HomeActivity;
+import com.example.fimae.activities.ProfileActivity;
 import com.example.fimae.activities.WaitingActivity;
+import com.example.fimae.adapters.BottomSheetItemAdapter;
 import com.example.fimae.adapters.UserHomeViewAdapter;
+import com.example.fimae.models.BottomSheetItem;
 import com.example.fimae.models.Fimaers;
 import com.example.fimae.models.GenderMatch;
 import com.example.fimae.models.Report;
 import com.example.fimae.repository.ConnectRepo;
+import com.example.fimae.repository.FollowRepository;
+import com.example.fimae.repository.PostRepository;
 import com.facebook.shimmer.ShimmerFrameLayout;
 import com.google.android.gms.tasks.OnFailureListener;
 import com.google.android.gms.tasks.OnSuccessListener;
@@ -59,6 +65,7 @@ import com.squareup.picasso.Picasso;
 
 import java.util.ArrayList;
 import java.util.Date;
+import java.util.List;
 import java.util.concurrent.atomic.AtomicBoolean;
 
 import de.hdodenhof.circleimageview.CircleImageView;
@@ -111,12 +118,15 @@ public class HomeFragment extends Fragment  {
     private ShimmerFrameLayout mShimmerWaitingUser;
     private LinearLayout mLayoutShimmerUser;
     float xDown = 0, yDown = 0;
+    private FimaeBottomSheet fimaeBottomSheet;
+    List<BottomSheetItem> sheetItems;
 
     static public boolean isShowFloatingWaiting = false;
     @Nullable
     @Override
     public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
         mView = inflater.inflate(R.layout.fragment_home, container, false);
+        createBottomSheetItem();
         mBtnChat = (LinearLayout) mView.findViewById(R.id.btn_chat_home);
         mBtnChat.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -164,7 +174,7 @@ public class HomeFragment extends Fragment  {
         LinearLayoutManager linearLayoutManager = new LinearLayoutManager(homeActivity);
         mRcvUsers.setLayoutManager(linearLayoutManager);
 
-        userAdapter = new UserHomeViewAdapter();
+        userAdapter = new UserHomeViewAdapter(this.getContext());
         // shimmer
         mShimmerWaitingUser = mView.findViewById(R.id.shimmer_view_users);
         mLayoutShimmerUser = mView.findViewById(R.id.layout_shimmer_users);
@@ -172,8 +182,9 @@ public class HomeFragment extends Fragment  {
         userAdapter.setData(mUsers, new UserHomeViewAdapter.IClickCardUserListener() {
             @Override
             public void onClickUser(Fimaers user) {
-                ConnectRepo.getInstance().setUserLocal(user);
-                showToast("You are " + user.getFirstName());
+                Intent intent = new Intent(getContext(), ProfileActivity.class);
+                intent.putExtra("uid", user.getUid());
+                startActivity(intent);
             }
         });
         mRcvUsers.setAdapter(userAdapter);
@@ -194,7 +205,29 @@ public class HomeFragment extends Fragment  {
         super.onResume();
         handleShowFloatingWaiting();
     }
-
+    private void createBottomSheetItem(){
+         sheetItems = new ArrayList<BottomSheetItem>(){
+            {
+                add(new BottomSheetItem(R.drawable.ic_chat_dots, "Tới cuộc trò chuyện"));
+                add(new BottomSheetItem(R.drawable.ic_user_block, "Hủy theo dõi"));
+            }
+        };
+    }
+    private void createBottomSheet(Fimaers user){
+        fimaeBottomSheet = null;
+        fimaeBottomSheet = new FimaeBottomSheet(sheetItems, new BottomSheetItemAdapter.IClickBottomSheetItemListener() {
+            @Override
+            public void onClick(BottomSheetItem bottomSheetItem) {
+                if(bottomSheetItem.getTitle().equals("Tới cuộc trò chuyện")){
+                    PostRepository.getInstance().goToChatWithUser(user.getUid(), HomeFragment.this.getContext());
+                }
+                else if(bottomSheetItem.getTitle().equals("Hủy theo dõi")){
+                    FollowRepository.getInstance().unFollow(user.getUid());
+                }
+            }
+        });
+        fimaeBottomSheet.show(getParentFragmentManager(), "GoChat");
+    }
     public void handleShowFloatingWaiting() {
         if(isShowFloatingWaiting) {
             setFloatingWaiting();

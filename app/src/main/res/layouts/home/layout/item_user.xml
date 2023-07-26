@@ -1,5 +1,7 @@
+<?xml version="1.0" encoding="utf-8"?>
+<layout android:clickable="true"  xmlns:android="http://schemas.android.com/apk/res/android"
+    android:focusable="true" >
 <androidx.constraintlayout.widget.ConstraintLayout
-    xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
@@ -17,7 +19,8 @@
         android:minHeight="48dp"
         android:orientation="horizontal"
         app:layout_constraintTop_toTopOf="parent"
-        android:clickable="true">
+        android:clickable="false"
+        >
         <androidx.constraintlayout.widget.ConstraintLayout
             android:layout_marginRight="10dp"
             android:layout_width="wrap_content"
@@ -60,6 +63,7 @@
             android:layout_height="wrap_content"
             android:gravity="start"
             android:orientation="vertical"
+            android:clickable="false"
             app:layout_constraintLeft_toRightOf="@+id/item_user_avatar_view"
             app:layout_constraintTop_toTopOf="parent">
 
@@ -68,6 +72,7 @@
                 android:layout_height="wrap_content"
                 android:gravity="bottom"
                 android:orientation="horizontal"
+                android:clickable="false"
                 app:layout_constraintTop_toTopOf="parent">
 
                 <TextView
@@ -87,6 +92,7 @@
                     android:background="@drawable/shape_gender_border_blue"
                     android:gravity="center"
                     android:paddingHorizontal="5dp"
+                    android:clickable="false"
                     android:paddingVertical="2.5dp">
 
                     <ImageView
@@ -106,8 +112,40 @@
                         android:text="31"
                         android:textColor="@color/text_white" />
                 </LinearLayout>
-            </LinearLayout>
+                <androidx.legacy.widget.Space
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:layout_weight="1" />
+<!--                <TextView-->
+<!--                    android:id="@+id/follow"-->
+<!--                    android:visibility="visible"-->
+<!--                    android:layout_width="wrap_content"-->
+<!--                    android:layout_height="wrap_content"-->
+<!--                    android:background="@drawable/shape_retangle_border_radius_purple"-->
+<!--                    android:text="Theo dõi"-->
+<!--                    android:layout_marginEnd="5dp"-->
+<!--                    android:textColor="@color/primary_2"-->
+<!--                    android:textSize="12sp"-->
+<!--                    android:paddingHorizontal="10dp"-->
+<!--                    android:paddingVertical="2dp"-->
+<!--                    android:layout_gravity="end"-->
+<!--                     />-->
+<!--                <TextView-->
+<!--                    android:id="@+id/chat"-->
+<!--                    android:layout_marginEnd="5dp"-->
+<!--                    android:layout_width="wrap_content"-->
+<!--                    android:layout_height="wrap_content"-->
+<!--                    android:background="@drawable/cancel_button_background"-->
+<!--                    android:text="Trò chuyện"-->
+<!--                    android:visibility="gone"-->
+<!--                    android:textColor="@color/primary_2"-->
+<!--                    android:textSize="12sp"-->
+<!--                    android:paddingHorizontal="10dp"-->
+<!--                    android:clickable="true"-->
+<!--                    android:focusable="true"-->
+<!--                    android:paddingVertical="2dp"/>-->
 
+            </LinearLayout>
             <TextView
                 android:id="@+id/item_user_tv_description"
                 style="@style/regular_12"
@@ -115,7 +153,8 @@
                 android:layout_height="wrap_content"
                 android:layout_marginTop="5dp"
                 android:text="Hello" />
+
         </LinearLayout>
     </LinearLayout>
-
 </androidx.constraintlayout.widget.ConstraintLayout>
+</layout>
