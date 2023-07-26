@@ -7,7 +7,7 @@ import androidx.lifecycle.LiveData;
 import androidx.lifecycle.MutableLiveData;
 import androidx.lifecycle.ViewModel;
 
-import com.example.fimae.activities.CreateProfileActivity;
+import com.example.fimae.Constant.ChipData;
 import com.example.fimae.models.Fimaers;
 import com.example.fimae.repository.FimaerRepository;
 import com.google.android.gms.tasks.Task;

@@ -15,6 +15,7 @@ import android.view.View;
 import android.view.ViewGroup;
 
 import com.example.fimae.R;
+import com.example.fimae.models.dating.DatingProfile;
 import com.example.fimae.utils.Utils;
 import com.example.fimae.models.dating.Profile;
 import com.example.fimae.models.dating.TinderCard;
@@ -60,12 +61,14 @@ public class SwipeViewFragment extends Fragment {
         mContext = getActivity();
 
         int bottomMargin = Utils.dpToPx(100);
+        int topMargin = Utils.dpToPx(80);
         Point windowSize = Utils.getDisplaySize(getActivity().getWindowManager());
         mSwipeView.getBuilder()
                 .setDisplayViewCount(3)
+                .setIsUndoEnabled(true)
                 .setSwipeDecor(new SwipeDecor()
                         .setViewWidth(windowSize.x)
-                        .setViewHeight(windowSize.y - bottomMargin)
+                        .setViewHeight(windowSize.y - bottomMargin - topMargin)
                         .setViewGravity(Gravity.TOP)
                         .setPaddingTop(20)
                         .setRelativeScale(0.01f)
@@ -89,7 +92,10 @@ public class SwipeViewFragment extends Fragment {
 
         fabBoost.setOnClickListener(v -> animateFab(fabBoost));
         fabSuperLike.setOnClickListener(v -> animateFab(fabSuperLike));
-        fabBack.setOnClickListener(v -> animateFab(fabBack));
+        fabBack.setOnClickListener(v -> {
+            mSwipeView.undoLastSwipe();
+            animateFab(fabBack);
+        });
     }
 
 

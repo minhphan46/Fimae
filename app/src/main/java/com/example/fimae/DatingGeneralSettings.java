@@ -1,5 +1,6 @@
 package com.example.fimae;
 
+import android.content.Intent;
 import android.os.Bundle;
 
 import androidx.fragment.app.Fragment;
@@ -7,6 +8,8 @@ import androidx.fragment.app.Fragment;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+
+import com.example.fimae.components.ListTile;
 
 /**
  * A simple {@link Fragment} subclass.
@@ -59,6 +62,17 @@ public class DatingGeneralSettings extends Fragment {
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
         // Inflate the layout for this fragment
-        return inflater.inflate(R.layout.fragment_dating_general_settings, container, false);
+        View view = inflater.inflate(R.layout.fragment_dating_general_settings, container, false);
+        ListTile listTile = view.findViewById(R.id.lt_safe_tips);
+
+        listTile.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                Intent intent = new Intent(getActivity(), DatingAddImages.class);
+                startActivity(intent);
+            }
+        });
+
+        return view;
     }
 }

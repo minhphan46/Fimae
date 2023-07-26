@@ -43,6 +43,7 @@ import com.google.firebase.firestore.FirebaseFirestore;
 import com.google.firebase.firestore.Query;
 
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
 
 public class ShortVideoActivity extends AppCompatActivity {
@@ -65,6 +66,7 @@ public class ShortVideoActivity extends AppCompatActivity {
 
     ShortMedia curVideo;
     boolean canPost = false;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -88,10 +90,12 @@ public class ShortVideoActivity extends AppCompatActivity {
             public void onClickUser(ShortMedia video) {
                 finish();
             }
+
             @Override
             public FragmentManager getFragmentManager() {
                 return getSupportFragmentManager();
             }
+
             @Override
             public void showComment(ShortMedia video, Fimaers fimaers) {
                 showBottomSheetComment(video, fimaers);
@@ -115,8 +119,10 @@ public class ShortVideoActivity extends AppCompatActivity {
     RecyclerView mRvComments;
     EditText mEdtComment;
     ImageView mBtnSendComment;
+    HashMap<String, Fimaers> fimaersHashMap = new HashMap<>();
+
     @SuppressLint("SetTextI18n")
-    private void showBottomSheetComment(ShortMedia video, Fimaers fimaers){
+    private void showBottomSheetComment(ShortMedia video, Fimaers fimaers) {
         curVideo = video;
         BottomSheetCommentShortBinding binding = BottomSheetCommentShortBinding.inflate(getLayoutInflater());
         @SuppressLint("InflateParams") View dialogSetting = getLayoutInflater().inflate(R.layout.bottom_sheet_comment_short, null);
@@ -146,14 +152,19 @@ public class ShortVideoActivity extends AppCompatActivity {
 
         Query query = ShortsRepository.getInstance().getShortCommentQuery(video.getId());
 
-        newCommentAdapter = new NewCommentAdapter(this, CommentRepository.SHORT_COLLECTION,query, (comment) -> {
-            selectedCommentId =  comment.getParentId() != "" ? comment.getParentId() : comment.getId();
-            FimaerRepository.getInstance().getFimaerById(comment.getPublisher()).addOnCompleteListener(task -> {
-                task.onSuccessTask(mfimaers -> {
-                    mEdtComment.setHint("@"+mfimaers.getLastName());
-                    return null;
+        newCommentAdapter = new NewCommentAdapter(this, CommentRepository.SHORT_COLLECTION, query, (comment) -> {
+            selectedCommentId = comment.getParentId() != "" ? comment.getParentId() : comment.getId();
+            Fimaers fimaer = fimaersHashMap.get(comment.getPublisher());
+            if (fimaer != null) {
+                mEdtComment.setHint("@" + fimaer.getLastName());
+            } else {
+                FimaerRepository.getInstance().getFimaerById(comment.getPublisher()).addOnCompleteListener(task -> {
+                    task.onSuccessTask(mfimaers -> {
+                        mEdtComment.setHint("@" + mfimaers.getLastName());
+                        return null;
+                    });
                 });
-            });
+            }
         }, video.getId(), this::showCommentDialog);
         LinearLayoutManager layoutManager1 = new LinearLayoutManager(this);
         mRvComments.setLayoutManager(layoutManager1);
@@ -174,11 +185,10 @@ public class ShortVideoActivity extends AppCompatActivity {
 
             @Override
             public void onTextChanged(CharSequence charSequence, int i, int i1, int i2) {
-                if(mEdtComment.getText().length() > 0 ){
+                if (mEdtComment.getText().length() > 0) {
                     mBtnSendComment.setBackgroundResource(R.drawable.canpost);
                     canPost = true;
-                }
-                else {
+                } else {
                     mBtnSendComment.setBackgroundResource(R.drawable.cantpost);
                     canPost = false;
                 }
@@ -191,8 +201,8 @@ public class ShortVideoActivity extends AppCompatActivity {
         });
         // add comment
         mBtnSendComment.setOnClickListener(v -> {
-            if(!canPost) return;
-            if ( !selectedCommentId.trim().isEmpty()) {
+            if (!canPost) return;
+            if (!selectedCommentId.trim().isEmpty()) {
                 Comment subComment = new Comment();
                 subComment.setContent(mEdtComment.getText().toString());
                 subComment.setPublisher(fimaers.getUid());
@@ -205,7 +215,7 @@ public class ShortVideoActivity extends AppCompatActivity {
                 comment.setPublisher(fimaers.getUid());
                 comment.setContent(mEdtComment.getText().toString());
                 comment.setParentId("");
-                commentRepository.postComment(curVideo.getId(), CommentRepository.SHORT_COLLECTION,comment);
+                commentRepository.postComment(curVideo.getId(), CommentRepository.SHORT_COLLECTION, comment);
             }
             // update text
             ShortsRepository.getInstance().addShortCommentNum(1, video);
@@ -219,12 +229,12 @@ public class ShortVideoActivity extends AppCompatActivity {
         });
     }
 
-    public void showCommentDialog(Comment comment){
+    public void showCommentDialog(Comment comment) {
         fimaeBottomSheet = new FimaeBottomSheet(commentSheetItemList,
                 bottomSheetItem -> {
-                    if(bottomSheetItem.getTitle().equals("Chỉnh sửa bình luận"))
+                    if (bottomSheetItem.getTitle().equals("Chỉnh sửa bình luận"))
                         showEditCommentDialog(comment);
-                    else if(bottomSheetItem.getTitle().equals("Xóa bình luận")){
+                    else if (bottomSheetItem.getTitle().equals("Xóa bình luận")) {
                         commentRepository.deleteComment(curVideo.getId(), comment, CommentRepository.SHORT_COLLECTION);
                         // update text
                         ShortsRepository.getInstance().getShortById(comment.getPostId()).addOnCompleteListener(task -> {
@@ -241,13 +251,13 @@ public class ShortVideoActivity extends AppCompatActivity {
         fimaeBottomSheet.show(getSupportFragmentManager(), fimaeBottomSheet.getTag());
     }
 
-    private void showEditCommentDialog(Comment comment){
+    private void showEditCommentDialog(Comment comment) {
         CommentEditFragment commentEditFragment = new CommentEditFragment(comment, curVideo.getId());
         commentEditFragment.show(getSupportFragmentManager(), commentEditFragment.getTag());
         fimaeBottomSheet.dismiss();
     }
 
-    private void createCommentDialog(){
+    private void createCommentDialog() {
         commentSheetItemList = new ArrayList<BottomSheetItem>() {
             {
                 add(new BottomSheetItem(R.drawable.ic_edit, "Chỉnh sửa bình luận"));

@@ -40,6 +40,8 @@
     <string name="prefs_enable_stats">prefs_enable_stats</string>
     <string name="enable_stats">Enable stats for nerds</string>
 
+    <string name="onesignal_notification_accent_color">0078FF</string>
+
     <string-array name="pref_upload_quality_entries">
         <item>360p</item>
         <item>480p</item>

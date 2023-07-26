@@ -13,6 +13,7 @@ import android.view.WindowManager;
 
 import androidx.appcompat.app.AlertDialog;
 
+import com.example.fimae.models.dating.DatingProfile;
 import com.example.fimae.models.dating.Profile;
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
@@ -44,6 +45,7 @@ public class Utils {
             JSONArray array = new JSONArray(loadJSONFromAsset(context, "profiles.json"));
             List<Profile> profileList = new ArrayList<>();
             for(int i=0;i<array.length();i++){
+                Log.i(TAG, "loadProfiles: " + array.getString(i));
                 Profile profile = gson.fromJson(array.getString(i), Profile.class);
                 profileList.add(profile);
             }

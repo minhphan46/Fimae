@@ -1,6 +1,7 @@
 package com.example.fimae.repository;
 
 import android.net.Uri;
+import android.util.Log;
 
 import androidx.annotation.NonNull;
 
@@ -134,6 +135,11 @@ public class ChatRepository {
 
     public Task<Boolean> updateReadLastMessageAt(String conversationId, Date timeStamp) {
         TaskCompletionSource taskCompletionSource = new TaskCompletionSource();
+        Log.i("TAG", "updateReadLastMessageAt: " + conversationId);
+        if(FirebaseAuth.getInstance().getUid() == null)
+        {
+            return null;
+        }
         DocumentReference participantRef = conversationsRef.document(conversationId).collection("participants").document(FirebaseAuth.getInstance().getUid());
         participantRef.update("readLastMessageAt", timeStamp).addOnCompleteListener(task -> {
             if (task.isSuccessful()) {

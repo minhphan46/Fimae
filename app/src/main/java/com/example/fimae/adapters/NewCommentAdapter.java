@@ -154,14 +154,21 @@ public class NewCommentAdapter extends FirestoreAdapter<NewCommentAdapter.ViewHo
         return new ViewHolder(commentItemBinding);
     }
 
+    HashMap<String, Fimaers> userInfos = new HashMap<>();
+
     @Override
     public void onBindViewHolder(@NonNull NewCommentAdapter.ViewHolder holder, int position) {
         CommentItemBinding binding = holder.binding;
         CommentItemAdapter currentCommentItem = commentItemAdapters.get(position);
         Comment currentComment = currentCommentItem.getComment();
-        PostRepository.getInstance().getUserById(currentComment.getPublisher(), userInfo -> {
-            binding(binding, position, userInfo, collection);
-        });
+        if (userInfos.containsKey(currentComment.getPublisher())) {
+            binding(binding, position, userInfos.get(currentComment.getPublisher()), collection);
+            return;
+        } else
+            PostRepository.getInstance().getUserById(currentComment.getPublisher(), userInfo -> {
+                userInfos.put(currentComment.getPublisher(), userInfo);
+                binding(binding, position, userInfo, collection);
+            });
     }
 
     @Override
@@ -193,8 +200,12 @@ public class NewCommentAdapter extends FirestoreAdapter<NewCommentAdapter.ViewHo
         return position;
     }
 
-    private void binding(CommentItemBinding binding, int position, Fimaers userInfo, String collection) {
 
+    HashMap<String, Comment> comments = new HashMap<>();
+
+    private void binding(CommentItemBinding binding, int position, Fimaers userInfo, String collection) {
+        Glide.with(mContext).load(userInfo.getAvatarUrl()).placeholder(R.drawable.ic_default_avatar).into(binding.imageAvatar);
+        binding.userName.setText(userInfo.getLastName());
         CommentItemAdapter commentItemAdapter = commentItemAdapters.get(position);
         Comment currentComment = commentItemAdapter.getComment();
         binding.content.setText(currentComment.getContent());
@@ -214,20 +225,17 @@ public class NewCommentAdapter extends FirestoreAdapter<NewCommentAdapter.ViewHo
             binding.heart.setImageResource(!oldValue ? R.drawable.ic_heart1 : R.drawable.ic_heart_gray);
             reference.update(path, !oldValue)
                     .addOnFailureListener(e -> {
-                binding.heart.setImageResource(oldValue ? R.drawable.ic_heart1 : R.drawable.ic_heart_gray);
-            });
+                        binding.heart.setImageResource(oldValue ? R.drawable.ic_heart1 : R.drawable.ic_heart_gray);
+                    });
         });
 
-
-        binding.content.setText(currentComment.getContent());
         if (currentComment.getTimeEdited() == null) {
             TimerService.setDuration(binding.time, (Date) currentComment.getTimeCreated());
         } else {
             binding.isEdited.setVisibility(View.VISIBLE);
             TimerService.setDuration(binding.time, currentComment.getTimeEdited());
         }
-        Glide.with(mContext).load(userInfo.getAvatarUrl()).placeholder(R.drawable.ic_default_avatar).into(binding.imageAvatar);
-        binding.userName.setText(userInfo.getLastName());
+
         if (!userInfo.isGender()) {
             binding.itemUserIcGender.setImageResource(R.drawable.ic_male);
             binding.itemUserLayoutGenderAge.setBackgroundResource(R.drawable.shape_gender_border_pink);

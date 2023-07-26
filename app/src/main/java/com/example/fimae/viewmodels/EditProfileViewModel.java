@@ -1,16 +1,14 @@
 package com.example.fimae.viewmodels;
 
-import android.util.Log;
-
 import androidx.lifecycle.LiveData;
 import androidx.lifecycle.MutableLiveData;
 import androidx.lifecycle.ViewModel;
 
+import com.example.fimae.Constant.ChipData;
 import com.example.fimae.models.Fimaers;
 import com.example.fimae.repository.FimaerRepository;
 import com.google.android.gms.tasks.Task;
 
-import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Arrays;
 

@@ -88,7 +88,7 @@ public class PickImageBottomSheetFragment extends BottomSheetDialogFragment
 
     private void pickImageFromGallery() {
         Intent intent = new Intent(Intent.ACTION_PICK, MediaStore.Images.Media.EXTERNAL_CONTENT_URI);
-        startActivityForResult(intent, REQUEST_IMAGE_PICK);
+        startActivityForResult(intent, 2);
     }
 
     @Override
