@@ -24,7 +24,7 @@ public class DatingFragmentAdapter extends FragmentStateAdapter {
         if(position==0)
             return new DatingProfileFragment(datingProfile);
         else
-            return new DatingGeneralSettings();
+            return new DatingGeneralSettings(datingProfile);
     }
 
     @Override

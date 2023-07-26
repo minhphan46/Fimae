@@ -125,6 +125,16 @@ public class DatingRepository {
         TaskCompletionSource<ArrayList<Uri>> taskCompletionSource = new TaskCompletionSource<>();
         String uid = FirebaseAuth.getInstance().getCurrentUser().getUid();
         String path = datingProfileImagesLocation + "/" + uid;
+        if(localImageUrls.size() == 0){
+            datingProfiles.document(FirebaseAuth.getInstance().getUid()).update("images", remoteImageUrls).addOnCompleteListener(task -> {
+                if (task.isSuccessful()) {
+                    taskCompletionSource.setResult(remoteImageUrls);
+                } else {
+                    taskCompletionSource.setException(task.getException());
+                }
+            });
+            return taskCompletionSource.getTask();
+        }
         FirebaseService.getInstance().uploadTaskFiles(path, localImageUrls).whenComplete(new BiConsumer<List<String>, Throwable>() {
             @Override
             public void accept(List<String> strings, Throwable throwable) {

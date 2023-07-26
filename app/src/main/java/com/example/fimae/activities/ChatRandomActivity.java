@@ -57,7 +57,7 @@ public class ChatRandomActivity extends AppCompatActivity {
 
     TimerUtil timer;
     TextView tvTimer;
-
+    MessageAdapter messageAdapter;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -77,7 +77,7 @@ public class ChatRandomActivity extends AppCompatActivity {
         });
 
         Query query = ChatRepository.getRandomChatInstance().getRandomMessageQuery(chatId);
-        MessageAdapter messageAdapter = new MessageAdapter(query, this);
+         messageAdapter = new MessageAdapter(query, this);
         LinearLayoutManager linearLayoutManager = new LinearLayoutManager(this);
         RecyclerView recyclerView = findViewById(R.id.random_chat_recycler_view);
         recyclerView.setLayoutManager(linearLayoutManager);
@@ -162,6 +162,14 @@ public class ChatRandomActivity extends AppCompatActivity {
         super.onDestroy();
         WaitingActivity.isCalled = false;
         timer.stop();
+        if (messageAdapter != null) {
+            messageAdapter.stopListening();
+        }
+        FirebaseFirestore.getInstance().collection("chats").document(chatId).delete().addOnCompleteListener(task -> {
+            if(!task.isSuccessful()){
+                task.getException().printStackTrace();
+            }
+        });
     }
 
     private void onLiked() {
