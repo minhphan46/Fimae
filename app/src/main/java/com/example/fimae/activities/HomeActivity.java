@@ -117,12 +117,13 @@ public class HomeActivity extends AppCompatActivity {
                         if (snapshot != null && snapshot.exists()) {
                             // Document exists, check if the user is disabled
                             DisableUser disableUser = snapshot.toObject(DisableUser.class);
-                            if (disableUser != null && disableUser.getTimeEnd().after(new Date())) {
+                            if (disableUser != null && disableUser.getTimeEnd().after(new Date()) && disableUser.getType() != null &&  disableUser.getType().equals("USER")) {
 //                                Intent intent = new Intent(HomeActivity.this, AuthenticationActivity.class);
 //                                intent.putExtra("signout", true);
 //                                startActivity(intent);
                                 Intent intent = new Intent(HomeActivity.this, DisabledUserActivity.class);
                                 intent.putExtra( "disableId", disableUser.getUserId());
+                                intent.putExtra("type", "USER");
                                 startActivity(intent);
                                 finish();
                             }

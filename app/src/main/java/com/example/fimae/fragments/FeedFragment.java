@@ -211,7 +211,7 @@ public class FeedFragment extends Fragment {
                         if (snapshot != null && snapshot.exists()) {
                             // Document exists, check if the user is disabled
                             DisableUser disableUser = snapshot.toObject(DisableUser.class);
-                            if (disableUser != null && disableUser.getTimeEnd().after(new Date()) && disableUser.getType().equals("POST")) {
+                            if (disableUser != null && disableUser.getTimeEnd().after(new Date()) && disableUser.getType() != null && disableUser.getType().equals("POST")) {
 //                                Intent intent = new Intent(HomeActivity.this, AuthenticationActivity.class);
 //                                intent.putExtra("signout", true);
 //                                startActivity(intent);
