@@ -31,6 +31,7 @@ import com.example.fimae.models.Calls;
 import com.example.fimae.models.Fimaers;
 import com.example.fimae.repository.ConnectRepo;
 import com.example.fimae.repository.FimaerRepository;
+import com.example.fimae.service.CallService;
 import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.Task;
 import com.google.firebase.database.DataSnapshot;
@@ -42,6 +43,7 @@ import com.google.firebase.firestore.DocumentReference;
 import com.google.firebase.firestore.EventListener;
 import com.google.firebase.firestore.FirebaseFirestore;
 import com.google.firebase.firestore.FirebaseFirestoreException;
+import com.google.firebase.firestore.ListenerRegistration;
 import com.google.firebase.firestore.QueryDocumentSnapshot;
 import com.google.firebase.firestore.QuerySnapshot;
 import com.google.firebase.functions.FirebaseFunctionsException;
@@ -89,9 +91,9 @@ public class WaitingActivity extends AppCompatActivity {
     ConnectRepo connectRepo = ConnectRepo.getInstance();
     // luu cuoc goi den = map
     // key = callID
-    public static Map<String, StringeeCall> callMap = new HashMap<>();
+    //public static Map<String, StringeeCall> callMap = new HashMap<>();
     // video
-    public static Map<String, StringeeCall2> call2Map = new HashMap<>();
+    //public static Map<String, StringeeCall2> call2Map = new HashMap<>();
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -154,7 +156,35 @@ public class WaitingActivity extends AppCompatActivity {
         fetchData(tableName);
 
         if(ConnectRepo.getInstance().getUserLocal() != null){
-            initStringeeConnection();
+            //initStringeeConnection();
+            CallService.getInstance().addListener(new CallService.CallClientListener() {
+                @Override
+                public void onStatusChange(String status) {
+                    mTvStatusConnect.setText(status);
+                }
+
+                @Override
+                public void onIncomingCallVoice(String typeCall, String callId) {
+                    if(typeCall.equals(CallService.RANDOM)){
+                        isCalled = true;
+                        Intent intent = new Intent(WaitingActivity.this, CallActivity.class);
+                        intent.putExtra("callId", callId);
+                        intent.putExtra("isIncomingCall", true);
+                        startActivity(intent);
+                    }
+                }
+
+                @Override
+                public void onIncomingCallVideo(String typeCall, String callId) {
+                    if(typeCall.equals(CallService.RANDOM)){
+                        isCalled = true;
+                        Intent intent = new Intent(WaitingActivity.this, CallVideoActivity.class);
+                        intent.putExtra("callId", callId);
+                        intent.putExtra("isIncomingCall", true);
+                        startActivity(intent);
+                    }
+                }
+            });
         }
         // btn speed up ======================================================================================
         mBtnSpeedUp = findViewById(R.id.btn_speed_up);
@@ -184,6 +214,10 @@ public class WaitingActivity extends AppCompatActivity {
     protected void onDestroy() {
         if(ConnectRepo.getInstance().getUserLocal() != null){
             ConnectRepo.getInstance().deleteUserOnl(ConnectRepo.getInstance().getUserLocal(),tableName);
+        }
+        if(listenerRegistration != null)
+        {
+            listenerRegistration.remove();
         }
         super.onDestroy();
     }
@@ -218,11 +252,12 @@ public class WaitingActivity extends AppCompatActivity {
             }
         }
     }
+    private ListenerRegistration listenerRegistration;
 
     private void fetchData(String tableName) {
         FirebaseFirestore firestore = FirebaseFirestore.getInstance();
 
-        firestore.collection(tableName).addSnapshotListener(new EventListener<QuerySnapshot>() {
+        listenerRegistration = firestore.collection(tableName).addSnapshotListener(new EventListener<QuerySnapshot>() {
             @Override
             public void onEvent(@Nullable QuerySnapshot value, @Nullable FirebaseFirestoreException error) {
                 if(error!=null)
@@ -326,7 +361,7 @@ public class WaitingActivity extends AppCompatActivity {
     }
 
     // init call ==============================================================================
-    private void initStringeeConnection(){
+    /*private void initStringeeConnection(){
         client = new StringeeClient(this);
         client.setConnectionListener(new StringeeConnectionListener() {
             @Override
@@ -424,7 +459,7 @@ public class WaitingActivity extends AppCompatActivity {
             }
         });
         client.connect(ConnectRepo.getInstance().getUserLocal().getToken());
-    }
+    }*/
 
     private void navigateToChatScreen() {
         Intent intent = new Intent(this, ChatRandomActivity.class);

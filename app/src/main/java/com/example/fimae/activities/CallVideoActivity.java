@@ -20,7 +20,9 @@ import android.widget.Toast;
 
 import com.example.fimae.R;
 import com.example.fimae.models.Report;
+import com.example.fimae.repository.ChatRepository;
 import com.example.fimae.repository.ConnectRepo;
+import com.example.fimae.service.CallService;
 import com.example.fimae.service.TimerService;
 import com.google.android.gms.tasks.OnFailureListener;
 import com.google.android.gms.tasks.OnSuccessListener;
@@ -300,7 +302,9 @@ public class CallVideoActivity extends AppCompatActivity {
         isLiked = true;
         frmTextDes.setVisibility(View.GONE);
         btnEnd.setBackgroundResource(R.drawable.background_btn_call);
-
+        if(ConnectRepo.getInstance().getUserRemote() != null){
+            ChatRepository.getDefaultChatInstance().getOrCreateFriendConversation(ConnectRepo.getInstance().getUserRemote().getUid());
+        }
     }
     // call =======================================================================
 
@@ -356,15 +360,16 @@ public class CallVideoActivity extends AppCompatActivity {
     private void initCall(){
         if(isInComingCall){
             // cuoc goi den
-            call = WaitingActivity.call2Map.get(callId);
+            call = CallService.getInstance().call2Map.get(callId);
             if( call == null){
                 onFinish();
                 return;
             }
         }else{
             // tao cuoc goi moi
-            call = new StringeeCall2(WaitingActivity.client, WaitingActivity.client.getUserId(), to);
+            call = new StringeeCall2(CallService.getInstance().client, CallService.getInstance().client.getUserId(), to);
             call.setVideoCall(true);
+            call.setCustom(CallService.RANDOM);
         }
 
         // theo doi trang thai cuoc goi

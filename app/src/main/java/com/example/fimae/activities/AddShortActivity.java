@@ -46,7 +46,7 @@ public class AddShortActivity extends AppCompatActivity {
         binding.imageVideo.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                MediaListDialogFragment mediaListDialogFragment = new MediaListDialogFragment();
+                MediaListDialogFragment mediaListDialogFragment = new MediaListDialogFragment(MediaListDialogFragment.VIDEO);
                 mediaListDialogFragment.setOnMediaSelectedListener(new MediaListDialogFragment.OnMediaSelectedListener() {
                     @Override
                     public void OnMediaSelected(boolean isSelected, ArrayList<String> data) {

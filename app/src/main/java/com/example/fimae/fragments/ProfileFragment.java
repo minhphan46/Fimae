@@ -195,7 +195,7 @@ public class ProfileFragment extends Fragment {
         LinearLayoutManager linearLayoutManager = new LinearLayoutManager(getContext());
         linearLayoutManager.setReverseLayout(true);
         linearLayoutManager.setStackFromEnd(true);
-        SpacingItemDecoration itemDecoration = new SpacingItemDecoration(1, 1, 1, 1);
+        SpacingItemDecoration itemDecoration = new SpacingItemDecoration(2, 2, 2, 2);
         binding.postList.addItemDecoration(itemDecoration);
         binding.postList.setAdapter(postAdapter);
         binding.postList.setLayoutManager(linearLayoutManager);

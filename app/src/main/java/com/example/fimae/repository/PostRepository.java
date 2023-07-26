@@ -102,6 +102,7 @@ public class PostRepository {
             }
         });
     }
+
     public Fimaers getCurrentUser(){
         return currentUser;
     }

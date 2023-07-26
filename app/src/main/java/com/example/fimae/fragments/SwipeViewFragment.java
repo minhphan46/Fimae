@@ -245,7 +245,9 @@ public class SwipeViewFragment extends Fragment {
                 Match match = dc.getDocument().toObject(Match.class);
                 switch (dc.getType()) {
                     case ADDED:
-                        if(match.getUserRead() == null || match.getUserRead().get(uid) == null || match.getUserRead().get(uid) == false)
+                        if(!match.getMatchedUsers().contains(uid))
+                            return;
+                        if(match.getUserRead() == null || match.getUserRead().get(uid) == null || match.getUserRead().get(uid) == false )
                         {
                             List<Task<DatingProfile>> tasks = new ArrayList<>();
                             tasks.add(FetchDatingProfileRepo.getInstance().getProfileById(match.getMatchedUsers().get(0)));

@@ -15,6 +15,7 @@ import androidx.cardview.widget.CardView;
 import androidx.recyclerview.widget.RecyclerView;
 import com.bumptech.glide.Glide;
 import com.example.fimae.databinding.FragmentItemListDialogListDialogItemBinding;
+import com.example.fimae.fragments.MediaListDialogFragment;
 import com.example.fimae.utils.FileUtils;
 import org.jetbrains.annotations.NotNull;
 
@@ -44,7 +45,7 @@ public class MediaAdapter extends RecyclerView.Adapter<MediaAdapter.ViewHolder> 
         }
     }
 
-    @RequiresApi(api = Build.VERSION_CODES.Q)
+/*    @RequiresApi(api = Build.VERSION_CODES.Q)
     public MediaAdapter(Context context) {
         pickedItems = new ArrayList<>();
         mediaAdapterItems = new ArrayList<>();
@@ -75,7 +76,7 @@ public class MediaAdapter extends RecyclerView.Adapter<MediaAdapter.ViewHolder> 
             //UI Thread work here
             handler.post(this::notifyDataSetChanged);
         });
-    }
+    }*/
 
     @RequiresApi(api = Build.VERSION_CODES.Q)
     public MediaAdapter(Context context, int mediaType) {
@@ -92,7 +93,10 @@ public class MediaAdapter extends RecyclerView.Adapter<MediaAdapter.ViewHolder> 
                 MediaAdapterItem item = new MediaAdapterItem(path);
                 item.position = i;
                 if (FileUtils.isImageFile(path)) {
-                    //item.mediaType = IMAGE;
+                    item.mediaType = IMAGE;
+                    if(mediaType == MediaListDialogFragment.IMAGE){
+                        mediaAdapterItems.add(item);
+                    }
                 } else {
                     final String videoDuration;
                     try {
@@ -102,6 +106,11 @@ public class MediaAdapter extends RecyclerView.Adapter<MediaAdapter.ViewHolder> 
                     }
                     item.mediaType = VIDEO;
                     item.videoDuration = videoDuration;
+                    if(mediaType == MediaListDialogFragment.VIDEO){
+                        mediaAdapterItems.add(item);
+                    }
+                }
+                if(mediaType == MediaListDialogFragment.ALL){
                     mediaAdapterItems.add(item);
                 }
             }

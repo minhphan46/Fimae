@@ -181,6 +181,9 @@ public class ChatRandomActivity extends AppCompatActivity {
                 }
             }
         });
+        if(ConnectRepo.getInstance().getUserRemote() != null){
+            ChatRepository.getDefaultChatInstance().getOrCreateFriendConversation(ConnectRepo.getInstance().getUserRemote().getUid());
+        }
     }
 //== report ===============================================================================
 

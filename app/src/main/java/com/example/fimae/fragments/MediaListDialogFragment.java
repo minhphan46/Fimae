@@ -26,7 +26,15 @@ public class MediaListDialogFragment extends BottomSheetDialogFragment {
     public void setOnMediaSelectedListener(OnMediaSelectedListener onMediaSelectedListener) {
         this.onMediaSelectedListener = onMediaSelectedListener;
     }
-
+    public final static int IMAGE = 0;
+    public final static int VIDEO = 1;
+    public final static int ALL = 2;
+    int mediaType = ALL;
+    public MediaListDialogFragment() {
+    }
+    public MediaListDialogFragment(int mediaType) {
+        this.mediaType = mediaType;
+    }
     @Nullable
     @Override
     public View onCreateView(LayoutInflater inflater, @Nullable ViewGroup container,
@@ -46,7 +54,7 @@ public class MediaListDialogFragment extends BottomSheetDialogFragment {
         final RecyclerView recyclerView = view.findViewById(R.id.list);
         recyclerView.setLayoutManager(new GridLayoutManager(getContext(), 3));
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.Q) {
-            mediaAdapter = new MediaAdapter(getContext(), 1);
+            mediaAdapter = new MediaAdapter(getContext(), mediaType);
         }
         recyclerView.setAdapter(mediaAdapter);
     }
