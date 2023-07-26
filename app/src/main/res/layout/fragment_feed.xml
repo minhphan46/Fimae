@@ -7,6 +7,7 @@
         <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="match_parent"
+            android:id="@+id/content_layout"
             android:orientation="vertical">
             <include
                 android:id="@+id/appbar_layout"
@@ -79,19 +80,11 @@
                 </androidx.constraintlayout.widget.ConstraintLayout>
             </androidx.core.widget.NestedScrollView>
         </LinearLayout>
-        <RelativeLayout
-            android:layout_width="match_parent"
-            android:layout_height="match_parent">
-<!--            <ImageView-->
-<!--                android:id="@+id/add_post"-->
-<!--                android:layout_alignParentBottom="true"-->
-<!--                android:layout_alignParentEnd="true"-->
-<!--                android:layout_marginBottom="20dp"-->
-<!--                android:layout_marginEnd="20dp"-->
-<!--                android:layout_width="55dp"-->
-<!--                android:layout_height="55dp"-->
-<!--                android:src="@drawable/add_post_image"-->
-<!--                />-->
-        </RelativeLayout>
+        <ProgressBar
+            android:id="@+id/progressBar"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center"
+            android:visibility="gone" /> <!-- Initially set to gone -->
     </FrameLayout>
 </layout>

@@ -57,25 +57,20 @@ public class FeedFragment extends Fragment {
     public void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
     }
-
-    @Nullable
+    boolean isInit = false;
     @Override
-    public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
-        binding = FragmentFeedBinding.inflate(inflater, container, false);
-//        binding.postList.setHasFixedSize(true);
-        LinearLayoutManager linearLayoutManager = new LinearLayoutManager(getContext());
-//        linearLayoutManager.setReverseLayout(true);
-//        linearLayoutManager.setStackFromEnd(true);
-        binding.postList.setLayoutManager(linearLayoutManager);
-        postAdapter = new PostAdapter();
+    public void onResume() {
+        super.onResume();
+        if(!isInit){
+            initListener();
+            isInit = true;
+        }
+    }
+    private void initListener(){
         posts.clear();
-        postAdapter.setData(getContext(), posts, post -> {
-            Intent intent = new Intent(getContext(), DetailPostActivity.class);
-            intent.putExtra("id", post.getPostId());
-            startActivity(intent);
-        });
-        binding.postList.setAdapter(postAdapter);
         CollectionReference postRef = FirebaseFirestore.getInstance().collection("posts");
+        binding.contentLayout.setVisibility(View.GONE);
+        binding.progressBar.setVisibility(View.VISIBLE);
         postRef.orderBy("timeCreated", Query.Direction.DESCENDING).addSnapshotListener((value, error) -> {
             if (error != null) {
                 return;
@@ -109,7 +104,28 @@ public class FeedFragment extends Fragment {
                         break;
                 }
             }
+            binding.contentLayout.setVisibility(View.VISIBLE);
+            binding.progressBar.setVisibility(View.GONE);
+
         });
+
+    }
+    @Nullable
+    @Override
+    public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
+        binding = FragmentFeedBinding.inflate(inflater, container, false);
+//        binding.postList.setHasFixedSize(true);
+        LinearLayoutManager linearLayoutManager = new LinearLayoutManager(getContext());
+//        linearLayoutManager.setReverseLayout(true);
+//        linearLayoutManager.setStackFromEnd(true);
+        binding.postList.setLayoutManager(linearLayoutManager);
+        postAdapter = new PostAdapter();
+        postAdapter.setData(getContext(), posts, post -> {
+            Intent intent = new Intent(getContext(), DetailPostActivity.class);
+            intent.putExtra("id", post.getPostId());
+            startActivity(intent);
+        });
+        binding.postList.setAdapter(postAdapter);
 //        binding.addPost.setOnClickListener(view -> {
 //
 //            Intent intent = new Intent(getContext(), AdminReportActivity.class );
