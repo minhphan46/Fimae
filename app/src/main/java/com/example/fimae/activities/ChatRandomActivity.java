@@ -165,6 +165,11 @@ public class ChatRandomActivity extends AppCompatActivity {
         if (messageAdapter != null) {
             messageAdapter.stopListening();
         }
+        FirebaseFirestore.getInstance().collection("chats").document(chatId).delete().addOnCompleteListener(task -> {
+            if(!task.isSuccessful()){
+                task.getException().printStackTrace();
+            }
+        });
     }
 
     private void onLiked() {
