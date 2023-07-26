@@ -106,6 +106,32 @@ public class ShortsRepository {
         return shortsRef.whereEqualTo("uid", uid).orderBy("timeCreated", Query.Direction.DESCENDING);
     }
 
+    public interface CanWatchResultListener {
+        void onCanWatch(boolean canWatch);
+    }
+
+    public void checkIsCanWatch(ShortMedia shortMedia, CanWatchResultListener listener) {
+        if(FirebaseAuth.getInstance().getUid().equals(shortMedia.getUid())) {
+            listener.onCanWatch(true);
+        }
+        else if (shortMedia.getPostMode() == PostMode.PUBLIC) {
+            listener.onCanWatch(true);
+        } else if (shortMedia.getPostMode() == PostMode.PRIVATE) {
+            // Check if the current user is the owner
+            boolean isCurrentUser = FirebaseAuth.getInstance().getUid().equals(shortMedia.getUid());
+            listener.onCanWatch(isCurrentUser);
+        } else {
+            // Mode: FRIENDS
+            ShortsRepository.getInstance().checkUserFollowed(FirebaseAuth.getInstance().getUid(), shortMedia, new FollowRepository.FollowCheckListener() {
+                @Override
+                public void onFollowCheckResult(boolean isFollowed) {
+                    // User đã follow
+                    listener.onCanWatch(isFollowed);
+                }
+            });
+        }
+    }
+
     public Task<ShortMedia> updateShort(ShortMedia shortMedia) {
         TaskCompletionSource<ShortMedia> taskCompletionSource = new TaskCompletionSource<>();
         shortsRef.document(shortMedia.getId()).set(shortMedia).addOnCompleteListener(task -> {
