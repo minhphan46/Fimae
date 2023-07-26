@@ -15,14 +15,18 @@ import android.os.Bundle;
 import android.text.Editable;
 import android.text.TextWatcher;
 import android.view.View;
+import android.widget.Toast;
 
+import com.example.fimae.Constant.ReportContents;
 import com.example.fimae.R;
 import com.example.fimae.adapters.NewCommentAdapter;
 import com.example.fimae.adapters.PostAdapter;
 import com.example.fimae.adapters.PostPhotoAdapter;
+import com.example.fimae.adapters.Report.ReportAdapterItem;
 import com.example.fimae.adapters.ShareAdapter;
 import com.example.fimae.bottomdialogs.LikedPostListFragment;
 import com.example.fimae.bottomdialogs.ListItemBottomSheetFragment;
+import com.example.fimae.bottomdialogs.ReportDialog;
 import com.example.fimae.databinding.DetailPostBinding;
 import com.example.fimae.fragments.FimaeBottomSheet;
 import com.example.fimae.fragments.CommentEditFragment;
@@ -30,6 +34,7 @@ import com.example.fimae.models.BottomSheetItem;
 import com.example.fimae.models.Comment;
 import com.example.fimae.models.CommentItemAdapter;
 import com.example.fimae.models.Conversation;
+import com.example.fimae.models.Follows;
 import com.example.fimae.models.Post;
 import com.example.fimae.models.Fimaers;
 import com.example.fimae.repository.ChatRepository;
@@ -37,7 +42,9 @@ import com.example.fimae.repository.CommentRepository;
 import com.example.fimae.repository.FimaerRepository;
 import com.example.fimae.repository.FollowRepository;
 import com.example.fimae.repository.PostRepository;
+import com.example.fimae.repository.ReportRepository;
 import com.example.fimae.service.TimerService;
+import com.example.fimae.utils.ReportItem;
 import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.android.gms.tasks.Task;
@@ -46,12 +53,15 @@ import com.google.firebase.firestore.CollectionReference;
 import com.google.firebase.firestore.DocumentReference;
 import com.google.firebase.firestore.DocumentSnapshot;
 import com.google.firebase.firestore.EventListener;
+import com.google.firebase.firestore.FieldPath;
 import com.google.firebase.firestore.FirebaseFirestore;
 import com.google.firebase.firestore.FirebaseFirestoreException;
 import com.google.firebase.firestore.Query;
+import com.google.firebase.firestore.QuerySnapshot;
 import com.squareup.picasso.Picasso;
 
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 import java.util.Objects;
 
@@ -62,6 +72,7 @@ public class DetailPostActivity extends AppCompatActivity {
     public String selectedCommentId = "";
     private Boolean isShowShareDialog;
     private Boolean isShowMoreDialog;
+    private Boolean isShowChatDialog;
     public Fimaers selectedFimaers;
     private Post post;
     private Fimaers fimaers;
@@ -69,11 +80,11 @@ public class DetailPostActivity extends AppCompatActivity {
     private PostPhotoAdapter adapter;
     private ChatRepository chatRepository = ChatRepository.getDefaultChatInstance();
     ArrayList<String> imageUrls = new ArrayList<>();
-//    List<Uri> imageUris = new ArrayList<>();
+    //    List<Uri> imageUris = new ArrayList<>();
     List<Comment> comments;
     List<CommentItemAdapter> commentItemAdapters;
     NewCommentAdapter newCommentAdapter;
-//    SubCommentAdapter selectedAdapter;
+    //    SubCommentAdapter selectedAdapter;
     CollectionReference postRef = FirebaseFirestore.getInstance().collection("posts");
     CollectionReference fimaesRef = FirebaseFirestore.getInstance().collection("fimaers");
     CommentRepository commentRepository = CommentRepository.getInstance();
@@ -81,8 +92,10 @@ public class DetailPostActivity extends AppCompatActivity {
     List<BottomSheetItem> commentSheetItemList;
     List<BottomSheetItem> postSheetItemList;
     List<BottomSheetItem> reportSheetItemList;
+    List<BottomSheetItem> chatSheetItemList;
     FimaeBottomSheet fimaeBottomSheet;
     ListItemBottomSheetFragment listShareItemBottomSheetFragment;
+
 
     public interface BottomItemClickCallback{
         void onClick(Fimaers userInfo);
@@ -104,6 +117,7 @@ public class DetailPostActivity extends AppCompatActivity {
         getPost(postId);
         isShowShareDialog = intent.getBooleanExtra("share", false);
         isShowMoreDialog = intent.getBooleanExtra("more", false);
+        isShowChatDialog = intent.getBooleanExtra("chat", false);
     }
     private void getPost(String postId){
         postRef.document(postId).addSnapshotListener((value, e) -> {
@@ -130,14 +144,14 @@ public class DetailPostActivity extends AppCompatActivity {
 
     }
     private void listenToChange(Post updatePost){
-            imageUrls = new ArrayList<>(updatePost.getPostImages());
+        imageUrls = new ArrayList<>(updatePost.getPostImages());
 
-            if(adapter != null){
-                adapter.updateImages(imageUrls);
-                adapter.notifyDataSetChanged();
-                LinearLayoutManager layoutManager = new GridLayoutManager(this, PostAdapter.getColumnSpan(imageUrls.size()) );
-                binding.imageList.setLayoutManager(layoutManager);
-            }
+        if(adapter != null){
+            adapter.updateImages(imageUrls);
+            adapter.notifyDataSetChanged();
+            LinearLayoutManager layoutManager = new GridLayoutManager(this, PostAdapter.getColumnSpan(imageUrls.size()) );
+            binding.imageList.setLayoutManager(layoutManager);
+        }
 
         if(!post.getContent().equals(updatePost.getContent())){
             binding.content.setText(updatePost.getContent());
@@ -150,6 +164,13 @@ public class DetailPostActivity extends AppCompatActivity {
         binding.numberofLike.setOnClickListener(view -> {
             LikedPostListFragment likedPostListFragment = LikedPostListFragment.getInstance(updatePost.getLikes(), updatePost.getNumberTrue(), post);
             likedPostListFragment.show(getSupportFragmentManager(), "likelist");
+        });
+        binding.likeTitle.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                LikedPostListFragment likedPostListFragment = LikedPostListFragment.getInstance(updatePost.getLikes(), updatePost.getNumberTrue(), post);
+                likedPostListFragment.show(getSupportFragmentManager(), "likelist");
+            }
         });
     }
     private void initView(String content, String publisherId){
@@ -213,9 +234,12 @@ public class DetailPostActivity extends AppCompatActivity {
         if(isShowMoreDialog){
             showMoreDialog();
         }
+        if(isShowChatDialog){
+            showChatDialog();
+        }
     }
     private void showSharePostDialog(){
-        FollowRepository.getInstance().getFollowers(post.getPublisher()).addOnSuccessListener(new OnSuccessListener<ArrayList<Fimaers>>() {
+        FollowRepository.getInstance().getFollowers(FirebaseAuth.getInstance().getUid()).addOnSuccessListener(new OnSuccessListener<ArrayList<Fimaers>>() {
             @Override
             public void onSuccess(ArrayList<Fimaers> fimaers) {
                 ShareAdapter adapter = new ShareAdapter(DetailPostActivity.this, fimaers, new BottomItemClickCallback() {
@@ -315,39 +339,71 @@ public class DetailPostActivity extends AppCompatActivity {
             binding.follow.setVisibility(View.GONE);
         }
         else{
-            FollowRepository.getInstance().followRef.document(FirebaseAuth.getInstance().getUid()+"_"+post.getPublisher()).addSnapshotListener(new EventListener<DocumentSnapshot>() {
+            String doc1 = FirebaseAuth.getInstance().getUid()+"_"+post.getPublisher();
+            String doc2 = post.getPublisher()+"_"+FirebaseAuth.getInstance().getUid();
+            Query query = FollowRepository.getInstance().followRef.whereIn(FieldPath.documentId(), Arrays.asList(doc1, doc2));
+
+            query.addSnapshotListener(new EventListener<QuerySnapshot>() {
                 @Override
-                public void onEvent(@Nullable DocumentSnapshot value, @Nullable FirebaseFirestoreException error) {
-                    if(error != null ){
+                public void onEvent(@Nullable QuerySnapshot queryDocumentSnapshots, @Nullable FirebaseFirestoreException error) {
+                    if (error != null) {
+                        // Handle the error
                         return;
                     }
-                    if(value != null && value.exists()){
-                        binding.follow.setVisibility(View.GONE);
+                    if(queryDocumentSnapshots.getDocuments().size() == 2){
                         binding.edit.setVisibility(View.VISIBLE);
+                        binding.follow.setVisibility(View.GONE);
                     }
-                    else{
-                        binding.follow.setVisibility(View.VISIBLE);
+                    else {
                         binding.edit.setVisibility(View.GONE);
+                        binding.follow.setVisibility(View.VISIBLE);
+                        if(queryDocumentSnapshots.getDocuments().size() == 1){
+                            Follows follows = queryDocumentSnapshots.getDocuments().get(0).toObject(Follows.class);
+                            if(follows.getFollower().equals(post.getPublisher())){
+                                binding.follow.setText("Bỏ theo dõi");
+                            }
+                            else{
+                                binding.follow.setText("Theo dõi");
+                            }
+                        }
+                        else{
+                            binding.follow.setText("Theo dõi");
+                        }
                     }
                 }
             });
-
         }
+
         binding.edit.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                postRepository.goToChatWithUser(post.getPublisher(), DetailPostActivity.this);
+                showChatDialog();
             }
         });
-        binding.follow.setOnClickListener(view -> FollowRepository.getInstance().follow(post.getPublisher()).addOnCompleteListener(new OnCompleteListener<Boolean>() {
-            @Override
-            public void onComplete(@NonNull Task<Boolean> task) {
-                if(task.getResult()){
-                    binding.follow.setVisibility(View.GONE);
-                    binding.edit.setVisibility(View.VISIBLE);
-                }
+        binding.follow.setOnClickListener(view -> {
+            if(binding.follow.getText().equals("Theo dõi")){
+                FollowRepository.getInstance().follow(post.getPublisher()).addOnCompleteListener(new OnCompleteListener<Boolean>() {
+                    @Override
+                    public void onComplete(@NonNull Task<Boolean> task) {
+                        if (task.getResult()) {
+//                            binding.follow.setText("Bỏ theo dõi");
+                        }
+                    }
+                });
             }
-        }));
+            else {
+                FollowRepository.getInstance().unFollow(post.getPublisher()).addOnCompleteListener(new OnCompleteListener<Boolean>() {
+                    @Override
+                    public void onComplete(@NonNull Task<Boolean> task) {
+                        if (task.getResult()) {
+//                            binding.follow.setText("Theo dõi");
+                        }
+                    }
+
+                });
+
+            }
+        });
         binding.iconEmoji.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
@@ -366,11 +422,10 @@ public class DetailPostActivity extends AppCompatActivity {
                     Comment comment = new Comment();
                     comment.setPostId(post.getPostId());
                     comment.setPublisher(fimaers.getUid());
-                    comment.setContent(binding.addComment.getText().toString());
+                    comment.setContent( binding.addComment.getText().toString());
                     comment.setParentId("");
                     commentRepository.postComment(post.getPostId(), "posts",comment);
                 }
-                postRepository.updateNumOfComment(post.getPostId());
                 binding.addComment.clearFocus();
                 binding.addComment.setText("");
                 binding.addComment.setHint("Để lại một bình luận");
@@ -396,13 +451,19 @@ public class DetailPostActivity extends AppCompatActivity {
                 add(new BottomSheetItem(R.drawable.ic_chat_dots, "Báo cáo"));
             }
         };
-
+        chatSheetItemList = new ArrayList<BottomSheetItem>(){
+            {
+                add(new BottomSheetItem(R.drawable.ic_chat_dots, "Tới cuộc trò chuyện"));
+                add(new BottomSheetItem(R.drawable.ic_user_block, "Hủy theo dõi"));
+            }
+        };
     }
     private void showReportDialog(){
         fimaeBottomSheet = new FimaeBottomSheet(reportSheetItemList,
                 bottomSheetItem -> {
                     if(bottomSheetItem.getTitle().equals("Báo cáo")){
-                        fimaeBottomSheet.dismiss();
+                        showReport();
+//                        fimaeBottomSheet.dismiss();
                     }
                 });
         fimaeBottomSheet.show(getSupportFragmentManager(), fimaeBottomSheet.getTag());
@@ -420,26 +481,48 @@ public class DetailPostActivity extends AppCompatActivity {
                     }
                     else if(bottomSheetItem.getTitle().equals("Xóa bài đăng")){
                         fimaeBottomSheet.dismiss();
+                        binding.progressBar.setVisibility(View.VISIBLE);
+                        binding.contentLayout.setVisibility(View.GONE);
+                        postRepository.deletePost(postId).addOnSuccessListener(new OnSuccessListener<Boolean>() {
+                            @Override
+                            public void onSuccess(Boolean aBoolean) {
+                                DetailPostActivity.this.finish();
+                            }
+                        });
                     }
                 });
         fimaeBottomSheet.show(getSupportFragmentManager(), fimaeBottomSheet.getTag());
-
     }
+    private void showChatDialog(){
+        fimaeBottomSheet = new FimaeBottomSheet(chatSheetItemList,
+                bottomSheetItem -> {
+                    if(bottomSheetItem.getTitle().equals("Tới cuộc trò chuyện")){
+                        postRepository.goToChatWithUser(post.getPublisher(), DetailPostActivity.this);
+                        fimaeBottomSheet.dismiss();
+                    }
+                    else if(bottomSheetItem.getTitle().equals("Hủy theo dõi")){
+                        FollowRepository.getInstance().unFollow(post.getPublisher());
+                        fimaeBottomSheet.dismiss();
+                    }
+                });
+        fimaeBottomSheet.show(getSupportFragmentManager(), fimaeBottomSheet.getTag());
+    }
+
     private void showEditCommentDialog(Comment comment){
         CommentEditFragment commentEditFragment = new CommentEditFragment(comment, post.getPostId());
         commentEditFragment.show(getSupportFragmentManager(), commentEditFragment.getTag());
         fimaeBottomSheet.dismiss();
     }
     public void showCommentDialog(Comment comment){
-            fimaeBottomSheet = new FimaeBottomSheet(commentSheetItemList,
-                    bottomSheetItem -> {
-                        if(bottomSheetItem.getTitle().equals("Chỉnh sửa bình luận"))
-                            showEditCommentDialog(comment);
-                        else if(bottomSheetItem.getTitle().equals("Xóa bình luận")){
-                            commentRepository.deleteComment(post.getPostId(), comment, CommentRepository.POST_COLLECTION);
-                            fimaeBottomSheet.dismiss();
-                        }
-                    });
+        fimaeBottomSheet = new FimaeBottomSheet(commentSheetItemList,
+                bottomSheetItem -> {
+                    if(bottomSheetItem.getTitle().equals("Chỉnh sửa bình luận"))
+                        showEditCommentDialog(comment);
+                    else if(bottomSheetItem.getTitle().equals("Xóa bình luận")){
+                        commentRepository.deleteComment(post.getPostId(), comment, CommentRepository.POST_COLLECTION);
+                        fimaeBottomSheet.dismiss();
+                    }
+                });
         fimaeBottomSheet.show(getSupportFragmentManager(), fimaeBottomSheet.getTag());
     }
     private void showMoreDialog(){
@@ -449,5 +532,31 @@ public class DetailPostActivity extends AppCompatActivity {
         else {
             showReportDialog();
         }
+    }
+    private void showReport(){
+        ReportDialog.builder()
+                .setTitle("Báo cáo bài viết") //must
+                .setSubtitle("Chọn lý do báo cáo và mô tả ngắn  gọn") //optional
+                .setReportAdapterItems(ReportContents.getPostReportAdapterItems()) //must
+                .setOnReportDialogListener(new ReportDialog.OnReportDialogListener() {
+                    @Override
+                    public void onReportDialog(ReportAdapterItem reportAdapterItem, String description) {
+                        ReportRepository.getInstance().addNewReport( post.getPostId(), ReportItem.POST_ITEM ,reportAdapterItem.getTitle(), description)
+                                .addOnCompleteListener(task -> {
+                                    if (task.isSuccessful()) {
+                                        Toast.makeText(DetailPostActivity.this, "Báo cáo thành công", Toast.LENGTH_SHORT).show();
+                                    } else {
+                                        Toast.makeText(DetailPostActivity.this, "Báo cáo thất bại", Toast.LENGTH_SHORT).show();
+                                    }
+                                });
+                    }
+                })
+                .build()
+                .show(getSupportFragmentManager(), "report");
+    }
+    private void viewPublisherProfile(){
+        Intent intent = new Intent(DetailPostActivity.this, ProfileActivity.class );
+        intent.putExtra("uid", post.getPublisher());
+        mStartForResult.launch(intent);
     }
 }
