@@ -48,12 +48,13 @@ public class ProfileActivity extends AppCompatActivity {
                     }
                     Follows follows = value.toObject(Follows.class);
                     if(follows != null){
-                        follow.setVisibility(View.GONE);
+                        follow.setText("Bỏ theo dõi");
                         chat.setVisibility(View.VISIBLE);
                     }
                     else{
                         chat.setVisibility(View.GONE);
                         follow.setVisibility(View.VISIBLE);
+                        follow.setText("Theo dõi");
                     }
                 }
             });
@@ -62,7 +63,12 @@ public class ProfileActivity extends AppCompatActivity {
         follow.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                FollowRepository.getInstance().follow(uid);
+                if(follow.getText().equals("Theo dõi")){
+                    FollowRepository.getInstance().follow(uid);
+                }
+                else {
+                    FollowRepository.getInstance().unFollow(uid);
+                }
             }
         });
         chat.setOnClickListener(new View.OnClickListener() {

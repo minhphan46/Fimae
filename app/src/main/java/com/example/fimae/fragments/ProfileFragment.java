@@ -104,10 +104,6 @@ public class ProfileFragment extends Fragment {
         return fragment;
     }
 
-    @Override
-    public void onResume() {
-        super.onResume();
-    }
 
     @Override
     public void onDestroy() {
