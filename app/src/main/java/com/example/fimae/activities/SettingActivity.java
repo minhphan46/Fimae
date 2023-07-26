@@ -64,9 +64,7 @@ public class SettingActivity extends AppCompatActivity {
     private void logOut()
     {
         AuthRepository.getInstance().signOut();
-        Intent intent = new Intent(this, SplashActivity.class);
-        intent.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP | Intent.FLAG_ACTIVITY_NEW_TASK);
-        startActivity(intent);
+
         finish();
     }
     private void navToEditProfile() {

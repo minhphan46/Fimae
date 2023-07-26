@@ -83,12 +83,13 @@ public class OnChatActivity extends AppCompatActivity {
         getMenuInflater().inflate(R.menu.chat_second_menu, menu);
         return true;
     }
-
+    Fimaers fimaer;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_on_chat);
         conversationId = getIntent().getStringExtra("conversationID");
+        fimaer = (Fimaers) getIntent().getSerializableExtra("fimaer");
         currentConversationId = conversationId;
         messagesCol = FirebaseFirestore.getInstance().collection("conversations").document(conversationId).collection("messages");
         initViews();
@@ -231,6 +232,13 @@ public class OnChatActivity extends AppCompatActivity {
         Query query = messagesCol.orderBy("sentAt", Query.Direction.ASCENDING);
         messageAdapter = new MessageAdapter(query, this);
         recyclerView.setAdapter(messageAdapter);
+        messageAdapter.registerAdapterDataObserver(new RecyclerView.AdapterDataObserver() {
+            @Override
+            public void onChanged() {
+                recyclerView.scrollToPosition(messageAdapter.getItemCount() - 1);
+            }
+        });
+        recyclerView.scrollToPosition(messageAdapter.getItemCount() - 1);
     }
 
     private void sendTextMessage() {

@@ -2,6 +2,7 @@ package com.example.fimae.fragments;
 
 
 import android.content.Context;
+import android.content.Intent;
 import android.graphics.Point;
 import android.os.Bundle;
 
@@ -9,19 +10,33 @@ import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.fragment.app.Fragment;
 
+import android.util.Log;
 import android.view.Gravity;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 
+import com.example.fimae.DatingAddImages;
 import com.example.fimae.R;
 import com.example.fimae.models.dating.DatingProfile;
+import com.example.fimae.repository.DatingRepository;
+import com.example.fimae.repository.FetchDatingProfileRepo;
+import com.example.fimae.repository.FimaerRepository;
 import com.example.fimae.utils.Utils;
 import com.example.fimae.models.dating.Profile;
 import com.example.fimae.models.dating.TinderCard;
+import com.firebase.geofire.GeoLocation;
+import com.google.android.gms.tasks.OnCompleteListener;
+import com.google.android.gms.tasks.Task;
 import com.google.android.material.floatingactionbutton.FloatingActionButton;
+import com.google.firebase.firestore.DocumentSnapshot;
+import com.google.firebase.firestore.FirebaseFirestore;
 import com.mindorks.placeholderview.SwipeDecor;
 import com.mindorks.placeholderview.SwipePlaceHolderView;
+
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.List;
 
 public class SwipeViewFragment extends Fragment {
 
@@ -36,16 +51,28 @@ public class SwipeViewFragment extends Fragment {
         // Required empty public constructor
     }
 
-
+    String uid = FimaerRepository.getInstance().getCurrentUserUid();
+    boolean hasProfile = false;
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
         // Inflate the layout for this fragment
         rootLayout = inflater.inflate(R.layout.fragment_swipe_view, container, false);
 
+
         return rootLayout;
     }
 
+    @Override
+    public void onResume() {
+        super.onResume();
+        DatingRepository.getInstance().getDatingProfileByUid(uid).addOnSuccessListener(datingProfile -> {
+            if (datingProfile != null) {
+                hasProfile = true;
+            }
+
+        });
+    }
 
     @Override
     public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
@@ -59,7 +86,10 @@ public class SwipeViewFragment extends Fragment {
 
 
         mContext = getActivity();
-
+        if(hasProfile)
+        {
+            getData();
+        }
         int bottomMargin = Utils.dpToPx(100);
         int topMargin = Utils.dpToPx(80);
         Point windowSize = Utils.getDisplaySize(getActivity().getWindowManager());
@@ -75,9 +105,20 @@ public class SwipeViewFragment extends Fragment {
                         .setSwipeInMsgLayoutId(R.layout.tinder_swipe_in_msg_view)
                         .setSwipeOutMsgLayoutId(R.layout.tinder_swipe_out_msg_view));
 
-
+        DatingRepository.getInstance().getDatingProfileByUid(uid).addOnSuccessListener(datingProfile -> {
+            if (datingProfile == null) {
+                hasProfile = false;
+                Intent intent = new Intent(getContext(), DatingAddImages.class);
+                intent.putExtra("uid", uid);
+                intent.putExtra("isCreate", true);
+                startActivity(intent);
+            }
+            else {
+                hasProfile = true;
+                getData();
+            }
+        });
         for(Profile profile : Utils.loadProfiles(getActivity())){
-            mSwipeView.addView(new TinderCard(mContext, profile, mSwipeView));
         }
 
         fabSkip.setOnClickListener(v -> {
@@ -98,6 +139,32 @@ public class SwipeViewFragment extends Fragment {
         });
     }
 
+    private void getData()
+    {
+        DatingRepository.getInstance().getDatingProfileByUid(uid)
+                .addOnCompleteListener(new OnCompleteListener<DatingProfile>() {
+                    @Override
+                    public void onComplete(@NonNull Task<DatingProfile> task) {
+                        if(task.isSuccessful())
+                        {
+                            Log.e("TAG", "onComplete: ");
+                            DatingProfile datingProfile = task.getResult();
+                            GeoLocation center = new GeoLocation
+                                    (datingProfile.getLocation().getLatitude(),datingProfile.getLocation().getLongitude());
+                            double radius = datingProfile.getDistance() * 1000;
+                            FetchDatingProfileRepo.getInstance().getMatchingSnapshot(center, radius, datingProfile, new FetchDatingProfileRepo.GetProfileCallback() {
+                                @Override
+                                public void OnGetProfileComplete(HashMap<String, DatingProfile> matchingList) {
+                                    for (DatingProfile profile : matchingList.values())
+                                    {
+                                        mSwipeView.addView(new TinderCard(getContext(), profile, mSwipeView));
+                                    }
+                                }
+                            });
+                        }
+                    }
+                });
+    }
 
     private void animateFab(final FloatingActionButton fab){
         fab.animate().scaleX(0.7f).setDuration(100).withEndAction(() -> fab.animate().scaleX(1f).scaleY(1f));

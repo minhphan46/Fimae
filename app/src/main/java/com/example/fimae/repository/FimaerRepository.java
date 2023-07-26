@@ -143,6 +143,21 @@ public class FimaerRepository {
             });
         });
     }
+    public Task<ArrayList<Fimaers>> getFimaersByIds(ArrayList<String> id){
+        TaskCompletionSource<ArrayList<Fimaers>> taskCompletionSource = new TaskCompletionSource<>();
+        ArrayList<Fimaers> fimaers = new ArrayList<>();
+        fimaersRef.whereIn("uid", id).get().addOnCompleteListener(task -> {
+            if (task.isSuccessful()){
+                for (DocumentSnapshot documentSnapshot : task.getResult().getDocuments()){
+                    fimaers.add(documentSnapshot.toObject(Fimaers.class));
+                }
+                taskCompletionSource.setResult(fimaers);
+            } else {
+                taskCompletionSource.setException(Objects.requireNonNull(task.getException()));
+            }
+        });
+        return taskCompletionSource.getTask();
+    }
     public interface UploadAvatarCallback {
         void onUploadSuccess(Uri uri);
         void onUploadError(String errorMessage);

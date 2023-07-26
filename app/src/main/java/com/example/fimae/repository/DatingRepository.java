@@ -1,7 +1,12 @@
 package com.example.fimae.repository;
 
+import android.location.Geocoder;
 import android.net.Uri;
+import android.util.Log;
 
+import androidx.annotation.NonNull;
+
+import com.example.fimae.models.Fimaers;
 import com.example.fimae.models.dating.DatingProfile;
 import com.example.fimae.models.dating.DatingProfileDefaultValue;
 import com.example.fimae.models.dating.EducationalLevel;
@@ -9,12 +14,20 @@ import com.example.fimae.models.dating.GenderOptions;
 import com.example.fimae.models.dating.LatLng;
 import com.example.fimae.models.dating.RelationshipType;
 import com.example.fimae.service.FirebaseService;
+import com.firebase.geofire.GeoFireUtils;
+import com.firebase.geofire.GeoLocation;
+import com.firebase.geofire.GeoQueryBounds;
+import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.Task;
 import com.google.android.gms.tasks.TaskCompletionSource;
+import com.google.android.gms.tasks.Tasks;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.firestore.CollectionReference;
 import com.google.firebase.firestore.DocumentReference;
+import com.google.firebase.firestore.DocumentSnapshot;
 import com.google.firebase.firestore.FirebaseFirestore;
+import com.google.firebase.firestore.Query;
+import com.google.firebase.firestore.QuerySnapshot;
 import com.google.firebase.firestore.WriteBatch;
 import com.google.firebase.storage.FirebaseStorage;
 import com.google.firebase.storage.StorageReference;
@@ -22,6 +35,7 @@ import com.google.firebase.storage.StorageReference;
 
 import java.util.ArrayList;
 import java.util.Collections;
+import java.util.HashMap;
 import java.util.List;
 import java.util.Objects;
 import java.util.function.BiConsumer;
@@ -30,6 +44,7 @@ public class DatingRepository {
     public static final String datingProfilesCollection = "dating-profiles";
     public static final String matchesCollection = "matches";
     public static final String datingProfileImagesLocation = "dating-profile-images";
+
     FirebaseFirestore firestore;
     CollectionReference datingProfiles;
     CollectionReference matches;
@@ -145,12 +160,22 @@ public class DatingRepository {
         return updateProfileField("educationalLevel", educationalLevel);
     }
 
+
+
     public Task<Void> updateDistance(int distance) {
         return updateProfileField("distance", distance);
     }
 
     public Task<Void> updateLocation(LatLng location) {
-        return updateProfileField("location", location);
+        //return updateProfileField("location", location);
+        String hash = GeoFireUtils
+                .getGeoHashForLocation(new GeoLocation(location.getLatitude(), location.getLongitude()));
+        WriteBatch batch = firestore.batch();
+        String uid = FirebaseAuth.getInstance().getCurrentUser().getUid();
+        DocumentReference documentReference = datingProfiles.document(uid);
+        batch.update(documentReference, "location", location);
+        batch.update(documentReference, "geoHash", hash);
+        return batch.commit();
     }
 
     public Task<Void> updateEnable(boolean isEnable) {
@@ -173,4 +198,6 @@ public class DatingRepository {
         batch.update(documentReference, "maxHeight", maxHeight);
         return batch.commit();
     }
+
+
 }

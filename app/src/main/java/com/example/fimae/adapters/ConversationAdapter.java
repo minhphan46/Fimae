@@ -15,9 +15,13 @@ import androidx.recyclerview.widget.RecyclerView;
 import com.bumptech.glide.Glide;
 import com.example.fimae.R;
 import com.example.fimae.models.Conversation;
+import com.example.fimae.models.Fimaers;
 import com.example.fimae.models.Message;
 import com.example.fimae.repository.ChatRepository;
 import com.example.fimae.repository.FimaerRepository;
+import com.google.android.gms.tasks.OnCompleteListener;
+import com.google.android.gms.tasks.Task;
+import com.google.android.gms.tasks.TaskCompletionSource;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.firestore.DocumentChange;
 import com.google.firebase.firestore.DocumentSnapshot;
@@ -33,15 +37,46 @@ import de.hdodenhof.circleimageview.CircleImageView;
 public class ConversationAdapter extends FirestoreAdapter<ConversationAdapter.ViewHolder> {
 
 
+    HashMap<String, Fimaers> fimaersHashMap = new HashMap<>();
+    ArrayList<Conversation> conversations;
 
     @Override
     public void OnSuccessQueryListener(ArrayList<DocumentSnapshot> queryDocumentSnapshots, ArrayList<DocumentChange> documentChanges) {
-        snapshots = queryDocumentSnapshots;
-        notifyDataSetChanged();
+        if (conversations == null) {
+            conversations = new ArrayList<>();
+            for (DocumentSnapshot documentSnapshot : queryDocumentSnapshots) {
+                Conversation conversation = documentSnapshot.toObject(Conversation.class);
+                conversations.add(conversation);
+            }
+            ArrayList<String> ids = new ArrayList<>();
+            for (Conversation conversation : conversations) {
+                if (conversation.getOtherParticipantId() != null) {
+                    ids.add(conversation.getOtherParticipantId());
+                }
+            }
+            FimaerRepository.getInstance().getFimaersByIds(ids).addOnCompleteListener(new OnCompleteListener<ArrayList<Fimaers>>() {
+                @Override
+                public void onComplete(@NonNull Task<ArrayList<Fimaers>> task) {
+                    if (task.isSuccessful()) {
+                        ArrayList<Fimaers> fimaers = task.getResult();
+                        for (Fimaers fimaer : fimaers) {
+                            fimaersHashMap.put(fimaer.getUid(), fimaer);
+                        }
+                    }
+                    notifyDataSetChanged();
+                }
+            });
+            return;
+        }
+        conversations.clear();
+        for (DocumentSnapshot documentSnapshot : queryDocumentSnapshots) {
+            Conversation conversation = documentSnapshot.toObject(Conversation.class);
+            conversations.add(conversation);
+        }
     }
 
     public interface IClickConversationListener {
-        void onClickConversation(Conversation conversation);
+        void onClickConversation(Conversation conversation, Fimaers fimaers);
     }
 
     private IClickConversationListener iClickConversationListener;
@@ -86,30 +121,47 @@ public class ConversationAdapter extends FirestoreAdapter<ConversationAdapter.Vi
         return new ViewHolder(heroView);
     }
 
+    private Task<Fimaers> getFimaer(String id){
+        TaskCompletionSource<Fimaers> taskCompletionSource = new TaskCompletionSource<>();
+        Fimaers fimaers = fimaersHashMap.get(id);
+        if (fimaers != null) {
+            taskCompletionSource.setResult(fimaers);
+        } else {
+            FimaerRepository.getInstance().getFimaerById(id).addOnCompleteListener(task -> {
+                if (task.isSuccessful()) {
+                    Fimaers fimaer = task.getResult();
+                    fimaersHashMap.put(id, fimaer);
+                    taskCompletionSource.setResult(fimaer);
+                } else {
+                    taskCompletionSource.setException(task.getException());
+                }
+            });
+        }
+        return taskCompletionSource.getTask();
+    }
 
     @Override
     public void onBindViewHolder(@NonNull ViewHolder holder, int position) {
 
-        Conversation conversation = getSnapshot(position).toObject(Conversation.class);
+        Conversation conversation = conversations.get(position);
         assert conversation != null;
         if (conversation.getType().equals(Conversation.FRIEND_CHAT)) {
             ArrayList<String> ids = new ArrayList<>(conversation.getParticipantIds());
             ids.remove(FirebaseAuth.getInstance().getUid());
             String uid = ids.get(0);
-            if(uid.equals("")){
+            if (uid.equals("")) {
                 return;
             }
-            FimaerRepository.getInstance().getFimaerById(uid).addOnSuccessListener(user -> {
-                if(user == null){
+            getFimaer(uid).addOnSuccessListener(user -> {
+                if (user == null) {
                     holder.mLayoutCard.setVisibility(View.GONE);
                     return;
                 }
 
                 //Convert to Glide
-                if(user.getAvatarUrl() == null || user.getAvatarUrl().equals("")){
+                if (user.getAvatarUrl() == null || user.getAvatarUrl().equals("")) {
                     holder.mAvatarView.setImageResource(R.drawable.ic_default_avatar);
-                }
-                else{
+                } else {
                     Glide.with(holder.mAvatarView.getContext()).load(user.getAvatarUrl()).placeholder(R.drawable.ic_default_avatar).into(holder.mAvatarView);
                 }
                 holder.mTextName.setText(user.getFirstName() + " " + user.getLastName());
@@ -117,33 +169,31 @@ public class ConversationAdapter extends FirestoreAdapter<ConversationAdapter.Vi
                     conversation.getLastMessage().get().addOnCompleteListener(task -> {
                         HashMap map = (HashMap) task.getResult().getData();
                         Message message = task.getResult().toObject(Message.class);
-                        if(message == null){
+                        if (message == null) {
                             holder.mTextDes.setText("Bắt đầu cuộc trò chuyện");
-                        }
-                        else{
+                        } else {
                             String start;
-                            if(message.getIdSender() == FirebaseAuth.getInstance().getUid()){
+                            if (message.getIdSender() == FirebaseAuth.getInstance().getUid()) {
                                 start = "Bạn: ";
-                            }
-                            else{
+                            } else {
                                 start = user.getFirstName() + ": ";
                             }
-                            if(Objects.equals(message.getType(), Message.TEXT)){
+                            if (Objects.equals(message.getType(), Message.TEXT)) {
                                 String content = message.getContent().toString();
-                                if(Objects.equals(message.getIdSender(), FirebaseAuth.getInstance().getUid())){
-                                    content = "Bạn: "+content;
+                                if (Objects.equals(message.getIdSender(), FirebaseAuth.getInstance().getUid())) {
+                                    content = "Bạn: " + content;
                                 }
                                 holder.mTextDes.setText(content);
-                            } else if(Objects.equals(message.getType(), Message.MEDIA)){
-                                String content = "Đã gửi "+ ((ArrayList)message.getContent()).size() +" hình ảnh";
-                                if(Objects.equals(message.getIdSender(), FirebaseAuth.getInstance().getUid())){
-                                    content = "Bạn: "+content;
+                            } else if (Objects.equals(message.getType(), Message.MEDIA)) {
+                                String content = "Đã gửi " + ((ArrayList) message.getContent()).size() + " hình ảnh";
+                                if (Objects.equals(message.getIdSender(), FirebaseAuth.getInstance().getUid())) {
+                                    content = "Bạn: " + content;
                                 }
                                 holder.mTextDes.setText(content);
-                            } else if(Objects.equals(message.getType(), Message.POST_LINK)){
+                            } else if (Objects.equals(message.getType(), Message.POST_LINK)) {
                                 String content = "Đã gửi một bài viết";
-                                if(Objects.equals(message.getIdSender(), FirebaseAuth.getInstance().getUid())){
-                                    content = "Bạn: "+content;
+                                if (Objects.equals(message.getIdSender(), FirebaseAuth.getInstance().getUid())) {
+                                    content = "Bạn: " + content;
                                 }
                                 holder.mTextDes.setText(content);
                             }
@@ -151,10 +201,9 @@ public class ConversationAdapter extends FirestoreAdapter<ConversationAdapter.Vi
                         }
 
                         ChatRepository.getDefaultChatInstance().getParticipantInConversation(conversation.getId(), FirebaseAuth.getInstance().getUid()).addOnSuccessListener(participant -> {
-                            if(participant == null || message == null){
+                            if (participant == null || message == null) {
                                 holder.mTextDes.setTypeface(Typeface.defaultFromStyle(Typeface.BOLD));
-                            }
-                            else if (participant.getReadLastMessageAt() != null && participant.getReadLastMessageAt().after(message.getSentAt())) {
+                            } else if (participant.getReadLastMessageAt() != null && participant.getReadLastMessageAt().after(message.getSentAt())) {
                                 //set holder.mTextDes fontweight to bold
                                 holder.mTextDes.setTypeface(Typeface.defaultFromStyle(Typeface.BOLD));
                             } else {
@@ -177,10 +226,10 @@ public class ConversationAdapter extends FirestoreAdapter<ConversationAdapter.Vi
                     holder.onlineStatus.setVisibility(View.GONE);
                     holder.offlineStatus.setVisibility(View.GONE);
                 }
+                holder.mLayoutCard.setOnClickListener(v -> iClickConversationListener.onClickConversation(conversation, user));
             });
-
         }
-        holder.mLayoutCard.setOnClickListener(v -> iClickConversationListener.onClickConversation(conversation));
+
     }
 
 }
