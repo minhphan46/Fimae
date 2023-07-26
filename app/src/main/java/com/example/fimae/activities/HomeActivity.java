@@ -15,6 +15,7 @@ import android.view.View;
 import com.example.fimae.R;
 import com.example.fimae.adapters.ViewPagerAdapter;
 import com.example.fimae.models.DisableUser;
+import com.example.fimae.repository.AuthRepository;
 import com.example.fimae.service.CustomViewPager;
 import com.example.fimae.service.UpdateUserActivityTimeService;
 import com.google.android.material.bottomnavigation.BottomNavigationView;
@@ -89,8 +90,13 @@ public class HomeActivity extends AppCompatActivity {
                             // Document exists, check if the user is disabled
                             DisableUser disableUser = snapshot.toObject(DisableUser.class);
                             if (disableUser != null && disableUser.getTimeEnd().after(new Date())) {
-                                Intent intent = new Intent(HomeActivity.this, AuthenticationActivity.class);
+//                                Intent intent = new Intent(HomeActivity.this, AuthenticationActivity.class);
+//                                intent.putExtra("signout", true);
+//                                startActivity(intent);
+                                Intent intent = new Intent(HomeActivity.this, DisabledUserActivity.class);
+                                intent.putExtra( "disableId", disableUser.getUserId());
                                 startActivity(intent);
+                                finish();
                             }
                         }
                     }

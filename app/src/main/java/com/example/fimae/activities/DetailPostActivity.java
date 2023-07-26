@@ -179,6 +179,14 @@ public class DetailPostActivity extends AppCompatActivity {
         binding.icMore.setOnClickListener(view -> {
             showMoreDialog();
         });
+        binding.imageAvatar.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                Intent intent = new Intent(DetailPostActivity.this, ProfileActivity.class);
+                intent.putExtra("uid", post.getPublisher());
+                startActivity(intent);
+            }
+        });
         Picasso.get().load(fimaers.getAvatarUrl()).placeholder(R.drawable.ic_default_avatar).into(binding.imageAvatar);
         binding.userName.setText(fimaers.getFirstName());
         if(imageUrls != null && !imageUrls.isEmpty()){
