@@ -45,6 +45,7 @@ import com.example.fimae.models.Fimaers;
 import com.example.fimae.models.Post;
 import com.example.fimae.models.shorts.ShortMedia;
 import com.example.fimae.repository.FimaerRepository;
+import com.example.fimae.repository.FollowRepository;
 import com.example.fimae.repository.ShortsRepository;
 import com.example.fimae.service.FirebaseService;
 import com.example.fimae.utils.FileUtils;
@@ -56,8 +57,12 @@ import com.google.android.material.tabs.TabLayout;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.firestore.CollectionReference;
 import com.google.firebase.firestore.DocumentChange;
+import com.google.firebase.firestore.DocumentSnapshot;
+import com.google.firebase.firestore.EventListener;
 import com.google.firebase.firestore.FirebaseFirestore;
+import com.google.firebase.firestore.FirebaseFirestoreException;
 import com.google.firebase.firestore.Query;
+import com.google.firebase.firestore.QuerySnapshot;
 import com.google.firebase.storage.UploadTask;
 import com.squareup.picasso.Picasso;
 
@@ -99,6 +104,7 @@ public class ProfileFragment extends Fragment {
         return fragment;
     }
 
+
     @Override
     public void onDestroy() {
         super.onDestroy();
@@ -130,6 +136,36 @@ public class ProfileFragment extends Fragment {
         {
             viewModel = new ViewModelProvider(this).get(ProfileViewModel.class);
         }
+//        FollowRepository.getInstance().getFollowers(viewModel.getUid()).addOnCompleteListener(new OnCompleteListener<ArrayList<Fimaers>>() {
+//            @Override
+//            public void onComplete(@NonNull Task<ArrayList<Fimaers>> task) {
+//                if(task.isSuccessful() && task.getResult() != null){
+//                    int num = task.getResult().size();
+//                    binding.followerNum.setText(String.valueOf(num));
+//                }
+//            }
+//        });
+        FollowRepository.getInstance().followRef.whereEqualTo("follower", viewModel.getUid()).addSnapshotListener(new EventListener<QuerySnapshot>() {
+            @Override
+            public void onEvent(@Nullable QuerySnapshot value, @Nullable FirebaseFirestoreException error) {
+                if(error != null || value == null){
+                    return;
+                }
+                binding.followerNum.setText(String.valueOf(value.getDocuments().size()));
+                for(DocumentSnapshot doc: value.getDocuments()){
+                }
+            }
+        });
+        FollowRepository.getInstance().getFollowings(viewModel.getUid()).addOnCompleteListener(new OnCompleteListener<ArrayList<Fimaers>>() {
+            @Override
+            public void onComplete(@NonNull Task<ArrayList<Fimaers>> task) {
+                if(task.isSuccessful() && task.getResult() != null){
+                    int num = task.getResult().size();
+                    binding.followingNum.setText(String.valueOf(num));
+                }
+            }
+        });
+
         binding.setLifecycleOwner(this.getViewLifecycleOwner());
         binding.setViewmodel(viewModel);
         posts.clear();
