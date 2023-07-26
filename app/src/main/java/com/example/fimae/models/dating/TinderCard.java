@@ -9,6 +9,7 @@ import android.widget.TextView;
 
 import com.bumptech.glide.Glide;
 import com.example.fimae.R;
+import com.example.fimae.repository.DatingRepository;
 import com.mindorks.placeholderview.SwipePlaceHolderView;
 import com.mindorks.placeholderview.annotations.Layout;
 import com.mindorks.placeholderview.annotations.Resolve;
@@ -36,13 +37,16 @@ public class TinderCard {
      TextView locationNameTxt;
 
     private DatingProfile mProfile;
+
+    private  DatingProfile currentProfile;
     private Context mContext;
     private SwipePlaceHolderView mSwipeView;
 
-    public TinderCard(Context context, DatingProfile profile, SwipePlaceHolderView swipeView) {
+    public TinderCard(Context context, DatingProfile profile, SwipePlaceHolderView swipeView, DatingProfile currentProfile) {
         mContext = context;
         mProfile = profile;
         mSwipeView = swipeView;
+        this.currentProfile = currentProfile;
     }
 
     @Resolve
@@ -55,12 +59,23 @@ public class TinderCard {
             LatLng latLng = mProfile.getLocation();
             addresses = (ArrayList<Address>) geocoder.getFromLocation(latLng.getLatitude(), latLng.getLongitude(), 1);
 
-            double distanceInKm = (mProfile.getDistanceFromYou()/1000);
-            //Set subtile is City name
-            DecimalFormat decimalFormat = new DecimalFormat("#.00");
-
             if (!addresses.isEmpty())
-                locationNameTxt.setText(addresses.get(0).getLocality() + " " +decimalFormat.format(distanceInKm) + "Km");
+            {
+                String distance = "";
+                if(mProfile.getDistanceFromYou() >=1000)
+                {
+                    double distanceInKm = (mProfile.getDistanceFromYou()/1000);
+                    //Set subtile is City name
+                    DecimalFormat decimalFormat = new DecimalFormat("#.00");
+                    distance = decimalFormat.format(distanceInKm) + "Km";
+                }
+                else
+                {
+                    distance = String.valueOf(mProfile.getDistanceFromYou()) + "m";
+                }
+
+                locationNameTxt.setText(addresses.get(0).getLocality() + " " + distance);
+            }
             else {
                 locationNameTxt.setText("Không xác định được vị trí");
             }
@@ -73,6 +88,8 @@ public class TinderCard {
     @SwipeOut
     public void onSwipedOut(){
         Log.d("EVENT", "onSwipedOut");
+        currentProfile.addUserDislike(mProfile.getUid());
+        DatingRepository.getInstance().updateUserDislike(currentProfile.getDislikedUsers());
         mSwipeView.addView(this);
     }
 
@@ -83,6 +100,8 @@ public class TinderCard {
 
     @SwipeIn
     public void onSwipeIn(){
+        currentProfile.addUserLike(mProfile.getUid());
+        DatingRepository.getInstance().updateUserLike(currentProfile.getLikedUsers());
         Log.d("EVENT", "onSwipedIn");
     }
 

@@ -14,6 +14,7 @@ import com.firebase.geofire.GeoLocation;
 import com.firebase.geofire.GeoQueryBounds;
 import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.Task;
+import com.google.android.gms.tasks.TaskCompletionSource;
 import com.google.android.gms.tasks.Tasks;
 import com.google.firebase.firestore.DocumentSnapshot;
 import com.google.firebase.firestore.Filter;
@@ -128,8 +129,7 @@ public class FetchDatingProfileRepo {
                                                     double distanceInM = GeoFireUtils.getDistanceBetween(docLocation, center);
                                                     datingProfiles.get(user.getUid()).setDistanceFromYou(distanceInM);
                                                 }
-                                                datingProfiles.remove(currentProfile.getUid());
-                                                callback.OnGetProfileComplete(filter(datingProfiles,currentProfile));
+                                                callback.OnGetProfileComplete(filter(datingProfiles,currentProfile),currentProfile);
                                             }
                                         }
 
@@ -137,8 +137,8 @@ public class FetchDatingProfileRepo {
                         }
                         else
                         {
-                            datingProfiles.remove(currentProfile.getUid());
-                            callback.OnGetProfileComplete(filter(datingProfiles,currentProfile));
+                            DatingProfile cProfile = datingProfiles.get(currentProfile.getUid());
+                            callback.OnGetProfileComplete(filter(datingProfiles,cProfile),cProfile);
                         }
 
 
@@ -154,7 +154,9 @@ public class FetchDatingProfileRepo {
         for (DatingProfile profile : datingProfiles.values())
         {
             int age = Integer.parseInt(currentProfile.getAge());
-            if(age >= profile.getMinAge() && age <= profile.getMaxAge())
+            int profileAge = Integer.parseInt(profile.getAge());
+            if(age >= profile.getMinAge() && age <= profile.getMaxAge()
+                    && profileAge >= currentProfile.getMinAge() && profileAge <= currentProfile.getMaxAge())
             {
                 GenderOptions gender = currentProfile.isGender() ? GenderOptions.MALE : GenderOptions.FEMALE;
                 GenderOptions profileGender = profile.isGender() ? GenderOptions.MALE : GenderOptions.FEMALE;
@@ -174,8 +176,21 @@ public class FetchDatingProfileRepo {
         return result;
     }
 
+    public Task<DatingProfile> getProfileById(String id)
+    {
+        TaskCompletionSource<DatingProfile> taskCompletionSource = new TaskCompletionSource<>();
+        if(datingProfiles.containsKey(id))
+        {
+            taskCompletionSource.setResult(datingProfiles.get(id));
+        }else
+        {
+            return DatingRepository.getInstance().getDatingProfileByUid(id);
+        }
+        return taskCompletionSource.getTask();
+    }
+
     public interface GetProfileCallback
     {
-        void OnGetProfileComplete(HashMap<String,DatingProfile> matchingList);
+        void OnGetProfileComplete(HashMap<String,DatingProfile> matchingList, DatingProfile currentProfil);
     }
 }

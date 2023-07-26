@@ -12,6 +12,7 @@ import com.example.fimae.models.dating.DatingProfileDefaultValue;
 import com.example.fimae.models.dating.EducationalLevel;
 import com.example.fimae.models.dating.GenderOptions;
 import com.example.fimae.models.dating.LatLng;
+import com.example.fimae.models.dating.Match;
 import com.example.fimae.models.dating.RelationshipType;
 import com.example.fimae.service.FirebaseService;
 import com.firebase.geofire.GeoFireUtils;
@@ -42,7 +43,7 @@ import java.util.function.BiConsumer;
 
 public class DatingRepository {
     public static final String datingProfilesCollection = "dating-profiles";
-    public static final String matchesCollection = "matches";
+    public static final String matchesCollection = "match";
     public static final String datingProfileImagesLocation = "dating-profile-images";
 
     FirebaseFirestore firestore;
@@ -63,6 +64,11 @@ public class DatingRepository {
         datingProfiles = firestore.collection(datingProfilesCollection);
         matches = firestore.collection(matchesCollection);
         datingProfileImages = FirebaseStorage.getInstance().getReference(datingProfileImagesLocation);
+    }
+
+    public Task<Void> updateMatch(String id, HashMap<String, Boolean> userRead)
+    {
+        return matches.document(id).update("userRead", userRead);
     }
 
     public Task<DatingProfile> createDatingProfile(LatLng location, ArrayList<Uri> images) {
@@ -152,6 +158,8 @@ public class DatingRepository {
         return updateProfileField("genderOptions", genderOptions);
     }
 
+
+
     public Task<Void> updateRelationshipType(RelationshipType relationshipType) {
         return updateProfileField("relationshipType", relationshipType);
     }
@@ -176,6 +184,16 @@ public class DatingRepository {
         batch.update(documentReference, "location", location);
         batch.update(documentReference, "geoHash", hash);
         return batch.commit();
+    }
+
+    public Task<Void> updateUserLike(ArrayList<String> userLike)
+    {
+        return updateProfileField("likedUsers", userLike);
+    }
+
+    public Task<Void> updateUserDislike(ArrayList<String> userDislike)
+    {
+        return updateProfileField("dislikedUsers", userDislike);
     }
 
     public Task<Void> updateEnable(boolean isEnable) {
