@@ -99,7 +99,7 @@ public class OnChatActivity extends AppCompatActivity {
         // call
         mTvStatusConnect = findViewById(R.id.status_appbar);
         initStringeeConnection();
-        getRemoteUserToken();
+        getRemoteUserId();
     }
 
     private void initViews() {
@@ -326,7 +326,6 @@ public class OnChatActivity extends AppCompatActivity {
     }
 
     // goi dien ====================================================
-    public static boolean isCalled = false;
     private String remoteUserToken;
     private TextView mTvStatusConnect;
     public static StringeeClient client;
@@ -344,7 +343,7 @@ public class OnChatActivity extends AppCompatActivity {
         startActivity(intent);
     }
 
-    private void getRemoteUserToken() {
+    private void getRemoteUserId() {
         getConversationById(conversationId).addOnCompleteListener(task -> {
             if (task.isSuccessful()) {
                 Conversation conversation = task.getResult();
@@ -353,6 +352,7 @@ public class OnChatActivity extends AppCompatActivity {
                     conversation.getParticipantIds().forEach(s -> {
                         if(!s.equals(FirebaseAuth.getInstance().getUid())){
                             remoteUserToken = s;
+                            ConnectRepo.getInstance().setUserRemoteById(remoteUserToken);
                             return;
                         }
                     });
@@ -384,14 +384,14 @@ public class OnChatActivity extends AppCompatActivity {
             @Override
             public void onConnectionConnected(StringeeClient stringeeClient, boolean b) {
                 runOnUiThread(()->{
-                    mTvStatusConnect.setText("Bạn là " + stringeeClient.getUserId());
+                    //mTvStatusConnect.setText("Bạn là " + stringeeClient.getUserId());
                 });
             }
 
             @Override
             public void onConnectionDisconnected(StringeeClient stringeeClient, boolean b) {
                 runOnUiThread(()->{
-                    mTvStatusConnect.setText("Mất kết nối");
+                    //mTvStatusConnect.setText("Mất kết nối");
                 });
             }
 
@@ -399,8 +399,9 @@ public class OnChatActivity extends AppCompatActivity {
             public void onIncomingCall(StringeeCall stringeeCall) {
                 runOnUiThread(()->{
                     callMap.put(stringeeCall.getCallId(), stringeeCall);
+                    // set user remote
+                    ConnectRepo.getInstance().setUserRemoteById(stringeeCall.getFrom());
                     // navigate to call screen
-                    isCalled = true;
                     Intent intent = new Intent(OnChatActivity.this, CallOnChatActivity.class);
                     intent.putExtra("callId", stringeeCall.getCallId());
                     intent.putExtra("isIncomingCall", true);
@@ -415,7 +416,7 @@ public class OnChatActivity extends AppCompatActivity {
             @Override
             public void onConnectionError(StringeeClient stringeeClient, StringeeError stringeeError) {
                 runOnUiThread(()->{
-                    mTvStatusConnect.setText("Lỗi kết nối");
+                    //mTvStatusConnect.setText("Lỗi kết nối");
                 });
             }
 

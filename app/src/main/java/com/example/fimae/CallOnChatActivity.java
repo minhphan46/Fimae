@@ -64,13 +64,17 @@ public class CallOnChatActivity extends AppCompatActivity {
         setContentView(binding.getRoot());
 
         // set image user
-        /*if(ConnectRepo.getInstance().getUserLocal() != null){
-            Picasso.get().load(ConnectRepo.getInstance().getUserLocal().getAvatarUrl()).placeholder(R.drawable.ic_default_avatar).into(mImageLocal);
+        if(ConnectRepo.getInstance().getUserLocal() != null){
+            Picasso.get().load(ConnectRepo.getInstance().getUserLocal().getAvatarUrl()).placeholder(R.drawable.ic_default_avatar).into(binding.imgAvatarLocal);
         }
         if(ConnectRepo.getInstance().getUserRemote() != null){
-            Picasso.get().load(ConnectRepo.getInstance().getUserRemote().getAvatarUrl()).placeholder(R.drawable.ic_default_avatar).into(mImageRemote);
-        }*/
+            Picasso.get().load(ConnectRepo.getInstance().getUserRemote().getAvatarUrl()).placeholder(R.drawable.ic_default_avatar).into(binding.imgAvatarRemote);
+        }
 
+        // set name user
+        if(ConnectRepo.getInstance().getUserLocal() != null){
+            binding.tvNameRemote.setText(ConnectRepo.getInstance().getUserRemote().getName());
+        }
         binding.btnSpeaker.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
