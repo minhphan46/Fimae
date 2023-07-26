@@ -16,6 +16,7 @@ import com.example.fimae.models.Conversation;
 import com.example.fimae.models.Fimaers;
 import com.example.fimae.models.Post;
 import com.google.android.gms.tasks.OnCompleteListener;
+import com.google.android.gms.tasks.OnFailureListener;
 import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.android.gms.tasks.Task;
 import com.google.android.gms.tasks.TaskCompletionSource;
@@ -28,6 +29,7 @@ import com.google.firebase.firestore.CollectionReference;
 import com.google.firebase.firestore.DocumentReference;
 import com.google.firebase.firestore.DocumentSnapshot;
 import com.google.firebase.firestore.FirebaseFirestore;
+import com.google.firebase.firestore.SetOptions;
 import com.google.firebase.storage.FirebaseStorage;
 import com.google.firebase.storage.StorageReference;
 
@@ -230,6 +232,24 @@ public class PostRepository {
         return taskCompletionSource.getTask();
     }
 
+    public Task<Boolean> deletePost(String postId){
+        TaskCompletionSource<Boolean> taskCompletionSource = new TaskCompletionSource<>();
+        postRef.document(postId).set(new HashMap<String, Object>() {{
+                    put("isDeleted", true);
+                }}, SetOptions.merge())
+                .addOnSuccessListener(new OnSuccessListener<Void>() {
+            @Override
+            public void onSuccess(Void unused) {
+                taskCompletionSource.setResult(true);
+            }
+        }).addOnFailureListener(new OnFailureListener() {
+            @Override
+            public void onFailure(@NonNull Exception e) {
+                taskCompletionSource.setResult(false);
+            }
+        });
+        return taskCompletionSource.getTask();
+    }
     public Task<Boolean> editPost(List<String> editedImageList, List<Uri> imageList, String description, PostMode mode, Context context, String postId) {
         TaskCompletionSource<Boolean> taskCompletionSource = new TaskCompletionSource<>();
         List<String> downloadUrls = new ArrayList<>();
@@ -341,24 +361,26 @@ public class PostRepository {
         }
     }
 
-    public void updateNumOfComment(String postId){
-        final int[] number = {0};
+    // public void updateNumOfComment(String postId){
+    //     final int[] number = {0};
 
-        postRef(postId).get().addOnSuccessListener(new OnSuccessListener<DocumentSnapshot>() {
-            @Override
-            public void onSuccess(DocumentSnapshot documentSnapshot) {
-               Post post = documentSnapshot.toObject(Post.class);
-               number[0] = (post.getNumberOfComments() + 1);
-                postRef(postId).update("numberOfComments", number[0]);
-            }
-        });
-    }
+    //     postRef(postId).get().addOnSuccessListener(new OnSuccessListener<DocumentSnapshot>() {
+    //         @Override
+    //         public void onSuccess(DocumentSnapshot documentSnapshot) {
+    //            Post post = documentSnapshot.toObject(Post.class);
+    //            number[0] = (post.getNumberOfComments() + 1);
+    //             postRef(postId).update("numberOfComments", number[0]);
+    //         }
+    //     });
+    // }
     public DocumentReference postRef(String id){
         DocumentReference ref =  FirebaseFirestore.getInstance().collection("posts")
                 .document(id);
         return ref;
 
     }
+
+
     private String getFileExtension(Uri uri, Context context) {
         ContentResolver contentResolver = context.getContentResolver();
         MimeTypeMap mime = MimeTypeMap.getSingleton();
