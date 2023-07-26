@@ -1,4 +1,4 @@
-package com.example.fimae.viewmodels;
+package com.example.fimae.Constant;
 
 public class ChipData {
     public static String[] tinhCach = {

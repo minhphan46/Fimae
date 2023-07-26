@@ -33,6 +33,7 @@
         android:fullBackupContent="@xml/backup_rules"
         android:icon="@mipmap/ic_launcher"
         android:label="@string/app_name"
+        android:name=".FimaeApp"
         android:requestLegacyExternalStorage="true"
         android:roundIcon="@mipmap/ic_launcher_round"
         android:supportsRtl="true"
@@ -168,6 +169,7 @@
         <activity
             android:name=".activities.HomeActivity"
             android:exported="true" />
+
     </application>
 
 </manifest>
