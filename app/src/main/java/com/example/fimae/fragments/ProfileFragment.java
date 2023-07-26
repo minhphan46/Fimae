@@ -263,7 +263,7 @@ public class ProfileFragment extends Fragment {
                 } else if (position == 1) {
 
                     binding.postList.setAdapter(shortsReviewProfileAdapter);
-                    GridAutoFitLayoutManager gridLayoutManager = new GridAutoFitLayoutManager(getContext(), 120);
+                    GridAutoFitLayoutManager gridLayoutManager = new GridAutoFitLayoutManager(getContext(), 100);
                     binding.postList.setLayoutManager(gridLayoutManager);
                 }
             }
