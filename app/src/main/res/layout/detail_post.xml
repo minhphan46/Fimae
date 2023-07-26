@@ -319,17 +319,21 @@
                 android:layout_alignParentBottom="true"
                 android:paddingVertical="5dp"
                 >
-
-                <ImageView
-                    android:id="@+id/icon_emoji"
-                    android:layout_width="25dp"
-                    android:layout_height="25dp"
-                    android:layout_marginStart="14dp"
-                    android:src="@drawable/ic_close"
+                <TextView
+                    android:id="@+id/isDisable"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginStart="100dp"
+                    style="@style/bold_20"
+                    android:textColor="@color/text_secondary"
+                    android:paddingRight="0dp"
+                    android:text="Đã vô hiệu hóa đăng bài"
                     app:layout_constraintLeft_toLeftOf="parent"
                     app:layout_constraintTop_toTopOf="parent"
                     app:layout_constraintBottom_toBottomOf="parent"
+                    android:visibility="gone"
                     />
+
 
             </androidx.constraintlayout.widget.ConstraintLayout>
         </RelativeLayout>

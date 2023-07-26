@@ -11,8 +11,8 @@
 
     <ImageButton
         android:id="@+id/btn_setting_home"
-        android:layout_width="30dp"
-        android:layout_height="30dp"
+        android:layout_width="0dp"
+        android:layout_height="0dp"
         android:background="@drawable/ic_filter"
         android:padding="20dp"/>
 
@@ -25,7 +25,7 @@
         style="@style/bold_24"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:text="@string/app_name"
+        android:text="Fimae Admin"
         android:textColor="@color/primary_1"
         android:gravity="center"/>
     <Space
@@ -35,7 +35,7 @@
 
     <ImageButton
         android:id="@+id/btn_noti_home"
-        android:layout_width="28dp"
+        android:layout_width="0dp"
         android:layout_height="28dp"
         android:background="@drawable/ic_notification"
         android:padding="20dp" />

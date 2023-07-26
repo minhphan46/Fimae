@@ -256,14 +256,11 @@ public class DetailPostActivity extends AppCompatActivity {
                 }
                 userDisable = value.toObject(UserDisable.class);
                 if(userDisable != null && userDisable.getTimeEnd().after(new Date()) && userDisable.getType() != null && userDisable.getType().equals("POST")){
-                    binding.numberOfReport.setText("Đã vô hiệu hóa");
-                }
-                else {
-                    getNumberOfReport();
+                    binding.isDisable.setVisibility(View.VISIBLE);
                 }
             }
         });
-
+        getNumberOfReport();
         TimerService.setDuration(binding.activeTime, post.getTimeCreated());
         binding.content.setText(post.getContent());
         Picasso.get().load(fimaers.getAvatarUrl()).placeholder(R.drawable.ic_default_avatar).into(binding.imageAvatar);
@@ -389,11 +386,6 @@ public class DetailPostActivity extends AppCompatActivity {
                 //add comment
                 //go liked list people
                 //
-                binding.iconEmoji.setOnClickListener(new View.OnClickListener() {
-                    @Override
-                    public void onClick(View view) {
-                    }
-                });
                 binding.numberOfReport.setOnClickListener(new View.OnClickListener() {
                     @Override
                     public void onClick(View view) {

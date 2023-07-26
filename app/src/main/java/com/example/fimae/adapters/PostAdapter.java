@@ -186,27 +186,27 @@ public class PostAdapter extends RecyclerView.Adapter<PostAdapter.ViewHolder> {
             binding.commentNumber.setText(String.valueOf(updatePost.getNumberOfComments()));
             binding.likeNumber.setText(updatePost.getNumberTrue());
 
-            if(updatePost.getLikes().containsKey(currentPost.getPublisher()) && Boolean.TRUE.equals(updatePost.getLikes().get(currentPost.getPublisher()))){
-                binding.icLike.setImageResource(R.drawable.ic_heart1);
-                binding.icLike.setOnClickListener(view -> {
-                    String path = "likes." + fimaers.getUid();
-                    binding.icLike.setImageResource(R.drawable.ic_heart1);
-                    reference.document(currentPost.getPostId()).update(
-                            path, false
-                    );
-                });
-
-            }
-            else {
-                binding.icLike.setImageResource(R.drawable.ic_heart_gray);
-                binding.icLike.setOnClickListener(view -> {
-                    String path = "likes." + fimaers.getUid();
-                    binding.icLike.setImageResource(R.drawable.ic_heart1);
-                    reference.document(currentPost.getPostId()).update(
-                            path, true
-                    );
-                });
-            }
+//            if(updatePost.getLikes().containsKey(currentPost.getPublisher()) && Boolean.TRUE.equals(updatePost.getLikes().get(currentPost.getPublisher()))){
+//                binding.icLike.setImageResource(R.drawable.ic_heart1);
+//                binding.icLike.setOnClickListener(view -> {
+//                    String path = "likes." + fimaers.getUid();
+//                    binding.icLike.setImageResource(R.drawable.ic_heart1);
+//                    reference.document(currentPost.getPostId()).update(
+//                            path, false
+//                    );
+//                });
+//
+//            }
+//            else {
+//                binding.icLike.setImageResource(R.drawable.ic_heart_gray);
+//                binding.icLike.setOnClickListener(view -> {
+//                    String path = "likes." + fimaers.getUid();
+//                    binding.icLike.setImageResource(R.drawable.ic_heart1);
+//                    reference.document(currentPost.getPostId()).update(
+//                            path, true
+//                    );
+//                });
+//            }
 //            binding.icMore.setOnClickListener(new View.OnClickListener() {
 //                @Override
 //                public void onClick(View view) {
