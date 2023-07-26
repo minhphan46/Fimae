@@ -177,7 +177,7 @@ public class ProfileFragment extends Fragment {
             @Override
             public void onClick(View view) {
                 Intent intent = new Intent(getContext(), DisableUserActivity.class);
-                intent.putExtra("uid", uid);
+                intent.putExtra("id", uid);
                 startActivity(intent);
             }
         });

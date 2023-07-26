@@ -12,10 +12,19 @@ import com.google.firebase.firestore.DocumentReference;
 import com.google.firebase.firestore.FirebaseFirestore;
 
 public class AdminRepository {
+
+    private static AdminRepository adminRepository;
+    private AdminRepository(){
+
+    }
+    public static AdminRepository getInstance(){
+        if(adminRepository == null) adminRepository = new AdminRepository();
+        return adminRepository;
+    }
     private CollectionReference disableRef = FirebaseFirestore.getInstance().collection("user_disable");
     public Task<Boolean> disableUser(UserDisable userDisable){
         TaskCompletionSource<Boolean> taskCompletionSource = new TaskCompletionSource<>();
-        DocumentReference disableUser = disableRef.document();
+        DocumentReference disableUser = disableRef.document(userDisable.getUserId());
         disableUser.set(userDisable).addOnSuccessListener(new OnSuccessListener<Void>() {
             @Override
             public void onSuccess(Void unused) {

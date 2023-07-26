@@ -52,28 +52,17 @@ public class CreateProfileFragment extends Fragment {
         binding.setLifecycleOwner(this.getViewLifecycleOwner());
         viewModel = new ViewModelProvider(getActivity()).get(CreateProfileViewModel.class);
         viewModel.user.setGender(true);
-        binding.dobEditText.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                showDateTimePicker();
+        binding.dobEditText.setOnClickListener(view -> showDateTimePicker());
+        binding.maleChip.setOnCheckedChangeListener((compoundButton, b) -> {
+            if(b)
+            {
+                viewModel.user.setGender(true);
             }
         });
-        binding.maleChip.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
-            @Override
-            public void onCheckedChanged(CompoundButton compoundButton, boolean b) {
-                if(b)
-                {
-                    viewModel.user.setGender(true);
-                }
-            }
-        });
-        binding.femaleChip.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
-            @Override
-            public void onCheckedChanged(CompoundButton compoundButton, boolean b) {
-                if(b)
-                {
-                    viewModel.user.setGender(false);
-                }
+        binding.femaleChip.setOnCheckedChangeListener((compoundButton, b) -> {
+            if(b)
+            {
+                viewModel.user.setGender(false);
             }
         });
         binding.buttonFinish.setOnClickListener(new View.OnClickListener() {

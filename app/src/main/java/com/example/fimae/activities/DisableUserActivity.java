@@ -14,6 +14,8 @@ import com.example.fimae.R;
 import com.example.fimae.databinding.ActivityCreateProfileBinding;
 import com.example.fimae.databinding.ActivityDisableUserBinding;
 import com.example.fimae.models.UserDisable;
+import com.example.fimae.repository.AdminRepository;
+import com.google.android.gms.tasks.OnSuccessListener;
 
 import java.text.ParseException;
 import java.util.Calendar;
@@ -41,7 +43,15 @@ public class DisableUserActivity extends AppCompatActivity {
         binding.buttonFinish.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-
+                binding.progressBar.setVisibility(View.VISIBLE);
+                binding.contentLayout.setVisibility(View.GONE);
+                userDisable.setReason(binding.nameEditText.getText().toString());
+                AdminRepository.getInstance().disableUser(userDisable).addOnSuccessListener(new OnSuccessListener<Boolean>() {
+                    @Override
+                    public void onSuccess(Boolean aBoolean) {
+                        finish();
+                    }
+                });
             }
         });
     }
@@ -94,7 +104,7 @@ public class DisableUserActivity extends AppCompatActivity {
         String date = binding.dobEditText.getText().toString().trim();
 
         // Perform your data validation here
-        if (!reason.isEmpty() && !date.isEmpty()) {
+        if (!reason.isEmpty() && !date.isEmpty() && userDisable.getTimeEnd() != null && userDisable.getTimeEnd().after(new Date())) {
             binding.buttonFinish.setEnabled(true);
         } else {
             binding.buttonFinish.setEnabled(false);
