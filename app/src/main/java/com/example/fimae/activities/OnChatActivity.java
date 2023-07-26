@@ -1,6 +1,7 @@
 package com.example.fimae.activities;
 
 import android.content.Intent;
+import android.content.pm.PackageManager;
 import android.graphics.Bitmap;
 import android.net.Uri;
 import android.os.Handler;
@@ -261,7 +262,18 @@ public class OnChatActivity extends AppCompatActivity {
                 });
     }
 
+    private boolean requestCameraPermission() {
+       if (checkSelfPermission(android.Manifest.permission.CAMERA) != PackageManager.PERMISSION_GRANTED) {
+           requestPermissions(new String[]{android.Manifest.permission.CAMERA}, 1);
+           return false;
+       }
+         return true;
+    }
+
     private void dispatchTakePictureIntent() {
+        if (!requestCameraPermission()) {
+            return;
+        }
         Intent takePictureIntent = new Intent(MediaStore.ACTION_IMAGE_CAPTURE);
         startActivityForResult(takePictureIntent, REQUEST_IMAGE_CAPTURE);
     }

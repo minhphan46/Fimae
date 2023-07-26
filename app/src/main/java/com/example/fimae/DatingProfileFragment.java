@@ -41,6 +41,7 @@ public class DatingProfileFragment extends Fragment {
     DatingProfile datingProfile;
 
     public DatingProfileFragment(DatingProfile profile) {
+        super();
         this.datingProfile = profile;
     }
 

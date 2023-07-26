@@ -47,7 +47,7 @@ import java.util.List;
 public class DatingAddImages extends AppCompatActivity {
 
     private boolean checkReadImageAndVideoPermission(){
-        if (Build.VERSION.SDK_INT == Build.VERSION_CODES.S) {
+        if (Build.VERSION.SDK_INT == Build.VERSION_CODES.TIRAMISU) {
             if (ActivityCompat.checkSelfPermission(this, Manifest.permission.READ_MEDIA_IMAGES) != PackageManager.PERMISSION_GRANTED && ActivityCompat.checkSelfPermission(this, Manifest.permission.READ_MEDIA_VIDEO) != PackageManager.PERMISSION_GRANTED) {
                 ActivityCompat.requestPermissions(this, new String[]{android.Manifest.permission.READ_MEDIA_IMAGES, android.Manifest.permission.READ_MEDIA_VIDEO}, 1);
                 Toast.makeText(getApplicationContext(), "Please allow permission to access your gallery", Toast.LENGTH_SHORT).show();
@@ -162,14 +162,22 @@ public class DatingAddImages extends AppCompatActivity {
         ArrayList<Uri> localImages = new ArrayList<>();
         for (DatingImageAdapterItem item : postPhotoAdapter.getItems()) {
             if (item.isLocal()) {
-                localImages.add(Uri.parse(item.getUrl()));
+                Uri uri = Uri.parse(item.getUrl());
+                Uri fileUri = Uri.parse(FileUtils.getFilePathFromContentUri(this, uri));
+                localImages.add(fileUri);
             } else {
                 remoteImages.add(Uri.parse(item.getUrl()));
             }
         }
-
         DatingRepository.getInstance().updateDatingProfileImages(remoteImages, localImages).addOnCompleteListener(task -> {
             if (task.isSuccessful()) {
+                Intent intent = new Intent();
+                ArrayList<String> images = new ArrayList<>();
+                for(Uri uri : task.getResult()){
+                    images.add(uri.toString());
+                }
+                intent.putExtra("urls", images);
+                setResult(RESULT_OK,intent );
                 Toast.makeText(getApplicationContext(), "Profile updated", Toast.LENGTH_SHORT).show();
                 finish();
             } else {
