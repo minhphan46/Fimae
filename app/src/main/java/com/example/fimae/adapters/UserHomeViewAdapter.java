@@ -48,7 +48,6 @@ public class UserHomeViewAdapter extends RecyclerView.Adapter<UserHomeViewAdapte
     Context context;
     public interface IClickCardUserListener {
         void onClickUser(Fimaers user);
-        void onGoChat(Fimaers user);
     }
     public UserHomeViewAdapter(Context context){
         this.context = context;
@@ -70,8 +69,8 @@ public class UserHomeViewAdapter extends RecyclerView.Adapter<UserHomeViewAdapte
         private ImageView mIconGender;
         private ImageView onlineStatus;
         private TextView offlineStatus;
-        private TextView follow;
-        private TextView goChat;
+//        private TextView follow;
+//        private TextView goChat;
         public ViewHolder(@NonNull View itemView) {
             super(itemView);
             mLayoutCard = itemView.findViewById(R.id.item_user_layout_card);
@@ -83,8 +82,8 @@ public class UserHomeViewAdapter extends RecyclerView.Adapter<UserHomeViewAdapte
             mIconGender = itemView.findViewById(R.id.item_user_ic_gender);
             onlineStatus = itemView.findViewById(R.id.imv_status_indicator);
             offlineStatus = itemView.findViewById(R.id.tv_status);
-            follow = itemView.findViewById(R.id.follow);
-            goChat = itemView.findViewById(R.id.chat);
+//            follow = itemView.findViewById(R.id.follow);
+//            goChat = itemView.findViewById(R.id.chat);
         }
     }
 
@@ -130,57 +129,56 @@ public class UserHomeViewAdapter extends RecyclerView.Adapter<UserHomeViewAdapte
         //create bottomsheet
 
 
-        if(user.getUid().equals(FirebaseAuth.getInstance().getUid())){
-            holder.follow.setVisibility(View.GONE);
-        }
-        else{
-            String doc1 = FirebaseAuth.getInstance().getUid()+"_"+user.getUid();
-            String doc2 = user.getUid()+"_"+FirebaseAuth.getInstance().getUid();
-            Query query = FollowRepository.getInstance().followRef.whereIn(FieldPath.documentId(), Arrays.asList(doc1, doc2));
-
-            query.addSnapshotListener((queryDocumentSnapshots, error) -> {
-                if (error != null) {
-                    // Handle the error
-                    return;
-                }
-                if(queryDocumentSnapshots.getDocuments().size() == 2){
-                    holder.goChat.setVisibility(View.VISIBLE);
-                    holder.follow.setVisibility(View.GONE);
-                }
-                else {
-                    holder.goChat.setVisibility(View.GONE);
-                    holder.follow.setVisibility(View.VISIBLE);
-                    if(queryDocumentSnapshots.getDocuments().size() == 1){
-                        Follows follows = queryDocumentSnapshots.getDocuments().get(0).toObject(Follows.class);
-                        assert follows != null;
-                        if(follows.getFollower().equals(user.getUid())){
-                            holder.follow.setText("Bỏ theo dõi");
-                        }
-                        else{
-                            holder.follow.setText("Theo dõi");
-                        }
-                    }
-                    else{
-                        holder.follow.setText("Theo dõi");
-                    }
-                }
-            });
-        }
-
-        holder.goChat.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                iClickCardUserListener.onGoChat(user);
-            }
-        });
-        holder.follow.setOnClickListener(view -> {
-            if(holder.follow.getText().equals("Theo dõi")){
-                FollowRepository.getInstance().follow(user.getUid());
-            }
-            else {
-                FollowRepository.getInstance().unFollow(user.getUid());
-            }
-        });
+//        if(user.getUid().equals(FirebaseAuth.getInstance().getUid())){
+//            holder.follow.setVisibility(View.GONE);
+//        }
+//        else{
+//            String doc1 = FirebaseAuth.getInstance().getUid()+"_"+user.getUid();
+//            String doc2 = user.getUid()+"_"+FirebaseAuth.getInstance().getUid();
+//            Query query = FollowRepository.getInstance().followRef.whereIn(FieldPath.documentId(), Arrays.asList(doc1, doc2));
+//
+//            query.addSnapshotListener((queryDocumentSnapshots, error) -> {
+//                if (error != null) {
+//                    // Handle the error
+//                    return;
+//                }
+//                if(queryDocumentSnapshots.getDocuments().size() == 2){
+//                    holder.goChat.setVisibility(View.VISIBLE);
+//                    holder.follow.setVisibility(View.GONE);
+//                }
+//                else {
+//                    holder.goChat.setVisibility(View.GONE);
+//                    holder.follow.setVisibility(View.VISIBLE);
+//                    if(queryDocumentSnapshots.getDocuments().size() == 1){
+//                        Follows follows = queryDocumentSnapshots.getDocuments().get(0).toObject(Follows.class);
+//                        assert follows != null;
+//                        if(follows.getFollower().equals(user.getUid())){
+//                            holder.follow.setText("Bỏ theo dõi");
+//                        }
+//                        else{
+//                            holder.follow.setText("Theo dõi");
+//                        }
+//                    }
+//                    else{
+//                        holder.follow.setText("Theo dõi");
+//                    }
+//                }
+//            });
+//        }
+//
+//        holder.goChat.setOnClickListener(new View.OnClickListener() {
+//            @Override
+//            public void onClick(View view) {
+//            }
+//        });
+//        holder.follow.setOnClickListener(view -> {
+//            if(holder.follow.getText().equals("Theo dõi")){
+//                FollowRepository.getInstance().follow(user.getUid());
+//            }
+//            else {
+//                FollowRepository.getInstance().unFollow(user.getUid());
+//            }
+//        });
     }
 
     @Override

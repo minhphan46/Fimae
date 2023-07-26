@@ -51,11 +51,6 @@ public class SearchUserActivity extends AppCompatActivity implements SearchView.
                     }
                 });
             }
-
-            @Override
-            public void onGoChat(Fimaers user) {
-
-            }
         }));
     }
 

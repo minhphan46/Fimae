@@ -46,9 +46,10 @@ public class ShareAdapter extends RecyclerView.Adapter<ShareAdapter.ViewHolder> 
     public void onBindViewHolder(@NonNull ShareAdapter.ViewHolder holder, int position) {
         ShareItemUserBinding binding = holder.binding;
         Fimaers userInfo = userInfos.get(position);
-        binding.userName.setText(userInfo.getLastName());
+        binding.userName.setText(userInfo.getFirstName());
         Picasso.get().load(userInfo.getAvatarUrl()).placeholder(R.drawable.ic_default_avatar).into(binding.imageAvatar);
-        binding.userName.setText(userInfo.getLastName());
+        binding.userName.setText(userInfo.getFirstName());
+        binding.slogan.setText(userInfo.getBio());
         if(!userInfo.isGender()){
             binding.itemUserIcGender.setImageResource(R.drawable.ic_male);
             binding.genderAgeIcon.setBackgroundResource(R.drawable.shape_gender_border_pink);

@@ -180,7 +180,7 @@ public class DetailPostActivity extends AppCompatActivity {
             showMoreDialog();
         });
         Picasso.get().load(fimaers.getAvatarUrl()).placeholder(R.drawable.ic_default_avatar).into(binding.imageAvatar);
-        binding.userName.setText(fimaers.getLastName());
+        binding.userName.setText(fimaers.getFirstName());
         if(imageUrls != null && !imageUrls.isEmpty()){
 //            for(int i = 0; i < imageUrls.size(); i++){
 //                imageUris.add(Uri.parse(imageUrls.get(i)));
@@ -210,7 +210,7 @@ public class DetailPostActivity extends AppCompatActivity {
             selectedCommentId =  comment.getParentId() != "" ? comment.getParentId() : comment.getId();
             FimaerRepository.getInstance().getFimaerById(comment.getPublisher()).addOnCompleteListener(task -> {
                 task.onSuccessTask(mfimaers -> {
-                    binding.addComment.setHint("@"+mfimaers.getLastName());
+                    binding.addComment.setHint("@"+mfimaers.getFirstName());
                     return null;
                 });
             });
@@ -339,71 +339,39 @@ public class DetailPostActivity extends AppCompatActivity {
             binding.follow.setVisibility(View.GONE);
         }
         else{
-            String doc1 = FirebaseAuth.getInstance().getUid()+"_"+post.getPublisher();
-            String doc2 = post.getPublisher()+"_"+FirebaseAuth.getInstance().getUid();
-            Query query = FollowRepository.getInstance().followRef.whereIn(FieldPath.documentId(), Arrays.asList(doc1, doc2));
-
-            query.addSnapshotListener(new EventListener<QuerySnapshot>() {
+            FollowRepository.getInstance().followRef.document(FirebaseAuth.getInstance().getUid()+"_"+post.getPublisher()).addSnapshotListener(new EventListener<DocumentSnapshot>() {
                 @Override
-                public void onEvent(@Nullable QuerySnapshot queryDocumentSnapshots, @Nullable FirebaseFirestoreException error) {
-                    if (error != null) {
-                        // Handle the error
+                public void onEvent(@Nullable DocumentSnapshot value, @Nullable FirebaseFirestoreException error) {
+                    if(error != null ){
                         return;
                     }
-                    if(queryDocumentSnapshots.getDocuments().size() == 2){
-                        binding.edit.setVisibility(View.VISIBLE);
+                    if(value != null && value.exists()){
                         binding.follow.setVisibility(View.GONE);
+                        binding.edit.setVisibility(View.VISIBLE);
                     }
-                    else {
-                        binding.edit.setVisibility(View.GONE);
+                    else{
                         binding.follow.setVisibility(View.VISIBLE);
-                        if(queryDocumentSnapshots.getDocuments().size() == 1){
-                            Follows follows = queryDocumentSnapshots.getDocuments().get(0).toObject(Follows.class);
-                            if(follows.getFollower().equals(post.getPublisher())){
-                                binding.follow.setText("Bỏ theo dõi");
-                            }
-                            else{
-                                binding.follow.setText("Theo dõi");
-                            }
-                        }
-                        else{
-                            binding.follow.setText("Theo dõi");
-                        }
+                        binding.edit.setVisibility(View.GONE);
                     }
                 }
             });
-        }
 
+        }
         binding.edit.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                showChatDialog();
+                postRepository.goToChatWithUser(post.getPublisher(), DetailPostActivity.this);
             }
         });
-        binding.follow.setOnClickListener(view -> {
-            if(binding.follow.getText().equals("Theo dõi")){
-                FollowRepository.getInstance().follow(post.getPublisher()).addOnCompleteListener(new OnCompleteListener<Boolean>() {
-                    @Override
-                    public void onComplete(@NonNull Task<Boolean> task) {
-                        if (task.getResult()) {
-//                            binding.follow.setText("Bỏ theo dõi");
-                        }
-                    }
-                });
+        binding.follow.setOnClickListener(view -> FollowRepository.getInstance().follow(post.getPublisher()).addOnCompleteListener(new OnCompleteListener<Boolean>() {
+            @Override
+            public void onComplete(@NonNull Task<Boolean> task) {
+                if(task.getResult()){
+                    binding.follow.setVisibility(View.GONE);
+                    binding.edit.setVisibility(View.VISIBLE);
+                }
             }
-            else {
-                FollowRepository.getInstance().unFollow(post.getPublisher()).addOnCompleteListener(new OnCompleteListener<Boolean>() {
-                    @Override
-                    public void onComplete(@NonNull Task<Boolean> task) {
-                        if (task.getResult()) {
-//                            binding.follow.setText("Theo dõi");
-                        }
-                    }
-
-                });
-
-            }
-        });
+        }));
         binding.iconEmoji.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
