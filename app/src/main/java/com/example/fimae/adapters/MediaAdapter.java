@@ -77,6 +77,38 @@ public class MediaAdapter extends RecyclerView.Adapter<MediaAdapter.ViewHolder> 
         });
     }
 
+    @RequiresApi(api = Build.VERSION_CODES.Q)
+    public MediaAdapter(Context context, int mediaType) {
+        pickedItems = new ArrayList<>();
+        mediaAdapterItems = new ArrayList<>();
+        ExecutorService executor = Executors.newSingleThreadExecutor();
+        Handler handler = new Handler(Looper.getMainLooper());
+
+        executor.execute(() -> {
+            //Background work here
+            ArrayList<String> mediaPaths = FileUtils.getAllMediaPaths(context);
+            for (int i = 0; i < mediaPaths.size(); i++) {
+                String path = mediaPaths.get(i);
+                MediaAdapterItem item = new MediaAdapterItem(path);
+                item.position = i;
+                if (FileUtils.isImageFile(path)) {
+                    //item.mediaType = IMAGE;
+                } else {
+                    final String videoDuration;
+                    try {
+                        videoDuration = FileUtils.formatDuration(FileUtils.getVideoDuration(path));
+                    } catch (IOException e) {
+                        continue;
+                    }
+                    item.mediaType = VIDEO;
+                    item.videoDuration = videoDuration;
+                    mediaAdapterItems.add(item);
+                }
+            }
+            //UI Thread work here
+            handler.post(this::notifyDataSetChanged);
+        });
+    }
     @NonNull
     @Override
     public ViewHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
