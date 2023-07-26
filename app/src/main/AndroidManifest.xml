@@ -26,7 +26,8 @@
     <uses-permission android:name="android.permission.WRITE_EXTERNAL_STORAGE" />
     <uses-permission android:name="android.permission.CAMERA" />
     <uses-permission android:name="android.permission.READ_EXTERNAL_STORAGE" />
-
+    <uses-permission android:name="android.permission.READ_MEDIA_IMAGES"/>
+    <uses-permission android:name="android.permission.READ_MEDIA_VIDEO"/>
 
     <application
         android:allowBackup="true"
@@ -39,9 +40,14 @@
         android:supportsRtl="true"
         android:theme="@style/Theme.Fimae"
         tools:targetApi="31">
+        <activity
+            android:name=".DatingAddImages"
+            android:exported="false" />
+
         <meta-data
             android:name="com.google.android.geo.API_KEY"
             android:value="AIzaSyBvm9N9gHEq0ru7PjTCUDvtazOxvwoz0N0" />
+
         <activity
             android:name=".activities.MapPicker"
             android:exported="false" />

@@ -27,6 +27,7 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         app:layout_constraintTop_toBottomOf="@+id/appbar_dating_profile"
+        android:visibility="gone"
         />
 
     <androidx.viewpager2.widget.ViewPager2
@@ -36,7 +37,16 @@
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/dating_tab_layout" />
+        app:layout_constraintTop_toBottomOf="@+id/dating_tab_layout"
+        android:visibility="gone"
+        />
+
+    <ProgressBar
+        android:id="@+id/dating_progress_bar"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/appbar_dating_profile" />
 
 
 </androidx.constraintlayout.widget.ConstraintLayout>

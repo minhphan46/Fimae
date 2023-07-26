@@ -1,7 +1,6 @@
 package com.example.fimae.models.dating;
 
 
-import com.google.android.gms.maps.model.LatLng;
 import com.google.firebase.firestore.ServerTimestamp;
 
 import java.util.ArrayList;
@@ -11,28 +10,24 @@ public class DatingProfile {
     private String id;
     private @ServerTimestamp Date timeCreated;
     private String uid;
-    private String description;
     private LatLng location;
     private int distance;
     private int minAge;
     private int maxAge;
     private int minHeight;
     private int maxHeight;
+    private GenderOptions genderOptions;
     private RelationshipType relationshipType;
     private EducationalLevel educationalLevel;
     private boolean isEnable;
-    private boolean isVerified;
-    private ArrayList<String> genres;
     private ArrayList<String> images;
     private ArrayList<String> likedUsers;
     private ArrayList<String> dislikedUsers;
 
     public DatingProfile() {
-        genres = new ArrayList<>();
         likedUsers = new ArrayList<>();
         dislikedUsers = new ArrayList<>();
         isEnable = true;
-        isVerified = false;
     }
 
     public String getId() {
@@ -57,14 +52,6 @@ public class DatingProfile {
 
     public void setUid(String uid) {
         this.uid = uid;
-    }
-
-    public String getDescription() {
-        return description;
-    }
-
-    public void setDescription(String description) {
-        this.description = description;
     }
 
     public LatLng getLocation() {
@@ -139,21 +126,6 @@ public class DatingProfile {
         isEnable = enable;
     }
 
-    public boolean isVerified() {
-        return isVerified;
-    }
-
-    public void setVerified(boolean verified) {
-        isVerified = verified;
-    }
-
-    public ArrayList<String> getGenres() {
-        return genres;
-    }
-
-    public void setGenres(ArrayList<String> genres) {
-        this.genres = genres;
-    }
 
     public ArrayList<String> getImages() {
         return images;
@@ -177,5 +149,13 @@ public class DatingProfile {
 
     public void setDislikedUsers(ArrayList<String> dislikedUsers) {
         this.dislikedUsers = dislikedUsers;
+    }
+
+    public GenderOptions getGenderOptions() {
+        return genderOptions;
+    }
+
+    public void setGenderOptions(GenderOptions genderOptions) {
+        this.genderOptions = genderOptions;
     }
 }
