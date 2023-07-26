@@ -4,7 +4,6 @@ import android.content.Intent;
 
 import androidx.annotation.NonNull;
 
-import com.example.fimae.activities.CreateProfileActivity;
 import com.example.fimae.activities.HomeActivity;
 import com.example.fimae.activities.SplashActivity;
 import com.example.fimae.models.Fimaers;

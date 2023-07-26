@@ -28,6 +28,7 @@ import androidx.fragment.app.Fragment;
 
 import com.example.fimae.R;
 import com.example.fimae.activities.DetailPostActivity;
+import com.example.fimae.activities.DisableUserActivity;
 import com.example.fimae.activities.EditProfileActivity;
 import com.example.fimae.activities.SettingActivity;
 import com.example.fimae.activities.ShortVideoActivity;
@@ -80,6 +81,7 @@ public class ProfileFragment extends Fragment {
     TextView bioTextView;
     FragmentProfileBinding binding;
     ProfileViewModel viewModel;
+    private String uid;
 
     private List<Post> posts = new ArrayList<>();
 
@@ -100,7 +102,7 @@ public class ProfileFragment extends Fragment {
         binding = DataBindingUtil.inflate(inflater,R.layout.fragment_profile,container,false);
         View view = binding.getRoot();
         if (getArguments() != null) {
-            String uid = getArguments().getString("uid");
+             uid = getArguments().getString("uid");
             ProfileViewModelFactory factory = new ProfileViewModelFactory(uid);
             viewModel = new ViewModelProvider(this, factory).get(ProfileViewModel.class);
         }
@@ -171,6 +173,15 @@ public class ProfileFragment extends Fragment {
                 }
             }
         });
+        binding.icMore.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                Intent intent = new Intent(getContext(), DisableUserActivity.class);
+                intent.putExtra("uid", uid);
+                startActivity(intent);
+            }
+        });
+
         binding.backBtn.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {

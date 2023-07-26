@@ -15,7 +15,7 @@ import android.view.ViewGroup;
 import android.widget.Toast;
 
 import com.example.fimae.R;
-import com.example.fimae.activities.CreateProfileActivity;
+//import com.example.fimae.activities.CreateProfileActivity;
 import com.example.fimae.activities.HomeActivity;
 import com.example.fimae.databinding.FragmentCreateMatchProfileBinding;
 import com.example.fimae.models.GenderMatch;
