@@ -17,6 +17,8 @@ import android.view.LayoutInflater;
 import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.LinearLayout;
+import android.widget.TextView;
 import android.widget.Toast;
 
 import com.example.fimae.DatingAddImages;
@@ -35,6 +37,7 @@ import com.example.fimae.repository.PostRepository;
 import com.example.fimae.utils.Utils;
 import com.example.fimae.models.dating.Profile;
 import com.example.fimae.models.dating.TinderCard;
+import com.facebook.shimmer.ShimmerFrameLayout;
 import com.firebase.geofire.GeoLocation;
 import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.Task;
@@ -65,8 +68,12 @@ public class SwipeViewFragment extends Fragment {
 
     private Context mContext;
 
-    DatingProfile currentDating;
+    private ShimmerFrameLayout mShimmerWaitingUser;
 
+    private LinearLayout mLayoutShimmerUser;
+
+    DatingProfile currentDating;
+    TextView hasProfileTxt;
     public SwipeViewFragment() {
         // Required empty public constructor
     }
@@ -116,13 +123,28 @@ public class SwipeViewFragment extends Fragment {
             DatingRepository.getInstance().getDatingProfileByUid(uid).addOnSuccessListener(datingProfile -> {
                 if (datingProfile == null) {
                     hasProfile = false;
+                    mSwipeView.setVisibility(View.GONE);
+                    hasProfileTxt.setVisibility(View.VISIBLE);
                 }
                 else {
                     currentDating = datingProfile;
+                    //mSwipeView.setVisibility(View.VISIBLE);
+                    hasProfileTxt.setVisibility(View.GONE);
                     hasProfile = true;
+                    mLayoutShimmerUser.setVisibility(View.VISIBLE);
+                    mShimmerWaitingUser.startShimmer();
                     getData();
                 }
             });
+        }
+        else
+        {
+            //mSwipeView.setVisibility(View.VISIBLE);
+            hasProfileTxt.setVisibility(View.GONE);
+            hasProfile = true;
+            mLayoutShimmerUser.setVisibility(View.VISIBLE);
+            mShimmerWaitingUser.startShimmer();
+            getData();
         }
         if(!hasListen)
         {
@@ -145,8 +167,9 @@ public class SwipeViewFragment extends Fragment {
         fabSkip = view.findViewById(R.id.fabSkip);
         fabSuperLike = view.findViewById(R.id.fabSuperLike);
         fabBoost = view.findViewById(R.id.fabBoost);
-
-
+        hasProfileTxt = view.findViewById(R.id.hasProfileTxt);
+        mShimmerWaitingUser = view.findViewById(R.id.shimmer_view_users);
+        mLayoutShimmerUser = view.findViewById(R.id.swipeViewShimmer);
         mContext = getActivity();
         int bottomMargin = Utils.dpToPx(100);
         int topMargin = Utils.dpToPx(80);
@@ -203,6 +226,8 @@ public class SwipeViewFragment extends Fragment {
                                     {
                                         mSwipeView.addView(new TinderCard(getContext(), profile, mSwipeView, currentProfile));
                                     }
+                                    mSwipeView.setVisibility(View.VISIBLE);
+                                    mShimmerWaitingUser.stopShimmer();
                                 }
                             });
                         }
