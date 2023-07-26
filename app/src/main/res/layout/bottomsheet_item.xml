@@ -6,6 +6,7 @@
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
     android:padding="15dp"
+    android:background="@drawable/item_color_grey"
     android:orientation="horizontal"
     android:focusable="true">
 

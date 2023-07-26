@@ -143,7 +143,7 @@ public class FimaerRepository {
             });
         });
     }
-    Task<ArrayList<Fimaers>> getFimaersByIds(ArrayList<String> id){
+    public Task<ArrayList<Fimaers>> getFimaersByIds(ArrayList<String> id){
         TaskCompletionSource<ArrayList<Fimaers>> taskCompletionSource = new TaskCompletionSource<>();
         ArrayList<Fimaers> fimaers = new ArrayList<>();
         fimaersRef.whereIn("uid", id).get().addOnCompleteListener(task -> {

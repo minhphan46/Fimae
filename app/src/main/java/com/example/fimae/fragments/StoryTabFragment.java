@@ -1,7 +1,10 @@
 package com.example.fimae.fragments;
 
+import android.content.Intent;
+import android.net.Uri;
 import android.os.Bundle;
 
+import androidx.annotation.NonNull;
 import androidx.fragment.app.Fragment;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
@@ -9,11 +12,19 @@ import androidx.recyclerview.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.Toast;
 
 import com.example.fimae.R;
+import com.example.fimae.activities.StoryActivity;
 import com.example.fimae.adapters.SpacingItemDecoration;
 import com.example.fimae.adapters.StoryAdapter.StoryAdapter;
+import com.example.fimae.adapters.StoryAdapter.StoryAdapterItem;
+import com.example.fimae.models.story.Story;
 import com.example.fimae.repository.StoryRepository;
+import com.google.android.gms.tasks.OnCompleteListener;
+import com.google.android.gms.tasks.Task;
+
+import java.util.ArrayList;
 
 /**
  * A simple {@link Fragment} subclass.
@@ -75,7 +86,38 @@ public class StoryTabFragment extends Fragment {
         storyRecyclerView.addItemDecoration(itemDecoration);
         StoryAdapter storyAdapter = new StoryAdapter(StoryRepository.getInstance().getStoryQuery());
         storyRecyclerView.setAdapter(storyAdapter);
+    storyAdapter.setStoryListener(new StoryAdapter.StoryListener() {
+        @Override
+        public void addStoryClicked() {
+            MediaListDialogFragment mediaListDialogFragment = new MediaListDialogFragment();
+            mediaListDialogFragment.setOnMediaSelectedListener(new MediaListDialogFragment.OnMediaSelectedListener() {
+                @Override
+                public void OnMediaSelected(boolean isSelected, ArrayList<String> data) {
+                    if(isSelected){
+                        StoryRepository.getInstance().createStory(Uri.parse(data.get(0))).addOnCompleteListener(new OnCompleteListener<Story>() {
+                            @Override
+                            public void onComplete(@NonNull Task<Story> task) {
+                                if(task.isSuccessful()) {
+                                    Story story = task.getResult();
+                                } else {
+                                    Toast.makeText(getContext(), "Error", Toast.LENGTH_SHORT).show();
+                                    task.getException().printStackTrace();
+                                }
+                            }
+                        });
+                    }
+                }
+            });
+            mediaListDialogFragment.show(getChildFragmentManager(), "mediaList");
+        }
 
+        @Override
+        public void onStoryClicked(StoryAdapterItem storyAdapterItem) {
+            Intent intent = new Intent(getContext(), StoryActivity.class);
+            intent.putExtra("storyAdapterItems", storyAdapter.getStoryAdapterItems());
+            startActivity(intent);
+        }
+    });
         return view;
     }
 }
