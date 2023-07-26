@@ -13,11 +13,15 @@ import androidx.fragment.app.Fragment;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.viewpager2.widget.ViewPager2;
 
+import com.example.fimae.activities.AuthenticationActivity;
 import com.example.fimae.activities.DetailPostActivity;
+import com.example.fimae.activities.DisabledUserActivity;
+import com.example.fimae.activities.HomeActivity;
 import com.example.fimae.activities.PostActivity;
 import com.example.fimae.adapters.PostAdapter;
 import com.example.fimae.adapters.ShortAdapter.ShortFragmentPageAdapter;
 import com.example.fimae.databinding.FragmentFeedBinding;
+import com.example.fimae.models.DisableUser;
 import com.example.fimae.models.Post;
 import com.example.fimae.repository.FollowRepository;
 import com.google.android.gms.tasks.OnSuccessListener;
@@ -25,12 +29,17 @@ import com.google.android.material.tabs.TabLayout;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.firestore.CollectionReference;
 import com.google.firebase.firestore.DocumentChange;
+import com.google.firebase.firestore.DocumentSnapshot;
+import com.google.firebase.firestore.EventListener;
 import com.google.firebase.firestore.FirebaseFirestore;
+import com.google.firebase.firestore.FirebaseFirestoreException;
 import com.google.firebase.firestore.ListenerRegistration;
 import com.google.firebase.firestore.Query;
 
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.List;
+import java.util.Objects;
 
 public class FeedFragment extends Fragment {
     public static int REQUEST_CREATEPOST_CODE = 1;
@@ -67,6 +76,7 @@ public class FeedFragment extends Fragment {
         LinearLayoutManager linearLayoutManager = new LinearLayoutManager(getContext());
 //        linearLayoutManager.setReverseLayout(true);
 //        linearLayoutManager.setStackFromEnd(true);
+
         binding.postList.setLayoutManager(linearLayoutManager);
         postAdapter = new PostAdapter();
         posts.clear();
@@ -149,10 +159,11 @@ public class FeedFragment extends Fragment {
         });
         binding.addPost.setOnClickListener(view -> {
 
+
             Intent intent = new Intent(getContext(), PostActivity.class );
             //            intent.putExtra("uid", "0Ksg5AboSIf7c2mhLcPWiAmczcZ2");
                         mStartForResult.launch(intent);        });
-
+        listenDisable();
         // page shorts
         shortFragmentPageAdapter = new ShortFragmentPageAdapter(getChildFragmentManager(), getLifecycle());
 
@@ -187,6 +198,48 @@ public class FeedFragment extends Fragment {
         });
 
         return binding.getRoot();
+    }
+    private void listenDisable(){
+        FirebaseFirestore.getInstance().collection("user_disable")
+                .document(Objects.requireNonNull(FirebaseAuth.getInstance().getUid())+"POST")
+                .addSnapshotListener(new EventListener<DocumentSnapshot>() {
+                    @Override
+                    public void onEvent(@Nullable DocumentSnapshot snapshot, @Nullable FirebaseFirestoreException error) {
+                        if (error != null) {
+                            return;
+                        }
+                        if (snapshot != null && snapshot.exists()) {
+                            // Document exists, check if the user is disabled
+                            DisableUser disableUser = snapshot.toObject(DisableUser.class);
+                            if (disableUser != null && disableUser.getTimeEnd().after(new Date()) && disableUser.getType().equals("POST")) {
+//                                Intent intent = new Intent(HomeActivity.this, AuthenticationActivity.class);
+//                                intent.putExtra("signout", true);
+//                                startActivity(intent);
+                                binding.addPost.setOnClickListener(new View.OnClickListener() {
+                                    @Override
+                                    public void onClick(View view) {
+                                        Intent intent = new Intent(getContext(), DisabledUserActivity.class);
+                                        intent.putExtra( "disableId", disableUser.getUserId());
+                                        intent.putExtra("type", "POST");
+                                        startActivity(intent);
+                                    }
+                                });
+                            }
+                            else{
+                                binding.addPost.setOnClickListener(view -> {
+
+                                    Intent intent = new Intent(getContext(), PostActivity.class );
+                                    mStartForResult.launch(intent);        });
+
+                            }
+                        }else{
+                            binding.addPost.setOnClickListener(view -> {
+
+                                Intent intent = new Intent(getContext(), PostActivity.class );
+                                mStartForResult.launch(intent);        });
+                        }
+                    }
+                });
     }
 
 

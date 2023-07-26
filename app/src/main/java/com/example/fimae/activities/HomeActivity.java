@@ -107,7 +107,7 @@ public class HomeActivity extends AppCompatActivity {
             startActivity(intent);
         }
         FirebaseFirestore.getInstance().collection("user_disable")
-                .document(Objects.requireNonNull(FirebaseAuth.getInstance().getUid()))
+                .document(Objects.requireNonNull(FirebaseAuth.getInstance().getUid())+"USER")
                 .addSnapshotListener(new EventListener<DocumentSnapshot>() {
                     @Override
                     public void onEvent(@Nullable DocumentSnapshot snapshot, @Nullable FirebaseFirestoreException error) {
