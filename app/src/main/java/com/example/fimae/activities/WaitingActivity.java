@@ -155,14 +155,16 @@ public class WaitingActivity extends AppCompatActivity {
         fetchData(tableName);
 
         if(ConnectRepo.getInstance().getUserLocal() != null){
+            connectRepo.addUserOnl(connectRepo.getUserLocal(),tableName);
+
+            if(CallService.getInstance().hasConnect())
+            {
+                mTvStatusConnect.setText("Đã kết nối");
+            }
             //initStringeeConnection();
             CallService.getInstance().addListener(new CallService.CallClientListener() {
                 @Override
                 public void onStatusChange(String status) {
-                    if(status.equals("Đã kết nối"))
-                    {
-                        connectRepo.addUserOnl(connectRepo.getUserLocal(),tableName);
-                    }
                     mTvStatusConnect.setText(status);
                 }
 
@@ -271,32 +273,36 @@ public class WaitingActivity extends AppCompatActivity {
                 for (QueryDocumentSnapshot document : value) {
                     Calls call = document.toObject(Calls.class);
                     ArrayList<String> ParticipantIDs = call.getParticipantIDs();
-                    String uid = ParticipantIDs.get(0);
-                    String localUid =ConnectRepo.getInstance().getUserLocal().getUid();
-                    if(uid.equals(localUid) || (tableName == ConnectRepo.table_chat_name && ParticipantIDs.contains(localUid)))
+                    if(ParticipantIDs != null)
                     {
-                        remoteUserId = call.getParticipantIDs().get(1);
-                        handlerConnect();
-                        ConnectRepo.getInstance().setUserRemoteById(remoteUserId);
-                        DocumentReference documentRef = document.getReference();
-                        Log.e("Waiting", "goi " + remoteUserId);
-                        if(tableName != ConnectRepo.table_chat_name)
+                        String uid = ParticipantIDs.get(0);
+                        String localUid =ConnectRepo.getInstance().getUserLocal().getUid();
+                        if(uid.equals(localUid) || (tableName == ConnectRepo.table_chat_name && ParticipantIDs.contains(localUid)))
                         {
-                            Log.i("Waiting", "delete doc");
-                            documentRef.delete()
-                                    .addOnSuccessListener(aVoid -> {
-                                        // Document successfully deleted
-                                    })
-                                    .addOnFailureListener(e -> {
-                                        // An error occurred while deleting the document
-                                    });
+                            remoteUserId = call.getParticipantIDs().get(1);
+                            handlerConnect();
+                            ConnectRepo.getInstance().setUserRemoteById(remoteUserId);
+                            DocumentReference documentRef = document.getReference();
+                            Log.e("Waiting", "goi " + remoteUserId);
+                            if(tableName != ConnectRepo.table_chat_name)
+                            {
+                                Log.i("Waiting", "delete doc");
+                                documentRef.delete()
+                                        .addOnSuccessListener(aVoid -> {
+                                            // Document successfully deleted
+                                        })
+                                        .addOnFailureListener(e -> {
+                                            // An error occurred while deleting the document
+                                        });
+                            }
+                            else
+                            {
+                                chatId = document.getId();
+                            }
+                            // Delete the document
                         }
-                        else
-                        {
-                            chatId = document.getId();
-                        }
-                        // Delete the document
                     }
+
                 }
             }
         });

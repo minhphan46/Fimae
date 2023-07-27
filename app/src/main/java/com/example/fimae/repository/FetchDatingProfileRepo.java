@@ -153,25 +153,29 @@ public class FetchDatingProfileRepo {
         HashMap<String, DatingProfile> result = new HashMap<>();
         for (DatingProfile profile : datingProfiles.values())
         {
-            int age = Integer.parseInt(currentProfile.getAge());
-            int profileAge = Integer.parseInt(profile.getAge());
-            if(age >= profile.getMinAge() && age <= profile.getMaxAge()
-                    && profileAge >= currentProfile.getMinAge() && profileAge <= currentProfile.getMaxAge())
-            {
-                GenderOptions gender = currentProfile.isGender() ? GenderOptions.MALE : GenderOptions.FEMALE;
-                GenderOptions profileGender = profile.isGender() ? GenderOptions.MALE : GenderOptions.FEMALE;
+            try {
+                int age = Integer.parseInt(currentProfile.getAge());
+                int profileAge = Integer.parseInt(profile.getAge());
+                if(age >= profile.getMinAge() && age <= profile.getMaxAge()
+                        && profileAge >= currentProfile.getMinAge() && profileAge <= currentProfile.getMaxAge())
+                {
+                    GenderOptions gender = currentProfile.isGender() ? GenderOptions.MALE : GenderOptions.FEMALE;
+                    GenderOptions profileGender = profile.isGender() ? GenderOptions.MALE : GenderOptions.FEMALE;
 
-                if((currentProfile.getGenderOptions() == GenderOptions.UNIMPORTANT)
-                        && (profile.getGenderOptions() == GenderOptions.UNIMPORTANT || profile.getGenderOptions() == gender ))
-                {
-                    result.put(profile.getUid(), profile);
+                    if((currentProfile.getGenderOptions() == GenderOptions.UNIMPORTANT)
+                            && (profile.getGenderOptions() == GenderOptions.UNIMPORTANT || profile.getGenderOptions() == gender ))
+                    {
+                        result.put(profile.getUid(), profile);
+                    }
+                    else if(currentProfile.getGenderOptions() == profileGender
+                            && (profile.getGenderOptions() == GenderOptions.UNIMPORTANT || profile.getGenderOptions() == gender))
+                    {
+                        result.put(profile.getUid(), profile);
+                    }
                 }
-                else if(currentProfile.getGenderOptions() == profileGender
-                        && (profile.getGenderOptions() == GenderOptions.UNIMPORTANT || profile.getGenderOptions() == gender))
-                {
-                    result.put(profile.getUid(), profile);
-                }
+            } catch (NumberFormatException e) {
             }
+
         }
         result.remove(currentProfile.getUid());
         return result;

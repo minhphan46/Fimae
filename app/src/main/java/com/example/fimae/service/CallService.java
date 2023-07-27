@@ -61,6 +61,12 @@ public class CallService {
     public void removeListener(CallClientListener listener){
         listeners.remove(listener);
     }
+
+    public boolean hasConnect()
+    {
+        return client.isConnected();
+    }
+
     public void initStringeeConnection(Context context, FragmentActivity activity){
         client = new StringeeClient(context);
         client.setConnectionListener(new StringeeConnectionListener() {
