@@ -73,21 +73,6 @@ public class ChatFragment extends Fragment {
     public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
         View view = inflater.inflate(R.layout.fragment_chat, container, false);
         Toolbar toolbar = view.findViewById(R.id.toolbar);
-        toolbar.setOnMenuItemClickListener(new Toolbar.OnMenuItemClickListener() {
-            @Override
-            public boolean onMenuItemClick(MenuItem item) {
-                Toast.makeText(getContext(), "Add friend", Toast.LENGTH_SHORT).show();
-                switch (item.getItemId()) {
-                    case R.id.action_add_friend:
-                        Intent intent = new Intent(getContext(), DatingSettings.class);
-                        intent.putExtra("uid", FirebaseAuth.getInstance().getUid());
-                        startActivity(intent);
-                        return true;
-                    default:
-                        return false;
-                }
-            }
-        });
         recyclerView = view.findViewById(R.id.list_user);
         searchbar = view.findViewById(R.id.search_bar);
         LinearLayoutManager linearLayoutManager = new LinearLayoutManager(this.getContext());
