@@ -252,7 +252,7 @@ public class StoryView extends Fragment implements StoriesProgressView.StoriesLi
     }
 
     private void updateHeading() {
-        if (fimaers.getAvatarUrl() != null) {
+        if (fimaers != null && fimaers.getAvatarUrl() != null) {
             titleCardView.setVisibility(View.VISIBLE);
             if (getContext() == null) return;
             Glide.with(getContext())
