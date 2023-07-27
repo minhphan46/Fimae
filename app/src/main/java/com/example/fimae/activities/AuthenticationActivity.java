@@ -2,6 +2,7 @@ package com.example.fimae.activities;
 
 import android.app.ProgressDialog;
 import android.content.Intent;
+import android.util.Log;
 import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
@@ -217,26 +218,40 @@ public class AuthenticationActivity extends AppCompatActivity {
         super.onActivityResult(requestCode, resultCode, data);
         if(requestCode == RC_SIGN_IN)
         {
-            Task<GoogleSignInAccount> task = GoogleSignIn.getSignedInAccountFromIntent(data);
-            try {
-                GoogleSignInAccount account = task.getResult(ApiException.class);
-                authRepository.googleAuth(account.getIdToken(), new AuthRepository.GoogleSignInCallback() {
-                    @Override
-                    public void onSignInSuccess(FirebaseUser user) {
-                        successAuthentication();
-                    }
-                    @Override
-                    public void onFirstTimeSignIn(FirebaseUser user) {
-                        navToUpdateProfile();
-                    }
-                    @Override
-                    public void onSignInError(String errorMessage) {
-                        Toast.makeText(getApplicationContext(), errorMessage,Toast.LENGTH_SHORT).show();
-                    }
-                });
-            } catch (ApiException e) {
-                throw new RuntimeException(e);
+            if(resultCode == 0)
+            {
+
             }
+            Task<GoogleSignInAccount> task = GoogleSignIn.getSignedInAccountFromIntent(data)
+                    .addOnCompleteListener(new OnCompleteListener<GoogleSignInAccount>() {
+                        @Override
+                        public void onComplete(@NonNull Task<GoogleSignInAccount> task) {
+                            if(task.isSuccessful())
+                            {
+                                try {
+                                    GoogleSignInAccount account = task.getResult(ApiException.class);
+                                    authRepository.googleAuth(account.getIdToken(), new AuthRepository.GoogleSignInCallback() {
+                                        @Override
+                                        public void onSignInSuccess(FirebaseUser user) {
+                                            successAuthentication();
+                                        }
+                                        @Override
+                                        public void onFirstTimeSignIn(FirebaseUser user) {
+                                            navToUpdateProfile();
+                                        }
+                                        @Override
+                                        public void onSignInError(String errorMessage) {
+                                            Toast.makeText(getApplicationContext(), errorMessage,Toast.LENGTH_SHORT).show();
+                                        }
+                                    });
+                                } catch (ApiException e) {
+                                    Toast.makeText(getApplicationContext(), e.getMessage(),Toast.LENGTH_SHORT).show();
+
+                                }
+                            }
+                        }
+                    });
+
         }
     }
 
