@@ -101,6 +101,19 @@ public class OnChatActivity extends AppCompatActivity {
 
         // call
         mTvStatusConnect = findViewById(R.id.status_appbar);
+        try{
+            if(fimaer != null){
+                String status = "Không hoạt động";
+                if(fimaer.isOnline()){
+                    status = "Đang hoạt động";
+                } else if(fimaer.getLastActiveMinuteAgo() <=60) {
+                    status = "Hoạt động " + fimaer.getLastActiveMinuteAgo() + " phút trước";
+                }
+                mTvStatusConnect.setText(status);
+            }
+        }catch (Exception e) {
+            mTvStatusConnect.setText("Không hoạt động");
+        }
         //initStringeeConnection();
         getRemoteUserId();
     }
