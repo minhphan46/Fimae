@@ -17,7 +17,7 @@ import org.json.JSONObject;
 public class OneSignalRepo {
     private static final String ONESIGNAL_APP_ID = "e4027807-c701-4d05-8712-0246cdbbc0d8";
 
-    public static void init(Context context) {
+    public static void  init(Context context) {
         OneSignal.setLogLevel(OneSignal.LOG_LEVEL.VERBOSE, OneSignal.LOG_LEVEL.NONE);
 
         // OneSignal Initialization

@@ -172,6 +172,14 @@ public class DetailPostActivity extends AppCompatActivity {
             LikedPostListFragment likedPostListFragment = LikedPostListFragment.getInstance(updatePost.getLikes(), updatePost.getNumberTrue(), post);
             likedPostListFragment.show(getSupportFragmentManager(), "likelist");
         });
+        binding.iconImage.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                if(binding.addComment.getHint() != null ){
+                    binding.addComment.setHint("");
+                }
+            }
+        });
         binding.likeTitle.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
@@ -387,9 +395,13 @@ public class DetailPostActivity extends AppCompatActivity {
                 }
             }
         }));
-        binding.iconEmoji.setOnClickListener(new View.OnClickListener() {
+        binding.iconImage.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
+                if(binding.addComment.getHint() != null || !selectedCommentId.trim().isEmpty()){
+                    binding.addComment.setHint("Để lại một bình luận");
+                    selectedCommentId="";
+                }
             }
         });
         binding.post.setOnClickListener(view -> {
