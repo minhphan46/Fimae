@@ -110,7 +110,7 @@ public class PostAdapter extends RecyclerView.Adapter<PostAdapter.ViewHolder> {
                 }
 
                 binding.ageTextView.setText(String.valueOf(fimaers.calculateAge()));
-                binding.userName.setText(fimaers.getLastName());
+                binding.userName.setText(fimaers.getFirstName());
                 initListener(binding, currentPost, fimaers);
 
             }
