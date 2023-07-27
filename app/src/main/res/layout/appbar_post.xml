@@ -37,6 +37,7 @@
         android:id="@+id/btn_noti_home"
         android:layout_width="28dp"
         android:layout_height="28dp"
+        android:backgroundTint="@color/white"
         android:background="@drawable/ic_notification"
         android:padding="20dp" />
 
