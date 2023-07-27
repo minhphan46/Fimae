@@ -14,7 +14,11 @@ import androidx.recyclerview.widget.RecyclerView;
 import com.bumptech.glide.Glide;
 import com.example.fimae.R;
 import com.example.fimae.adapters.FirestoreAdapter;
+import com.example.fimae.models.Fimaers;
 import com.example.fimae.models.story.Story;
+import com.example.fimae.repository.FimaerRepository;
+import com.google.android.gms.tasks.OnCompleteListener;
+import com.google.android.gms.tasks.Task;
 import com.google.firebase.firestore.DocumentChange;
 import com.google.firebase.firestore.DocumentSnapshot;
 import com.google.firebase.firestore.Query;
@@ -97,7 +101,19 @@ public class StoryAdapter extends FirestoreAdapter<StoryAdapter.StoryViewHolder>
             Glide.with(holder.itemView)
                     .load(story.getUrl())
                     .into(holder.storyImage);
-            holder.storyTitle.setText("Nhật Hào"); // Set the story title
+            FimaerRepository.getInstance().getFimaerById(story.getUid()).addOnCompleteListener(new OnCompleteListener<Fimaers>() {
+                @Override
+                public void onComplete(@NonNull Task<Fimaers> task) {
+                    if(task.isSuccessful()){
+                        Fimaers fimaers = task.getResult();
+                        holder.storyTitle.setText(fimaers.getName());
+                        holder.storyTitle.setText(fimaers.getName()); // Set the story title
+                        Glide.with(holder.storyAvatar)
+                                .load(fimaers.getAvatarUrl())
+                                .into(holder.storyAvatar);
+                    }
+                }
+            });
             Log.d("Bucket", FirebaseStorage.getInstance().getReference().getBucket());
         }
         holder.storyCard.setOnClickListener(new View.OnClickListener() {
