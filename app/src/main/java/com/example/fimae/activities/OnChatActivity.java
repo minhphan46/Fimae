@@ -132,11 +132,11 @@ public class OnChatActivity extends AppCompatActivity {
     private void initBottomSheetItems() {
         bottomSheetItemList = new ArrayList<BottomSheetItem>() {
             {
-                add(new BottomSheetItem("Share", R.drawable.ic_share, "Chia sẽ liên hệ", "Chia sẽ ngay cho bạn bè"));
-                add(new BottomSheetItem("Media", R.drawable.ic_gallery, "Tất cả ảnh", R.drawable.ic_mic_on));
-                add(new BottomSheetItem("EditNickname", R.drawable.ic_edit, "Chỉnh sửa biệt danh"));
-                add(new BottomSheetItem("Block", R.drawable.ic_user_block, "Chặn"));
-                add(new BottomSheetItem("Report", R.drawable.ic_flag, "Báo cáo"));
+                add(new BottomSheetItem("Delete", R.drawable.ic_delete, "Xóa cuộc trò chuyện"));
+//                add(new BottomSheetItem("Media", R.drawable.ic_gallery, "Tất cả ảnh", R.drawable.ic_mic_on));
+//                add(new BottomSheetItem("EditNickname", R.drawable.ic_edit, "Chỉnh sửa biệt danh"));
+//                add(new BottomSheetItem("Block", R.drawable.ic_user_block, "Chặn"));
+//                add(new BottomSheetItem("Report", R.drawable.ic_flag, "Báo cáo"));
             }
         };
     }
@@ -186,8 +186,9 @@ public class OnChatActivity extends AppCompatActivity {
                                 @Override
                                 public void onClick(BottomSheetItem bottomSheetItem) {
                                     switch (bottomSheetItem.getTag()){
-                                        case "Block":
-//                                            ChatRepository.getDefaultChatInstance().blockUser(conversationId, "fimaer.getId()");
+                                        case "Delete":
+                                            ChatRepository.getDefaultChatInstance().deleteConversation(conversationId);
+                                            finish();
                                             break;
                                     }
                                 }
