@@ -15,6 +15,9 @@ import com.google.firebase.firestore.DocumentReference;
 import com.google.firebase.firestore.FirebaseFirestore;
 import com.google.firebase.firestore.Query;
 
+import java.util.Calendar;
+import java.util.Date;
+
 public class StoryRepository {
     private static StoryRepository instance;
 
@@ -60,6 +63,16 @@ public class StoryRepository {
     }
 
     public Query getStoryQuery() {
-        return storyColRef.orderBy("timeCreated", Query.Direction.DESCENDING);
+        // Tạo ngày hiện tại
+        Calendar calendar = Calendar.getInstance();
+        Date now = calendar.getTime();
+
+        // Trừ 24 giờ từ thời gian hiện tại
+        calendar.add(Calendar.HOUR_OF_DAY, -24);
+        Date twentyFourHoursAgo = calendar.getTime();
+
+        // Lọc các story có thời gian đăng trong khoảng từ twentyFourHoursAgo đến now
+        return storyColRef.whereGreaterThanOrEqualTo("timeCreated", twentyFourHoursAgo)
+                .orderBy("timeCreated", Query.Direction.DESCENDING);
     }
 }
