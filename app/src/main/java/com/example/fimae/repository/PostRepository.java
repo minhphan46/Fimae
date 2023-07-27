@@ -133,12 +133,13 @@ public class PostRepository {
                                 task.getException().getMessage();
                             }
                         }
+                        String uid = FirebaseAuth.getInstance().getUid();
                         DocumentReference postdoc = postRef.document();
                         HashMap<String, Object> hashMap = new HashMap<>();
                         hashMap.put("postId", postdoc.getId());
                         hashMap.put("postImages", downloadUrls);
                         hashMap.put("content", description);
-                        hashMap.put("publisher", currentUser.getUid());
+                        hashMap.put("publisher", uid);
                         hashMap.put("postMode", mode);
                         hashMap.put("likes", new HashMap<>());
                         hashMap.put("saves", new HashMap<>());
@@ -155,6 +156,7 @@ public class PostRepository {
     public Task<Boolean> addNewPost(List<Uri> imageList, String description, PostMode mode, Context context) {
         TaskCompletionSource<Boolean> taskCompletionSource = new TaskCompletionSource<>();
         List<String> downloadUrls = new ArrayList<>();
+        String uid = FirebaseAuth.getInstance().getUid();
 
         if (imageList != null && imageList.size() > 0) {
             List<Task<Uri>> uploadTasks = new ArrayList<>();
@@ -179,13 +181,12 @@ public class PostRepository {
                                 downloadUrls.add(downloadUri.toString());
                             }
                         }
-
                         DocumentReference postdoc = postRef.document();
                         HashMap<String, Object> hashMap = new HashMap<>();
                         hashMap.put("postId", postdoc.getId());
                         hashMap.put("postImages", downloadUrls);
                         hashMap.put("content", description);
-                        hashMap.put("publisher", currentUser.getUid());
+                        hashMap.put("publisher", uid);
                         hashMap.put("postMode", mode);
                         hashMap.put("likes", new HashMap<>());
                         hashMap.put("saves", new HashMap<>());
@@ -212,7 +213,7 @@ public class PostRepository {
             hashMap.put("postId", postdoc.getId());
             hashMap.put("postImages", downloadUrls);
             hashMap.put("content", description);
-            hashMap.put("publisher", currentUser.getUid());
+            hashMap.put("publisher", uid);
             hashMap.put("postMode", mode);
             hashMap.put("likes", new HashMap<>());
             hashMap.put("saves", new HashMap<>());

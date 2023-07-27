@@ -31,6 +31,7 @@ import androidx.fragment.app.Fragment;
 import com.example.fimae.R;
 import com.example.fimae.activities.DetailPostActivity;
 import com.example.fimae.activities.EditProfileActivity;
+import com.example.fimae.activities.PostMode;
 import com.example.fimae.activities.SettingActivity;
 import com.example.fimae.activities.ShortVideoActivity;
 import com.example.fimae.adapters.GridAutoFitLayoutManager;
@@ -52,6 +53,8 @@ import com.example.fimae.utils.FileUtils;
 import com.example.fimae.viewmodels.ProfileViewModel;
 import com.example.fimae.viewmodels.ProfileViewModelFactory;
 import com.google.android.gms.tasks.OnCompleteListener;
+import com.google.android.gms.tasks.OnFailureListener;
+import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.android.gms.tasks.Task;
 import com.google.android.material.tabs.TabLayout;
 import com.google.firebase.auth.FirebaseAuth;
@@ -354,16 +357,61 @@ public class ProfileFragment extends Fragment {
                         }
                         break;
                     case MODIFIED:
+                        int i =0;
                         for(Post item : posts){
                             if(item.getPostId().equals(post.getPostId())){
-                                if(!post.getContent().equals(item.getContent()) || post.getPostImages().size() != item.getPostImages().size()){
-                                    posts.set(posts.indexOf(item), post);
-                                    postAdapter.notifyItemChanged(posts.indexOf(item));
+                                i = 1;
+                                if(post.getIsDeleted() != null && post.getIsDeleted()){
+                                    int index = posts.indexOf(item);
+                                    posts.remove(item);
+                                    postAdapter.notifyItemRemoved(index);
                                 }
+                                else if(post.getPostMode()!= PostMode.PUBLIC){
+                                    if(Objects.equals(post.getPublisher(), FirebaseAuth.getInstance().getUid())){
+                                        if(!post.getContent().equals(item.getContent()) || post.getPostImages().size() != item.getPostImages().size()){
+                                            posts.set(posts.indexOf(item), post);
+                                            postAdapter.notifyItemChanged(posts.indexOf(item) + 1);
+                                        }
+                                    }
+                                    else if(post.getPostMode()==PostMode.FRIEND) {
+                                        FollowRepository.getInstance().isFriend(post.getPublisher()).addOnSuccessListener(new OnSuccessListener<Boolean>() {
+                                            @Override
+                                            public void onSuccess(Boolean aBoolean) {
+                                                if (aBoolean){
+                                                    if(!post.getContent().equals(item.getContent()) || post.getPostImages().size() != item.getPostImages().size()){
+                                                        posts.set(posts.indexOf(item), post);
+                                                        postAdapter.notifyItemChanged(posts.indexOf(item) + 1);
+                                                    }
+                                                }
+                                            }}).addOnFailureListener(new OnFailureListener() {
+                                            @Override
+                                            public void onFailure(@NonNull Exception e) {
+                                                int index = posts.indexOf(item);
+                                                posts.remove(item);
+//                                        postAdapter.notifyItemRemoved(index - 1);
+                                                postAdapter.notifyItemRemoved(index);
+                                            }
+                                        });
+                                    }
+                                    else{
+                                        int index = posts.indexOf(item);
+                                        posts.remove(item);
+//                                        postAdapter.notifyItemRemoved(index - 1);
+                                        postAdapter.notifyItemRemoved(index);
+//                                        postAdapter.notifyItemRemoved(posts.indexOf(item) + 1);
+                                    }
+                                }
+                                else if(!post.getContent().equals(item.getContent()) || post.getPostImages().size() != item.getPostImages().size()){
+                                    posts.set(posts.indexOf(item), post);
+                                    postAdapter.notifyItemChanged(posts.indexOf(item) + 1);
+                                }
+                                break;
                             }
                         }
                         break;
                     case REMOVED:
+//                        posts.remove(post);
+//                        postAdapter.notifyItemRemoved(posts.indexOf(post));
                         break;
                 }
             }
