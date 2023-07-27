@@ -61,7 +61,7 @@
             android:id="@+id/search_title"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:text="Tìm kiếm lịch sử cuộc trò chuyện"
+            android:text="Tìm kiếm..."
             android:textColor="@color/text_secondary" />
     </LinearLayout>
     <androidx.recyclerview.widget.RecyclerView
