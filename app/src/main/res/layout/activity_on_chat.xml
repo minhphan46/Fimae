@@ -79,6 +79,7 @@
 
         >
             <ImageView
+                android:visibility="gone"
                     android:layout_margin="14dp"
                     android:id="@+id/btn_micro"
                     android:layout_width="26dp"
