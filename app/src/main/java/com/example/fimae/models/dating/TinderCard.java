@@ -83,7 +83,8 @@ public class TinderCard {
                 }
                 else
                 {
-                    distance = String.valueOf(mProfile.getDistanceFromYou()) + "m";
+                    DecimalFormat decimalFormat = new DecimalFormat("#.00");
+                    distance = decimalFormat.format(mProfile.getDistanceFromYou()) + "m";
                 }
 
                 locationNameTxt.setText(addresses.get(0).getLocality() + " " + distance);
