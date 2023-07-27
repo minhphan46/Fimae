@@ -203,7 +203,7 @@ public class UserHomeViewAdapter extends RecyclerView.Adapter<UserHomeViewAdapte
                         String fullNameWithNoAccent = StringUtils.removeAccent(fimaer.getFirstName() + " " + fimaer.getLastName());
                         String searchWithNoAccent = StringUtils.removeAccent(search);
                         String bioWithNoAccent = StringUtils.removeAccent(fimaer.getBio());
-                        if (fullNameWithNoAccent.toLowerCase().contains(searchWithNoAccent.toLowerCase()) || bioWithNoAccent.toLowerCase().contains(searchWithNoAccent.toLowerCase())) {
+                        if (fullNameWithNoAccent.toLowerCase().contains(searchWithNoAccent.toLowerCase()) || bioWithNoAccent.toLowerCase().contains(searchWithNoAccent.toLowerCase())||fimaer.getUid().equals(search)) {
                             list.add(fimaer);
                         }
                     }

@@ -8,6 +8,7 @@ import androidx.recyclerview.widget.RecyclerView;
 import android.content.Intent;
 import android.os.Bundle;
 import android.util.Log;
+import android.view.View;
 import android.widget.Toast;
 
 import com.example.fimae.R;
@@ -23,6 +24,7 @@ public class SearchUserActivity extends AppCompatActivity implements SearchView.
     private FirebaseFirestore firestore;
     private CollectionReference fimaeUserRef;
     private UserHomeViewAdapter adapter;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -30,9 +32,9 @@ public class SearchUserActivity extends AppCompatActivity implements SearchView.
         fimaeUserRef = firestore.collection("fimaers");
         setContentView(R.layout.activity_search_user);
         searchView = findViewById(R.id.searchView);
-        recyclerViewRes =findViewById(R.id.recycler_view_result);
-        LinearLayoutManager manager =new LinearLayoutManager(this);
-         adapter = new UserHomeViewAdapter(this);
+        recyclerViewRes = findViewById(R.id.recycler_view_result);
+        LinearLayoutManager manager = new LinearLayoutManager(this);
+        adapter = new UserHomeViewAdapter(this);
         searchView.setOnQueryTextListener(this);
         recyclerViewRes.setLayoutManager(manager);
         adapter.getFilter().filter("");
@@ -40,18 +42,12 @@ public class SearchUserActivity extends AppCompatActivity implements SearchView.
         fimaeUserRef.get().addOnCompleteListener(task -> adapter.setData(task.getResult().toObjects(Fimaers.class), new UserHomeViewAdapter.IClickCardUserListener() {
             @Override
             public void onClickUser(Fimaers user) {
-                Log.d("SearchUserActivity", "onCreateOrGetConversationWith : " + user.getUid());
-                ChatRepository.getDefaultChatInstance().getOrCreateFriendConversation(user.getUid()).addOnSuccessListener(conversation -> {
-                    if(task.isSuccessful()){
-                        Intent intent = new Intent(SearchUserActivity.this, OnChatActivity.class);
-                        intent.putExtra("conversationID", conversation.getId());
-                        startActivity(intent);
-                    } else {
-                        Toast.makeText(SearchUserActivity.this, task.getException().getMessage(), Toast.LENGTH_LONG).show();
-                    }
-                });
+                Intent intent = new Intent(SearchUserActivity.this, ProfileActivity.class);
+                intent.putExtra("uid", user.getUid());
+                startActivity(intent);
             }
         }));
+        searchView.setOnClickListener(v -> searchView.setIconified(false));
     }
 
     @Override
