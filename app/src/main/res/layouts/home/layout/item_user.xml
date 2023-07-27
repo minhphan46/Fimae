@@ -1,5 +1,7 @@
+<?xml version="1.0" encoding="utf-8"?>
+<layout android:clickable="true"  xmlns:android="http://schemas.android.com/apk/res/android"
+    android:focusable="true" >
 <androidx.constraintlayout.widget.ConstraintLayout
-    xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
@@ -14,25 +16,54 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:gravity="start|center"
+        android:minHeight="48dp"
         android:orientation="horizontal"
         app:layout_constraintTop_toTopOf="parent"
-        android:clickable="true">
+        android:clickable="false"
+        >
+        <androidx.constraintlayout.widget.ConstraintLayout
+            android:layout_marginRight="10dp"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content">
 
-        <de.hdodenhof.circleimageview.CircleImageView
-            android:id="@+id/item_user_avatar_view"
-            android:layout_width="44dp"
-            android:layout_height="44dp"
-            android:src="@drawable/ic_default_avatar"
-            android:layout_marginEnd="10dp"
-            app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toTopOf="parent"
-            app:layout_constraintBottom_toBottomOf="parent" />
+            <de.hdodenhof.circleimageview.CircleImageView
+                android:id="@+id/item_user_avatar_view"
+                android:layout_width="48dp"
+                android:layout_height="48dp"
+                android:src="@drawable/ic_default_avatar"
+                app:layout_constraintBottom_toBottomOf="parent"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toTopOf="parent" />
 
+            <TextView
+                android:visibility="gone"
+                android:id="@+id/tv_status"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:background="@drawable/status_indicator_offline"
+                android:gravity="center"
+                android:paddingHorizontal="4dp"
+                android:paddingVertical="2dp"
+                android:text="4p"
+                android:textColor="@color/black"
+                android:textSize="8sp"
+                app:layout_constraintBottom_toTopOf="@+id/imv_status_indicator"
+                app:layout_constraintEnd_toEndOf="@+id/item_user_avatar_view" />
+            <ImageView
+                android:visibility="gone"
+                android:id="@+id/imv_status_indicator"
+                android:layout_width="15dp"
+                android:layout_height="15dp"
+                android:src="@drawable/status_indicator_background"
+                app:layout_constraintBottom_toBottomOf="parent"
+                app:layout_constraintEnd_toEndOf="@+id/item_user_avatar_view" />
+        </androidx.constraintlayout.widget.ConstraintLayout>
         <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:gravity="start"
             android:orientation="vertical"
+            android:clickable="false"
             app:layout_constraintLeft_toRightOf="@+id/item_user_avatar_view"
             app:layout_constraintTop_toTopOf="parent">
 
@@ -41,6 +72,7 @@
                 android:layout_height="wrap_content"
                 android:gravity="bottom"
                 android:orientation="horizontal"
+                android:clickable="false"
                 app:layout_constraintTop_toTopOf="parent">
 
                 <TextView
@@ -48,7 +80,7 @@
                     style="@style/bold_14"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:text="Name"
+                    android:text=""
                     android:textColor="@color/text_primary"
                     android:textSize="14sp" />
 
@@ -60,6 +92,7 @@
                     android:background="@drawable/shape_gender_border_blue"
                     android:gravity="center"
                     android:paddingHorizontal="5dp"
+                    android:clickable="false"
                     android:paddingVertical="2.5dp">
 
                     <ImageView
@@ -67,6 +100,7 @@
                         android:layout_width="10dp"
                         android:layout_height="10dp"
                         android:layout_marginEnd="2dp"
+
                         android:src="@drawable/ic_male"
                         app:tint="@color/text_white" />
 
@@ -78,16 +112,49 @@
                         android:text="31"
                         android:textColor="@color/text_white" />
                 </LinearLayout>
-            </LinearLayout>
+                <androidx.legacy.widget.Space
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:layout_weight="1" />
+<!--                <TextView-->
+<!--                    android:id="@+id/follow"-->
+<!--                    android:visibility="visible"-->
+<!--                    android:layout_width="wrap_content"-->
+<!--                    android:layout_height="wrap_content"-->
+<!--                    android:background="@drawable/shape_retangle_border_radius_purple"-->
+<!--                    android:text="Theo dõi"-->
+<!--                    android:layout_marginEnd="5dp"-->
+<!--                    android:textColor="@color/primary_2"-->
+<!--                    android:textSize="12sp"-->
+<!--                    android:paddingHorizontal="10dp"-->
+<!--                    android:paddingVertical="2dp"-->
+<!--                    android:layout_gravity="end"-->
+<!--                     />-->
+<!--                <TextView-->
+<!--                    android:id="@+id/chat"-->
+<!--                    android:layout_marginEnd="5dp"-->
+<!--                    android:layout_width="wrap_content"-->
+<!--                    android:layout_height="wrap_content"-->
+<!--                    android:background="@drawable/cancel_button_background"-->
+<!--                    android:text="Trò chuyện"-->
+<!--                    android:visibility="gone"-->
+<!--                    android:textColor="@color/primary_2"-->
+<!--                    android:textSize="12sp"-->
+<!--                    android:paddingHorizontal="10dp"-->
+<!--                    android:clickable="true"-->
+<!--                    android:focusable="true"-->
+<!--                    android:paddingVertical="2dp"/>-->
 
+            </LinearLayout>
             <TextView
                 android:id="@+id/item_user_tv_description"
                 style="@style/regular_12"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_marginTop="5dp"
-                android:text="Hello" />
+                android:text="Bắt đầu cuộc trò chuyện ngay" />
+
         </LinearLayout>
     </LinearLayout>
-
 </androidx.constraintlayout.widget.ConstraintLayout>
+</layout>

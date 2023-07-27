@@ -1,12 +1,18 @@
 package com.example.fimae.activities;
 
+import androidx.activity.result.ActivityResult;
+import androidx.activity.result.ActivityResultCallback;
+import androidx.activity.result.ActivityResultLauncher;
+import androidx.activity.result.contract.ActivityResultContracts;
 import androidx.annotation.NonNull;
+import androidx.annotation.Nullable;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.recyclerview.widget.RecyclerView;
 import androidx.viewpager2.widget.CompositePageTransformer;
 import androidx.viewpager2.widget.MarginPageTransformer;
 import androidx.viewpager2.widget.ViewPager2;
 
+import android.app.Activity;
 import android.content.Intent;
 import android.os.Bundle;
 import android.os.Handler;
@@ -21,13 +27,26 @@ import android.widget.Toast;
 import com.example.fimae.R;
 import com.example.fimae.adapters.SliderAdapter;
 import com.example.fimae.fragments.HomeFragment;
+import com.example.fimae.models.Calls;
 import com.example.fimae.models.Fimaers;
 import com.example.fimae.repository.ConnectRepo;
+import com.example.fimae.repository.FimaerRepository;
+import com.example.fimae.service.CallService;
+import com.google.android.gms.tasks.OnCompleteListener;
+import com.google.android.gms.tasks.Task;
 import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.ValueEventListener;
+import com.google.firebase.firestore.DocumentReference;
+import com.google.firebase.firestore.EventListener;
+import com.google.firebase.firestore.FirebaseFirestore;
+import com.google.firebase.firestore.FirebaseFirestoreException;
+import com.google.firebase.firestore.ListenerRegistration;
+import com.google.firebase.firestore.QueryDocumentSnapshot;
+import com.google.firebase.firestore.QuerySnapshot;
+import com.google.firebase.functions.FirebaseFunctionsException;
 import com.stringee.StringeeClient;
 import com.stringee.call.StringeeCall;
 import com.stringee.call.StringeeCall2;
@@ -41,10 +60,12 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-public class  WaitingActivity extends AppCompatActivity {
+public class WaitingActivity extends AppCompatActivity {
 
     private String type; // type of connect
     private String tableName;
+
+    private String chatId;
     private int timeDelayToConnect = 3000;
 
     private FrameLayout mBtnSpeedUp;
@@ -52,6 +73,8 @@ public class  WaitingActivity extends AppCompatActivity {
     private ImageButton mBtnZoomOut;
     private ImageButton mBtnClose;
     private TextView mTvTitle;
+
+    private int REQUEST_CODE = 9999;
     // slider ======================================================
     private ViewPager2 viewPager2;
     private List<Fimaers> fimaers;
@@ -64,16 +87,20 @@ public class  WaitingActivity extends AppCompatActivity {
     private TextView mTvStatusConnect;
     public static StringeeClient client;
     DatabaseReference databaseReference;
+
+    ConnectRepo connectRepo = ConnectRepo.getInstance();
     // luu cuoc goi den = map
     // key = callID
-    public static Map<String, StringeeCall> callMap = new HashMap<>();
+    //public static Map<String, StringeeCall> callMap = new HashMap<>();
     // video
-    public static Map<String, StringeeCall2> call2Map = new HashMap<>();
+    //public static Map<String, StringeeCall2> call2Map = new HashMap<>();
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_waiting);
+        Log.e("Waiting", "create");
+
         // receive data
         Intent intent = getIntent();
         type = intent.getStringExtra("type"); // two option: voice - video
@@ -86,11 +113,12 @@ public class  WaitingActivity extends AppCompatActivity {
         else if(type.equals("video")){
             tableName = ConnectRepo.table_call_video_name;
         }
+        connectRepo.addUserOnl(connectRepo.getUserLocal(),tableName);
         // appbar ========================================================
         mBtnZoomOut = findViewById(R.id.btn_zoom_out_waiting);
         mBtnZoomOut.setOnClickListener(v -> {
             // zoom out
-            ZoomOutWaiting();
+            zoomOut();
         });
 
         mBtnClose = findViewById(R.id.btn_close_waiting);
@@ -124,10 +152,39 @@ public class  WaitingActivity extends AppCompatActivity {
         // call function: connect to user ======================================================
         mTvStatusConnect = findViewById(R.id.tv_status_connect);
         databaseReference = FirebaseDatabase.getInstance().getReference();
+
         fetchData(tableName);
 
         if(ConnectRepo.getInstance().getUserLocal() != null){
-            initStringeeConnection();
+            //initStringeeConnection();
+            CallService.getInstance().addListener(new CallService.CallClientListener() {
+                @Override
+                public void onStatusChange(String status) {
+                    mTvStatusConnect.setText(status);
+                }
+
+                @Override
+                public void onIncomingCallVoice(String typeCall, String callId) {
+                    if(typeCall.equals(CallService.RANDOM)){
+                        isCalled = true;
+                        Intent intent = new Intent(WaitingActivity.this, CallActivity.class);
+                        intent.putExtra("callId", callId);
+                        intent.putExtra("isIncomingCall", true);
+                        startActivity(intent);
+                    }
+                }
+
+                @Override
+                public void onIncomingCallVideo(String typeCall, String callId) {
+                    if(typeCall.equals(CallService.RANDOM)){
+                        isCalled = true;
+                        Intent intent = new Intent(WaitingActivity.this, CallVideoActivity.class);
+                        intent.putExtra("callId", callId);
+                        intent.putExtra("isIncomingCall", true);
+                        startActivity(intent);
+                    }
+                }
+            });
         }
         // btn speed up ======================================================================================
         mBtnSpeedUp = findViewById(R.id.btn_speed_up);
@@ -136,18 +193,33 @@ public class  WaitingActivity extends AppCompatActivity {
         });
     }
 
+    private void zoomOut() {
+        // zoom out
+        HomeFragment.isShowFloatingWaiting = true;
+        finish();
+    }
+
     // close screen ==============================================================================
     private void closeScreen() {
         // delete user onl then finish
-        if(ConnectRepo.getInstance().getUserLocal() != null){
-            ConnectRepo.getInstance().deleteUserOnl(ConnectRepo.getInstance().getUserLocal(),tableName);
-        }
         ConnectRepo.getInstance().setUserRemote(null);
         if(client != null) {
             client.disconnect();
             client = null;
         }
         finish();
+    }
+
+    @Override
+    protected void onDestroy() {
+        if(ConnectRepo.getInstance().getUserLocal() != null){
+            ConnectRepo.getInstance().deleteUserOnl(ConnectRepo.getInstance().getUserLocal(),tableName);
+        }
+        if(listenerRegistration != null)
+        {
+            listenerRegistration.remove();
+        }
+        super.onDestroy();
     }
 
     // connect to ==============================================================================
@@ -180,44 +252,58 @@ public class  WaitingActivity extends AppCompatActivity {
             }
         }
     }
+    private ListenerRegistration listenerRegistration;
 
     private void fetchData(String tableName) {
-        databaseReference.child(tableName).addListenerForSingleValueEvent(
-            new ValueEventListener(){
-                @Override
-                public void onDataChange(@NonNull DataSnapshot snapshot) {
-                    // get list all user onl
-                    ArrayList<Fimaers> listUsersOnline = new ArrayList<>();
-                    for (DataSnapshot dataSnapshot : snapshot.getChildren()) {
-                        Fimaers user = dataSnapshot.getValue(Fimaers.class);
-                        if(user != null) {
-                            Log.d("TAG", user.toString());
-                            listUsersOnline.add(user);
-                        }
-                        else break;
-                    }
-                    // assign to list local
-                    ConnectRepo.getInstance().listUsersOnline = listUsersOnline;
-                    ConnectRepo.getInstance().checkUser(tableName);
-                    connectToCall();
-                    // if find a user => connect auto
-                    handlerConnect();
-                }
+        FirebaseFirestore firestore = FirebaseFirestore.getInstance();
 
-                @Override
-                public void onCancelled(@NonNull DatabaseError error) {
-                    // handle error
+        listenerRegistration = firestore.collection(tableName).addSnapshotListener(new EventListener<QuerySnapshot>() {
+            @Override
+            public void onEvent(@Nullable QuerySnapshot value, @Nullable FirebaseFirestoreException error) {
+                if(error!=null)
+                {
+                    Log.e("WaitingActivity", "Error getting calls", error);
+                    return;
+                }
+                for (QueryDocumentSnapshot document : value) {
+                    Calls call = document.toObject(Calls.class);
+                    ArrayList<String> ParticipantIDs = call.getParticipantIDs();
+                    String uid = ParticipantIDs.get(0);
+                    String localUid =ConnectRepo.getInstance().getUserLocal().getUid();
+                    if(uid.equals(localUid) || (tableName == ConnectRepo.table_chat_name && ParticipantIDs.contains(localUid)))
+                    {
+                        remoteUserId = call.getParticipantIDs().get(1);
+                        handlerConnect();
+                        ConnectRepo.getInstance().setUserRemoteById(remoteUserId);
+                        DocumentReference documentRef = document.getReference();
+                        Log.e("Waiting", "goi " + remoteUserId);
+                        if(tableName != ConnectRepo.table_chat_name)
+                        {
+                            Log.i("Waiting", "delete doc");
+                            documentRef.delete()
+                                    .addOnSuccessListener(aVoid -> {
+                                        // Document successfully deleted
+                                    })
+                                    .addOnFailureListener(e -> {
+                                        // An error occurred while deleting the document
+                                    });
+                        }
+                        else
+                        {
+                            chatId = document.getId();
+                        }
+                        // Delete the document
+                    }
                 }
             }
-        );
+        });
     }
 
-    private void connectToCall() {
+    private void showQueueNumber() {
         if(ConnectRepo.getInstance().getUserRemote() == null){
             showToast("Hàng đợi rỗng");
         }
         else {
-            remoteUserId = ConnectRepo.getInstance().getUserRemote().getUid();
             showToast("Remote user: " + remoteUserId);
         }
     }
@@ -275,13 +361,14 @@ public class  WaitingActivity extends AppCompatActivity {
     }
 
     // init call ==============================================================================
-    private void initStringeeConnection(){
+    /*private void initStringeeConnection(){
         client = new StringeeClient(this);
         client.setConnectionListener(new StringeeConnectionListener() {
             @Override
             public void onConnectionConnected(StringeeClient stringeeClient, boolean b) {
                 runOnUiThread(()->{
-                    mTvStatusConnect.setText("Bạn là " + stringeeClient.getUserId());
+                    //mTvStatusConnect.setText("Bạn là " + stringeeClient.getUserId());
+                    mTvStatusConnect.setText("Bạn là " + ConnectRepo.getInstance().getUserLocal().getName());
                 });
             }
 
@@ -327,7 +414,32 @@ public class  WaitingActivity extends AppCompatActivity {
             @Override
             public void onConnectionError(StringeeClient stringeeClient, StringeeError stringeeError) {
                 runOnUiThread(()->{
-                    mTvStatusConnect.setText("Kết nối bị lỗi: " + stringeeError.getMessage());
+                    Log.e("TAG", "onConnectionError: " + stringeeError.getCode() + stringeeError.getMessage());
+                    if(stringeeError.getCode() == 2 || stringeeError.getCode() == 6  || stringeeError.getCode() == 10)
+                    {
+                        Log.e("TOKEN", "start geting: ");
+                        mTvStatusConnect.setText("Kết nối bị lỗi: " + stringeeError.getMessage());
+                        FimaerRepository.getInstance().refreshToken().addOnCompleteListener(new OnCompleteListener<String>() {
+                            @Override
+                            public void onComplete(@NonNull Task<String> task) {
+                                if(task.isSuccessful())
+                                {
+                                    Log.e("TOKEN", "onComplete: " + task.getResult());
+                                    stringeeClient.connect(task.getResult());
+                                }
+                                else
+                                {
+                                    Exception e = task.getException();
+                                    if (e instanceof FirebaseFunctionsException) {
+                                        FirebaseFunctionsException ffe = (FirebaseFunctionsException) e;
+                                        FirebaseFunctionsException.Code code = ffe.getCode();
+                                        Object details = ffe.getDetails();
+                                        Log.e("TOKEN", "onComplete: " + details.toString() );
+                                    }
+                                }
+                            }
+                        });
+                    }
                 });
             }
 
@@ -347,11 +459,12 @@ public class  WaitingActivity extends AppCompatActivity {
             }
         });
         client.connect(ConnectRepo.getInstance().getUserLocal().getToken());
-    }
-
+    }*/
     private void navigateToChatScreen() {
         Intent intent = new Intent(this, ChatRandomActivity.class);
         intent.putExtra("to", remoteUserId);
+        intent.putExtra("chatId", chatId );
+        finish();
         startActivity(intent);
     }
 
@@ -359,6 +472,7 @@ public class  WaitingActivity extends AppCompatActivity {
         Intent intent = new Intent(this, CallActivity.class);
         intent.putExtra("to", remoteUserId);
         intent.putExtra("isIncomingCall", false);
+        finish();
         startActivity(intent);
     }
 
@@ -366,11 +480,7 @@ public class  WaitingActivity extends AppCompatActivity {
         Intent intent = new Intent(this, CallVideoActivity.class);
         intent.putExtra("to", remoteUserId);
         intent.putExtra("isIncomingCall", false);
+        finish();
         startActivity(intent);
-    }
-
-    private void ZoomOutWaiting() {
-        HomeFragment.isShowFloatingWaiting = true;
-        startActivity(new Intent(WaitingActivity.this, HomeActivity.class));
     }
 }

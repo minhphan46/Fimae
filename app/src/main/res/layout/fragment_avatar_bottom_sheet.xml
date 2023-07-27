@@ -1,0 +1,102 @@
+<?xml version="1.0" encoding="utf-8"?>
+<layout xmlns:tools="http://schemas.android.com/tools"
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto">
+    <data>
+        <variable
+            name="url"
+            type="String" />
+        <variable
+            name="viewmodel"
+            type="com.example.fimae.viewmodels.AvatarBottomSheetViewModel" />
+    </data>
+    <LinearLayout
+        android:id="@+id/fragment_avatar_menu_bottom"
+        android:layout_width="match_parent"
+        android:layout_height="470dp"
+        android:orientation="vertical">
+        <androidx.constraintlayout.widget.ConstraintLayout
+            android:id="@+id/fragment_avatar_bottom_sheet"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:focusable="true"
+            android:orientation="horizontal"
+            android:padding="16dp">
+
+            <de.hdodenhof.circleimageview.CircleImageView
+                android:id="@+id/avatarBtn"
+                android:layout_width="174dp"
+                android:layout_height="174dp"
+                android:layout_marginTop="20dp"
+                android:background="@drawable/circular"
+                android:clipToOutline="true"
+                android:scaleType="centerCrop"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toTopOf="parent"
+                app:imageUrl="@{url}"
+                app:placeholder="@{@drawable/avatar}"
+                />
+
+            <androidx.appcompat.widget.AppCompatButton
+                android:id="@+id/editAvaBtn"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="18dp"
+                android:background="@drawable/rounded_corner_btn"
+                android:text="Chỉnh sửa avatar"
+                android:paddingLeft="60dp"
+                android:paddingRight="60dp"
+                android:textColor="@color/white"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toBottomOf="@+id/avatarBtn" />
+
+            <TextView
+                android:id="@+id/idTxt"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="14dp"
+                android:text="Lit ID của bạn: 1234567890"
+                style="@style/bold_14"
+                android:textColor="@color/black"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toBottomOf="@+id/editAvaBtn" />
+            <ImageView
+                android:id="@+id/copyImg"
+                android:layout_width="18dp"
+                android:layout_height="18dp"
+                android:layout_alignParentEnd="true"
+                android:layout_centerVertical="true"
+                app:layout_constraintLeft_toRightOf="@id/idTxt"
+                app:layout_constraintTop_toBottomOf="@id/editAvaBtn"
+                android:layout_marginLeft="5dp"
+                android:layout_marginTop="14dp"
+                app:srcCompat="@drawable/ic_copy"
+                app:tint="@color/primary_2" />
+            <TextView
+                android:id="@+id/litIdlaTxt"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="8dp"
+                android:text="Lit ID là một chứng chỉ duy nhất cho tài khoản của bạn"
+                android:textColor="@color/black"
+                style="@style/regular_12"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toBottomOf="@+id/idTxt" />
+
+            <TextView
+                android:id="@+id/saveTextView"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="Lưu"
+                style="@style/bold_16"
+                android:textColor="@color/primary_1"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintTop_toTopOf="parent" />
+
+        </androidx.constraintlayout.widget.ConstraintLayout>
+    </LinearLayout>
+</layout>

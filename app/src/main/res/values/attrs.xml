@@ -1,0 +1,35 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <!-- res/values/attrs.xml -->
+    <declare-styleable name="BottomModalItem">
+        <attr name="iconSrc" format="reference" />
+        <attr name="textString" format="string" />
+    </declare-styleable>
+    <!-- res/values/story_item.xml -->
+    <declare-styleable name="StoryItem">
+        <attr name="storyImage" format="reference" />
+        <attr name="storyTitle" format="string" />
+        <attr name="storyDescription" format="string" />
+    </declare-styleable>
+
+    <declare-styleable name="StoriesProgressView">
+        <attr name="progressCount" format="integer|reference" />
+    </declare-styleable>
+
+    <declare-styleable name="PostMessage">
+        <attr name="post_title" format="string" />
+        <attr name="label_button" format="string" />
+        <attr name="image" format="string" />
+        <attr name="link" format="string" />
+        <attr name="isSender" format="boolean" />
+    </declare-styleable>
+    <declare-styleable name="ListTile">
+        <attr name="leadingIcon" format="reference" />
+        <attr name="title" format="string" />
+        <attr name="subtitle" format="string" />
+        <attr name="trailingIcon" format="reference" />
+        <attr name="leadingIconVisibility" format="boolean" />
+        <attr name="trailingIconVisibility" format="boolean" />
+        <attr name="subtitleVisibility" format="boolean" />
+    </declare-styleable>
+</resources>

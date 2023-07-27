@@ -1,12 +1,16 @@
 package com.example.fimae.utils;
 
+import android.app.Activity;
 import android.content.ContentResolver;
 import android.content.Context;
 import android.database.Cursor;
 import android.graphics.Bitmap;
 import android.media.MediaMetadataRetriever;
 import android.net.Uri;
+import android.os.Build;
 import android.provider.MediaStore;
+
+import androidx.annotation.RequiresApi;
 
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;
@@ -36,6 +40,7 @@ public class FileUtils {
         return "";
     }
 
+    @RequiresApi(api = Build.VERSION_CODES.Q)
     public static long getVideoDuration(String videoPath) throws IOException {
         try (MediaMetadataRetriever retriever = new MediaMetadataRetriever()) {
             retriever.setDataSource(videoPath);
@@ -85,4 +90,32 @@ public class FileUtils {
         // bitmap.compress(Bitmap.CompressFormat.PNG, quality, stream); // According to the needed quality
         return stream.toByteArray();
     }
+     static public String getFileNameFromUri(Uri uri) {
+        String path = uri.getPath();
+        return path.substring(path.lastIndexOf("/") + 1);
+    }
+    public static String getFilePathFromContentUri(Context context, Uri contentUri) {
+        String[] projection = {MediaStore.Images.Media.DATA};
+        Cursor cursor = null;
+
+        try {
+            ContentResolver contentResolver = context.getContentResolver();
+            cursor = contentResolver.query(contentUri, projection, null, null, null);
+
+            if (cursor != null && cursor.moveToFirst()) {
+                int columnIndex = cursor.getColumnIndexOrThrow(MediaStore.Images.Media.DATA);
+                return cursor.getString(columnIndex);
+            }
+        } catch (Exception e) {
+            // Handle the exception, if any
+        } finally {
+            if (cursor != null) {
+                cursor.close();
+            }
+        }
+
+        return null;
+    }
+
+
 }

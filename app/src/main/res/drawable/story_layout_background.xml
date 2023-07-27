@@ -1,0 +1,15 @@
+<shape xmlns:android="http://schemas.android.com/apk/res/android">
+    <solid android:color="@color/white" /> <!-- Set your desired background color -->
+    <corners android:radius="8dp" /> <!-- Adjust the radius to control the roundness of the corners -->
+    <padding
+        android:left="5dp"
+        android:top="5dp"
+        android:right="5dp"
+        android:bottom="5dp" /> <!-- Add padding for the shadow effect -->
+    <corners android:radius="8dp" /> <!-- Repeat the corners attribute for padding to apply rounded corners to the shadow -->
+    <gradient
+        android:startColor="@color/white"
+        android:endColor="@android:color/transparent"
+        android:type="linear"
+        android:angle="90" /> <!-- Add a gradient for the shadow effect -->
+</shape>

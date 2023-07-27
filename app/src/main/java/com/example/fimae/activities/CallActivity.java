@@ -7,10 +7,12 @@ import androidx.core.app.ActivityCompat;
 import androidx.core.content.ContextCompat;
 
 import android.Manifest;
+import android.content.Intent;
 import android.content.pm.PackageManager;
 import android.os.Build;
 import android.os.Bundle;
 import android.os.CountDownTimer;
+import android.util.Log;
 import android.view.View;
 import android.widget.EditText;
 import android.widget.FrameLayout;
@@ -21,8 +23,11 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import com.example.fimae.R;
+import com.example.fimae.models.Conversation;
 import com.example.fimae.models.Report;
+import com.example.fimae.repository.ChatRepository;
 import com.example.fimae.repository.ConnectRepo;
+import com.example.fimae.service.CallService;
 import com.example.fimae.service.TimerService;
 import com.google.android.gms.tasks.OnFailureListener;
 import com.google.android.gms.tasks.OnSuccessListener;
@@ -286,11 +291,14 @@ public class CallActivity extends AppCompatActivity {
         timerService.onDestroy();
         layoutTimer.setVisibility(View.GONE);
         // gửi tin nhắn qua bên kia là đã like
-        sendMessageToRemote("Bên kia đã like rồi nha");
+        //sendMessageToRemote("Bên kia đã like rồi nha");
+        if(ConnectRepo.getInstance().getUserRemote() != null){
+            ChatRepository.getDefaultChatInstance().getOrCreateFriendConversation(ConnectRepo.getInstance().getUserRemote().getUid());
+        }
     }
 
     private void sendMessageToRemote(String messageSend) {
-        // Tạo JSONObject chứa thông tin tin nhắn
+        /*// Tạo JSONObject chứa thông tin tin nhắn
         JSONObject messageInfo = new JSONObject();
         try {
             messageInfo.put("type", "message");
@@ -305,7 +313,9 @@ public class CallActivity extends AppCompatActivity {
             public void onSuccess() {
                 // do something
             }
-        });
+        });*/
+        // create new conversation
+
     }
     // call =======================================================================
 
@@ -323,7 +333,10 @@ public class CallActivity extends AppCompatActivity {
     private void onFinish() {
         audioManager.stop();
         WaitingActivity.isCalled = false;
-        finish();
+        Intent intent = new Intent(this, HomeActivity.class);
+        intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TASK | Intent.FLAG_ACTIVITY_NEW_TASK);
+        startActivity(intent);
+        //finish();
     }
 
     // lay token de thuc hien cuoc goi
@@ -357,14 +370,15 @@ public class CallActivity extends AppCompatActivity {
     private void initCall(){
         if(isInComingCall){
             // cuoc goi den
-            call = WaitingActivity.callMap.get(callId);
+            call = CallService.getInstance().callMap.get(callId);
             if( call == null){
                 onFinish();
                 return;
             }
         }else{
             // tao cuoc goi moi
-            call = new StringeeCall(WaitingActivity.client, WaitingActivity.client.getUserId(), to);
+            call = new StringeeCall(CallService.getInstance().client, CallService.getInstance().client.getUserId(), to);
+            call.setCustom(CallService.RANDOM);
         }
 
         // theo doi trang thai cuoc goi

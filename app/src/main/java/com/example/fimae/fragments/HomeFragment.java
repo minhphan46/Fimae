@@ -32,13 +32,21 @@ import androidx.recyclerview.widget.RecyclerView;
 
 import com.example.fimae.R;
 import com.example.fimae.activities.ConnectActivity;
+import com.example.fimae.activities.DetailPostActivity;
 import com.example.fimae.activities.HomeActivity;
+import com.example.fimae.activities.ProfileActivity;
 import com.example.fimae.activities.WaitingActivity;
+import com.example.fimae.adapters.BottomSheetItemAdapter;
 import com.example.fimae.adapters.UserHomeViewAdapter;
+import com.example.fimae.models.BottomSheetItem;
 import com.example.fimae.models.Fimaers;
 import com.example.fimae.models.GenderMatch;
 import com.example.fimae.models.Report;
 import com.example.fimae.repository.ConnectRepo;
+import com.example.fimae.repository.FimaerRepository;
+import com.example.fimae.repository.FollowRepository;
+import com.example.fimae.repository.PostRepository;
+import com.facebook.shimmer.ShimmerFrameLayout;
 import com.google.android.gms.tasks.OnFailureListener;
 import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.android.material.bottomsheet.BottomSheetBehavior;
@@ -53,11 +61,13 @@ import com.google.firebase.database.ValueEventListener;
 import com.google.firebase.firestore.CollectionReference;
 import com.google.firebase.firestore.DocumentReference;
 import com.google.firebase.firestore.FirebaseFirestore;
+import com.google.firebase.firestore.ListenerRegistration;
 import com.google.firebase.firestore.QueryDocumentSnapshot;
 import com.squareup.picasso.Picasso;
 
 import java.util.ArrayList;
 import java.util.Date;
+import java.util.List;
 import java.util.concurrent.atomic.AtomicBoolean;
 
 import de.hdodenhof.circleimageview.CircleImageView;
@@ -107,13 +117,20 @@ public class HomeFragment extends Fragment  {
     private String typeCall = "";
     private LinearLayout mFlFloatingWaiting;
     private CircleImageView mImgAvatarWaiting;
+    private ShimmerFrameLayout mShimmerWaitingUser;
+    private LinearLayout mLayoutShimmerUser;
     float xDown = 0, yDown = 0;
+    private FimaeBottomSheet fimaeBottomSheet;
+    List<BottomSheetItem> sheetItems;
+
+    private ListenerRegistration mlisten;
 
     static public boolean isShowFloatingWaiting = false;
     @Nullable
     @Override
     public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
         mView = inflater.inflate(R.layout.fragment_home, container, false);
+        createBottomSheetItem();
         mBtnChat = (LinearLayout) mView.findViewById(R.id.btn_chat_home);
         mBtnChat.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -157,16 +174,21 @@ public class HomeFragment extends Fragment  {
         // recycleView: List users
         mRcvUsers = mView.findViewById(R.id.recycler_users);
         homeActivity = (HomeActivity) getActivity();
-        mUsers = Fimaers.dummy;
+        mUsers = new ArrayList<>();
         LinearLayoutManager linearLayoutManager = new LinearLayoutManager(homeActivity);
         mRcvUsers.setLayoutManager(linearLayoutManager);
 
-        userAdapter = new UserHomeViewAdapter();
+        userAdapter = new UserHomeViewAdapter(this.getContext());
+        // shimmer
+        mShimmerWaitingUser = mView.findViewById(R.id.shimmer_view_users);
+        mLayoutShimmerUser = mView.findViewById(R.id.layout_shimmer_users);
+
         userAdapter.setData(mUsers, new UserHomeViewAdapter.IClickCardUserListener() {
             @Override
             public void onClickUser(Fimaers user) {
-                ConnectRepo.getInstance().setUserLocal(user);
-                showToast("You are " + user.getFirstName());
+                Intent intent = new Intent(getContext(), ProfileActivity.class);
+                intent.putExtra("uid", user.getUid());
+                startActivity(intent);
             }
         });
         mRcvUsers.setAdapter(userAdapter);
@@ -177,7 +199,65 @@ public class HomeFragment extends Fragment  {
         // floating waiting
         mFlFloatingWaiting = mView.findViewById(R.id.floating_waiting);
         mImgAvatarWaiting = mView.findViewById(R.id.img_floating_waiting);
+        handleShowFloatingWaiting();
 
+        // handle number of view
+        TextView mTvNumOfChat = mView.findViewById(R.id.tv_num_onl_chat);
+        TextView mTvNumOfVoice = mView.findViewById(R.id.tv_num_onl_call);
+        TextView mTvNumOfVideo = mView.findViewById(R.id.tv_num_onl_call_video);
+
+        mlisten = FimaerRepository.getInstance().getNumOfUserOnline(new FimaerRepository.GetFimaerCallback() {
+            @Override
+            public void updateNumOfUserOnline(int numOfUserOnline) {
+                mTvNumOfChat.setText(numOfUserOnline + "");
+                mTvNumOfVoice.setText(numOfUserOnline + "");
+                mTvNumOfVideo.setText(numOfUserOnline + "");
+            }
+        });
+
+
+        return mView;
+    }
+
+    @Override
+    public void onDestroy() {
+        super.onDestroy();
+        if (mlisten != null)
+            mlisten.remove();
+
+        if(listenerRegistrationUser != null)
+            listenerRegistrationUser.remove();
+    }
+
+    @Override
+    public void onResume() {
+        super.onResume();
+        handleShowFloatingWaiting();
+    }
+    private void createBottomSheetItem(){
+         sheetItems = new ArrayList<BottomSheetItem>(){
+            {
+                add(new BottomSheetItem(R.drawable.ic_chat_dots, "Tới cuộc trò chuyện"));
+                add(new BottomSheetItem(R.drawable.ic_user_block, "Hủy theo dõi"));
+            }
+        };
+    }
+    private void createBottomSheet(Fimaers user){
+        fimaeBottomSheet = null;
+        fimaeBottomSheet = new FimaeBottomSheet(sheetItems, new BottomSheetItemAdapter.IClickBottomSheetItemListener() {
+            @Override
+            public void onClick(BottomSheetItem bottomSheetItem) {
+                if(bottomSheetItem.getTitle().equals("Tới cuộc trò chuyện")){
+                    PostRepository.getInstance().goToChatWithUser(user.getUid(), HomeFragment.this.getContext());
+                }
+                else if(bottomSheetItem.getTitle().equals("Hủy theo dõi")){
+                    FollowRepository.getInstance().unFollow(user.getUid());
+                }
+            }
+        });
+        fimaeBottomSheet.show(getParentFragmentManager(), "GoChat");
+    }
+    public void handleShowFloatingWaiting() {
         if(isShowFloatingWaiting) {
             setFloatingWaiting();
             mFlFloatingWaiting.setVisibility(View.VISIBLE);
@@ -185,10 +265,7 @@ public class HomeFragment extends Fragment  {
         else {
             mFlFloatingWaiting.setVisibility(View.GONE);
         }
-
-        return mView;
     }
-
     private void setFloatingWaiting() {
         if(ConnectRepo.getInstance().getUserLocal() != null){
             String avatar = ConnectRepo.getInstance().getUserLocal().getAvatarUrl();
@@ -196,7 +273,7 @@ public class HomeFragment extends Fragment  {
         }
         mImgAvatarWaiting.setOnClickListener(v -> {
             Intent intent = new Intent(getContext(), WaitingActivity.class);
-            intent.addFlags(Intent.FLAG_ACTIVITY_REORDER_TO_FRONT);
+            intent.putExtra("type", typeCall);
             startActivity(intent);
             isShowFloatingWaiting = false;
             mFlFloatingWaiting.setVisibility(View.GONE);
@@ -226,11 +303,15 @@ public class HomeFragment extends Fragment  {
         });
     }
 
+    ListenerRegistration listenerRegistrationUser;
+
     private void GetAllUsers(){
         String localUid = FirebaseAuth.getInstance().getCurrentUser().getUid();
+        mLayoutShimmerUser.setVisibility(View.VISIBLE);
+        mShimmerWaitingUser.startShimmer();
         // get users from firebase
         fimaeUserRef = firestore.collection("fimaers"); // lay het thu muc user ra
-        fimaeUserRef.addSnapshotListener((value, error) -> {
+        listenerRegistrationUser = fimaeUserRef.addSnapshotListener((value, error) -> {
             if (error != null) {
                 // Xử lý lỗi
                 return;
@@ -238,12 +319,13 @@ public class HomeFragment extends Fragment  {
             mUsers.clear();
             // Lặp qua các tài liệu (tin nhắn) và thêm vào danh sách
             for (QueryDocumentSnapshot document : value) {
-                System.out.println(document.toString());
                 Fimaers user = document.toObject(Fimaers.class);
                 // set local
                 if(user.getUid().equals(localUid)) ConnectRepo.getInstance().setUserLocal(user);
                 mUsers.add(user);
             }
+            mLayoutShimmerUser.setVisibility(View.GONE);
+            mShimmerWaitingUser.stopShimmer();
             // Cập nhật giao diện người dùng (RecyclerView)
             userAdapter.notifyDataSetChanged();
         });

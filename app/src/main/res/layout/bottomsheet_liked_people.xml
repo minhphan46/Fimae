@@ -1,0 +1,37 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:orientation="vertical"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="@drawable/bottomsheet_background"
+    tools:context=".bottomdialogs.PostModeFragment"
+    >
+
+    <ImageView
+        android:layout_marginTop="10dp"
+        android:layout_width="54dp"
+        android:layout_height="5dp"
+        android:src="@drawable/header_diolog"
+        android:layout_gravity="center|top"
+        android:layout_marginBottom="20dp"
+        android:scaleType="centerCrop"/>
+    <TextView
+        android:id="@+id/title"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        style="@style/bold_16"
+        android:textColor="@color/text_primary"
+        android:text="Lượt thích và cảm xúc"
+        android:layout_gravity="center_horizontal"
+        android:layout_marginBottom="20dp"
+
+        />
+        <androidx.recyclerview.widget.RecyclerView
+            android:id="@+id/user_list"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            />
+
+</LinearLayout>

@@ -1,18 +1,97 @@
-<?xml version="1.0" encoding="utf-8"?>
-<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
-    xmlns:app="http://schemas.android.com/apk/res-auto"
-    android:layout_width="match_parent"
-    android:layout_height="match_parent">
-
-    <TextView
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:text="Feed Fragment"
-        android:textColor="@color/primary_1"
-        android:textSize="30sp"
-        app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent" />
-
-</androidx.constraintlayout.widget.ConstraintLayout>
+<layout>
+    <FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
+        xmlns:app="http://schemas.android.com/apk/res-auto"
+        xmlns:tools="http://schemas.android.com/tools"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent">
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:orientation="vertical">
+            <include
+                android:id="@+id/appbar_layout"
+                layout="@layout/appbar_post" />
+            <ImageView
+                android:layout_width="match_parent"
+                android:layout_height="0.5dp"
+                android:background="@drawable/divided_shape"
+                app:layout_constraintTop_toBottomOf="@id/view_pager_video"
+                />
+            <androidx.core.widget.NestedScrollView
+                android:fillViewport="true"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content">
+                <androidx.constraintlayout.widget.ConstraintLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content">
+                    <!-- tab reels -->
+                    <com.google.android.material.tabs.TabLayout
+                        android:id="@+id/tab_layout_video"
+                        android:layout_width="match_parent"
+                        android:layout_height="50dp"
+                        app:layout_constraintTop_toTopOf="parent"
+                        app:layout_constraintStart_toStartOf="parent"
+                        app:layout_constraintEnd_toEndOf="parent"
+                        app:tabGravity="fill"
+                        app:tabMode="fixed"
+                        app:tabIndicatorAnimationMode="elastic"
+                        app:tabSelectedTextAppearance="@style/CustomTextAppearanceTab"
+                        app:tabTextAppearance="@style/CustomTextAppearanceTab"
+                        android:background="@color/text_white">
+                        <com.google.android.material.tabs.TabItem
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:text="Shorts"/>
+                        <com.google.android.material.tabs.TabItem
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:text="Stories"/>
+                    </com.google.android.material.tabs.TabLayout>
+                    <androidx.viewpager2.widget.ViewPager2
+                        android:id="@+id/view_pager_video"
+                        android:layout_width="match_parent"
+                        android:layout_height="170dp"
+                        app:layout_constraintTop_toBottomOf="@id/tab_layout_video"
+                        app:layout_constraintStart_toStartOf="parent"
+                        app:layout_constraintEnd_toEndOf="parent"
+                        />
+                    <ImageView
+                        android:id="@+id/divided_shape"
+                        android:layout_width="match_parent"
+                        android:layout_height="0.5dp"
+                        android:background="@drawable/divided_shape"
+                        app:layout_constraintTop_toBottomOf="@id/view_pager_video"
+                        android:layout_marginBottom="10dp"
+                        app:layout_constraintLeft_toLeftOf="parent"
+                        app:layout_constraintRight_toRightOf="parent"
+                        />
+                        <androidx.recyclerview.widget.RecyclerView
+                            android:id="@+id/post_list"
+                            android:nestedScrollingEnabled="false"
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            app:layout_constrainedHeight="true"
+                            app:layout_constraintTop_toBottomOf="@+id/divided_shape"
+                            app:layout_constraintStart_toStartOf="parent"
+                            app:layout_constraintEnd_toEndOf="parent"
+                            android:layout_marginStart="10dp"
+                            android:layout_marginEnd="10dp" />
+                </androidx.constraintlayout.widget.ConstraintLayout>
+            </androidx.core.widget.NestedScrollView>
+        </LinearLayout>
+        <RelativeLayout
+            android:layout_width="match_parent"
+            android:layout_height="match_parent">
+            <ImageView
+                android:id="@+id/add_post"
+                android:layout_alignParentBottom="true"
+                android:layout_alignParentEnd="true"
+                android:layout_marginBottom="20dp"
+                android:layout_marginEnd="20dp"
+                android:layout_width="55dp"
+                android:layout_height="55dp"
+                android:src="@drawable/add_post_image"
+                />
+        </RelativeLayout>
+    </FrameLayout>
+</layout>

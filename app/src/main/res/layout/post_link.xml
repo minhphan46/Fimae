@@ -1,0 +1,62 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:layout_alignParentEnd="true"
+    android:gravity="start"
+    >
+    <androidx.constraintlayout.widget.ConstraintLayout
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginHorizontal="5dp"
+        android:layout_marginVertical="5dp"
+        android:paddingHorizontal="5dp"
+        android:background="@drawable/bubble_sender"
+        android:backgroundTint="@color/gray_400"
+        >
+        <androidx.cardview.widget.CardView
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintTop_toTopOf="parent"
+            android:layout_width="wrap_content"
+            android:id="@+id/post_link_card"
+            app:cardCornerRadius="16dp"
+            android:layout_marginTop="5dp"
+            android:layout_height="wrap_content">
+            <com.example.fimae.adapters.SquareImageView
+                android:layout_width="170dp"
+                android:layout_height="wrap_content"
+                android:scaleType="centerCrop"
+                android:id="@+id/post_image"/>
+        </androidx.cardview.widget.CardView>
+        <TextView
+            android:layout_marginTop="5dp"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            app:layout_constraintTop_toBottomOf="@id/post_link_card"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintEnd_toEndOf="parent"
+            android:id="@+id/title"
+            android:text="Đi tới bài đăng"
+            android:textAlignment="center"
+            android:textSize="15dp"
+            android:textColor="@color/black"
+            />
+        <TextView
+            android:id="@+id/post_link_img"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:maxWidth="150dp"
+            app:layout_constraintTop_toBottomOf="@id/title"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintEnd_toEndOf="parent"
+            android:text="ạinklw hèienawcjklwhajbkhce"
+            android:textSize="12dp"
+            android:layout_marginTop="5dp"
+            android:textColor="@color/black"
+            android:textAlignment="center"
+            />
+
+    </androidx.constraintlayout.widget.ConstraintLayout>
+</LinearLayout>

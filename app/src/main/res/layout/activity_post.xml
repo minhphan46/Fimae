@@ -1,0 +1,202 @@
+<layout xmlns:android="http://schemas.android.com/apk/res/android">
+    <FrameLayout
+        android:layout_width="match_parent"
+        android:layout_height="match_parent">
+        <RelativeLayout
+            xmlns:app="http://schemas.android.com/apk/res-auto"
+            xmlns:tools="http://schemas.android.com/tools"
+            android:background="@color/white"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:orientation="vertical"
+            android:id="@+id/content_layout"
+            tools:context=".activities.PostActivity">
+
+            <androidx.appcompat.widget.Toolbar
+                android:id="@+id/toolbar2"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:background="#FFFFFF"
+                android:minHeight="?attr/actionBarSize"
+                android:theme="?attr/actionBarTheme"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toTopOf="parent">
+
+                <RelativeLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:paddingVertical="0dp">
+
+                    <ImageView
+                        android:id="@+id/close"
+                        android:layout_width="30dp"
+                        android:layout_height="30dp"
+                        android:layout_alignParentStart="true"
+                        android:layout_centerVertical="true"
+                        android:src="@drawable/ic_arrow_left" />
+
+                    <ImageView
+                        android:id="@+id/post"
+                        android:layout_width="50dp"
+                        android:layout_height="30dp"
+                        android:scaleType="fitStart"
+                        android:layout_alignParentEnd="true"
+                        android:layout_marginEnd="10dp"
+                        android:layout_centerVertical="true"
+                        android:background="@drawable/cantpost" />
+                </RelativeLayout>
+            </androidx.appcompat.widget.Toolbar>
+            <androidx.constraintlayout.widget.ConstraintLayout
+                android:id="@+id/content"
+                android:layout_below="@+id/toolbar2"
+                android:layout_width="match_parent"
+                android:layout_marginHorizontal="20dp"
+                android:layout_height="wrap_content">
+                <TextView
+                    android:id="@+id/title"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="Nội dung bài đăng"
+                    app:layout_constraintStart_toStartOf="parent"
+                    app:layout_constraintTop_toTopOf="parent"
+                    />
+                <RelativeLayout
+                    android:layout_marginTop="10dp"
+                    android:id="@+id/layout_description"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:minHeight="200dp"
+                    app:layout_constraintEnd_toEndOf="parent"
+                    app:layout_constraintStart_toStartOf="parent"
+                    app:layout_constraintTop_toBottomOf="@id/title"
+                    android:layout_marginHorizontal="40dp"
+                    android:background="@drawable/diolog_item_background"
+                    android:paddingHorizontal="10dp"
+
+                    >
+                    <EditText
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:id="@+id/description"
+                        android:layout_marginStart="10dp"
+                        android:layout_marginTop="5dp"
+                        android:layout_marginEnd="10dp"
+                        android:hint="Bạn đang nghĩ gì..."
+                        android:textSize="14dp"
+                        android:background="@color/background_button_2"
+                        android:maxLines="10"
+                        />
+                    />
+
+                </RelativeLayout>
+
+                <TextView
+                    android:id="@+id/numberOfText"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_gravity="right"
+                    android:layout_marginTop="8dp"
+                    android:text="0/1000"
+                    app:layout_constraintEnd_toEndOf="parent"
+                    app:layout_constraintHorizontal_bias="0.973"
+                    app:layout_constraintStart_toStartOf="parent"
+                    app:layout_constraintTop_toBottomOf="@+id/layout_description" />
+                <TextView
+                    android:id="@+id/title2"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="Hình ảnh bài đăng"
+                    app:layout_constraintStart_toStartOf="parent"
+                    app:layout_constraintTop_toBottomOf="@id/numberOfText"
+                    />
+
+                <androidx.recyclerview.widget.RecyclerView
+                    android:id="@+id/image_recycler_view"
+                    android:layout_width="match_parent"
+                    android:clickable="true"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="10dp"
+                    android:layout_toEndOf="@id/layout_description"
+                    android:visibility="visible"
+                    app:layout_constraintEnd_toEndOf="parent"
+                    app:layout_constraintHorizontal_bias="0.0"
+                    app:layout_constraintStart_toStartOf="parent"
+                    app:layout_constraintTop_toBottomOf="@+id/title2"
+                    app:layout_constraintVertical_bias="0.0"
+                    android:focusable="true" />
+            </androidx.constraintlayout.widget.ConstraintLayout>
+            <ImageView
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_above="@+id/bottom"
+                android:src="@drawable/divided_shape"
+                android:layout_marginBottom="5dp"
+                />
+            <androidx.constraintlayout.widget.ConstraintLayout
+                android:id="@+id/bottom"
+                android:layout_width="match_parent"
+                android:layout_alignParentBottom="true"
+                android:layout_height="wrap_content">
+                <!--        <ImageView-->
+                <!--            android:layout_width="25dp"-->
+                <!--            android:layout_height="25dp"-->
+                <!--            android:src="@drawable/smile"-->
+                <!--            android:background="@color/white"-->
+                <!--            android:id="@+id/icon"-->
+                <!--            android:layout_marginStart="10dp"-->
+                <!--            android:layout_marginBottom="10dp"-->
+                <!--            app:layout_constraintStart_toStartOf="parent"-->
+                <!--            app:layout_constraintBottom_toBottomOf="parent"/>-->
+                <ImageView
+                    android:id="@+id/image"
+                    android:layout_width="25dp"
+                    android:layout_height="25dp"
+                    android:src="@drawable/carbon_image"
+                    android:background="@color/white"
+                    android:layout_marginStart="10dp"
+                    android:layout_marginBottom="10dp"
+
+                    app:layout_constraintStart_toEndOf="parent"
+                    app:layout_constraintBottom_toBottomOf="parent"/>
+                <!--        <ImageView-->
+                <!--            android:id="@+id/voice"-->
+                <!--            android:layout_width="25dp"-->
+                <!--            android:layout_height="25dp"-->
+                <!--            android:src="@drawable/voice"-->
+                <!--            android:background="@color/white"-->
+                <!--            android:layout_marginBottom="10dp"-->
+                <!--            android:layout_marginStart="10dp"-->
+                <!--            app:layout_constraintStart_toEndOf="@id/image"-->
+                <!--            app:layout_constraintBottom_toBottomOf="parent"/>-->
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:id="@+id/status"
+                    android:text="Công khai"
+                    app:layout_constraintEnd_toStartOf="@id/right_arrow"
+                    app:layout_constraintBottom_toBottomOf="parent"
+                    android:layout_marginBottom="8dp"
+                    android:layout_marginEnd="5dp"
+                    />
+                <ImageView
+                    android:id="@+id/right_arrow"
+                    android:layout_width="14dp"
+                    android:layout_height="14dp"
+                    android:src="@drawable/arrow_right"
+                    app:layout_constraintEnd_toEndOf="parent"
+                    app:layout_constraintBottom_toBottomOf="parent"
+                    android:layout_marginBottom="10dp"
+                    android:layout_marginRight="10dp"
+                    />
+            </androidx.constraintlayout.widget.ConstraintLayout>
+
+        </RelativeLayout>
+        <ProgressBar
+            android:id="@+id/progressBar"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center"
+            android:visibility="gone" /> <!-- Initially set to gone -->
+    </FrameLayout>
+</layout>

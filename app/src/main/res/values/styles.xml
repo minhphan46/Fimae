@@ -1,6 +1,16 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
     <!-- Bold -->
+    <style name="AppTheme" parent="Theme.AppCompat.Light.NoActionBar">
+        <item name="bottomSheetDialogTheme">@style/AppBottomSheetDialogTheme</item>
+    </style>
+
+    <style name="bold_50">
+        <item name="fontFamily">@font/public_sans_bold</item>
+        <item name="android:textSize">50sp</item>
+        <item name="android:textStyle">bold</item>
+    </style>
+
     <style name="bold_32">
         <item name="fontFamily">@font/public_sans_bold</item>
         <item name="android:textSize">32sp</item>
@@ -84,24 +94,28 @@
         <item name="android:textSize">10sp</item>
     </style>
     <!-- Regular -->
+    <style name="regular_18">
+        <item name="fontFamily">@font/public_sans</item>
+        <item name="android:textSize">18sp</item>
+    </style>
     <style name="regular_16">
         <item name="fontFamily">@font/public_sans</item>
         <item name="android:textSize">16sp</item>
     </style>
     <style name="regular_14">
-        <item name="fontFamily">@font/public_sans</item>
+        <item name="fontFamily">@font/publicsans</item>
         <item name="android:textSize">14sp</item>
     </style>
     <style name="regular_12">
-        <item name="fontFamily">@font/public_sans</item>
+        <item name="fontFamily">@font/publicsans</item>
         <item name="android:textSize">12sp</item>
     </style>
     <style name="regular_10">
-        <item name="fontFamily">@font/public_sans</item>
+        <item name="fontFamily">@font/publicsans</item>
         <item name="android:textSize">10sp</item>
     </style>
     <style name="regular_8">
-        <item name="fontFamily">@font/public_sans</item>
+        <item name="fontFamily">@font/publicsans</item>
         <item name="android:textSize">8sp</item>
     </style>
     <!-- Custom font -->
@@ -120,10 +134,62 @@
         <item name="android:background">?android:attr/colorBackground</item>
     </style>
 
+    <style name="non_clickable_chip">
+        <item name="android:textColor">@color/chip_text_color</item>
+        <item name="chipBackgroundColor">@color/white</item>
+        <item name="chipStrokeColor">@color/text_tertiary</item>
+        <item name="chipStrokeWidth">1dp</item>
+    </style>
+
+    <style name="CustomChoiceChipStyle" parent="@style/Widget.MaterialComponents.Chip.Choice">
+        <!-- Customize the background color (inside color) -->
+        <item name="android:textColor">@color/chip_text_color</item>
+        <item name="chipBackgroundColor">@color/white</item>
+        <item name="android:textAppearance">@style/AppTheme.ChipText</item>
+        <!-- Customize the stroke color (border color) -->
+        <item name="chipStrokeColor">@color/chip_border_color</item>
+        <item name="chipStrokeWidth">2dp</item>
+    </style>
+
+    <style name="GenderMaleChoiceChipStyle" parent="@style/Widget.MaterialComponents.Chip.Choice">
+        <!-- Customize the background color (inside color) -->
+        <item name="chipIconTint">@color/chip_male_text_color</item>
+        <item name="android:textColor">@color/chip_male_text_color</item>
+        <item name="chipBackgroundColor">@color/chip_male_color</item>
+        <item name="android:textAppearance">@style/AppTheme.ChipText</item>
+        <item name="chipIconSize">16dp</item>
+        <item name="chipIconVisible">true</item>
+    </style>
+
+    <style name="GenderFemaleChoiceChipStyle" parent="@style/Widget.MaterialComponents.Chip.Choice">
+        <!-- Customize the background color (inside color) -->
+        <item name="chipIconTint">@color/chip_female_text_color</item>
+        <item name="android:textColor">@color/chip_female_text_color</item>
+        <item name="chipBackgroundColor">@color/chip_female_color</item>
+        <item name="android:textAppearance">@style/AppTheme.ChipText</item>
+        <item name="chipIconSize">16dp</item>
+        <item name="chipIconVisible">true</item>
+    </style>
+
+
+    <style name="CustomInputChipStyle" parent="Widget.MaterialComponents.Chip.Entry">
+        <item name="chipBackgroundColor">@color/input_chip_background</item>
+        <item name="android:textColor">@color/primary_1</item>
+        <item name="closeIconTint">@color/text_secondary</item>
+    </style>
+
+    <style name="AppTheme.ChipText" parent="TextAppearance.MaterialComponents.Chip">
+        <item name="android:textStyle">bold</item>
+    </style>
+
     <style name="Widget.Fimae.AppWidget.InnerView" parent="android:Widget">
         <item name="android:background">?android:attr/colorBackground</item>
         <item name="android:textColor">?android:attr/textColorPrimary</item>
     </style>
+    <style name="CustomBottomSheetDialog" parent="@style/ThemeOverlay.MaterialComponents.BottomSheetDialog">
+        <item name="bottomSheetStyle">@drawable/bottomsheet_background</item>
+    </style>
+
 
     <style name="btn_can_click" parent="android:Widget">
         <item name="android:textColor">@color/white</item>

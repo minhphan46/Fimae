@@ -1,0 +1,117 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:layout_gravity="center"
+    tools:context=".DatingGeneralSettings">
+
+    <!-- TODO: Update blank fragment layout -->
+    <TextView
+        android:id="@+id/tv_dating_settings_title_1"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:paddingStart="31dp"
+        android:paddingVertical="15dp"
+        android:text="Thông tin cơ bản"
+        android:textColor="@color/black"
+        android:textSize="20sp"
+        android:textStyle="bold"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent" />
+
+
+    <LinearLayout
+        android:paddingEnd="16dp"
+        android:paddingStart="31dp"
+        android:paddingVertical="15dp"
+        android:id="@+id/layout_pause_matching"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        app:layout_constraintTop_toBottomOf="@id/tv_dating_settings_title_1">
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="Tạm dừng ghép đôi"
+            android:textColor="@color/black"
+            android:textSize="18sp"
+            android:textStyle="bold" />
+
+        <Switch
+            android:id="@+id/switch_pause_matching"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent" />
+
+    </LinearLayout>
+    <com.example.fimae.components.ListTile
+        android:id="@+id/lt_add_images"
+        app:leadingIconVisibility="false"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        app:title="Cập nhật ảnh"
+        app:subtitleVisibility="false"
+        app:trailingIconVisibility="true"
+        app:trailingIcon="@drawable/arrow_right"
+        app:layout_constraintTop_toBottomOf="@id/layout_pause_matching" />
+    <ImageView
+        android:paddingVertical="5dp"
+        android:id="@+id/space_1"
+        android:paddingStart="31dp"
+        android:paddingEnd="20dp"
+        android:src="@color/gray_400"
+        android:layout_width="match_parent"
+        android:layout_height="0.5dp"
+        app:layout_constraintTop_toBottomOf="@id/lt_add_images"/>
+    <TextView
+        android:visibility="gone"
+        android:id="@+id/tv_dating_settings_title_2"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:paddingStart="31dp"
+        android:paddingVertical="15dp"
+        android:text="Trợ giúp"
+        android:textColor="@color/black"
+        android:textSize="20sp"
+        android:textStyle="bold"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/space_1" />
+    <com.example.fimae.components.ListTile
+        android:visibility="gone"
+        android:id="@+id/lt_safe_tips"
+    app:leadingIconVisibility="false"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    app:title="Mẹo an toàn"
+    app:subtitleVisibility="false"
+    app:trailingIconVisibility="true"
+    app:trailingIcon="@drawable/arrow_right"
+    app:layout_constraintTop_toBottomOf="@id/tv_dating_settings_title_2" />
+    <com.example.fimae.components.ListTile
+        android:visibility="gone"
+        android:id="@+id/lt_help_center"
+        app:leadingIconVisibility="false"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        app:title="Trung tâm trợ giúp"
+        app:subtitleVisibility="false"
+        app:trailingIconVisibility="true"
+        app:trailingIcon="@drawable/arrow_right"
+        app:layout_constraintTop_toBottomOf="@id/lt_safe_tips" />
+    <com.example.fimae.components.ListTile
+        android:visibility="gone"
+        android:id="@+id/lt_additional_terms"
+        app:leadingIconVisibility="false"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        app:title="Điều khoản bổ sung về Hẹn hò trên Fimae"
+        app:subtitleVisibility="false"
+        app:trailingIconVisibility="true"
+        app:trailingIcon="@drawable/arrow_right"
+        app:layout_constraintTop_toBottomOf="@id/lt_help_center" />
+
+
+</androidx.constraintlayout.widget.ConstraintLayout>

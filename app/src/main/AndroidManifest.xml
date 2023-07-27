@@ -3,12 +3,13 @@
     xmlns:tools="http://schemas.android.com/tools"
     package="com.example.fimae">
     <!-- permission cho việc kết nối internet -->
+    <uses-permission android:name="android.permission.ACCESS_FINE_LOCATION" />
+    <uses-permission android:name="android.permission.ACCESS_COARSE_LOCATION" />
     <uses-permission android:name="android.permission.INTERNET" />
     <uses-permission android:name="android.permission.ACCESS_NETWORK_STATE" />
     <uses-permission android:name="android.permission.ACCESS_WIFI_STATE" /> <!-- permission cho cuộc gọi -->
     <uses-permission android:name="android.permission.RECORD_AUDIO" /> <!-- Nếu sử dụng class StringeeAudioManager của Stringee quản lý phát âm thanh thì cần thêm các permission này -->
     <uses-permission android:name="android.permission.MODIFY_AUDIO_SETTINGS" />
-    <uses-permission android:name="android.permission.CAMERA" />
     <uses-permission android:name="android.permission.BLUETOOTH" />
     <uses-permission android:name="android.permission.BLUETOOTH_CONNECT" />
 
@@ -25,19 +26,71 @@
     <uses-permission android:name="android.permission.WRITE_EXTERNAL_STORAGE" />
     <uses-permission android:name="android.permission.CAMERA" />
     <uses-permission android:name="android.permission.READ_EXTERNAL_STORAGE" />
+    <uses-permission android:name="android.permission.READ_MEDIA_IMAGES" />
+    <uses-permission android:name="android.permission.READ_MEDIA_VIDEO" />
 
     <application
+        android:name=".FimaeApp"
         android:allowBackup="true"
         android:dataExtractionRules="@xml/data_extraction_rules"
         android:fullBackupContent="@xml/backup_rules"
         android:icon="@mipmap/ic_launcher"
         android:label="@string/app_name"
+        android:requestLegacyExternalStorage="true"
         android:roundIcon="@mipmap/ic_launcher_round"
         android:supportsRtl="true"
         android:theme="@style/Theme.Fimae"
         tools:targetApi="31">
         <activity
-            android:name=".activities.ChatRandomActivity"
+            android:name=".activities.DisabledUserActivity"
+            android:exported="false" />
+        <activity
+            android:name=".CallOnChatActivity"
+            android:exported="false" />
+        <activity
+            android:name=".DatingAddImages"
+            android:exported="false" />
+        <activity
+            android:name=".activities.PrivacyActivity"
+            android:exported="false" />
+
+        <meta-data
+            android:name="com.google.android.geo.API_KEY"
+            android:value="AIzaSyBvm9N9gHEq0ru7PjTCUDvtazOxvwoz0N0" />
+
+        <activity
+            android:name=".activities.MapPicker"
+            android:exported="false" />
+        <activity
+            android:name=".activities.DatingSettings"
+            android:exported="false" />
+        <activity
+            android:name=".activities.AddShortActivity"
+            android:exported="false" />
+        <activity
+            android:name=".activities.PostContentActivity"
+            android:exported="false">
+            <meta-data
+                android:name="android.app.lib_name"
+                android:value="" />
+        </activity>
+        <activity
+            android:name=".activities.CreateProfileActivity"
+            android:exported="false" />
+        <activity
+            android:name=".activities.StoryActivity"
+            android:exported="false" />
+        <activity
+            android:name=".activities.MediaSliderActivity"
+            android:exported="false" />
+        <activity
+            android:name=".activities.ShortVideoActivity"
+            android:exported="false" />
+
+        <service android:name=".service.UpdateUserActivityTimeService" />
+
+        <activity
+            android:name=".activities.SearchUserActivity"
             android:exported="false" />
 
         <provider
@@ -51,7 +104,13 @@
         </provider>
 
         <activity
-            android:name=".activities.UpdateProfileActivity"
+            android:name=".activities.EditNameActivity"
+            android:exported="false" />
+        <activity
+            android:name=".activities.EditProfileActivity"
+            android:exported="false" />
+        <activity
+            android:name=".activities.ProfileActivity"
             android:exported="false" />
         <activity
             android:name=".activities.SplashActivity"
@@ -65,21 +124,50 @@
         </activity>
         <activity
             android:name=".activities.AuthenticationActivity"
-            android:exported="true"></activity>
+            android:exported="true" />
         <activity
             android:name=".activities.OnChatActivity"
             android:exported="false" />
         <activity
-            android:name=".activities.WaitingActivity"
+            android:name=".activities.SettingActivity"
             android:exported="false" />
-
+        <activity
+            android:name=".activities.DetailPostActivity"
+            android:exported="false">
+            <meta-data
+                android:name="android.app.lib_name"
+                android:value="" />
+        </activity>
+        <activity android:name=".activities.ChatRandomActivity" />
+        <activity
+            android:name=".activities.PostActivity"
+            android:exported="false">
+            <meta-data
+                android:name="android.app.lib_name"
+                android:value="" />
+        </activity> <!-- android:allowBackup="true" -->
+        <!-- android:dataExtractionRules="@xml/data_extraction_rules" -->
+        <!-- android:fullBackupContent="@xml/backup_rules" -->
+        <!-- android:icon="@mipmap/ic_launcher" -->
+        <!-- android:label="@string/app_name" -->
+        <!-- android:roundIcon="@mipmap/ic_launcher_round" -->
+        <!-- android:supportsRtl="true" -->
+        <!-- android:theme="@style/Theme.Fimae" -->
+        <!-- tools:targetApi="31"> -->
+        <activity
+            android:name=".activities.WaitingActivity"
+            android:exported="false" /> <!-- android:name=".activities.WaitingActivity" -->
+        <!-- android:exported="false"/> -->
         <meta-data
             android:name="com.google.android.actions"
             android:resource="@drawable/shape_gender_border_blue" />
         <meta-data
             android:name="preloaded_fonts"
-            android:resource="@array/preloaded_fonts" />
-
+            android:resource="@array/preloaded_fonts" /> <!-- <activity -->
+        <!-- android:name=".activities.ChatActivity" -->
+        <!-- android:exported="false" -->
+        <!-- android:label="@string/title_activity_chat" -->
+        <!-- android:theme="@style/Theme.Fimae.NoActionBar" /> -->
         <activity
             android:name=".activities.ConnectActivity"
             android:exported="false" />
@@ -91,7 +179,7 @@
             android:exported="false" />
         <activity
             android:name=".activities.HomeActivity"
-            android:exported="true"></activity>
+            android:exported="true" />
     </application>
 
 </manifest>

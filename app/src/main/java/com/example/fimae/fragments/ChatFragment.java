@@ -1,31 +1,48 @@
 package com.example.fimae.fragments;
 
 import android.content.Intent;
+import android.net.Uri;
 import android.os.Bundle;
 import android.view.LayoutInflater;
+import android.view.Menu;
+import android.view.MenuInflater;
+import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
 
+import android.widget.LinearLayout;
 import android.widget.Toast;
+
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
+import androidx.appcompat.widget.Toolbar;
+import androidx.core.view.MenuProvider;
 import androidx.fragment.app.Fragment;
 
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
+
 import com.example.fimae.R;
+import com.example.fimae.activities.DatingSettings;
 import com.example.fimae.activities.OnChatActivity;
-import com.example.fimae.adapters.UserHomeViewAdapter;
+import com.example.fimae.activities.SearchUserActivity;
+import com.example.fimae.activities.StoryActivity;
+import com.example.fimae.adapters.ConversationAdapter;
+import com.example.fimae.adapters.SpacingItemDecoration;
+import com.example.fimae.adapters.StoryAdapter.StoryAdapter;
+import com.example.fimae.adapters.StoryAdapter.StoryAdapterItem;
 import com.example.fimae.models.Conversation;
 import com.example.fimae.models.Fimaers;
+import com.example.fimae.models.story.Story;
+import com.example.fimae.repository.ChatRepository;
+import com.example.fimae.repository.StoryRepository;
 import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.Task;
-import com.google.firebase.FirebaseApp;
-import com.google.firebase.Timestamp;
+import com.google.android.material.appbar.AppBarLayout;
 import com.google.firebase.auth.FirebaseAuth;
-import com.google.firebase.auth.FirebaseUser;
-import com.google.firebase.firestore.*;
-import org.jetbrains.annotations.NotNull;
+import com.google.firebase.firestore.CollectionReference;
+import com.google.firebase.firestore.FirebaseFirestore;
+import com.google.firebase.firestore.Query;
 
 import java.util.*;
 
@@ -33,101 +50,69 @@ public class ChatFragment extends Fragment {
     private FirebaseFirestore firestore;
     private CollectionReference fimaeUserRef;
     private CollectionReference conversationRef;
+    ConversationAdapter adapter;
+    RecyclerView recyclerView;
+    private LinearLayout searchbar;
+
+    void initListener() {
+        Query query = ChatRepository.getDefaultChatInstance().getConversationQuery();
+        adapter = new ConversationAdapter(query, new ConversationAdapter.IClickConversationListener() {
+            @Override
+            public void onClickConversation(Conversation conversation, Fimaers fimaers) {
+                Intent intent = new Intent(getContext(), OnChatActivity.class);
+                intent.putExtra("conversationID", conversation.getId());
+                intent.putExtra("fimaer", fimaers);
+                startActivity(intent);
+            }
+        });
+        recyclerView.setAdapter(adapter);
+    }
 
     @Nullable
     @Override
     public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
         View view = inflater.inflate(R.layout.fragment_chat, container, false);
-
-        // recycler view =================================================================================
-        RecyclerView recyclerView = view.findViewById(R.id.list_user);
-        UserHomeViewAdapter userHomeViewAdapter = new UserHomeViewAdapter();
-        ArrayList<Fimaers> fimaers = new ArrayList<Fimaers>();
-        userHomeViewAdapter.setData(fimaers, user -> {
-            Intent intent = new Intent(getContext(), OnChatActivity.class);
+        Toolbar toolbar = view.findViewById(R.id.toolbar);
+        toolbar.setOnMenuItemClickListener(new Toolbar.OnMenuItemClickListener() {
+            @Override
+            public boolean onMenuItemClick(MenuItem item) {
+                Toast.makeText(getContext(), "Add friend", Toast.LENGTH_SHORT).show();
+                switch (item.getItemId()) {
+                    case R.id.action_add_friend:
+                        Intent intent = new Intent(getContext(), DatingSettings.class);
+                        intent.putExtra("uid", FirebaseAuth.getInstance().getUid());
+                        startActivity(intent);
+                        return true;
+                    default:
+                        return false;
+                }
+            }
+        });
+        recyclerView = view.findViewById(R.id.list_user);
+        searchbar = view.findViewById(R.id.search_bar);
+        LinearLayoutManager linearLayoutManager = new LinearLayoutManager(this.getContext());
+        recyclerView.setLayoutManager(linearLayoutManager);
+        searchbar.setOnClickListener(v -> {
+            Intent intent = new Intent(getContext(), SearchUserActivity.class);
             startActivity(intent);
         });
-        LinearLayoutManager linearLayoutManager = new LinearLayoutManager(this.getContext());
-        recyclerView.setAdapter(userHomeViewAdapter);
-        recyclerView.setLayoutManager(linearLayoutManager);
-        //=================================================================================
-        firestore = FirebaseFirestore.getInstance();
-        conversationRef = firestore.collection("conversations"); // list cuoc tro chuyen
-        fimaeUserRef = firestore.collection("fimaers"); // lay het thu muc user ra
-        fimaeUserRef.addSnapshotListener((value, error) -> {
-            if (error != null) {
-                // Xử lý lỗi
-                return;
-            }
-            fimaers.clear();
-            // Lặp qua các tài liệu (tin nhắn) và thêm vào danh sách
-            for (QueryDocumentSnapshot document : value) {
-                System.out.println(document.toString());
-                Fimaers message = document.toObject(Fimaers.class);
-                fimaers.add(message);
 
-            }
-
-            // Cập nhật giao diện người dùng (RecyclerView)
-            userHomeViewAdapter.notifyDataSetChanged();
-        });
-
-        userHomeViewAdapter.setData(fimaers, user -> {
-            System.out.println("***********AAAAAAAA het***********");
-            ArrayList<String> participants = new ArrayList<String>(){{
-                add(user.getUid());
-                add(FirebaseAuth.getInstance().getUid());
-            }};
-            participants.sort(Comparator.naturalOrder());
-            conversationRef.where(Filter.equalTo("participantIDs", participants)).limit(1).get().addOnCompleteListener(new OnCompleteListener<QuerySnapshot>() {
-                @Override
-                public void onComplete(@NonNull @NotNull Task<QuerySnapshot> task) {
-                    Intent intent = new Intent(getContext(), OnChatActivity.class);
-
-                    if(task.isSuccessful()){
-                        System.out.println(task.getResult().getDocuments());
-                        if(!task.getResult().isEmpty()){
-                            Conversation conversation = new Conversation();
-                            conversation = task.getResult().getDocuments().get(0).toObject(Conversation.class);
-                            assert conversation != null;
-                            conversation.setId(task.getResult().getDocuments().get(0).getId());
-                            intent.putExtra("conversationID", conversation.getId());
-                            startActivity(intent);
-                        } else {
-                            System.out.println("***********NONE***********");
-                            Conversation conversation = new Conversation();
-                            conversation.setCreatedAt(Timestamp.now());
-                            conversation.setType(Conversation.FRIEND_CHAT);
-                            conversation.setParticipantIDs(participants);
-                            HashMap<String, Object> createConversation = new HashMap<>();
-                            createConversation.put("createdAt", conversation.getCreatedAt());
-                            createConversation.put("type", conversation.getType());
-                            createConversation.put("participantIDs", conversation.getParticipantIDs() );
-                            DocumentReference newConDoc = conversationRef.document();
-                            newConDoc.set(createConversation).addOnCompleteListener(new OnCompleteListener<Void>() {
-                                @Override
-                                public void onComplete(@NonNull @NotNull Task<Void> task) {
-                                    if(task.isSuccessful()){
-                                        conversation.setId(newConDoc.getId());
-                                        intent.putExtra("conversationID", conversation.getId());
-                                        startActivity(intent);
-                                    } else {
-                                        Toast.makeText(getContext(),"Lỗi: " + task.getException().getMessage(), Toast.LENGTH_SHORT).show();
-                                    }
-                                }
-                            });
-                        }
-                    } else {
-                        Toast.makeText(getContext(),"Lỗi: " + task.getException().getMessage(), Toast.LENGTH_SHORT).show();
-                    }
-                }
-            });
-
-
-        });
         return view;
-
     }
 
+    @Override
+    public void onResume() {
+        super.onResume();
+        if (adapter == null) {
+            initListener();
+        }
+    }
 
+    @Override
+    public void onDestroy() {
+        super.onDestroy();
+        if (adapter != null) {
+            adapter.stopListening();
+        }
+    }
 }

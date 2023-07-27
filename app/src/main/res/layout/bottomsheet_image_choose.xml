@@ -1,0 +1,102 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:orientation="vertical"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="@drawable/bottomsheet_background">
+
+    <ImageView
+        android:layout_marginTop="10dp"
+        android:layout_width="54dp"
+        android:layout_height="5dp"
+        android:src="@drawable/header_diolog"
+        android:layout_gravity="center|top"
+        android:layout_marginBottom="20dp"
+        android:scaleType="centerCrop"/>
+    <TextView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        style="@style/bold_16"
+        android:textColor="@color/text_primary"
+        android:text="Thêm ảnh"
+        android:layout_gravity="center_horizontal"
+        android:layout_marginBottom="20dp"
+
+        />
+    <androidx.constraintlayout.widget.ConstraintLayout
+        android:layout_width="351dp"
+        android:layout_gravity="center"
+        android:background="@drawable/diolog_item_background"
+        android:layout_height="60dp"
+        android:layout_marginBottom="21dp"
+        >
+        <ImageView
+            android:id="@+id/icon_image"
+            android:layout_width="31dp"
+            android:layout_height="31dp"
+            android:layout_marginLeft="21dp"
+            android:src="@drawable/ic_image"
+            app:layout_constraintTop_toTopOf="parent"
+            app:layout_constraintLeft_toLeftOf="parent"
+            app:layout_constraintBottom_toBottomOf="parent"
+            />
+        <TextView
+            android:id="@+id/text_image"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            style="@style/bold_18"
+            android:textColor="@color/text_primary"
+            android:text="Chọn từ thư viện"
+            android:layout_marginLeft="21dp"
+            app:layout_constraintLeft_toRightOf="@id/icon_image"
+            app:layout_constraintTop_toTopOf="parent"
+            app:layout_constraintBottom_toBottomOf="parent"
+            />
+    </androidx.constraintlayout.widget.ConstraintLayout>
+    <androidx.constraintlayout.widget.ConstraintLayout
+        android:layout_width="351dp"
+        android:layout_gravity="center"
+        android:background="@drawable/diolog_item_background"
+        android:layout_height="60dp"
+        android:layout_marginBottom="21dp"
+        >
+        <ImageView
+            android:id="@+id/icon_camera"
+            android:layout_width="31dp"
+            android:layout_height="31dp"
+            android:layout_marginLeft="21dp"
+            android:src="@drawable/ic_camera"
+            app:layout_constraintTop_toTopOf="parent"
+            app:layout_constraintLeft_toLeftOf="parent"
+            app:layout_constraintBottom_toBottomOf="parent"
+            />
+        <TextView
+            android:id="@+id/text_camera"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            style="@style/bold_18"
+            android:textColor="@color/text_primary"
+            android:text="Chọn từ thư viện"
+            android:layout_marginLeft="21dp"
+            app:layout_constraintLeft_toRightOf="@id/icon_camera"
+            app:layout_constraintTop_toTopOf="parent"
+            app:layout_constraintBottom_toBottomOf="parent"
+            />
+    </androidx.constraintlayout.widget.ConstraintLayout>
+
+    <TextView
+        android:width="337dp"
+        android:height="56dp"
+        android:layout_gravity="center"
+        android:textAlignment="center"
+        android:gravity="center"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="Hủy bỏ"
+        style="@style/bold_18"
+        android:textColor="@color/text_primary"
+        android:background="@drawable/cancel_button_background" />
+
+
+</LinearLayout>
