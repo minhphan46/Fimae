@@ -2,28 +2,18 @@ package com.example.fimae.Story;
 
 import static com.example.fimae.Story.utils.Utils.getDurationBetweenDates;
 
-import android.graphics.Color;
-import android.graphics.drawable.ColorDrawable;
 import android.os.Bundle;
-import android.text.TextUtils;
 import android.util.DisplayMetrics;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.view.WindowManager;
 import android.widget.ImageButton;
 import android.widget.ImageView;
 import android.widget.TextView;
-import android.widget.Toast;
-import android.widget.VideoView;
 
 import androidx.annotation.Nullable;
 import androidx.cardview.widget.CardView;
-import androidx.fragment.app.DialogFragment;
 import androidx.fragment.app.Fragment;
-import androidx.fragment.app.FragmentManager;
-import androidx.viewpager.widget.ViewPager;
 import androidx.viewpager2.widget.ViewPager2;
 
 import com.bumptech.glide.Glide;
@@ -38,7 +28,6 @@ import com.example.fimae.Story.utils.PullDismissLayout;
 import com.example.fimae.Story.utils.ViewPagerAdapter;
 import com.example.fimae.models.Fimaers;
 import com.example.fimae.models.story.Story;
-import com.example.fimae.models.story.StoryType;
 
 import java.util.ArrayList;
 import java.util.Calendar;
@@ -88,6 +77,15 @@ public class StoryView extends Fragment implements StoriesProgressView.StoriesLi
     private int width, height;
     private float xValue = 0, yValue = 0;
 
+    public interface onCloseCallBack {
+        void onClose();
+    }
+
+    private onCloseCallBack mOncloseCallBack;
+
+    public void setmOncloseCallBack(onCloseCallBack newOncloseCallback){
+        this.mOncloseCallBack = newOncloseCallback;
+    }
 
     private StoryClickListeners storyClickListeners;
     private OnStoryChangedCallback onStoryChangedCallback;
@@ -123,14 +121,23 @@ public class StoryView extends Fragment implements StoriesProgressView.StoriesLi
         setupStories();
 
         startStories();
+        closeImageButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                if (mOncloseCallBack != null) {
+                    mOncloseCallBack.onClose();
+                }
+            }
+        });
     }
 
     private ViewPagerAdapter adapter;
+
     private void setupStories() {
 //        storiesProgressView.setStoriesCount(storiesList.size());
 //        storiesProgressView.setStoryDuration(duration);
         updateHeading();
-        adapter = new ViewPagerAdapter(getActivity(),storiesList , getContext(), this);
+        adapter = new ViewPagerAdapter(getActivity(), storiesList, getContext(), this);
         mViewPager.setAdapter(adapter);
     }
 
@@ -166,10 +173,12 @@ public class StoryView extends Fragment implements StoriesProgressView.StoriesLi
                     onStoryChangedCallback.storyChanged(position);
             }
         });
-        if (isRtl) {
-//            storiesProgressView.setLayoutDirection(View.LAYOUT_DIRECTION_LTR);
-//            storiesProgressView.setRotation(180);
-        }
+        closeImageButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+
+            }
+        });
     }
 
     @Override
@@ -392,5 +401,6 @@ public class StoryView extends Fragment implements StoriesProgressView.StoriesLi
     public void setOnStoryChangedCallback(OnStoryChangedCallback onStoryChangedCallback) {
         this.onStoryChangedCallback = onStoryChangedCallback;
     }
+
 
 }

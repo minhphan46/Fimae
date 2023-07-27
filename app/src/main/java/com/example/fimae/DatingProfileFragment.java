@@ -79,7 +79,6 @@ public class DatingProfileFragment extends Fragment {
         updateListTileRelationship(datingProfile.getRelationshipType());
         updateListTileHeight(datingProfile.getMinHeight(), datingProfile.getMaxHeight());
         updateListTileEducation(datingProfile.getEducationalLevel());
-
     }
 
     private void updateListTileEducation(EducationalLevel educationalLevel) {
@@ -98,15 +97,22 @@ public class DatingProfileFragment extends Fragment {
         try {
             Geocoder geocoder = new Geocoder(requireContext());
             ArrayList<Address> addresses = null;
-            addresses = (ArrayList<Address>) geocoder.getFromLocation(latLng.getLatitude(), latLng.getLongitude(), 1);
+            addresses = (ArrayList<Address>) geocoder.getFromLocation(latLng.getLatitude(), latLng.getLongitude(), 3);
             //Set subtile is City name
-            if (!addresses.isEmpty())
-                location.setSubtitle(addresses.get(0).getLocality());
+            if (addresses != null && !addresses.isEmpty()){
+                for (int i = 0; i< addresses.size(); i++){
+                    String s = addresses.get(0).getLocality();
+                    if(s != null && !s.isEmpty()){
+                        location.setSubtitle(s);
+                        return;
+                    }
+                }
+            }
             else {
                 location.setSubtitle("Không xác định được vị trí");
             }
 
-        } catch (IOException e) {
+        } catch (Exception e) {
             location.setSubtitle("Không xác định được vị trí");
             e.printStackTrace();
         }
@@ -126,6 +132,11 @@ public class DatingProfileFragment extends Fragment {
                 if (result.getResultCode() == Activity.RESULT_OK) {
                     assert result.getData() != null;
                     LatLng selectedLatLng = (LatLng) result.getData().getSerializableExtra("selectedLatLng");
+                    if(selectedLatLng == null){
+                        Toast.makeText(getContext(), "Lỗi: Không thể lấy vị trí", Toast.LENGTH_SHORT).show();
+                        return;
+                    }
+
                     updateListTileLocation(selectedLatLng);
                     DatingRepository.getInstance().updateLocation(selectedLatLng).addOnCompleteListener(new OnCompleteListener<Void>() {
                         @Override
@@ -154,8 +165,8 @@ public class DatingProfileFragment extends Fragment {
                 .setOnDatingtDialogListener(new DatingBottomSheetPicker.OnDatingtDialogListener() {
                     @Override
                     public void onDatingRadioSubmit(ReportAdapterItem reportAdapterItem) {
-                        distance.setSubtitle("Trong vòng" + reportAdapterItem.getTitle());
                         int calDis = Integer.parseInt(reportAdapterItem.getId());
+                        updateListTileDistance(calDis);
                         DatingRepository.getInstance().updateDistance(calDis).addOnCompleteListener(new OnCompleteListener<Void>() {
                             @Override
                             public void onComplete(@NonNull Task<Void> task) {

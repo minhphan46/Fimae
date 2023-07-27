@@ -17,16 +17,20 @@ public class MyStoryAdapter extends FragmentStateAdapter {
 
 
     ArrayList<StoryAdapterItem> storyAdapterItems;
-    public MyStoryAdapter(@NonNull FragmentActivity fragmentActivity, ArrayList<StoryAdapterItem> storyAdapterItems) {
+    public MyStoryAdapter(@NonNull FragmentActivity fragmentActivity, ArrayList<StoryAdapterItem> storyAdapterItems, StoryView.onCloseCallBack closeCallBack) {
         super(fragmentActivity);
         this.storyAdapterItems = storyAdapterItems;
+        this.storyOnCloseCallBack = closeCallBack;
     }
+    private StoryView.onCloseCallBack storyOnCloseCallBack;
 
     @NonNull
     @Override
     public Fragment createFragment(int position) {
         StoryAdapterItem storyAdapterItem = storyAdapterItems.get(position);
-        return new StoryView(storyAdapterItem.getFimaer(), storyAdapterItem.getStories());
+        StoryView storyView =  new StoryView(storyAdapterItem.getFimaer(), storyAdapterItem.getStories());
+        storyView.setmOncloseCallBack(storyOnCloseCallBack);
+        return storyView;
     }
 
     @Override

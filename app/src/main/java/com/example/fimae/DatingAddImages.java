@@ -46,7 +46,7 @@ import java.util.List;
 
 public class DatingAddImages extends AppCompatActivity {
 
-    private boolean checkReadImageAndVideoPermission(){
+    private boolean checkReadImageAndVideoPermission() {
         if (Build.VERSION.SDK_INT == Build.VERSION_CODES.TIRAMISU) {
             if (ActivityCompat.checkSelfPermission(this, Manifest.permission.READ_MEDIA_IMAGES) != PackageManager.PERMISSION_GRANTED && ActivityCompat.checkSelfPermission(this, Manifest.permission.READ_MEDIA_VIDEO) != PackageManager.PERMISSION_GRANTED) {
                 ActivityCompat.requestPermissions(this, new String[]{android.Manifest.permission.READ_MEDIA_IMAGES, android.Manifest.permission.READ_MEDIA_VIDEO}, 1);
@@ -65,6 +65,7 @@ public class DatingAddImages extends AppCompatActivity {
             }
         }
     }
+
     DatingImageAdapter postPhotoAdapter;
     RecyclerView recyclerView;
     private ActivityResultLauncher<Intent> launcher = registerForActivityResult(new ActivityResultContracts.StartActivityForResult(),
@@ -77,15 +78,27 @@ public class DatingAddImages extends AppCompatActivity {
                             int itemCount = data.getClipData().getItemCount();
                             for (int i = 0; i < itemCount; i++) {
                                 Uri imageUrl = data.getClipData().getItemAt(i).getUri();
-                                postPhotoAdapter.addImage(imageUrl.toString(), true);
+                                if (postPhotoAdapter.getItems().size() <= 6) {
+                                    postPhotoAdapter.addImage(imageUrl.toString(), true);
+                                }
+                                if (i + 1 < itemCount) {
+                                    Toast.makeText(getBaseContext(), "Chỉ được chọn từ 2 đến 6 ảnh", Toast.LENGTH_SHORT).show();
+                                    return;
+                                }
                             }
                         } else {
-                            Uri imageUrl = data.getData();
-                            postPhotoAdapter.addImage(imageUrl.toString(), true);
+                            if (postPhotoAdapter.getItems().size() < 6) {
+
+                                Uri imageUrl = data.getData();
+                                postPhotoAdapter.addImage(imageUrl.toString(), true);
+                            } else {
+                                Toast.makeText(getBaseContext(), "Chỉ được chọn từ 2 đến 6 ảnh", Toast.LENGTH_SHORT).show();
+                                return;
+                            }
                         }
                         postPhotoAdapter.notifyDataSetChanged();
                     } else {
-                        Toast.makeText(getApplicationContext(), "You haven't picked Image", Toast.LENGTH_LONG).show();
+                        Toast.makeText(getApplicationContext(), "Bạn chưa chọn ảnh", Toast.LENGTH_LONG).show();
                     }
                 }
             }
@@ -130,12 +143,10 @@ public class DatingAddImages extends AppCompatActivity {
                                     finish();
                                 } else {
                                     progressdialog.dismiss();
-                                    Toast.makeText(getApplicationContext(), "Profile creation failed", Toast.LENGTH_SHORT).show();
                                 }
                             }
                         });
                     } else {
-                        Toast.makeText(getApplicationContext(), "Failed to get location", Toast.LENGTH_SHORT).show();
                         progressdialog.dismiss();
                     }
                 });
@@ -145,11 +156,11 @@ public class DatingAddImages extends AppCompatActivity {
         if (!checkReadImageAndVideoPermission()) {
             return;
         }
-        progressdialog.show();
         if (postPhotoAdapter.getItems().size() < 2 || postPhotoAdapter.getItems().size() > 6) {
             Toast.makeText(getApplicationContext(), "Please select 2 to 6 images", Toast.LENGTH_SHORT).show();
             return;
         }
+        progressdialog.show();
         if (isCreate) {
             createProfile();
         } else {
@@ -173,11 +184,11 @@ public class DatingAddImages extends AppCompatActivity {
             if (task.isSuccessful()) {
                 Intent intent = new Intent();
                 ArrayList<String> images = new ArrayList<>();
-                for(Uri uri : task.getResult()){
+                for (Uri uri : task.getResult()) {
                     images.add(uri.toString());
                 }
                 intent.putExtra("urls", images);
-                setResult(RESULT_OK,intent );
+                setResult(RESULT_OK, intent);
                 Toast.makeText(getApplicationContext(), "Profile updated", Toast.LENGTH_SHORT).show();
                 finish();
             } else {
@@ -186,12 +197,14 @@ public class DatingAddImages extends AppCompatActivity {
             progressdialog.dismiss();
         });
     }
+
     ProgressDialog progressdialog;
     MaterialButton button;
     private boolean isCreate = true;
     private String uid;
     ArrayList<DatingImageAdapterItem> imageList;
     FusedLocationProviderClient fusedLocationProviderClient;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -205,7 +218,7 @@ public class DatingAddImages extends AppCompatActivity {
         button = findViewById(R.id.dating_images_add_button);
         fusedLocationProviderClient = LocationServices.getFusedLocationProviderClient(this);
         button.setOnClickListener(v -> submit());
-         progressdialog = new ProgressDialog(this);
+        progressdialog = new ProgressDialog(this);
         progressdialog.setMessage("Đang cập nhật ảnh");
         progressdialog.setCancelable(false);
     }
