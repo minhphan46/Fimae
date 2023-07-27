@@ -264,7 +264,19 @@ public class ProfileFragment extends Fragment {
                     binding.postList.setAdapter(postAdapter);
                     binding.postList.setLayoutManager(linearLayoutManager);
                 } else if (position == 1) {
-
+                    Query shortQuery = ShortsRepository.getInstance().getShortUserQuery(viewModel.getUid());
+                    shortsReviewProfileAdapter = new ShortsReviewProfileAdapter(
+                            shortQuery,
+                            new ShortsReviewProfileAdapter.IClickCardListener() {
+                                @Override
+                                public void onClickUser(ShortMedia video) {
+                                    Intent intent = new Intent(getContext(), ShortVideoActivity.class);
+                                    intent.putExtra("idVideo", video.getId()); // send id video
+                                    intent.putExtra("isProfile", true);
+                                    startActivity(intent);
+                                }
+                            }
+                    );
                     binding.postList.setAdapter(shortsReviewProfileAdapter);
                     GridAutoFitLayoutManager gridLayoutManager = new GridAutoFitLayoutManager(getContext(), 100);
                     binding.postList.setLayoutManager(gridLayoutManager);
@@ -418,19 +430,7 @@ public class ProfileFragment extends Fragment {
                 }
             }
         });
-        Query shortQuery = ShortsRepository.getInstance().getShortUserQuery(viewModel.getUid());
-        shortsReviewProfileAdapter = new ShortsReviewProfileAdapter(
-                shortQuery,
-                new ShortsReviewProfileAdapter.IClickCardListener() {
-                    @Override
-                    public void onClickUser(ShortMedia video) {
-                        Intent intent = new Intent(getContext(), ShortVideoActivity.class);
-                        intent.putExtra("idVideo", video.getId()); // send id video
-                        intent.putExtra("isProfile", true);
-                        startActivity(intent);
-                    }
-                }
-        );
+
     }
     private void setTextSpan()
     {
