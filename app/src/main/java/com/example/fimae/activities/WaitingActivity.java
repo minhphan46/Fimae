@@ -113,7 +113,6 @@ public class WaitingActivity extends AppCompatActivity {
         else if(type.equals("video")){
             tableName = ConnectRepo.table_call_video_name;
         }
-        connectRepo.addUserOnl(connectRepo.getUserLocal(),tableName);
         // appbar ========================================================
         mBtnZoomOut = findViewById(R.id.btn_zoom_out_waiting);
         mBtnZoomOut.setOnClickListener(v -> {
@@ -160,6 +159,10 @@ public class WaitingActivity extends AppCompatActivity {
             CallService.getInstance().addListener(new CallService.CallClientListener() {
                 @Override
                 public void onStatusChange(String status) {
+                    if(status.equals("Đã kết nối"))
+                    {
+                        connectRepo.addUserOnl(connectRepo.getUserLocal(),tableName);
+                    }
                     mTvStatusConnect.setText(status);
                 }
 

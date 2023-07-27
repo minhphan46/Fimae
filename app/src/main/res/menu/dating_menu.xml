@@ -4,8 +4,7 @@
 
     <item
         android:id="@+id/action_add_friend"
-        android:icon="@drawable/ic_article"
-        android:iconTint="@color/black"
+        android:icon="@drawable/ic_black_article"
         app:showAsAction="ifRoom" android:title="Edit dating profile"/>
 
 </menu>

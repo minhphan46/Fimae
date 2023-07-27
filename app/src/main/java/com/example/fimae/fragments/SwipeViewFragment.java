@@ -83,6 +83,9 @@ public class SwipeViewFragment extends Fragment {
     String uid = FimaerRepository.getInstance().getCurrentUserUid();
     boolean hasProfile = false;
     boolean hasListen = false;
+
+    boolean hasData = false;
+
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
@@ -149,7 +152,8 @@ public class SwipeViewFragment extends Fragment {
                     hasProfile = true;
                     mLayoutShimmerUser.setVisibility(View.VISIBLE);
                     mShimmerWaitingUser.startShimmer();
-                    getData();
+                    if(!hasData)
+                        getData();
                 }
             });
         }
@@ -159,16 +163,17 @@ public class SwipeViewFragment extends Fragment {
             hasProfile = true;
             mLayoutShimmerUser.setVisibility(View.VISIBLE);
             mShimmerWaitingUser.startShimmer();
-            getData();
+            if (!hasData)
+                getData();
         }
-        if(!hasListen)
+        if(!hasListen && hasData)
         {
             hasListen = true;
             initListener();
         }
         else
         {
-            if(hasProfile)
+            if(hasProfile && !hasData)
                 getData();
         }
     }
@@ -222,6 +227,7 @@ public class SwipeViewFragment extends Fragment {
     }
     private void getData()
     {
+        hasData =true;
         DatingRepository.getInstance().getDatingProfileByUid(uid)
                 .addOnCompleteListener(new OnCompleteListener<DatingProfile>() {
                     @Override
@@ -238,15 +244,22 @@ public class SwipeViewFragment extends Fragment {
                                 public void OnGetProfileComplete(HashMap<String, DatingProfile> matchingList, DatingProfile currentProfile) {
                                     for (DatingProfile profile : matchingList.values())
                                     {
+                                        Log.i("TAG", "OnGetProfileComplete: ");
                                         mSwipeView.addView(new TinderCard(getContext(), profile, mSwipeView, currentProfile));
                                     }
                                     mSwipeView.setVisibility(View.VISIBLE);
                                     mShimmerWaitingUser.stopShimmer();
+                                    if(!hasListen)
+                                    {
+                                        hasListen = true;
+                                        initListener();
+                                    }
                                 }
                             });
                         }
                     }
                 });
+
     }
     private void initListener()
     {
