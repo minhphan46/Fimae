@@ -350,6 +350,8 @@ public class ProfileFragment extends Fragment {
                 Post post = dc.getDocument().toObject(Post.class);
                 switch (dc.getType()) {
                     case ADDED:
+                        if( post.getIsDeleted() != null && post.getIsDeleted() == true )
+                            break;
                         if(post.getPublisher().equals(viewModel.getUid()))
                         {
                             posts.add(post);
