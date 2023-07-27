@@ -1,6 +1,8 @@
 package com.example.fimae.activities;
 
+import androidx.appcompat.app.ActionBar;
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.appcompat.widget.Toolbar;
 import androidx.media3.common.MediaItem;
 import androidx.media3.common.Player;
 import androidx.media3.exoplayer.ExoPlayer;
@@ -42,6 +44,15 @@ public class MediaSliderActivity extends AppCompatActivity {
         MediaSliderAdapter adapter = new MediaSliderAdapter(this, items);
         viewPager.setAdapter(adapter);
         viewPager.setCurrentItem(currentIndex, false);
+
+        Toolbar toolbar = findViewById(R.id.media_toolbar);
+        setSupportActionBar(toolbar);
+        ActionBar actionBar = getSupportActionBar();
+        if (actionBar != null) {
+            actionBar.setDisplayHomeAsUpEnabled(true);
+            actionBar.setDisplayShowHomeEnabled(true);
+            actionBar.setTitle("");
+        }
     }
 
 }
