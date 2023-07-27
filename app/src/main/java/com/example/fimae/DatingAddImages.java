@@ -78,23 +78,11 @@ public class DatingAddImages extends AppCompatActivity {
                             int itemCount = data.getClipData().getItemCount();
                             for (int i = 0; i < itemCount; i++) {
                                 Uri imageUrl = data.getClipData().getItemAt(i).getUri();
-                                if (postPhotoAdapter.getItems().size() <= 6) {
-                                    postPhotoAdapter.addImage(imageUrl.toString(), true);
-                                }
-                                if (i + 1 < itemCount) {
-                                    Toast.makeText(getBaseContext(), "Chỉ được chọn từ 2 đến 6 ảnh", Toast.LENGTH_SHORT).show();
-                                    return;
-                                }
+                                postPhotoAdapter.addImage(imageUrl.toString(), true);
                             }
                         } else {
-                            if (postPhotoAdapter.getItems().size() < 6) {
-
-                                Uri imageUrl = data.getData();
-                                postPhotoAdapter.addImage(imageUrl.toString(), true);
-                            } else {
-                                Toast.makeText(getBaseContext(), "Chỉ được chọn từ 2 đến 6 ảnh", Toast.LENGTH_SHORT).show();
-                                return;
-                            }
+                            Uri imageUrl = data.getData();
+                            postPhotoAdapter.addImage(imageUrl.toString(), true);
                         }
                         postPhotoAdapter.notifyDataSetChanged();
                     } else {
