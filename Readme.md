@@ -27,7 +27,13 @@ Fimae is a social networking application developed in Android Java that allows u
   <img src="image/3.png" alt="Screenshot 3" width="200">
   <img src="image/4.png" alt="Screenshot 4" width="200">
 </p>
-
+<p align="center">
+  <img src="image/tab2.png" alt="Screenshot 5" width="405">
+  <img src="image/tab4.png" alt="Screenshot 6" width="405">
+</p>
+<p align="center">
+  <img src="image/video_screenshot.png" alt="Screenshot 5" width="812">
+</p>
 ## Getting Started
 
 Follow these instructions to get a copy of the project up and running on your local machine for development and testing purposes.
